@@ -1,11 +1,16 @@
 #!/bin/bash
 
-samba_exporter="/samba_exporter/samba_exporter"
-samba_statusd="/samba_statusd/samba_statusd"
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+branch_dir="$script_dir/../.."
 
-ls -l "/"
-ls -l "$samba_exporter"
-ls -l "$samba_statusd"
+if [ "$1" == "container" ]; then
+    samba_exporter="/samba_exporter/samba_exporter"
+    samba_statusd="/samba_statusd/samba_statusd"
+else
+    samba_exporter="$branch_dir/bin/samba_exporter"
+    samba_statusd="$branch_dir/bin/samba_statusd"
+fi
+
 
 if [ -f "$samba_exporter" ]; then
     echo "Run $samba_exporter"

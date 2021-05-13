@@ -65,4 +65,4 @@ jobs:
       - name: Build test environment container
         run: docker build --file integrationTest/docker/Dockerfile.ubuntu --tag integration-test-container .
       - name: Run integration tests
-        run: docker run -i integration-test-container /bin/bash -c /RunIntegrationTests.sh
+        run: docker run -i integration-test-container /bin/bash -c "/RunIntegrationTests.sh container"
