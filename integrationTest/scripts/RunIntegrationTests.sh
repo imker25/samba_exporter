@@ -4,6 +4,8 @@ samba_exporter="/samba_exporter"
 samba_statusd="/samba_statusd"
 
 ls -l "/"
+ls -l "$samba_exporter"
+ls -l "$samba_statusd"
 
 if [ -f "$samba_exporter" ]; then
     echo "Run $samba_exporter"
