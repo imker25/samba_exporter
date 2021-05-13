@@ -1,7 +1,7 @@
 #!/bin/bash
 
-samba_exporter="/samba_exporter"
-samba_statusd="/samba_statusd"
+samba_exporter="/samba_exporter/samba_exporter"
+samba_statusd="/samba_statusd/samba_statusd"
 
 ls -l "/"
 ls -l "$samba_exporter"
