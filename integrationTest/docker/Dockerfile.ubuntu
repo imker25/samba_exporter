@@ -1,6 +1,8 @@
 # Container image that runs your code
 FROM ubuntu:groovy
 
+RUN apt-get update && apt-get install wget
+
 # Copies your code file from your action repository to the filesystem path `/` of the container
 COPY integrationTest/scripts/RunIntegrationTests.sh /RunIntegrationTests.sh
 
