@@ -8,7 +8,7 @@ jobs:
         os: [ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - name: Install Go
+    - name: Install Go and java
       uses: actions/setup-go@v2
       with:
         go-version: ${{ matrix.go-version }}
