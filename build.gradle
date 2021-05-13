@@ -1,0 +1,361 @@
+// Build script for this project. May used in IDE or CI environment
+defaultTasks 'build'
+def programVersion=''
+def programVersionNumber=''
+def goPath
+def scriptDirectory
+def scriptFile
+def osName
+def osVersion
+def buildName
+String srcDir
+String binDir
+String pkgDir
+String logDir
+String versionFile
+String packagesToBuild = ''
+String packagesToTest = ''
+def raceParameter
+
+def getGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'describe', '--always', '--long', '--dirty'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+def getGitHight = { ->
+
+    // Get the last commit in Version.txt
+    def stdout = new ByteArrayOutputStream()
+    def lastVersionChange 
+    exec {
+        commandLine 'git', 'log', '--pretty=format:"%H"', '-n 1', '--follow', versionFile
+        standardOutput = stdout
+    }
+    lastVersionChange = stdout.toString().trim()
+    lastVersionChange = lastVersionChange.replaceAll (/"/, '') 
+
+    // Get the last commit in the repo
+    stdout = new ByteArrayOutputStream()
+    def head 
+    exec {
+        commandLine 'git', 'log', '--pretty=format:"%H"', '-n 1'
+        standardOutput = stdout
+    }
+    head = stdout.toString().trim()
+    head = head.replaceAll (/"/, '') 
+
+    // Count commits between lastVersionChange and head (this is the hight)
+    stdout = new ByteArrayOutputStream()
+    def hight 
+    exec {
+        commandLine 'git', 'rev-list', '--count', lastVersionChange + '..' + head
+        standardOutput = stdout
+    }
+    hight = stdout.toString().trim() 
+
+    return hight
+}
+
+task getEnvironment {
+    description 'Setup the environment for the build'
+    doFirst{
+        println '##################################################################################'
+        println 'Setup the environment'
+        println '##################################################################################'
+        osName = org.gradle.internal.os.OperatingSystem.current().getName()
+        osVersion = org.gradle.internal.os.OperatingSystem.current().getVersion()
+        println "$osName $osVersion was detected."
+
+        // Find the location in the file system
+        scriptFile = buildscript.sourceFile
+        scriptDirectory = scriptFile.getParent()
+        println 'Script directory is: ' + scriptDirectory
+
+        srcDir = "$scriptDirectory" + File.separator + "src" + File.separator
+        binDir = "$scriptDirectory" + File.separator + "bin" + File.separator
+        pkgDir = "$scriptDirectory" + File.separator + "pkg" + File.separator
+        logDir = "$scriptDirectory" + File.separator + "logs" + File.separator
+        versionFile = "$scriptDirectory" + File.separator + "VersionMaster.txt"
+
+        def logDirBase = new File(logDir)
+        logDirBase.mkdirs()
+
+        // Make sure the gopath is valid for build
+        goPath = "${System.env.GOPATH}"
+
+        if ("$goPath"!="null" ) {
+            if (goPath.contains(scriptDirectory) == false) {
+                println "GOPATH needs to be extended with: $scriptDirectory"
+                if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+                    println "Go Path will be set to: $goPath;$scriptDirectory"
+                    goPath ="$goPath;$scriptDirectory"
+                } else {
+                    println "Go Path will be set to: $goPath:$scriptDirectory"
+                    goPath ="$goPath:$scriptDirectory"
+                }
+            } else {
+                println 'GOPATH already contains all needed'
+            }
+        } else {
+            println "No GOPATH set. Set it to: $scriptDirectory"
+            goPath ="$scriptDirectory"
+        }
+
+        if ( osName.contains('Windows') == true) {
+            raceParameter = ''
+        } else {
+            raceParameter = '-race'
+        }
+        programVersion=new File(versionFile).text
+        programVersionNumber = programVersion + "." + getGitHight()
+        programVersion= programVersionNumber + "-" + getGitHash()
+        println "Program version: ${programVersion}"
+        println "GOPATH=$goPath"
+
+        // Find all directories within src/ that contains *.go files
+        new File(srcDir).traverse( [maxDepth: 100, filter: ~/.*.go/ , type: groovy.io.FileType.FILES]){
+                String packageDir = it.getParent()
+                String packageName = packageDir.replaceAll(java.util.regex.Matcher.quoteReplacement(srcDir), '')
+                if ((packagesToBuild.contains(packageName + ' ') == false) && (packageName.contains('tobi.backfrak.de') == true)) {
+                    packagesToBuild = packageName + ' ' + packagesToBuild
+                }
+        }
+
+        // Find all directories within src/ that contains *_test.go files
+        new File(srcDir).traverse( [maxDepth: 100, filter: ~/.*_test.go/, type: groovy.io.FileType.FILES]){
+                String packageDir = it.getParent()
+                String packageName = packageDir.replaceAll(java.util.regex.Matcher.quoteReplacement(srcDir), '')
+                if ((packagesToTest.contains(packageName + ' ') == false) && (packageName.contains('tobi.backfrak.de') == true)) {
+                    packagesToTest = packageName + ' ' + packagesToTest
+                }
+        }
+        if (File.separator == '\\') {
+            packagesToBuild = packagesToBuild.replaceAll(java.util.regex.Matcher.quoteReplacement(File.separator), '/')
+            packagesToTest = packagesToTest.replaceAll(java.util.regex.Matcher.quoteReplacement(File.separator), '/')
+        }
+
+        println "Go Packages to build: $packagesToBuild"
+        println "Go Packages to test: $packagesToTest"
+
+    }
+}
+
+task getBuildName(dependsOn: 'clean') {
+    description 'Just print out the version and number of the build'
+    doFirst {
+        buildName = ""
+    }
+    doLast {
+        
+        if ("${System.env.BUILD_NUMBER}" != "null" )
+        {
+            buildName =  "${programVersion}-${System.env.BUILD_NUMBER}"
+        } else  {
+            buildName = "${programVersion}"
+        }
+        println "Build Name: ${buildName}"
+        file("${logDir}${File.separator}BuildName.txt").text = "${buildName}"
+        file("${logDir}${File.separator}Version.txt").text = "${programVersionNumber}"
+        file("${logDir}${File.separator}dummy.json").text = "{\"key\":\"value\"}"
+
+    }
+}
+
+task installTestConvert(dependsOn: 'getEnvironment') {
+    description 'Install all dependecies needed for test result conversion'
+    doFirst {
+        println '##################################################################################'
+        println 'Install Test Result conversion tools '
+        println '##################################################################################'
+    }
+    doLast {
+        // Install go get github.com/tebeka/go2xunit so it can be used after test execution
+        println "go get github.com/tebeka/go2xunit"
+        exec {
+            workingDir "$scriptDirectory"
+            commandLine 'go', 'get', 'github.com/tebeka/go2xunit'
+            environment('GOPATH', goPath)
+        }
+    }
+}
+
+task clean(dependsOn: 'getEnvironment') {
+    description 'Delete all output from older builds'
+    doFirst {
+        println '##################################################################################'
+        println 'Clean up'
+        println '##################################################################################'
+    }
+    doLast {
+        println "Delete binaries in $binDir"
+        delete fileTree(binDir) {
+
+        }
+        println "Delete packages in $pkgDir"
+        delete fileTree(pkgDir) {
+
+        }
+        println "Delete logs in $logDir"
+        delete fileTree(logDir) {
+
+        }
+
+        println "Delete zips in $scriptDirectory"
+        delete fileTree(scriptDirectory) {
+            include "*.zip"
+        }
+    }
+}
+
+task test(dependsOn: 'getEnvironment') {
+    description 'Run all go tests'
+    doFirst {
+        println '##################################################################################'
+        println 'Run tests'
+        println '##################################################################################'
+    }
+    doLast {
+        println "go test -v $raceParameter $packagesToTest > ${logDir}TestsRun.log "
+        def packageArray = packagesToTest.split(' ');
+        def callArgsTestRun = new String[packageArray.length + 3]
+        callArgsTestRun[0] = 'test'
+        callArgsTestRun[1] = '-v'
+        callArgsTestRun[2] = raceParameter
+        def i = 0
+        packageArray.each {
+            callArgsTestRun[i + 3] = it
+            i = i + 1
+        }
+
+        def logFileStream = new FileOutputStream(logDir + "TestsRun.log")
+        exec {
+            workingDir "$scriptDirectory"
+            executable "go"
+            args callArgsTestRun
+            environment('GOPATH', goPath)
+
+            standardOutput logFileStream
+            errorOutput logFileStream
+        }
+    }
+}
+
+task cover(dependsOn: 'getEnvironment') {
+    description 'Run all go tests with coverage'
+    doFirst {
+        println '##################################################################################'
+        println 'Run tests -cover'
+        println '##################################################################################'
+    }
+    doLast {
+        println "go test -cover $packagesToTest"
+        def packageArray = packagesToTest.split(' ');
+        def callArgsTestRun = new String[packageArray.length + 3]
+        callArgsTestRun[0] = 'test'
+        callArgsTestRun[1] = '-v'
+        callArgsTestRun[2] = '-cover'
+        def i = 0
+        packageArray.each {
+            callArgsTestRun[i + 3] = it
+            i = i + 1
+        }
+
+        exec {
+            workingDir "$scriptDirectory"
+            executable "go"
+            args callArgsTestRun
+            environment('GOPATH', goPath)
+
+        }
+    }
+}
+
+task convertTestResults(dependsOn: 'installTestConvert') {
+     description 'Convert the test results'
+    doFirst {
+        println '##################################################################################'
+        println 'Convert the test results'
+        println '##################################################################################'
+    }
+    doLast {
+        def logTextFile = logDir + 'TestsRun.log'
+        def logXMLFile = logDir + 'TestsResult.xml'
+        def convertExe = binDir + 'go2xunit'
+        println "${convertExe} -input ${logTextFile} -output ${logXMLFile}"
+        exec {
+            workingDir "$scriptDirectory"
+            commandLine convertExe, '-input', logTextFile, '-output', logXMLFile
+            environment('GOPATH', goPath)
+        }
+    }
+}
+
+task build(dependsOn: 'clean') {
+    description 'Compile all go packages'
+    doFirst {
+        println '##################################################################################'
+        println 'Build'
+        println '##################################################################################'
+    }
+    doLast {
+        println "go install -v -ldflags=\"-X main.version=${programVersion}\" $packagesToBuild"
+        def versionArg ='-X main.version=' + "${programVersion}" +''
+        def packageArray = packagesToBuild.split(' ');
+        def callArgs = new String[packageArray.length + 4]
+        callArgs[0] = 'install'
+        callArgs[1] = '-v'
+        callArgs[2] = "-ldflags"
+        callArgs[3] = versionArg
+        def i = 0
+        packageArray.each {
+            callArgs[i + 4] = it
+            i = i + 1
+        }
+
+        exec {
+            workingDir "$scriptDirectory"
+            executable "go"
+            args callArgs
+            environment('GOPATH', goPath)
+        }
+    }
+}
+
+
+task createBuildZip(type: Zip, dependsOn: 'createBinZip') {
+    from "."
+    include "bin${File.separator}**"
+    include "pkg${File.separator}**"
+    include "logs${File.separator}**"
+    archiveFileName = org.gradle.internal.os.OperatingSystem.current().getName() + "_Build.zip"
+    destinationDirectory = file( buildscript.sourceFile.getParent())
+
+    doFirst {
+        println "Create the \"${org.gradle.internal.os.OperatingSystem.current().getName()}_Build.zip\" file in $scriptDirectory"
+    }
+}
+
+task createBinZip(type: Zip, dependsOn: 'getEnvironment') {
+    from "."
+    include "bin${File.separator}**"
+    archiveFileName = org.gradle.internal.os.OperatingSystem.current().getName() + "_bin.zip"
+    destinationDirectory = file( buildscript.sourceFile.getParent())
+
+    doFirst {
+        println "Create the \"${org.gradle.internal.os.OperatingSystem.current().getName()}_bin.zip\" file in $scriptDirectory"
+    }
+}
+
+// Do something after each task, no taking care about the state
+gradle.taskGraph.afterTask { taskWasRunning, TaskState state ->
+
+    // Find out what task was running before
+   if ((taskWasRunning == build) || (taskWasRunning == test))  {
+        println "$taskWasRunning exit"
+
+   }
+}

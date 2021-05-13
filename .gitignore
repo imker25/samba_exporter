@@ -1,15 +1,22 @@
-# Binaries for programs and plugins
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
+**/.vscode/
+**\.vscode\
+**/.gradle/
+**\.gradle\
 
-# Test binary, built with `go test -c`
-*.test
+debug
+debug.test
+bin/*
+bin\*
+pkg/*
+pkg\*
+logs/*
+logs\*
+src/github.com/*
+src\github.com\*
 
-# Output of the go coverage tool, specifically when used with LiteIDE
-*.out
+*.zip
+*.log
+*.pipe
 
-# Dependency directories (remove the comment below to include it)
-# vendor/
+out.abs
+out.abc
