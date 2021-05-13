@@ -1,5 +1,15 @@
 #!/bin/bash
 
+# ###########################################################################################
+# Script to run integration tests
+#
+# Usage: ./RunIntegrationTests.sh [container]
+#        container    optional, tell the sript it runs in the github workflow integration test container
+#  ###########################################################################################
+
+# ###########################################################################################
+# Environment
+# ###########################################################################################
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 branch_dir="$script_dir/../.."
 
@@ -11,7 +21,9 @@ else
     samba_statusd="$branch_dir/bin/samba_statusd"
 fi
 
-
+# ###########################################################################################
+# Basic tests
+# ###########################################################################################
 if [ -f "$samba_exporter" ]; then
     echo "Run $samba_exporter"
     $samba_exporter
