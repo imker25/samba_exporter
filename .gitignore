@@ -20,3 +20,5 @@ src\github.com\*
 
 out.abs
 out.abc
+
+integrationTest/scripts/assert.sh

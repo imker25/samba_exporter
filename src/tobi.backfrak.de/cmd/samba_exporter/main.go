@@ -6,6 +6,7 @@ package main
 // LICENSE file.
 
 import (
+	"flag"
 	"fmt"
 	"os"
 )
@@ -17,7 +18,28 @@ const Authors = "tobi@backfrak.de"
 var version = "undefined"
 
 func main() {
-	printVersion()
+	handleComandlineOptions()
+
+	if params.Verbose {
+		args := ""
+		for _, arg := range os.Args {
+			args = fmt.Sprintf("%s %s", args, arg)
+		}
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Call: %s", args))
+		if !params.PrintVersion {
+			printVersion()
+		}
+	}
+
+	if params.PrintVersion {
+		printVersion()
+		os.Exit(0)
+	}
+
+	if params.Help {
+		flag.Usage()
+		os.Exit(0)
+	}
 }
 
 // Prints the version string
