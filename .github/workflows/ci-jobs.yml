@@ -42,3 +42,16 @@ jobs:
         name: samba_statusd
         path: bin/samba_statusd
         retention-days: 1
+  integration-test:
+    needs: build-unit_test
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v2
+      - name: Build test environment container
+        run: cd integrationTest/docker && docker build --file Dockerfile.ubuntu --tag integrationTestContainer .
+      - name: Run integration tests
+        run: docker run -d integrationTestContainer
