@@ -26,6 +26,8 @@ func handleComandlineOptions() {
 	// Setup the usabel parametes
 	flag.BoolVar(&params.PrintVersion, "print-version", false, "With this flag the program will only print it's version and exit")
 	flag.BoolVar(&params.Verbose, "verbose", false, "With this flag the program will print verbose output")
+	flag.BoolVar(&params.Test, "test-mode", false,
+		"Run the program in test mode. In this mode the program will always return the same test data. To work with samba_statusd both programs needs to run in test mode or not.")
 	flag.BoolVar(&params.Help, "help", false, "Print this help message")
 
 	// Overwrite the std Usage function with some custom stuff

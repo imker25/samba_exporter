@@ -10,4 +10,5 @@ type Parmeters struct {
 	PrintVersion bool
 	Verbose      bool
 	Help         bool
+	Test         bool
 }

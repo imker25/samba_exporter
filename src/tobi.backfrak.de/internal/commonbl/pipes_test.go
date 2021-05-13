@@ -10,8 +10,18 @@ import (
 	"testing"
 )
 
+func TestNewPipeHandler(t *testing.T) {
+	handler := NewPipeHandler(false)
+
+	path := handler.GetPipeFilePath()
+	if path != "/run/samba_exporter.pipe" {
+		t.Errorf("GetPipeFilePath() has not the expected value")
+	}
+}
+
 func TestGetPipeFilePath(t *testing.T) {
-	path := GetPipeFilePath()
+	handler := NewPipeHandler(true)
+	path := handler.GetPipeFilePath()
 
 	if path == "" {
 		t.Errorf("GetPipeFilePath is empty")
@@ -19,13 +29,15 @@ func TestGetPipeFilePath(t *testing.T) {
 }
 
 func TestPipeFileExists(t *testing.T) {
-	os.Remove(GetPipeFilePath())
-	if PipeExists() == true {
+	handler := NewPipeHandler(true)
+
+	os.Remove(handler.GetPipeFilePath())
+	if handler.PipeExists() == true {
 		t.Errorf("PipeExists is true but should not")
 	}
 
-	os.Create(GetPipeFilePath())
-	if PipeExists() == false {
+	os.Create(handler.GetPipeFilePath())
+	if handler.PipeExists() == false {
 		t.Errorf("PipeExists is false but should not")
 	}
 

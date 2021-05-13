@@ -9,6 +9,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	"tobi.backfrak.de/internal/commonbl"
 )
 
 // Authors - Information about the authors of the program. You might want to add your name here when contributing to this software
@@ -19,7 +21,7 @@ var version = "undefined"
 
 func main() {
 	handleComandlineOptions()
-
+	pipeHander := *commonbl.NewPipeHandler(params.Test)
 	if params.Verbose {
 		args := ""
 		for _, arg := range os.Args {
@@ -29,6 +31,7 @@ func main() {
 		if !params.PrintVersion {
 			printVersion()
 		}
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Use named pipe: %s", pipeHander.GetPipeFilePath()))
 	}
 
 	if params.PrintVersion {
