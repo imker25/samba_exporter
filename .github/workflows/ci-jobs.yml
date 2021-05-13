@@ -53,6 +53,6 @@ jobs:
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v2
       - name: Build test environment container
-        run: cd integrationTest/docker && docker build --file Dockerfile.ubuntu --tag integration-test-container .
+        run: docker build --file integrationTest/docker/Dockerfile.ubuntu --tag integration-test-container .
       - name: Run integration tests
         run: docker run -d integration-test-container
