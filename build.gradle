@@ -288,7 +288,7 @@ task convertTestResults(dependsOn: 'installTestConvert') {
         println "${convertExe} -input ${logTextFile} -output ${logXMLFile}"
         exec {
             workingDir "$scriptDirectory"
-            commandLine convertExe, '-input', logTextFile, '-output', logXMLFile
+            commandLine 'go', 'run', 'github.com/tebeka/go2xunit', '-input', logTextFile, '-output', logXMLFile
             environment('GOPATH', goPath)
         }
     }
