@@ -1,0 +1,13 @@
+# Files and folders not to copy into the docker containers
+
+src/
+pkg/
+logs/
+gradle/
+.gradle/
+.github/
+
+build.gradle
+gradlew
+gradlew.bat
+VersionMaster.txt

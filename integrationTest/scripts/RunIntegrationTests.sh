@@ -3,6 +3,8 @@
 samba_exporter="/samba_exporter"
 samba_statusd="/samba_statusd"
 
+ls -l "/"
+
 if [ -f "$samba_exporter" ]; then
     echo "Run $samba_exporter"
     $samba_exporter
