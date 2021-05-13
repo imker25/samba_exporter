@@ -5,6 +5,3 @@ FROM ubuntu:groovy
 COPY integrationTest/scripts/RunIntegrationTests.sh /RunIntegrationTests.sh
 COPY bin/samba_exporter /samba_exporter
 COPY bin/samba_statusd  /samba_statusd
-
-# Code file to execute when the docker container starts up (`RunIntegrationTests.sh`)
-ENTRYPOINT ["/RunIntegrationTests.sh"]
