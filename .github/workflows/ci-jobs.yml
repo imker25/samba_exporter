@@ -1,7 +1,7 @@
 name: CI Job
 on: [push, pull_request]
 jobs:
-  gradle:
+  build-unit_test:
     strategy:
       matrix:
         go-version: [1.14.x]
@@ -20,3 +20,15 @@ jobs:
       uses: eskatos/gradle-command-action@v1
       with:
         arguments: build test
+    - name: 'Upload Artifact samba_exporter'
+      uses: actions/upload-artifact@v2
+      with:
+        name: samba_exporter
+        path: bin/samba_exporter
+        retention-days: 1
+    - name: 'Upload Artifact samba_statusd'
+      uses: actions/upload-artifact@v2
+      with:
+        name: samba_statusd
+        path: bin/samba_statusd
+        retention-days: 1
