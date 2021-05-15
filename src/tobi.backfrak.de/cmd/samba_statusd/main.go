@@ -52,27 +52,18 @@ func main() {
 
 	// Wait for pipe input and process it in an infinite loop
 	for {
-		received := waitForPipeInput(pipeHandler)
+		received, errRecv := pipeHandler.WaitForPipeInputString()
+		if errRecv != nil {
+			fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while receive data from the pipe: %s", errRecv))
+			os.Exit(-1)
+		}
 
 		if len(received) > 0 {
-			fmt.Fprintln(os.Stdout, string(received))
+			fmt.Fprintln(os.Stdout, received)
 		}
 
 	}
 
-}
-
-func waitForPipeInput(handler commonbl.PipeHandler) []byte {
-	reader, errGet := handler.GetReaderPipe()
-	if errGet != nil {
-		return []byte{}
-	}
-	received, errRead := reader.ReadBytes(0)
-	if errRead != nil {
-		return []byte{}
-	}
-
-	return received
 }
 
 func waitforKillSignalAndExit() {

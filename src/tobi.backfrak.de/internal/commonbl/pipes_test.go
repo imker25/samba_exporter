@@ -6,13 +6,14 @@ package commonbl
 // LICENSE file.
 
 import (
-	"io"
 	"os"
 	"sync"
 	"testing"
 )
 
-var testData = []byte{1, 3, 5, 7, 9, 0}
+var testDataString = "Hello Word"
+var testData = []byte(testDataString)
+
 var flushed bool
 var mux sync.Mutex
 
@@ -88,33 +89,17 @@ func TestGetWriterPipeTwoTimes(t *testing.T) {
 
 }
 
-func TestGetReaderPipe(t *testing.T) {
+func TestReadWriteData(t *testing.T) {
 	handler := NewPipeHandler(true)
 	defer os.Remove(handler.GetPipeFilePath())
-
-	flushed = false
 	mux.Lock()
-	go scheduleWrite(t)
-
-	reader, errGet := handler.GetReaderPipe()
-	if errGet != nil {
-		t.Fatalf("Got error \"%s\" but expected none", errGet)
-	}
-
+	go scheduleWriter(t)
 	mux.Lock()
 	defer mux.Unlock()
 
-	if flushed == false {
-		t.Errorf("Data was not flushed yet")
-	}
-
-	data, errRead := reader.ReadBytes(0)
-	if errRead != nil && errRead != io.EOF {
-		t.Fatalf("Got error \"%s\" but expected none", errRead)
-	}
-
-	if len(data) != len(testData) {
-		t.Errorf("The len of the received data %d does not match the send data %d", len(data), len(testData))
+	data, err := handler.WaitForPipeInputBytes()
+	if err != nil {
+		t.Fatalf("Got error \"%s\" but expected none", err)
 	}
 
 	for i, _ := range data {
@@ -124,88 +109,72 @@ func TestGetReaderPipe(t *testing.T) {
 	}
 }
 
-func TestGetReaderPipeReaderReuse(t *testing.T) {
+func TestReadWriteStringData(t *testing.T) {
 	handler := NewPipeHandler(true)
 	defer os.Remove(handler.GetPipeFilePath())
-
-	flushed = false
 	mux.Lock()
-	go scheduleWrite(t)
+	go scheduleStringWriter(t)
+	mux.Lock()
+	defer mux.Unlock()
 
-	reader, errGet := handler.GetReaderPipe()
-	if errGet != nil {
-		t.Fatalf("Got error \"%s\" but expected none", errGet)
+	data, err := handler.WaitForPipeInputString()
+	if err != nil {
+		t.Fatalf("Got error \"%s\" but expected none", err)
 	}
 
+	if data != testDataString {
+		t.Errorf("The received string \"%s\" does not match the send string \"%s\"", data, testDataString)
+	}
+}
+
+func TestReadWriteStringDataReuse(t *testing.T) {
+	handler := NewPipeHandler(true)
+	defer os.Remove(handler.GetPipeFilePath())
+	mux.Lock()
+	go scheduleStringWriter(t)
 	mux.Lock()
 	mux.Unlock()
-	if flushed == false {
-		t.Errorf("Data was not flushed yet")
+
+	data, err := handler.WaitForPipeInputString()
+	if err != nil {
+		t.Fatalf("Got error \"%s\" but expected none", err)
 	}
 
-	data, errRead := reader.ReadBytes(0)
-	if errRead != nil && errRead != io.EOF {
-		t.Fatalf("Got error \"%s\" but expected none", errRead)
+	if data != testDataString {
+		t.Errorf("The received string \"%s\" does not match the send string \"%s\"", data, testDataString)
 	}
 
-	if len(data) != len(testData) {
-		t.Errorf("The len of the received data %d does not match the send data %d", len(data), len(testData))
-	}
-
-	for i, _ := range data {
-		if data[i] != testData[i] {
-			t.Errorf("The received byte does not match the send byte at position %d", i)
-		}
-	}
-
-	handler = NewPipeHandler(true)
-	flushed = false
 	mux.Lock()
-	go scheduleWrite(t)
+	go scheduleStringWriter(t)
 	mux.Lock()
 	defer mux.Unlock()
-	if flushed == false {
-		t.Errorf("Data was not flushed yet")
+
+	data, err = handler.WaitForPipeInputString()
+	if err != nil {
+		t.Fatalf("Got error \"%s\" but expected none", err)
 	}
 
-	data, errRead = reader.ReadBytes(0)
-	if errRead != nil && errRead != io.EOF {
-		t.Fatalf("Got error \"%s\" but expected none", errRead)
-	}
-
-	if len(data) != len(testData) {
-		t.Errorf("The len of the received data %d does not match the send data %d", len(data), len(testData))
-	}
-
-	for i, _ := range data {
-		if data[i] != testData[i] {
-			t.Errorf("The received byte does not match the send byte at position %d", i)
-		}
+	if data != testDataString {
+		t.Errorf("The received string \"%s\" does not match the send string \"%s\"", data, testDataString)
 	}
 }
 
-func scheduleWrite(t *testing.T) {
+func scheduleWriter(t *testing.T) {
 	defer mux.Unlock()
 
 	handler := NewPipeHandler(true)
-	writer, errGet := handler.GetWriterPipe()
-	if errGet != nil {
-		t.Fatalf("Got error \"%s\" but expected none", errGet)
+	err := handler.WritePipeBytes(testData)
+	if err != nil {
+		t.Fatalf("Got error \"%s\" but expected none", err)
 	}
+}
 
-	count, errWrite := writer.Write(testData)
-	if errWrite != nil {
-		t.Fatalf("Got error \"%s\" but expected none", errWrite)
-	}
+func scheduleStringWriter(t *testing.T) {
+	defer mux.Unlock()
 
-	if count != len(testData) {
-		t.Errorf("Did not write the expected amount of data")
+	handler := NewPipeHandler(true)
+	err := handler.WritePipeString(testDataString)
+	if err != nil {
+		t.Fatalf("Got error \"%s\" but expected none", err)
 	}
-
-	errFlush := writer.Flush()
-	if errFlush != nil {
-		t.Fatalf("Got error \"%s\" but expected none", errFlush)
-	}
-	flushed = true
-	return
 }

@@ -219,15 +219,17 @@ task test(dependsOn: 'getEnvironment') {
         println '##################################################################################'
     }
     doLast {
-        println "go test -v $raceParameter $packagesToTest > ${logDir}TestsRun.log "
+        println "go test -v $raceParameter -timeout 30s $packagesToTest > ${logDir}TestsRun.log "
         def packageArray = packagesToTest.split(' ');
-        def callArgsTestRun = new String[packageArray.length + 3]
+        def callArgsTestRun = new String[packageArray.length + 5]
         callArgsTestRun[0] = 'test'
         callArgsTestRun[1] = '-v'
         callArgsTestRun[2] = raceParameter
+        callArgsTestRun[3] = '-timeout'
+        callArgsTestRun[4] = '30s'
         def i = 0
         packageArray.each {
-            callArgsTestRun[i + 3] = it
+            callArgsTestRun[i + 5] = it
             i = i + 1
         }
 

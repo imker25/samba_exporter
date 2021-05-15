@@ -8,7 +8,9 @@ package commonbl
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
+	"strings"
 	"syscall"
 )
 
@@ -16,6 +18,7 @@ const testPipeFileName = "samba_exporter.pipe"
 const pipePath = "/run"
 const testPipePath = "/dev/shm"
 const pipePermission = 0660
+const endByte byte = 0
 
 // PipeHandler - Type to handle the pipe for comunication between samba_exporter and samba_statusd
 type PipeHandler struct {
@@ -52,7 +55,7 @@ func (handler *PipeHandler) PipeExists() bool {
 func (handler *PipeHandler) GetReaderPipe() (*bufio.Reader, error) {
 
 	if !handler.PipeExists() {
-		errCreate := syscall.Mkfifo(handler.GetPipeFilePath(), pipePermission)
+		errCreate := handler.createPipe()
 		if errCreate != nil {
 			return nil, errCreate
 		}
@@ -71,7 +74,7 @@ func (handler *PipeHandler) GetReaderPipe() (*bufio.Reader, error) {
 func (handler *PipeHandler) GetWriterPipe() (*bufio.Writer, error) {
 
 	if !handler.PipeExists() {
-		errCreate := syscall.Mkfifo(handler.GetPipeFilePath(), pipePermission)
+		errCreate := handler.createPipe()
 		if errCreate != nil {
 			return nil, errCreate
 		}
@@ -85,6 +88,56 @@ func (handler *PipeHandler) GetWriterPipe() (*bufio.Writer, error) {
 	return bufio.NewWriter(file), nil
 }
 
+// WaitForPipeInputBytes - Blocking! Wait for input in the pipe and return it as byte array
+// The array will be empty in case of errors
+func (handler *PipeHandler) WaitForPipeInputBytes() ([]byte, error) {
+	reader, errGet := handler.GetReaderPipe()
+	if errGet != nil {
+		return []byte{}, errGet
+	}
+	received, errRead := reader.ReadBytes(endByte)
+	if errRead != nil {
+		if errRead != io.EOF {
+			return []byte{}, errRead
+		}
+		return []byte{}, nil
+	}
+
+	return received[0 : len(received)-1], nil
+}
+
+// WaitForPipeInputString - Blocking! Wait for input in the pipe and return it as string
+// The string will be empty in case of errors
+func (handler *PipeHandler) WaitForPipeInputString() (string, error) {
+	data, err := handler.WaitForPipeInputBytes()
+
+	return strings.TrimSpace(string(data)), err
+}
+
+// WritePipeBytes - Write byte data to the pipe
+func (handler *PipeHandler) WritePipeBytes(data []byte) error {
+	writer, errGet := handler.GetWriterPipe()
+	if errGet != nil {
+		return errGet
+	}
+	data = append(data, endByte)
+	_, errWrite := writer.Write(data)
+	if errWrite != nil {
+		return errWrite
+	}
+	errFlush := writer.Flush()
+	if errFlush != nil {
+		return errFlush
+	}
+
+	return nil
+}
+
+// WritePipeString - Write string data to the pipe
+func (handler *PipeHandler) WritePipeString(data string) error {
+	return handler.WritePipeBytes([]byte(data))
+}
+
 // FileExists - Check if a file exists. Return false in case the path does not exist or is a directory
 func FileExists(filename string) bool {
 	info, err := os.Stat(filename)
@@ -96,4 +149,8 @@ func FileExists(filename string) bool {
 		return false
 	}
 	return true
+}
+
+func (handler *PipeHandler) createPipe() error {
+	return syscall.Mkfifo(handler.GetPipeFilePath(), pipePermission)
 }
