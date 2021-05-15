@@ -9,6 +9,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"tobi.backfrak.de/internal/commonbl"
 )
@@ -21,7 +23,7 @@ var version = "undefined"
 
 func main() {
 	handleComandlineOptions()
-	pipeHander := *commonbl.NewPipeHandler(params.Test)
+	pipeHandler := *commonbl.NewPipeHandler(params.Test)
 	if params.Verbose {
 		args := ""
 		for _, arg := range os.Args {
@@ -31,7 +33,7 @@ func main() {
 		if !params.PrintVersion {
 			printVersion()
 		}
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("Use named pipe: %s", pipeHander.GetPipeFilePath()))
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Use named pipe: %s", pipeHandler.GetPipeFilePath()))
 	}
 
 	if params.PrintVersion {
@@ -43,6 +45,55 @@ func main() {
 		flag.Usage()
 		os.Exit(0)
 	}
+
+	// Ensure we exit clean on term and kill signals
+	go waitforKillSignalAndExit()
+	go waitforTermSignalAndExit()
+
+	// Wait for pipe input and process it in an infinite loop
+	for {
+		received := waitForPipeInput(pipeHandler)
+
+		if len(received) > 0 {
+			fmt.Fprintln(os.Stdout, string(received))
+		}
+
+	}
+
+}
+
+func waitForPipeInput(handler commonbl.PipeHandler) []byte {
+	reader, errGet := handler.GetReaderPipe()
+	if errGet != nil {
+		return []byte{}
+	}
+	received, errRead := reader.ReadBytes(0)
+	if errRead != nil {
+		return []byte{}
+	}
+
+	return received
+}
+
+func waitforKillSignalAndExit() {
+	killSignal := make(chan os.Signal, 1)
+	signal.Notify(killSignal, os.Interrupt)
+	<-killSignal
+
+	if params.Verbose {
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("End: %s due to kill signal", os.Args[0]))
+	}
+	os.Exit(0)
+}
+
+func waitforTermSignalAndExit() {
+	killSignal := make(chan os.Signal, syscall.SIGTERM)
+	signal.Notify(killSignal, os.Interrupt)
+	<-killSignal
+	if params.Verbose {
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("End: %s due to terminate signal", os.Args[0]))
+	}
+	os.Exit(0)
 }
 
 // Prints the version string

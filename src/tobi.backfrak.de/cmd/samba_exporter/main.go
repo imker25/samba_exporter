@@ -44,6 +44,31 @@ func main() {
 		os.Exit(0)
 	}
 
+	writer, errGet := pipeHander.GetWriterPipe()
+	if errGet != nil {
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while geting pipe writer: %s", errGet))
+		os.Exit(-1)
+
+	}
+	strData := ""
+	for _, a := range flag.Args() {
+		strData = fmt.Sprintf("%s %s", strData, a)
+	}
+
+	data := []byte(strData)
+	data = append(data, 0)
+	_, errWrite := writer.Write(data)
+	if errWrite != nil {
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while write data to the pipe: %s", errWrite))
+		os.Exit(-1)
+	}
+	errFlush := writer.Flush()
+	if errFlush != nil {
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while write data to the pipe: %s", errFlush))
+		os.Exit(-1)
+	}
+
+	os.Exit(0)
 }
 
 // Prints the version string

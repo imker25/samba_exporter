@@ -2,7 +2,7 @@
 
 A prometheus exporter for statistic data of the samba file server
 
-**Still in development, nit working yet!***
+**Still in development, not working yet!***
 
 ## Concept
 
