@@ -17,3 +17,12 @@ func TestGetVersion(t *testing.T) {
 		t.Errorf("The version string has not the expected format")
 	}
 }
+
+
+func TestGetIdFromRequest(t *testing.T) {
+	id := getIdFromRequest("bal: 23")
+
+	if id != "23" {
+		t.Errorf("The id \"%s\" is not the expected", id)
+	}
+}

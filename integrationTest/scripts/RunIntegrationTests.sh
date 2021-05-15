@@ -80,6 +80,23 @@ assert_raises "$samba_exporter -version | grep Version: &> /dev/null" 0
 assert_raises "$samba_statusd -help | grep \"Usage: \" &> /dev/null" 0
 assert_raises "$samba_exporter -help | grep \"Usage: \" &> /dev/null" 0
 
+# Start samba_statusd as daemon
+$samba_statusd -test-mode -verbose &
+statusdPID=$(pidof $samba_statusd)
+
+echo "$samba_statusd running with PID $statusdPID"
+
+echo "Test IPC"
+assert_raises "$samba_exporter -test-mode" 0
+assert_raises "$samba_exporter -test-mode -verbose" 0
+
+assert_raises "$samba_exporter -test-mode -verbose | grep \"STATUS_REQUEST: Test response for request 1\"" 0
+assert_raises "$samba_exporter -test-mode -verbose | grep \"CONNECTIONS_REQUEST: Test response for request 2\"" 0
+
+echo "End $samba_statusd with PID $statusdPID"
+kill $statusdPID
+
+
 
 assert_end samba-exporter_IntegrationTests
 exit 0

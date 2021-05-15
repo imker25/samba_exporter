@@ -82,7 +82,7 @@ func handleStatusRequest(handler commonbl.PipeHandler, request string) {
 		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
 		os.Exit(-2)
 	} else {
-		err := handler.WritePipeString(fmt.Sprintf("%s Test response request %s", commonbl.STATUS_REQUEST, id))
+		err := handler.WritePipeString(fmt.Sprintf("%s Test response for request %s", commonbl.STATUS_REQUEST, id))
 		if err != nil {
 			fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while write \"%s\" response to pipe: %s", commonbl.STATUS_REQUEST, err))
 			os.Exit(-1)
@@ -116,7 +116,7 @@ func getIdFromRequest(request string) string {
 		os.Exit(-1)
 	}
 
-	return splitted[1]
+	return strings.TrimSpace(splitted[1])
 }
 
 func waitforKillSignalAndExit() {

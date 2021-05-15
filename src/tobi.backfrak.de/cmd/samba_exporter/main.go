@@ -47,8 +47,8 @@ func main() {
 		os.Exit(0)
 	}
 
-	fmt.Fprintln(os.Stderr, getStatusData(pipeHander))
-	fmt.Fprintln(os.Stderr, getConnectionsData(pipeHander))
+	fmt.Fprintln(os.Stdout, getStatusData(pipeHander))
+	fmt.Fprintln(os.Stdout, getConnectionsData(pipeHander))
 
 	os.Exit(0)
 }
