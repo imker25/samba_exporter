@@ -76,6 +76,10 @@ echo "# ###################################################################"
 assert_raises "$samba_statusd -version | grep Version: &> /dev/null" 0
 assert_raises "$samba_exporter -version | grep Version: &> /dev/null" 0
 
+# Test the help output
+assert_raises "$samba_statusd -help | grep \"Usage: \" &> /dev/null" 0
+assert_raises "$samba_exporter -help | grep \"Usage: \" &> /dev/null" 0
+
 
 assert_end samba-exporter_IntegrationTests
 exit 0
