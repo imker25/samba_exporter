@@ -6,13 +6,16 @@ package commonbl
 // LICENSE file.
 
 import (
+	"bufio"
 	"fmt"
 	"os"
+	"syscall"
 )
 
 const testPipeFileName = "samba_exporter.pipe"
 const pipePath = "/run"
 const testPipePath = "/dev/shm"
+const pipePermission = 0660
 
 // PipeHandler - Type to handle the pipe for comunication between samba_exporter and samba_statusd
 type PipeHandler struct {
@@ -42,6 +45,44 @@ func (handler *PipeHandler) GetPipeFilePath() string {
 // PipeExists - Check if the named pipe files for this application exists
 func (handler *PipeHandler) PipeExists() bool {
 	return FileExists(handler.GetPipeFilePath())
+}
+
+// GetReaderPipe - Get a new reader for the common pipe.
+// 	Remember: This is a blocking call and will return once data can be read from the pipe
+func (handler *PipeHandler) GetReaderPipe() (*bufio.Reader, error) {
+
+	if !handler.PipeExists() {
+		errCreate := syscall.Mkfifo(handler.GetPipeFilePath(), pipePermission)
+		if errCreate != nil {
+			return nil, errCreate
+		}
+	}
+
+	file, errOpen := os.OpenFile(handler.GetPipeFilePath(), os.O_CREATE, os.ModeNamedPipe)
+	if errOpen != nil {
+		return nil, errOpen
+	}
+
+	return bufio.NewReader(file), nil
+
+}
+
+// GetWriterPipe - Get a new writer for the common pipe.
+func (handler *PipeHandler) GetWriterPipe() (*bufio.Writer, error) {
+
+	if !handler.PipeExists() {
+		errCreate := syscall.Mkfifo(handler.GetPipeFilePath(), pipePermission)
+		if errCreate != nil {
+			return nil, errCreate
+		}
+	}
+
+	file, errOpen := os.OpenFile(handler.GetPipeFilePath(), os.O_RDWR|os.O_CREATE|os.O_APPEND, pipePermission)
+	if errOpen != nil {
+		return nil, errOpen
+	}
+
+	return bufio.NewWriter(file), nil
 }
 
 // FileExists - Check if a file exists. Return false in case the path does not exist or is a directory

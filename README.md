@@ -2,6 +2,8 @@
 
 A prometheus exporter for statistic data of the samba file server
 
+**Still in development, nit working yet!***
+
 ## Concept
 
 Since the tool [smbstatus](https://www.samba.org/samba/docs/current/man-html/smbstatus.1.html) provided by the [samba](https://www.samba.org/) project can only run with elevated rights, and a prometheus exporter always exposes a public network endpoint the samba_exporter package contains two services.
