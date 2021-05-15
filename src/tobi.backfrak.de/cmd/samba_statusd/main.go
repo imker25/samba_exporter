@@ -76,7 +76,7 @@ func waitForPipeInput(handler commonbl.PipeHandler) []byte {
 }
 
 func waitforKillSignalAndExit() {
-	killSignal := make(chan os.Signal, 1)
+	killSignal := make(chan os.Signal, syscall.SIGKILL)
 	signal.Notify(killSignal, os.Interrupt)
 	<-killSignal
 
@@ -87,9 +87,9 @@ func waitforKillSignalAndExit() {
 }
 
 func waitforTermSignalAndExit() {
-	killSignal := make(chan os.Signal, syscall.SIGTERM)
-	signal.Notify(killSignal, os.Interrupt)
-	<-killSignal
+	termSignal := make(chan os.Signal, syscall.SIGTERM)
+	signal.Notify(termSignal, os.Interrupt)
+	<-termSignal
 	if params.Verbose {
 		fmt.Fprintln(os.Stdout, fmt.Sprintf("End: %s due to terminate signal", os.Args[0]))
 	}
