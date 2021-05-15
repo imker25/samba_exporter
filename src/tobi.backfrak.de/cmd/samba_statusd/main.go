@@ -10,7 +10,9 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
+	"time"
 
 	"tobi.backfrak.de/internal/commonbl"
 )
@@ -58,12 +60,63 @@ func main() {
 			os.Exit(-1)
 		}
 
-		if len(received) > 0 {
-			fmt.Fprintln(os.Stdout, received)
+		if strings.HasPrefix(received, commonbl.STATUS_REQUEST) {
+			handleStatusRequest(pipeHandler, received)
+		}
+		if strings.HasPrefix(received, commonbl.CONNECTIONS_REQUEST) {
+			handleConnetionsRequest(pipeHandler, received)
 		}
 
+		time.Sleep(time.Millisecond)
 	}
 
+}
+
+func handleStatusRequest(handler commonbl.PipeHandler, request string) {
+	id := getIdFromRequest(request)
+	if params.Verbose {
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Handle STATUS_REQUEST %s", id))
+	}
+
+	if !params.Test {
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
+		os.Exit(-2)
+	} else {
+		err := handler.WritePipeString(fmt.Sprintf("%s Test response request %s", commonbl.STATUS_REQUEST, id))
+		if err != nil {
+			fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while write \"%s\" response to pipe: %s", commonbl.STATUS_REQUEST, err))
+			os.Exit(-1)
+		}
+	}
+}
+
+func handleConnetionsRequest(handler commonbl.PipeHandler, request string) {
+	id := getIdFromRequest(request)
+	if params.Verbose {
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Handle CONNECTIONS_REQUEST %s", id))
+	}
+
+	if !params.Test {
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
+		os.Exit(-2)
+	} else {
+		err := handler.WritePipeString(fmt.Sprintf("%s Test response for request %s", commonbl.CONNECTIONS_REQUEST, id))
+		if err != nil {
+			fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while write \"%s\" response to pipe: %s", commonbl.CONNECTIONS_REQUEST, err))
+			os.Exit(-1)
+		}
+	}
+}
+
+func getIdFromRequest(request string) string {
+	splitted := strings.Split(request, ":")
+
+	if len(splitted) != 2 {
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Got invalid request: \"%s\"", request))
+		os.Exit(-1)
+	}
+
+	return splitted[1]
 }
 
 func waitforKillSignalAndExit() {
