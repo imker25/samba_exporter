@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -24,7 +25,7 @@ const Authors = "tobi@backfrak.de"
 var version = "undefined"
 
 // Type for functions that can create a response string
-type response func(commonbl.PipeHandler, string) error
+type response func(commonbl.PipeHandler, int) error
 
 func main() {
 	handleComandlineOptions()
@@ -77,9 +78,12 @@ func main() {
 }
 
 func handleRequest(handler commonbl.PipeHandler, request string, requestType string, productiveFunc response, testFunc response) {
-	id := getIdFromRequest(request)
+	id, errConv := getIdFromRequest(request)
+	if errConv != nil {
+		return // In case we cant find an ID, we simply ingnor the request as any other invalid input
+	}
 	if params.Verbose {
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("Handle \"%s\" with id %s", requestType, id))
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Handle \"%s\" with id %d", requestType, id))
 	}
 
 	var writeErr error
@@ -92,50 +96,57 @@ func handleRequest(handler commonbl.PipeHandler, request string, requestType str
 		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while write \"%s\" response to pipe: %s", requestType, writeErr))
 		os.Exit(-1)
 	}
+
+	return
 }
 
-func lockResponse(handler commonbl.PipeHandler, id string) error {
+func lockResponse(handler commonbl.PipeHandler, id int) error {
 	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
 	os.Exit(-2)
 
 	return nil
 }
 
-func serviceResponse(handler commonbl.PipeHandler, id string) error {
+func serviceResponse(handler commonbl.PipeHandler, id int) error {
 	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
 	os.Exit(-2)
 
 	return nil
 }
 
-func processResponse(handler commonbl.PipeHandler, id string) error {
+func processResponse(handler commonbl.PipeHandler, id int) error {
 	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
 	os.Exit(-2)
 
 	return nil
 }
 
-func testProcessResponse(handler commonbl.PipeHandler, id string) error {
-	return handler.WritePipeString(fmt.Sprintf("%s Test Response for request %s", commonbl.PROCESS_REQUEST, id))
+func testProcessResponse(handler commonbl.PipeHandler, id int) error {
+	return handler.WritePipeString(fmt.Sprintf("%s Test Response for request %d", commonbl.PROCESS_REQUEST, id))
 }
 
-func testServiceResponse(handler commonbl.PipeHandler, id string) error {
-	return handler.WritePipeString(fmt.Sprintf("%s Test Response for request %s", commonbl.SERVICE_REQUEST, id))
+func testServiceResponse(handler commonbl.PipeHandler, id int) error {
+	return handler.WritePipeString(fmt.Sprintf("%s Test Response for request %d", commonbl.SERVICE_REQUEST, id))
 }
 
-func testLockResponse(handler commonbl.PipeHandler, id string) error {
-	return handler.WritePipeString(fmt.Sprintf("%s Test Response for request %s", commonbl.LOCK_REQUEST, id))
+func testLockResponse(handler commonbl.PipeHandler, id int) error {
+	return handler.WritePipeString(fmt.Sprintf("%s Test Response for request %d", commonbl.LOCK_REQUEST, id))
 }
 
-func getIdFromRequest(request string) string {
+func getIdFromRequest(request string) (int, error) {
 	splitted := strings.Split(request, ":")
 
 	if len(splitted) != 2 {
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Got invalid request: \"%s\"", request))
-		os.Exit(-1)
+		return 0, &strconv.NumError{}
 	}
 
-	return strings.TrimSpace(splitted[1])
+	idStr := strings.TrimSpace(splitted[1])
+	id, errConv := strconv.Atoi(idStr)
+	if errConv != nil {
+		return 0, &strconv.NumError{}
+	}
+
+	return id, nil
 }
 
 func waitforKillSignalAndExit() {

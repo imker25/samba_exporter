@@ -18,11 +18,32 @@ func TestGetVersion(t *testing.T) {
 	}
 }
 
-
 func TestGetIdFromRequest(t *testing.T) {
-	id := getIdFromRequest("bal: 23")
+	id, err := getIdFromRequest("bal: 23")
 
-	if id != "23" {
-		t.Errorf("The id \"%s\" is not the expected", id)
+	if err != nil {
+		t.Errorf("Got error \"%s\" but expected none", err)
+	}
+
+	if id != 23 {
+		t.Errorf("The id \"%d\" is not the expected", id)
+	}
+
+	id, err = getIdFromRequest("bal: 23: sert")
+	if err == nil {
+		t.Errorf("Got no error but expected one")
+	}
+
+	if id != 0 {
+		t.Errorf("The id \"%d\" is not the expected", id)
+	}
+
+	id, err = getIdFromRequest("bal: 23  sert")
+	if err == nil {
+		t.Errorf("Got no error but expected one")
+	}
+
+	if id != 0 {
+		t.Errorf("The id \"%d\" is not the expected", id)
 	}
 }

@@ -18,9 +18,17 @@ import (
 // Authors - Information about the authors of the program. You might want to add your name here when contributing to this software
 const Authors = "tobi@backfrak.de"
 
+// The timeout for a request to samba_statusd in seconds
+const requestTimeOut = 2
+
 // The version of this program, will be set at compile time by the gradle build script
 var version = "undefined"
 var requestCount = 0
+
+type SmbResponse struct {
+	Data  string
+	Error error
+}
 
 func main() {
 	handleComandlineOptions()
@@ -47,20 +55,48 @@ func main() {
 		os.Exit(0)
 	}
 
-	fmt.Fprintln(os.Stdout, getSmbStatusData(pipeHander, commonbl.PROCESS_REQUEST))
-	fmt.Fprintln(os.Stdout, getSmbStatusData(pipeHander, commonbl.SERVICE_REQUEST))
-	fmt.Fprintln(os.Stdout, getSmbStatusData(pipeHander, commonbl.LOCK_REQUEST))
+	res, _ := getSmbStatusDataTimeOut(pipeHander, commonbl.PROCESS_REQUEST)
+	fmt.Fprintln(os.Stdout, res)
+	res, _ = getSmbStatusDataTimeOut(pipeHander, commonbl.SERVICE_REQUEST)
+	fmt.Fprintln(os.Stdout, res)
+	res, _ = getSmbStatusDataTimeOut(pipeHander, commonbl.LOCK_REQUEST)
+	fmt.Fprintln(os.Stdout, res)
 
 	os.Exit(0)
 }
 
-func getSmbStatusData(handler commonbl.PipeHandler, request string) string {
+func getSmbStatusDataTimeOut(handler commonbl.PipeHandler, request string) (string, error) {
+	c := make(chan SmbResponse, 1)
+	var data string
+	go goGetSmbStatusData(handler, request, c)
+	select {
+	case res := <-c:
+		if res.Error == nil {
+			data = res.Data
+		} else {
+			return "", res.Error
+		}
+	case <-time.After(requestTimeOut * time.Second):
+		return "", &time.ParseError{} // ToDo: Write a own error type
+	}
+
+	return data, nil
+}
+
+func goGetSmbStatusData(handler commonbl.PipeHandler, request string, c chan SmbResponse) {
+	retStr, err := getSmbStatusData(handler, request)
+
+	ret := SmbResponse{retStr, err}
+
+	c <- ret
+}
+
+func getSmbStatusData(handler commonbl.PipeHandler, request string) (string, error) {
 	requestCount++
 	requestString := fmt.Sprintf("%s %d", request, requestCount)
 	errWrite := handler.WritePipeString(requestString)
 	if errWrite != nil {
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while write \"%s\" to the pipe: %s", request, errWrite))
-		os.Exit(-1)
+		return "", errWrite
 	}
 
 	var errRead error
@@ -70,17 +106,15 @@ func getSmbStatusData(handler commonbl.PipeHandler, request string) string {
 		response, errRead = handler.WaitForPipeInputString()
 	}
 	if errRead != nil {
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while read \"%s\" response from the pipe: %s", request, errRead))
-		os.Exit(-1)
+		return "", errRead
 	}
 
 	if !strings.Contains(response, request) &&
 		!strings.Contains(response, fmt.Sprintf("Response for request %d", requestCount)) {
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Got unexpected response: \"%s\"", response))
-		os.Exit(-1)
+		return "", commonbl.NewReaderError(response)
 	}
 
-	return response
+	return response, nil
 }
 
 // Prints the version string

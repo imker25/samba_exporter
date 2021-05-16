@@ -97,8 +97,11 @@ assert_raises "$samba_exporter -test-mode" 0
 assert_raises "$samba_exporter -test-mode -verbose" 0
 
 assert_raises "$samba_exporter -test-mode -verbose | grep \"PROCESS_REQUEST: Test Response for request 1\"" 0
+sleep 0.1
 assert_raises "$samba_exporter -test-mode -verbose | grep \"SERVICE_REQUEST: Test Response for request 2\"" 0
+sleep 0.1
 assert_raises "$samba_exporter -test-mode -verbose | grep \"LOCK_REQUEST: Test Response for request 3\"" 0
+sleep 0.1
 
 echo "End $samba_statusd with PID $statusdPID"
 kill $statusdPID

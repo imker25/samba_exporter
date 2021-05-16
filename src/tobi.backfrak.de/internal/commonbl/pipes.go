@@ -80,7 +80,7 @@ func (handler *PipeHandler) GetWriterPipe() (*bufio.Writer, error) {
 		}
 	}
 
-	file, errOpen := os.OpenFile(handler.GetPipeFilePath(), os.O_RDWR|os.O_CREATE|os.O_APPEND, pipePermission)
+	file, errOpen := os.OpenFile(handler.GetPipeFilePath(), os.O_RDWR|os.O_CREATE, pipePermission)
 	if errOpen != nil {
 		return nil, errOpen
 	}
