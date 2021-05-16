@@ -12,6 +12,7 @@
 # ###########################################################################################
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 branch_dir="$script_dir/../.."
+pipe_file="/dev/shm/samba_exporter.pipe"
 
 if [ "$1" == "container" ]; then
     samba_exporter="/samba_exporter/samba_exporter"
@@ -80,6 +81,11 @@ assert_raises "$samba_exporter -version | grep Version: &> /dev/null" 0
 assert_raises "$samba_statusd -help | grep \"Usage: \" &> /dev/null" 0
 assert_raises "$samba_exporter -help | grep \"Usage: \" &> /dev/null" 0
 
+if [ -p "$pipe_file" ]; then
+    echo "Delete $pipe_file"
+    rm "$pipe_file"
+fi
+
 # Start samba_statusd as daemon
 $samba_statusd -test-mode -verbose &
 statusdPID=$(pidof $samba_statusd)
@@ -90,8 +96,9 @@ echo "Test IPC"
 assert_raises "$samba_exporter -test-mode" 0
 assert_raises "$samba_exporter -test-mode -verbose" 0
 
-assert_raises "$samba_exporter -test-mode -verbose | grep \"STATUS_REQUEST: Test response for request 1\"" 0
-assert_raises "$samba_exporter -test-mode -verbose | grep \"CONNECTIONS_REQUEST: Test response for request 2\"" 0
+assert_raises "$samba_exporter -test-mode -verbose | grep \"PROCESS_REQUEST: Test Response for request 1\"" 0
+assert_raises "$samba_exporter -test-mode -verbose | grep \"SERVICE_REQUEST: Test Response for request 2\"" 0
+assert_raises "$samba_exporter -test-mode -verbose | grep \"LOCK_REQUEST: Test Response for request 3\"" 0
 
 echo "End $samba_statusd with PID $statusdPID"
 kill $statusdPID

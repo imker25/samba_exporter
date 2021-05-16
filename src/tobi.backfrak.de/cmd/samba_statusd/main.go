@@ -23,6 +23,9 @@ const Authors = "tobi@backfrak.de"
 // The version of this program, will be set at compile time by the gradle build script
 var version = "undefined"
 
+// Type for functions that can create a response string
+type response func(commonbl.PipeHandler, string) error
+
 func main() {
 	handleComandlineOptions()
 	pipeHandler := *commonbl.NewPipeHandler(params.Test)
@@ -60,11 +63,12 @@ func main() {
 			os.Exit(-1)
 		}
 
-		if strings.HasPrefix(received, commonbl.STATUS_REQUEST) {
-			handleStatusRequest(pipeHandler, received)
-		}
-		if strings.HasPrefix(received, commonbl.CONNECTIONS_REQUEST) {
-			handleConnetionsRequest(pipeHandler, received)
+		if strings.HasPrefix(received, commonbl.PROCESS_REQUEST) {
+			handleRequest(pipeHandler, received, commonbl.PROCESS_REQUEST, processResponse, testProcessResponse)
+		} else if strings.HasPrefix(received, commonbl.SERVICE_REQUEST) {
+			handleRequest(pipeHandler, received, commonbl.SERVICE_REQUEST, serviceResponse, testServiceResponse)
+		} else if strings.HasPrefix(received, commonbl.LOCK_REQUEST) {
+			handleRequest(pipeHandler, received, commonbl.LOCK_REQUEST, lockResponse, testLockResponse)
 		}
 
 		time.Sleep(time.Millisecond)
@@ -72,40 +76,55 @@ func main() {
 
 }
 
-func handleStatusRequest(handler commonbl.PipeHandler, request string) {
+func handleRequest(handler commonbl.PipeHandler, request string, requestType string, productiveFunc response, testFunc response) {
 	id := getIdFromRequest(request)
 	if params.Verbose {
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("Handle STATUS_REQUEST %s", id))
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Handle \"%s\" with id %s", requestType, id))
 	}
 
+	var writeErr error
 	if !params.Test {
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
-		os.Exit(-2)
+		writeErr = productiveFunc(handler, id)
 	} else {
-		err := handler.WritePipeString(fmt.Sprintf("%s Test response for request %s", commonbl.STATUS_REQUEST, id))
-		if err != nil {
-			fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while write \"%s\" response to pipe: %s", commonbl.STATUS_REQUEST, err))
-			os.Exit(-1)
-		}
+		writeErr = testFunc(handler, id)
+	}
+	if writeErr != nil {
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while write \"%s\" response to pipe: %s", requestType, writeErr))
+		os.Exit(-1)
 	}
 }
 
-func handleConnetionsRequest(handler commonbl.PipeHandler, request string) {
-	id := getIdFromRequest(request)
-	if params.Verbose {
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("Handle CONNECTIONS_REQUEST %s", id))
-	}
+func lockResponse(handler commonbl.PipeHandler, id string) error {
+	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
+	os.Exit(-2)
 
-	if !params.Test {
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
-		os.Exit(-2)
-	} else {
-		err := handler.WritePipeString(fmt.Sprintf("%s Test response for request %s", commonbl.CONNECTIONS_REQUEST, id))
-		if err != nil {
-			fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while write \"%s\" response to pipe: %s", commonbl.CONNECTIONS_REQUEST, err))
-			os.Exit(-1)
-		}
-	}
+	return nil
+}
+
+func serviceResponse(handler commonbl.PipeHandler, id string) error {
+	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
+	os.Exit(-2)
+
+	return nil
+}
+
+func processResponse(handler commonbl.PipeHandler, id string) error {
+	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
+	os.Exit(-2)
+
+	return nil
+}
+
+func testProcessResponse(handler commonbl.PipeHandler, id string) error {
+	return handler.WritePipeString(fmt.Sprintf("%s Test Response for request %s", commonbl.PROCESS_REQUEST, id))
+}
+
+func testServiceResponse(handler commonbl.PipeHandler, id string) error {
+	return handler.WritePipeString(fmt.Sprintf("%s Test Response for request %s", commonbl.SERVICE_REQUEST, id))
+}
+
+func testLockResponse(handler commonbl.PipeHandler, id string) error {
+	return handler.WritePipeString(fmt.Sprintf("%s Test Response for request %s", commonbl.LOCK_REQUEST, id))
 }
 
 func getIdFromRequest(request string) string {
