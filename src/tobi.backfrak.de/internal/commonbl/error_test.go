@@ -19,7 +19,7 @@ func TestReaderError(t *testing.T) {
 	}
 
 	if strings.Contains(err.Error(), path) == false {
-		t.Errorf("The error message of ReaderError does not contain the expected path")
+		t.Errorf("The error message of ReaderError does not contain the expected data")
 	}
 }
 
@@ -32,6 +32,6 @@ func TestWriterError(t *testing.T) {
 	}
 
 	if strings.Contains(err.Error(), path) == false {
-		t.Errorf("The error message of WriterError does not contain the expected path")
+		t.Errorf("The error message of WriterError does not contain the expected data")
 	}
 }

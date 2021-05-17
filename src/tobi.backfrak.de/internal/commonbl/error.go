@@ -26,7 +26,7 @@ func NewReaderError(data string) *ReaderError {
 // WriterError - Error when trying to write to the buffer
 type WriterError struct {
 	err string
-	// File - The path to the dir that caused this error
+	// Data causing the error
 	Data string
 }
 

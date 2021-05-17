@@ -55,12 +55,24 @@ func main() {
 		os.Exit(0)
 	}
 
-	res, _ := getSmbStatusDataTimeOut(pipeHander, commonbl.PROCESS_REQUEST)
-	fmt.Fprintln(os.Stdout, res)
-	res, _ = getSmbStatusDataTimeOut(pipeHander, commonbl.SERVICE_REQUEST)
-	fmt.Fprintln(os.Stdout, res)
-	res, _ = getSmbStatusDataTimeOut(pipeHander, commonbl.LOCK_REQUEST)
-	fmt.Fprintln(os.Stdout, res)
+	res, errGet := getSmbStatusDataTimeOut(pipeHander, commonbl.PROCESS_REQUEST)
+	if errGet != nil {
+		fmt.Fprintln(os.Stderr, errGet)
+	} else {
+		fmt.Fprintln(os.Stdout, res)
+	}
+	res, errGet = getSmbStatusDataTimeOut(pipeHander, commonbl.SERVICE_REQUEST)
+	if errGet != nil {
+		fmt.Fprintln(os.Stderr, errGet)
+	} else {
+		fmt.Fprintln(os.Stdout, res)
+	}
+	res, errGet = getSmbStatusDataTimeOut(pipeHander, commonbl.LOCK_REQUEST)
+	if errGet != nil {
+		fmt.Fprintln(os.Stderr, errGet)
+	} else {
+		fmt.Fprintln(os.Stdout, res)
+	}
 
 	os.Exit(0)
 }
@@ -77,7 +89,7 @@ func getSmbStatusDataTimeOut(handler commonbl.PipeHandler, request string) (stri
 			return "", res.Error
 		}
 	case <-time.After(requestTimeOut * time.Second):
-		return "", &time.ParseError{} // ToDo: Write a own error type
+		return "", NewSmbStatusTimeOutError(request)
 	}
 
 	return data, nil
