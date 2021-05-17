@@ -32,7 +32,8 @@ type SmbResponse struct {
 
 func main() {
 	handleComandlineOptions()
-	pipeHander := *commonbl.NewPipeHandler(params.Test)
+	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
+	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
 	if params.Verbose {
 		args := ""
 		for _, arg := range os.Args {
@@ -42,7 +43,8 @@ func main() {
 		if !params.PrintVersion {
 			printVersion()
 		}
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("Use named pipe: %s", pipeHander.GetPipeFilePath()))
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Named pipe for requests: %s", requestHandler.GetPipeFilePath()))
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Named pipe for response: %s", responseHandler.GetPipeFilePath()))
 	}
 
 	if params.PrintVersion {
@@ -55,19 +57,19 @@ func main() {
 		os.Exit(0)
 	}
 
-	res, errGet := getSmbStatusDataTimeOut(pipeHander, commonbl.PROCESS_REQUEST)
+	res, errGet := getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.PROCESS_REQUEST)
 	if errGet != nil {
 		fmt.Fprintln(os.Stderr, errGet)
 	} else {
 		fmt.Fprintln(os.Stdout, res)
 	}
-	res, errGet = getSmbStatusDataTimeOut(pipeHander, commonbl.SERVICE_REQUEST)
+	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SERVICE_REQUEST)
 	if errGet != nil {
 		fmt.Fprintln(os.Stderr, errGet)
 	} else {
 		fmt.Fprintln(os.Stdout, res)
 	}
-	res, errGet = getSmbStatusDataTimeOut(pipeHander, commonbl.LOCK_REQUEST)
+	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.LOCK_REQUEST)
 	if errGet != nil {
 		fmt.Fprintln(os.Stderr, errGet)
 	} else {
@@ -77,10 +79,10 @@ func main() {
 	os.Exit(0)
 }
 
-func getSmbStatusDataTimeOut(handler commonbl.PipeHandler, request string) (string, error) {
+func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request string) (string, error) {
 	c := make(chan SmbResponse, 1)
 	var data string
-	go goGetSmbStatusData(handler, request, c)
+	go goGetSmbStatusData(requestHandler, responseHandler, request, c)
 	select {
 	case res := <-c:
 		if res.Error == nil {
@@ -95,18 +97,18 @@ func getSmbStatusDataTimeOut(handler commonbl.PipeHandler, request string) (stri
 	return data, nil
 }
 
-func goGetSmbStatusData(handler commonbl.PipeHandler, request string, c chan SmbResponse) {
-	retStr, err := getSmbStatusData(handler, request)
+func goGetSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request string, c chan SmbResponse) {
+	retStr, err := getSmbStatusData(requestHandler, responseHandler, request)
 
 	ret := SmbResponse{retStr, err}
 
 	c <- ret
 }
 
-func getSmbStatusData(handler commonbl.PipeHandler, request string) (string, error) {
+func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request string) (string, error) {
 	requestCount++
 	requestString := fmt.Sprintf("%s %d", request, requestCount)
-	errWrite := handler.WritePipeString(requestString)
+	errWrite := requestHandler.WritePipeString(requestString)
 	if errWrite != nil {
 		return "", errWrite
 	}
@@ -115,7 +117,7 @@ func getSmbStatusData(handler commonbl.PipeHandler, request string) (string, err
 	response := requestString
 	for response == requestString && errRead == nil {
 		time.Sleep(time.Millisecond)
-		response, errRead = handler.WaitForPipeInputString()
+		response, errRead = responseHandler.WaitForPipeInputString()
 	}
 	if errRead != nil {
 		return "", errRead

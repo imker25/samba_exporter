@@ -12,7 +12,8 @@
 # ###########################################################################################
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 branch_dir="$script_dir/../.."
-pipe_file="/dev/shm/samba_exporter.pipe"
+request_pipe_file="/dev/shm/samba_exporter.request.pipe"
+response_pipe_file="/dev/shm/samba_exporter.response.pipe"
 
 if [ "$1" == "container" ]; then
     samba_exporter="/samba_exporter/samba_exporter"
@@ -81,10 +82,15 @@ assert_raises "$samba_exporter -version | grep Version: &> /dev/null" 0
 assert_raises "$samba_statusd -help | grep \"Usage: \" &> /dev/null" 0
 assert_raises "$samba_exporter -help | grep \"Usage: \" &> /dev/null" 0
 
-if [ -p "$pipe_file" ]; then
-    echo "Delete $pipe_file"
-    rm "$pipe_file"
+if [ -p "$request_pipe_file" ]; then
+    echo "Delete $request_pipe_file"
+    rm "$request_pipe_file"
 fi
+if [ -p "$response_pipe_file" ]; then
+    echo "Delete $response_pipe_file"
+    rm "$response_pipe_file"
+fi
+
 
 # Start samba_statusd as daemon
 $samba_statusd -test-mode -verbose &

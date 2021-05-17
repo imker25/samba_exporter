@@ -14,21 +14,31 @@ import (
 	"syscall"
 )
 
-const testPipeFileName = "samba_exporter.pipe"
+type PipeTypeT string
+
+const requestPipeFileName = "samba_exporter.request.pipe"
+const responsePipeFileName = "samba_exporter.response.pipe"
 const pipePath = "/run"
 const testPipePath = "/dev/shm"
 const pipePermission = 0660
 const endByte byte = 0
 
+const (
+	RequestPipe PipeTypeT = "REQUEST_PIPE"
+	ResposePipe PipeTypeT = "RESPONSE_PIPE"
+)
+
 // PipeHandler - Type to handle the pipe for comunication between samba_exporter and samba_statusd
 type PipeHandler struct {
 	TestMode bool
+	PipeType PipeTypeT
 }
 
 // NewPipeHandler - Get a new instance of the PipeHandler type
-func NewPipeHandler(testMode bool) *PipeHandler {
+func NewPipeHandler(testMode bool, pipeType PipeTypeT) *PipeHandler {
 	retVal := PipeHandler{}
 	retVal.TestMode = testMode
+	retVal.PipeType = pipeType
 
 	return &retVal
 }
@@ -42,7 +52,14 @@ func (handler *PipeHandler) GetPipeFilePath() string {
 		dirname = pipePath
 	}
 
-	return fmt.Sprintf("%s/%s", dirname, testPipeFileName)
+	var pipeFileName string
+	if handler.PipeType == RequestPipe {
+		pipeFileName = requestPipeFileName
+	} else {
+		pipeFileName = responsePipeFileName
+	}
+
+	return fmt.Sprintf("%s/%s", dirname, pipeFileName)
 }
 
 // PipeExists - Check if the named pipe files for this application exists

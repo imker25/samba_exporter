@@ -18,16 +18,23 @@ var flushed bool
 var mux sync.Mutex
 
 func TestNewPipeHandler(t *testing.T) {
-	handler := NewPipeHandler(false)
+	handler := NewPipeHandler(false, RequestPipe)
 
 	path := handler.GetPipeFilePath()
-	if path != "/run/samba_exporter.pipe" {
+	if path != "/run/samba_exporter.request.pipe" {
+		t.Errorf("GetPipeFilePath() has not the expected value")
+	}
+
+	handler = NewPipeHandler(false, ResposePipe)
+
+	path = handler.GetPipeFilePath()
+	if path != "/run/samba_exporter.response.pipe" {
 		t.Errorf("GetPipeFilePath() has not the expected value")
 	}
 }
 
 func TestGetPipeFilePath(t *testing.T) {
-	handler := NewPipeHandler(true)
+	handler := NewPipeHandler(true, RequestPipe)
 	path := handler.GetPipeFilePath()
 
 	if path == "" {
@@ -36,7 +43,7 @@ func TestGetPipeFilePath(t *testing.T) {
 }
 
 func TestPipeFileExists(t *testing.T) {
-	handler := NewPipeHandler(true)
+	handler := NewPipeHandler(true, RequestPipe)
 
 	os.Remove(handler.GetPipeFilePath())
 	if handler.PipeExists() == true {
@@ -51,7 +58,7 @@ func TestPipeFileExists(t *testing.T) {
 }
 
 func TestGetWriterPipe(t *testing.T) {
-	handler := NewPipeHandler(true)
+	handler := NewPipeHandler(true, RequestPipe)
 	defer os.Remove(handler.GetPipeFilePath())
 
 	writer, err := handler.GetWriterPipe()
@@ -66,7 +73,7 @@ func TestGetWriterPipe(t *testing.T) {
 }
 
 func TestGetWriterPipeTwoTimes(t *testing.T) {
-	handler := NewPipeHandler(true)
+	handler := NewPipeHandler(true, RequestPipe)
 	defer os.Remove(handler.GetPipeFilePath())
 
 	writer1, err1 := handler.GetWriterPipe()
@@ -90,7 +97,7 @@ func TestGetWriterPipeTwoTimes(t *testing.T) {
 }
 
 func TestReadWriteData(t *testing.T) {
-	handler := NewPipeHandler(true)
+	handler := NewPipeHandler(true, RequestPipe)
 	defer os.Remove(handler.GetPipeFilePath())
 	mux.Lock()
 	go scheduleWriter(t)
@@ -110,7 +117,7 @@ func TestReadWriteData(t *testing.T) {
 }
 
 func TestReadWriteStringData(t *testing.T) {
-	handler := NewPipeHandler(true)
+	handler := NewPipeHandler(true, RequestPipe)
 	defer os.Remove(handler.GetPipeFilePath())
 	mux.Lock()
 	go scheduleStringWriter(t)
@@ -128,7 +135,7 @@ func TestReadWriteStringData(t *testing.T) {
 }
 
 func TestReadWriteStringDataReuse(t *testing.T) {
-	handler := NewPipeHandler(true)
+	handler := NewPipeHandler(true, RequestPipe)
 	defer os.Remove(handler.GetPipeFilePath())
 	mux.Lock()
 	go scheduleStringWriter(t)
@@ -162,7 +169,7 @@ func TestReadWriteStringDataReuse(t *testing.T) {
 func scheduleWriter(t *testing.T) {
 	defer mux.Unlock()
 
-	handler := NewPipeHandler(true)
+	handler := NewPipeHandler(true, RequestPipe)
 	err := handler.WritePipeBytes(testData)
 	if err != nil {
 		t.Fatalf("Got error \"%s\" but expected none", err)
@@ -172,7 +179,7 @@ func scheduleWriter(t *testing.T) {
 func scheduleStringWriter(t *testing.T) {
 	defer mux.Unlock()
 
-	handler := NewPipeHandler(true)
+	handler := NewPipeHandler(true, RequestPipe)
 	err := handler.WritePipeString(testDataString)
 	if err != nil {
 		t.Fatalf("Got error \"%s\" but expected none", err)

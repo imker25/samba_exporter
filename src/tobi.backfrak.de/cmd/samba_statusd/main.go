@@ -29,7 +29,8 @@ type response func(commonbl.PipeHandler, int) error
 
 func main() {
 	handleComandlineOptions()
-	pipeHandler := *commonbl.NewPipeHandler(params.Test)
+	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
+	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
 	if params.Verbose {
 		args := ""
 		for _, arg := range os.Args {
@@ -39,7 +40,8 @@ func main() {
 		if !params.PrintVersion {
 			printVersion()
 		}
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("Use named pipe: %s", pipeHandler.GetPipeFilePath()))
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Named pipe for requests: %s", requestHandler.GetPipeFilePath()))
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Named pipe for response: %s", responseHandler.GetPipeFilePath()))
 	}
 
 	if params.PrintVersion {
@@ -58,7 +60,7 @@ func main() {
 
 	// Wait for pipe input and process it in an infinite loop
 	for {
-		received, errRecv := pipeHandler.WaitForPipeInputString()
+		received, errRecv := requestHandler.WaitForPipeInputString()
 		if errRecv != nil {
 			fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while receive data from the pipe: %s", errRecv))
 			os.Exit(-1)
@@ -66,11 +68,11 @@ func main() {
 
 		var err error = nil
 		if strings.HasPrefix(received, commonbl.PROCESS_REQUEST) {
-			err = handleRequest(pipeHandler, received, commonbl.PROCESS_REQUEST, processResponse, testProcessResponse)
+			err = handleRequest(responseHandler, received, commonbl.PROCESS_REQUEST, processResponse, testProcessResponse)
 		} else if strings.HasPrefix(received, commonbl.SERVICE_REQUEST) {
-			err = handleRequest(pipeHandler, received, commonbl.SERVICE_REQUEST, serviceResponse, testServiceResponse)
+			err = handleRequest(responseHandler, received, commonbl.SERVICE_REQUEST, serviceResponse, testServiceResponse)
 		} else if strings.HasPrefix(received, commonbl.LOCK_REQUEST) {
-			err = handleRequest(pipeHandler, received, commonbl.LOCK_REQUEST, lockResponse, testLockResponse)
+			err = handleRequest(responseHandler, received, commonbl.LOCK_REQUEST, lockResponse, testLockResponse)
 		}
 
 		if err != nil {
