@@ -126,15 +126,24 @@ func processResponse(handler commonbl.PipeHandler, id int) error {
 }
 
 func testProcessResponse(handler commonbl.PipeHandler, id int) error {
-	return handler.WritePipeString(fmt.Sprintf("%s Test Response for request %d", commonbl.PROCESS_REQUEST, id))
+	header := fmt.Sprintf("%s Test Response for request %d", commonbl.PROCESS_REQUEST, id)
+	response := fmt.Sprintf("%s\n%s", header, commonbl.TestProcessResponse)
+
+	return handler.WritePipeString(response)
 }
 
 func testServiceResponse(handler commonbl.PipeHandler, id int) error {
-	return handler.WritePipeString(fmt.Sprintf("%s Test Response for request %d", commonbl.SERVICE_REQUEST, id))
+	header := fmt.Sprintf("%s Test Response for request %d", commonbl.SERVICE_REQUEST, id)
+	response := fmt.Sprintf("%s\n%s", header, commonbl.TestServiceResponse)
+
+	return handler.WritePipeString(response)
 }
 
 func testLockResponse(handler commonbl.PipeHandler, id int) error {
-	return handler.WritePipeString(fmt.Sprintf("%s Test Response for request %d", commonbl.LOCK_REQUEST, id))
+	header := fmt.Sprintf("%s Test Response for request %d", commonbl.LOCK_REQUEST, id)
+	response := fmt.Sprintf("%s\n%s", header, commonbl.TestLockResponse)
+
+	return handler.WritePipeString(response)
 }
 
 func getIdFromRequest(request string) (int, error) {

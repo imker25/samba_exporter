@@ -123,8 +123,12 @@ func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commo
 		return "", errRead
 	}
 
-	if !strings.Contains(response, request) &&
-		!strings.Contains(response, fmt.Sprintf("Response for request %d", requestCount)) {
+	splitResponse := strings.SplitN(response, "\n", 2)
+	header := splitResponse[0]
+	response = splitResponse[1]
+
+	if !strings.Contains(header, request) &&
+		!strings.Contains(header, fmt.Sprintf("Response for request %d", requestCount)) {
 		return "", commonbl.NewReaderError(response)
 	}
 
