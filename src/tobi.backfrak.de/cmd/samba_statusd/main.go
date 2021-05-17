@@ -64,12 +64,18 @@ func main() {
 			os.Exit(-1)
 		}
 
+		var err error = nil
 		if strings.HasPrefix(received, commonbl.PROCESS_REQUEST) {
-			handleRequest(pipeHandler, received, commonbl.PROCESS_REQUEST, processResponse, testProcessResponse)
+			err = handleRequest(pipeHandler, received, commonbl.PROCESS_REQUEST, processResponse, testProcessResponse)
 		} else if strings.HasPrefix(received, commonbl.SERVICE_REQUEST) {
-			handleRequest(pipeHandler, received, commonbl.SERVICE_REQUEST, serviceResponse, testServiceResponse)
+			err = handleRequest(pipeHandler, received, commonbl.SERVICE_REQUEST, serviceResponse, testServiceResponse)
 		} else if strings.HasPrefix(received, commonbl.LOCK_REQUEST) {
-			handleRequest(pipeHandler, received, commonbl.LOCK_REQUEST, lockResponse, testLockResponse)
+			err = handleRequest(pipeHandler, received, commonbl.LOCK_REQUEST, lockResponse, testLockResponse)
+		}
+
+		if err != nil {
+			fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while handle request \"%s\": %s", received, err))
+			os.Exit(-2)
 		}
 
 		time.Sleep(time.Millisecond)
@@ -77,10 +83,10 @@ func main() {
 
 }
 
-func handleRequest(handler commonbl.PipeHandler, request string, requestType string, productiveFunc response, testFunc response) {
+func handleRequest(handler commonbl.PipeHandler, request string, requestType string, productiveFunc response, testFunc response) error {
 	id, errConv := getIdFromRequest(request)
 	if errConv != nil {
-		return // In case we cant find an ID, we simply ingnor the request as any other invalid input
+		return nil // In case we cant find an ID, we simply ingnor the request as any other invalid input
 	}
 	if params.Verbose {
 		fmt.Fprintln(os.Stdout, fmt.Sprintf("Handle \"%s\" with id %d", requestType, id))
@@ -93,32 +99,28 @@ func handleRequest(handler commonbl.PipeHandler, request string, requestType str
 		writeErr = testFunc(handler, id)
 	}
 	if writeErr != nil {
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while write \"%s\" response to pipe: %s", requestType, writeErr))
-		os.Exit(-1)
+		return writeErr
 	}
 
-	return
+	return nil
 }
 
 func lockResponse(handler commonbl.PipeHandler, id int) error {
 	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
-	os.Exit(-2)
 
-	return nil
+	return &strconv.NumError{}
 }
 
 func serviceResponse(handler commonbl.PipeHandler, id int) error {
 	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
-	os.Exit(-2)
 
-	return nil
+	return &strconv.NumError{}
 }
 
 func processResponse(handler commonbl.PipeHandler, id int) error {
 	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
-	os.Exit(-2)
 
-	return nil
+	return &strconv.NumError{}
 }
 
 func testProcessResponse(handler commonbl.PipeHandler, id int) error {
