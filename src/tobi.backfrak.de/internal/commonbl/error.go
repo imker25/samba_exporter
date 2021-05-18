@@ -38,3 +38,35 @@ func (e *WriterError) Error() string { // Implement the Error Interface for the 
 func NewWriterError(data string) *WriterError {
 	return &WriterError{fmt.Sprintf("The data \"%s\" was not written", data), data}
 }
+
+// UnexpectedRequestFormatError - Error when trying to read an unexpected request format
+type UnexpectedRequestFormatError struct {
+	err string
+	// Data causing the error
+	Request string
+}
+
+func (e *UnexpectedRequestFormatError) Error() string { // Implement the Error Interface for the UnexpectedRequestFormatError struct
+	return fmt.Sprintf("Error: %s", e.err)
+}
+
+// NewUnexpectedRequestFormatError- Get a new UnexpectedRequestFormatError struct
+func NewUnexpectedRequestFormatError(request string) *UnexpectedRequestFormatError {
+	return &UnexpectedRequestFormatError{fmt.Sprintf("The request \"%s\" was not expected or in wrong format", request), request}
+}
+
+// UnexpectedResponseFormatError - Error when trying to read an unexpected request format
+type UnexpectedResponseFormatError struct {
+	err string
+	// Data causing the error
+	Response string
+}
+
+func (e *UnexpectedResponseFormatError) Error() string { // Implement the Error Interface for the UnexpectedResponseFormatError struct
+	return fmt.Sprintf("Error: %s", e.err)
+}
+
+// UnexpectedResponseFormatError- Get a new UnexpectedRequestFormatError struct
+func NewUnexpectedResponseFormatError(response string) *UnexpectedResponseFormatError {
+	return &UnexpectedResponseFormatError{fmt.Sprintf("The response \"%s\" was not expected or in wrong format", response), response}
+}

@@ -67,11 +67,11 @@ func main() {
 		}
 
 		var err error = nil
-		if strings.HasPrefix(received, commonbl.PROCESS_REQUEST) {
+		if strings.HasPrefix(received, string(commonbl.PROCESS_REQUEST)) {
 			err = handleRequest(responseHandler, received, commonbl.PROCESS_REQUEST, processResponse, testProcessResponse)
-		} else if strings.HasPrefix(received, commonbl.SERVICE_REQUEST) {
+		} else if strings.HasPrefix(received, string(commonbl.SERVICE_REQUEST)) {
 			err = handleRequest(responseHandler, received, commonbl.SERVICE_REQUEST, serviceResponse, testServiceResponse)
-		} else if strings.HasPrefix(received, commonbl.LOCK_REQUEST) {
+		} else if strings.HasPrefix(received, string(commonbl.LOCK_REQUEST)) {
 			err = handleRequest(responseHandler, received, commonbl.LOCK_REQUEST, lockResponse, testLockResponse)
 		}
 
@@ -85,8 +85,8 @@ func main() {
 
 }
 
-func handleRequest(handler commonbl.PipeHandler, request string, requestType string, productiveFunc response, testFunc response) error {
-	id, errConv := getIdFromRequest(request)
+func handleRequest(handler commonbl.PipeHandler, request string, requestType commonbl.RequestType, productiveFunc response, testFunc response) error {
+	id, errConv := commonbl.GetIdFromRequest(request)
 	if errConv != nil {
 		return nil // In case we cant find an ID, we simply ingnor the request as any other invalid input
 	}
@@ -126,40 +126,24 @@ func processResponse(handler commonbl.PipeHandler, id int) error {
 }
 
 func testProcessResponse(handler commonbl.PipeHandler, id int) error {
-	header := fmt.Sprintf("%s Test Response for request %d", commonbl.PROCESS_REQUEST, id)
-	response := fmt.Sprintf("%s\n%s", header, commonbl.TestProcessResponse)
+	header := commonbl.GetTestResponseHeader(commonbl.PROCESS_REQUEST, id)
+	response := commonbl.GetResponse(header, commonbl.TestProcessResponse)
 
 	return handler.WritePipeString(response)
 }
 
 func testServiceResponse(handler commonbl.PipeHandler, id int) error {
-	header := fmt.Sprintf("%s Test Response for request %d", commonbl.SERVICE_REQUEST, id)
-	response := fmt.Sprintf("%s\n%s", header, commonbl.TestServiceResponse)
+	header := commonbl.GetTestResponseHeader(commonbl.SERVICE_REQUEST, id)
+	response := commonbl.GetResponse(header, commonbl.TestServiceResponse)
 
 	return handler.WritePipeString(response)
 }
 
 func testLockResponse(handler commonbl.PipeHandler, id int) error {
-	header := fmt.Sprintf("%s Test Response for request %d", commonbl.LOCK_REQUEST, id)
-	response := fmt.Sprintf("%s\n%s", header, commonbl.TestLockResponse)
+	header := commonbl.GetTestResponseHeader(commonbl.LOCK_REQUEST, id)
+	response := commonbl.GetResponse(header, commonbl.TestLockResponse)
 
 	return handler.WritePipeString(response)
-}
-
-func getIdFromRequest(request string) (int, error) {
-	splitted := strings.Split(request, ":")
-
-	if len(splitted) != 2 {
-		return 0, &strconv.NumError{}
-	}
-
-	idStr := strings.TrimSpace(splitted[1])
-	id, errConv := strconv.Atoi(idStr)
-	if errConv != nil {
-		return 0, &strconv.NumError{}
-	}
-
-	return id, nil
 }
 
 func waitforKillSignalAndExit() {

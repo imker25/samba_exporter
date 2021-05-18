@@ -8,13 +8,15 @@ package main
 import (
 	"strings"
 	"testing"
+
+	"tobi.backfrak.de/internal/commonbl"
 )
 
 func TestSmbStatusTimeOutError(t *testing.T) {
 	path := "/some/sample/path"
-	err := NewSmbStatusTimeOutError(path)
+	err := NewSmbStatusTimeOutError(commonbl.RequestType(path))
 
-	if err.Request != path {
+	if string(err.Request) != path {
 		t.Errorf("The File was %s, but %s was expected", err.Request, path)
 	}
 

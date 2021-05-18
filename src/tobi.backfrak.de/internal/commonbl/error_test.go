@@ -35,3 +35,16 @@ func TestWriterError(t *testing.T) {
 		t.Errorf("The error message of WriterError does not contain the expected data")
 	}
 }
+
+func TestUnexpectedRequestFormatError(t *testing.T) {
+	path := "/some/sample/path"
+	err := NewUnexpectedRequestFormatError(path)
+
+	if err.Request != path {
+		t.Errorf("The File was %s, but %s was expected", err.Request, path)
+	}
+
+	if strings.Contains(err.Error(), path) == false {
+		t.Errorf("The error message of WriterError does not contain the expected data")
+	}
+}

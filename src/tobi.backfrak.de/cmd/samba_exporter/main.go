@@ -9,7 +9,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strings"
 	"time"
 
 	"tobi.backfrak.de/internal/commonbl"
@@ -79,7 +78,7 @@ func main() {
 	os.Exit(0)
 }
 
-func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request string) (string, error) {
+func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType) (string, error) {
 	c := make(chan SmbResponse, 1)
 	var data string
 	go goGetSmbStatusData(requestHandler, responseHandler, request, c)
@@ -97,7 +96,7 @@ func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandle
 	return data, nil
 }
 
-func goGetSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request string, c chan SmbResponse) {
+func goGetSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType, c chan SmbResponse) {
 	retStr, err := getSmbStatusData(requestHandler, responseHandler, request)
 
 	ret := SmbResponse{retStr, err}
@@ -105,9 +104,9 @@ func goGetSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler com
 	c <- ret
 }
 
-func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request string) (string, error) {
+func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType) (string, error) {
 	requestCount++
-	requestString := fmt.Sprintf("%s %d", request, requestCount)
+	requestString := commonbl.GetRequest(request, requestCount)
 	errWrite := requestHandler.WritePipeString(requestString)
 	if errWrite != nil {
 		return "", errWrite
@@ -123,16 +122,16 @@ func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commo
 		return "", errRead
 	}
 
-	splitResponse := strings.SplitN(response, "\n", 2)
-	header := splitResponse[0]
-	response = splitResponse[1]
+	header, data, errSplit := commonbl.SplitResponse(response)
+	if errSplit != nil {
+		return "", errSplit
+	}
 
-	if !strings.Contains(header, request) &&
-		!strings.Contains(header, fmt.Sprintf("Response for request %d", requestCount)) {
+	if !commonbl.CheckResponseHeader(header, request, requestCount) {
 		return "", commonbl.NewReaderError(response)
 	}
 
-	return response, nil
+	return data, nil
 }
 
 // Prints the version string
