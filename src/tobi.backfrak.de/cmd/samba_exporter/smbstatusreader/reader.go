@@ -6,6 +6,7 @@ package smbstatusreader
 // LICENSE file.
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -22,6 +23,12 @@ type LockData struct {
 	SharePath  string
 	Name       string
 	Time       time.Time
+}
+
+func (lockData LockData) String() string {
+	return fmt.Sprintf("PID: %d; UserID: %d; DenyMode: %s; Access: %s; AccessMode: %s; Oplock: %s; SharePath: %s; Name: %s: Time %s;",
+		lockData.PID, lockData.UserID, lockData.DenyMode, lockData.Access, lockData.AccessMode, lockData.Oplock,
+		lockData.SharePath, lockData.Name, lockData.Time.Format(time.RFC3339))
 }
 
 // GetLockData - Get the entries out of the 'smbstatus -L' output table multiline string

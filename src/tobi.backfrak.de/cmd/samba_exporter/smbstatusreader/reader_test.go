@@ -11,11 +11,25 @@ package smbstatusreader
 // LICENSE file.
 
 import (
+	"strings"
 	"testing"
 	"time"
 
 	"tobi.backfrak.de/internal/smbstatusout"
 )
+
+func TestStringer(t *testing.T) {
+	oneLock := GetLockData(smbstatusout.LockDataOneLine)[0]
+
+	lockStr := oneLock.String()
+	if strings.Contains(lockStr, "UserID: 1080;") == false {
+		t.Errorf("The string does not contain the expected sub string")
+	}
+
+	if strings.Contains(lockStr, "SharePath: /usr/share/data;") == false {
+		t.Errorf("The string does not contain the expected sub string")
+	}
+}
 
 func TestGetLockDataOneLine(t *testing.T) {
 	oneEntry := GetLockData(smbstatusout.LockDataOneLine)

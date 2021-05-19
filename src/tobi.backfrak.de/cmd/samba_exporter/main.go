@@ -11,6 +11,7 @@ import (
 	"os"
 	"time"
 
+	"tobi.backfrak.de/cmd/samba_exporter/smbstatusreader"
 	"tobi.backfrak.de/internal/commonbl"
 )
 
@@ -72,7 +73,11 @@ func main() {
 	if errGet != nil {
 		fmt.Fprintln(os.Stderr, errGet)
 	} else {
-		fmt.Fprintln(os.Stdout, res)
+		locks := smbstatusreader.GetLockData(res)
+		if len(locks) != 1 {
+			fmt.Fprintln(os.Stderr, "Got an unexpected response")
+		}
+		fmt.Fprintln(os.Stdout, locks[0].String())
 	}
 
 	os.Exit(0)
