@@ -25,6 +25,7 @@ type LockData struct {
 }
 
 // GetLockData - Get the entries out of the 'smbstatus -L' output table multiline string
+// Will return an empty array if the data is in unexpected format
 func GetLockData(data string) []LockData {
 	var ret []LockData
 
