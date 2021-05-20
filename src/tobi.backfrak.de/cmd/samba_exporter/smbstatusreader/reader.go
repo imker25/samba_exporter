@@ -43,7 +43,7 @@ func GetLockData(data string) []LockData {
 		return ret
 	}
 
-	tableHeaderMatrix := getFieldMatrix(lines[sepLineIndex-1:sepLineIndex], 9)
+	tableHeaderMatrix := getFieldMatrix(lines[sepLineIndex-1:sepLineIndex], "  ", 9)
 	if len(tableHeaderMatrix) != 1 {
 		return ret
 	}
@@ -53,7 +53,7 @@ func GetLockData(data string) []LockData {
 		return ret
 	}
 
-	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], 9) {
+	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], "  ", 9) {
 
 		var entry LockData
 		entry.PID, _ = strconv.Atoi(fields[0])
@@ -72,12 +72,28 @@ func GetLockData(data string) []LockData {
 	return ret
 }
 
-func getFieldMatrix(dataLines []string, lineFields int) [][]string {
+// Type to represent a entry in the 'smbstatus -S' output table
+type ServiceData struct {
+	Service     string
+	PID         int
+	Machine     string
+	ConnectedAt time.Time
+	Encryption  string
+	Signing     string
+}
+
+func (serviceData ServiceData) String() string {
+	return fmt.Sprintf("Service: %s; PID: %d; Machine: %s; ConnectedAt: %s; Encryption: %s; Signing: %s;",
+		serviceData.Service, serviceData.PID, serviceData.Machine, serviceData.ConnectedAt.Format(time.RFC3339),
+		serviceData.Encryption, serviceData.Signing)
+}
+
+func getFieldMatrix(dataLines []string, seperator string, lineFields int) [][]string {
 
 	var fieldMatrix [][]string
 
 	for _, line := range dataLines {
-		fields := strings.Split(line, "  ")
+		fields := strings.Split(line, seperator)
 		var matrixLine []string
 		for _, field := range fields {
 			trimmedField := strings.TrimSpace(field)
