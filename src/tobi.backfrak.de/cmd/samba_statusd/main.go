@@ -70,7 +70,7 @@ func main() {
 		if strings.HasPrefix(received, string(commonbl.PROCESS_REQUEST)) {
 			err = handleRequest(responseHandler, received, commonbl.PROCESS_REQUEST, processResponse, testProcessResponse)
 		} else if strings.HasPrefix(received, string(commonbl.SHARE_REQUEST)) {
-			err = handleRequest(responseHandler, received, commonbl.SHARE_REQUEST, serviceResponse, testServiceResponse)
+			err = handleRequest(responseHandler, received, commonbl.SHARE_REQUEST, shareResponse, testShareResponse)
 		} else if strings.HasPrefix(received, string(commonbl.LOCK_REQUEST)) {
 			err = handleRequest(responseHandler, received, commonbl.LOCK_REQUEST, lockResponse, testLockResponse)
 		}
@@ -113,7 +113,7 @@ func lockResponse(handler commonbl.PipeHandler, id int) error {
 	return &strconv.NumError{}
 }
 
-func serviceResponse(handler commonbl.PipeHandler, id int) error {
+func shareResponse(handler commonbl.PipeHandler, id int) error {
 	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
 
 	return &strconv.NumError{}
@@ -132,9 +132,9 @@ func testProcessResponse(handler commonbl.PipeHandler, id int) error {
 	return handler.WritePipeString(response)
 }
 
-func testServiceResponse(handler commonbl.PipeHandler, id int) error {
+func testShareResponse(handler commonbl.PipeHandler, id int) error {
 	header := commonbl.GetTestResponseHeader(commonbl.SHARE_REQUEST, id)
-	response := commonbl.GetResponse(header, commonbl.TestServiceResponse)
+	response := commonbl.GetResponse(header, commonbl.TestShareResponse)
 
 	return handler.WritePipeString(response)
 }
