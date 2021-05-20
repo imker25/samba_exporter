@@ -63,7 +63,7 @@ func main() {
 	} else {
 		fmt.Fprintln(os.Stdout, res)
 	}
-	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SERVICE_REQUEST)
+	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SHARE_REQUEST)
 	if errGet != nil {
 		fmt.Fprintln(os.Stderr, errGet)
 	} else {

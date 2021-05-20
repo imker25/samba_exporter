@@ -111,7 +111,7 @@ func TestGetResponse(t *testing.T) {
 
 func TestSplitResponse(t *testing.T) {
 
-	response := fmt.Sprintf("%s Response for id my data is hot or not", SERVICE_REQUEST)
+	response := fmt.Sprintf("%s Response for id my data is hot or not", SHARE_REQUEST)
 
 	header, data, err := SplitResponse(response)
 

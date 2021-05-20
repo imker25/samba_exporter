@@ -17,7 +17,7 @@ type RequestType string
 const PROCESS_REQUEST RequestType = "PROCESS_REQUEST:"
 
 // Request the smbd services report table
-const SERVICE_REQUEST RequestType = "SERVICE_REQUEST:"
+const SHARE_REQUEST RequestType = "SHARE_REQUEST:"
 
 // Request the smbd table of locked files
 const LOCK_REQUEST RequestType = "LOCK_REQUEST:"

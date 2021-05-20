@@ -69,8 +69,8 @@ func main() {
 		var err error = nil
 		if strings.HasPrefix(received, string(commonbl.PROCESS_REQUEST)) {
 			err = handleRequest(responseHandler, received, commonbl.PROCESS_REQUEST, processResponse, testProcessResponse)
-		} else if strings.HasPrefix(received, string(commonbl.SERVICE_REQUEST)) {
-			err = handleRequest(responseHandler, received, commonbl.SERVICE_REQUEST, serviceResponse, testServiceResponse)
+		} else if strings.HasPrefix(received, string(commonbl.SHARE_REQUEST)) {
+			err = handleRequest(responseHandler, received, commonbl.SHARE_REQUEST, serviceResponse, testServiceResponse)
 		} else if strings.HasPrefix(received, string(commonbl.LOCK_REQUEST)) {
 			err = handleRequest(responseHandler, received, commonbl.LOCK_REQUEST, lockResponse, testLockResponse)
 		}
@@ -133,7 +133,7 @@ func testProcessResponse(handler commonbl.PipeHandler, id int) error {
 }
 
 func testServiceResponse(handler commonbl.PipeHandler, id int) error {
-	header := commonbl.GetTestResponseHeader(commonbl.SERVICE_REQUEST, id)
+	header := commonbl.GetTestResponseHeader(commonbl.SHARE_REQUEST, id)
 	response := commonbl.GetResponse(header, commonbl.TestServiceResponse)
 
 	return handler.WritePipeString(response)

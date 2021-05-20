@@ -73,7 +73,7 @@ func GetLockData(data string) []LockData {
 }
 
 // Type to represent a entry in the 'smbstatus -S' output table
-type ServiceData struct {
+type ShareData struct {
 	Service     string
 	PID         int
 	Machine     string
@@ -82,10 +82,10 @@ type ServiceData struct {
 	Signing     string
 }
 
-func (serviceData ServiceData) String() string {
+func (shareData ShareData) String() string {
 	return fmt.Sprintf("Service: %s; PID: %d; Machine: %s; ConnectedAt: %s; Encryption: %s; Signing: %s;",
-		serviceData.Service, serviceData.PID, serviceData.Machine, serviceData.ConnectedAt.Format(time.RFC3339),
-		serviceData.Encryption, serviceData.Signing)
+		shareData.Service, shareData.PID, shareData.Machine, shareData.ConnectedAt.Format(time.RFC3339),
+		shareData.Encryption, shareData.Signing)
 }
 
 func getFieldMatrix(dataLines []string, seperator string, lineFields int) [][]string {
