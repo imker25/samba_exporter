@@ -53,18 +53,27 @@ func GetLockData(data string) []LockData {
 		return ret
 	}
 
-	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], "  ", 9) {
-
+	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], " ", 13) {
+		var err error
 		var entry LockData
-		entry.PID, _ = strconv.Atoi(fields[0])
-		entry.UserID, _ = strconv.Atoi(fields[1])
+		entry.PID, err = strconv.Atoi(fields[0])
+		if err != nil {
+			continue
+		}
+		entry.UserID, err = strconv.Atoi(fields[1])
+		if err != nil {
+			continue
+		}
 		entry.DenyMode = fields[2]
 		entry.Access = fields[3]
 		entry.AccessMode = fields[4]
 		entry.Oplock = fields[5]
 		entry.SharePath = fields[6]
 		entry.Name = fields[7]
-		entry.Time, _ = time.Parse(time.ANSIC, fields[8])
+		entry.Time, err = time.Parse(time.ANSIC, fmt.Sprintf("%s %s %s %s %s", fields[8], fields[9], fields[10], fields[11], fields[12]))
+		if err != nil {
+			continue
+		}
 
 		ret = append(ret, entry)
 	}
