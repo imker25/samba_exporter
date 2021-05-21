@@ -107,7 +107,7 @@ echo "# ###################################################################"
 assert_raises "$samba_exporter -test-mode" 0
 assert_raises "$samba_exporter -test-mode -verbose" 0
 
-assert_raises "$samba_exporter -test-mode -verbose | grep \"192.168.1.242\"" 0
+assert_raises "$samba_exporter -test-mode -verbose | grep \"PID: 1117; UserID: 1080; Group: ssl-cert; Machine: 192.168.1.242 (ipv4:192.168.1.242:42296); ProtocolVersion: SMB3_11; Encryption: -; Signing: partial(AES-128-CMAC);\"" 0
 sleep 0.1
 assert_raises "$samba_exporter -test-mode -verbose | grep \"Service: IPC$; PID: 1119; Machine: 192.168.1.242; ConnectedAt: 2021-05-16T11:55:36\"" 0
 sleep 0.1

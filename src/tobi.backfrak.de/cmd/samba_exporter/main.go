@@ -61,7 +61,11 @@ func main() {
 	if errGet != nil {
 		fmt.Fprintln(os.Stderr, errGet)
 	} else {
-		fmt.Fprintln(os.Stdout, res)
+		processes := smbstatusreader.GetProcessData(res)
+		if len(processes) != 1 {
+			fmt.Fprintln(os.Stderr, "Got an unexpected Process response")
+		}
+		fmt.Fprintln(os.Stdout, processes[0].String())
 	}
 	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SHARE_REQUEST)
 	if errGet != nil {

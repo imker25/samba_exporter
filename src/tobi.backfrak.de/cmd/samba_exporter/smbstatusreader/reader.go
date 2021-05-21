@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// Type to represent a entry in the 'smbstatus -L' output table
+// Type to represent a entry in the 'smbstatus -L -n' output table
 type LockData struct {
 	PID        int
 	UserID     int
@@ -32,7 +32,7 @@ func (lockData LockData) String() string {
 		lockData.SharePath, lockData.Name, lockData.Time.Format(time.RFC3339))
 }
 
-// GetLockData - Get the entries out of the 'smbstatus -L' output table multiline string
+// GetLockData - Get the entries out of the 'smbstatus -L -n' output table multiline string
 // Will return an empty array if the data is in unexpected format
 func GetLockData(data string) []LockData {
 	var ret []LockData
@@ -50,7 +50,7 @@ func GetLockData(data string) []LockData {
 	}
 	tableHeaderFields := tableHeaderMatrix[0]
 
-	if tableHeaderFields[0] != "Pid" && tableHeaderFields[5] != "Oplock" {
+	if tableHeaderFields[0] != "Pid" || tableHeaderFields[5] != "Oplock" {
 		return ret
 	}
 
@@ -82,7 +82,7 @@ func GetLockData(data string) []LockData {
 	return ret
 }
 
-// Type to represent a entry in the 'smbstatus -S' output table
+// Type to represent a entry in the 'smbstatus -S -n' output table
 type ShareData struct {
 	Service     string
 	PID         int
@@ -99,7 +99,7 @@ func (shareData ShareData) String() string {
 		shareData.Encryption, shareData.Signing)
 }
 
-// GetShareData - Get the entries out of the 'smbstatus -S' output table multiline string
+// GetShareData - Get the entries out of the 'smbstatus -S -n' output table multiline string
 // Will return an empty array if the data is in unexpected format
 func GetShareData(data string) []ShareData {
 	var ret []ShareData
@@ -116,7 +116,7 @@ func GetShareData(data string) []ShareData {
 	}
 	tableHeaderFields := tableHeaderMatrix[0]
 
-	if tableHeaderFields[0] != "Service" && tableHeaderFields[3] != "Connected at" {
+	if tableHeaderFields[0] != "Service" || tableHeaderFields[3] != "Connected at" {
 		return ret
 	}
 
@@ -136,6 +136,67 @@ func GetShareData(data string) []ShareData {
 		}
 		entry.Encryption = fields[10]
 		entry.Signing = fields[11]
+
+		ret = append(ret, entry)
+	}
+	return ret
+}
+
+// Type to represent a entry in the 'smbstatus -p -n' output table
+type ProcessData struct {
+	PID             int
+	UserID          int
+	Group           string
+	Machine         string
+	ProtocolVersion string
+	Encryption      string
+	Signing         string
+}
+
+// Implement Stringer Interface for ProcessData
+func (processData ProcessData) String() string {
+	return fmt.Sprintf("PID: %d; UserID: %d; Group: %s; Machine: %s; ProtocolVersion: %s; Encryption: %s; Signing: %s;",
+		processData.PID, processData.UserID, processData.Group, processData.Machine, processData.ProtocolVersion,
+		processData.Encryption, processData.Signing)
+}
+
+// GetProcessData - Get the entries out of the 'smbstatus -p -n' output table multiline string
+// Will return an empty array if the data is in unexpected format
+func GetProcessData(data string) []ProcessData {
+	var ret []ProcessData
+	lines := strings.Split(data, "\n")
+	sepLineIndex := findSeperatorLineIndex(lines)
+
+	if sepLineIndex < 0 {
+		return ret
+	}
+
+	tableHeaderMatrix := getFieldMatrix(lines[sepLineIndex-1:sepLineIndex], "  ", 7)
+	if len(tableHeaderMatrix) != 1 {
+		return ret
+	}
+	tableHeaderFields := tableHeaderMatrix[0]
+
+	if tableHeaderFields[1] != "Username" || tableHeaderFields[4] != "Protocol Version" {
+		return ret
+	}
+
+	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], " ", 8) {
+		var err error
+		var entry ProcessData
+		entry.PID, err = strconv.Atoi(fields[0])
+		if err != nil {
+			continue
+		}
+		entry.UserID, err = strconv.Atoi(fields[1])
+		if err != nil {
+			continue
+		}
+		entry.Group = fields[2]
+		entry.Machine = fmt.Sprintf("%s %s", fields[3], fields[4])
+		entry.ProtocolVersion = fields[5]
+		entry.Encryption = fields[6]
+		entry.Signing = fields[7]
 
 		ret = append(ret, entry)
 	}

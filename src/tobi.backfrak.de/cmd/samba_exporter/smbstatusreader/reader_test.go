@@ -46,6 +46,20 @@ func TestStringerShareData(t *testing.T) {
 
 }
 
+func TestStringerProcessData(t *testing.T) {
+	oneProcess := GetProcessData(smbstatusout.ProcessDataOneLine)[0]
+
+	shareStr := oneProcess.String()
+	if strings.Contains(shareStr, "PID: 1117;") == false {
+		t.Errorf("The string does not contain the expected sub string")
+	}
+
+	if strings.Contains(shareStr, "Machine: 192.168.1.242 (ipv4:192.168.1.242:42296);") == false {
+		t.Errorf("The string does not contain the expected sub string")
+	}
+
+}
+
 func TestGetLockDataOneLine(t *testing.T) {
 	oneEntry := GetLockData(smbstatusout.LockDataOneLine)
 
@@ -123,6 +137,14 @@ func TestGetLockDataWrongInput(t *testing.T) {
 	}
 }
 
+func TestGetLockData0Input(t *testing.T) {
+	entryList := GetLockData(smbstatusout.LockData0Line)
+
+	if len(entryList) != 0 {
+		t.Errorf("Got entries when reading wrong input")
+	}
+}
+
 func TestGetShareDataOneLine(t *testing.T) {
 	oneEntry := GetShareData(smbstatusout.ShareDataOneLine)
 
@@ -184,5 +206,88 @@ func TestGetShareDataWrongData(t *testing.T) {
 
 	if len(entries) != 0 {
 		t.Errorf("Got %d entries, but expected none", len(entries))
+	}
+}
+
+func TestGetShareData0Input(t *testing.T) {
+	entryList := GetShareData(smbstatusout.ShareData0Line)
+
+	if len(entryList) != 0 {
+		t.Errorf("Got entries when reading wrong input")
+	}
+}
+
+func TestGetProcessDataOneLine(t *testing.T) {
+	oneProcess := GetProcessData(smbstatusout.ProcessDataOneLine)
+
+	if len(oneProcess) != 1 {
+		t.Errorf("Got %d entries, expected 1", len(oneProcess))
+	}
+
+	if oneProcess[0].PID != 1117 {
+		t.Errorf("The PID %d is not the expected 1117", oneProcess[0].PID)
+	}
+
+	if oneProcess[0].UserID != 1080 {
+		t.Errorf("The UserID %d is not the expected 1080", oneProcess[0].UserID)
+	}
+
+	if oneProcess[0].Group != "ssl-cert" {
+		t.Errorf("The Group %s is not the expected ssl-cert", oneProcess[0].Group)
+	}
+
+	if oneProcess[0].Machine != "192.168.1.242 (ipv4:192.168.1.242:42296)" {
+		t.Errorf("The Machine \"%s\" is not the expected \"192.168.1.242 (ipv4:192.168.1.242:42296)\"", oneProcess[0].Machine)
+	}
+
+	if oneProcess[0].ProtocolVersion != "SMB3_11" {
+		t.Errorf("The ProtocolVersion \"%s\" is not the expected \"SMB3_11\"", oneProcess[0].ProtocolVersion)
+	}
+
+	if oneProcess[0].Encryption != "-" {
+		t.Errorf("The Encryption \"%s\" is not the expected \"-\"", oneProcess[0].Encryption)
+	}
+
+	if oneProcess[0].Signing != "partial(AES-128-CMAC)" {
+		t.Errorf("The Signing \"%s\" is not the expected \"partial(AES-128-CMAC)\"", oneProcess[0].Signing)
+	}
+}
+
+func TestGetProcessData4Line(t *testing.T) {
+	enties := GetProcessData(smbstatusout.ProcessData4Lines)
+
+	if len(enties) != 4 {
+		t.Errorf("Got %d entries, expected 1", len(enties))
+	}
+
+	if enties[0].Machine != "192.168.1.242 (ipv4:192.168.1.242:42296)" {
+		t.Errorf("The Machine \"%s\" is not the expected \"192.168.1.242 (ipv4:192.168.1.242:42296)\"", enties[0].Machine)
+	}
+
+	if enties[1].Machine != "192.168.1.243 (ipv4:192.168.1.243:47510)" {
+		t.Errorf("The Machine \"%s\" is not the expected \"192.168.1.243 (ipv4:192.168.1.243:47510)\"", enties[1].Machine)
+	}
+	if enties[2].Machine != "192.168.1.244 (ipv4:192.168.1.244:47512)" {
+		t.Errorf("The Machine \"%s\" is not the expected \"192.168.1.244 (ipv4:192.168.1.244:47512)\"", enties[2].Machine)
+	}
+
+	if enties[3].Machine != "192.168.1.245 (ipv4:192.168.1.245:47514)" {
+		t.Errorf("The Machine \"%s\" is not the expected \"192.168.1.245 (ipv4:192.168.1.245:47514)\"", enties[3].Machine)
+	}
+}
+
+func TestGetProcessDataWrongData(t *testing.T) {
+	enties := GetProcessData(smbstatusout.LockData4Lines)
+
+	if len(enties) != 0 {
+		t.Errorf("Got %d entries, but expected none", len(enties))
+	}
+}
+
+func TestGetProcessData0Input(t *testing.T) {
+	entryList := GetProcessData(smbstatusout.ProcessData0Lines)
+
+	if len(entryList) != 0 {
+		t.Errorf("Got entries when reading wrong input")
 	}
 }
