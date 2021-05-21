@@ -18,7 +18,7 @@ import (
 	"tobi.backfrak.de/internal/smbstatusout"
 )
 
-func TestStringer(t *testing.T) {
+func TestStringerLockData(t *testing.T) {
 	oneLock := GetLockData(smbstatusout.LockDataOneLine)[0]
 
 	lockStr := oneLock.String()
@@ -29,6 +29,21 @@ func TestStringer(t *testing.T) {
 	if strings.Contains(lockStr, "SharePath: /usr/share/data;") == false {
 		t.Errorf("The string does not contain the expected sub string")
 	}
+
+}
+
+func TestStringerShareData(t *testing.T) {
+	oneShare := GetShareData(smbstatusout.ShareDataOneLine)[0]
+
+	shareStr := oneShare.String()
+	if strings.Contains(shareStr, "PID: 1119;") == false {
+		t.Errorf("The string does not contain the expected sub string")
+	}
+
+	if strings.Contains(shareStr, "Machine: 192.168.1.242;") == false {
+		t.Errorf("The string does not contain the expected sub string")
+	}
+
 }
 
 func TestGetLockDataOneLine(t *testing.T) {
