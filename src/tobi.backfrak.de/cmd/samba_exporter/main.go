@@ -67,7 +67,11 @@ func main() {
 	if errGet != nil {
 		fmt.Fprintln(os.Stderr, errGet)
 	} else {
-		fmt.Fprintln(os.Stdout, res)
+		shares := smbstatusreader.GetShareData(res)
+		if len(shares) != 1 {
+			fmt.Fprintln(os.Stderr, "Got an unexpected Share response")
+		}
+		fmt.Fprintln(os.Stdout, shares[0].String())
 	}
 	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.LOCK_REQUEST)
 	if errGet != nil {
@@ -75,7 +79,7 @@ func main() {
 	} else {
 		locks := smbstatusreader.GetLockData(res)
 		if len(locks) != 1 {
-			fmt.Fprintln(os.Stderr, "Got an unexpected response")
+			fmt.Fprintln(os.Stderr, "Got an unexpected Lock response")
 		}
 		fmt.Fprintln(os.Stdout, locks[0].String())
 	}

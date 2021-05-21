@@ -107,3 +107,67 @@ func TestGetLockDataWrongInput(t *testing.T) {
 		t.Errorf("Got entries when reading wrong input")
 	}
 }
+
+func TestGetShareDataOneLine(t *testing.T) {
+	oneEntry := GetShareData(smbstatusout.ShareDataOneLine)
+
+	if len(oneEntry) != 1 {
+		t.Errorf("Expected 1 entry, got %d", len(oneEntry))
+	}
+
+	if oneEntry[0].PID != 1119 {
+		t.Errorf("The PID %d is not the expected 1119", oneEntry[0].PID)
+	}
+
+	if oneEntry[0].Service != "IPC$" {
+		t.Errorf("The Service %s is not the expected IPC$", oneEntry[0].Service)
+	}
+
+	if oneEntry[0].Machine != "192.168.1.242" {
+		t.Errorf("The Machine %s is not the expected 192.168.1.242 ", oneEntry[0].Machine)
+	}
+
+	if oneEntry[0].Encryption != "-" {
+		t.Errorf("The Encryption %s is not the expected \"-\" ", oneEntry[0].Encryption)
+	}
+
+	if oneEntry[0].Signing != "-" {
+		t.Errorf("The Signing %s is not the expected \"-\" ", oneEntry[0].Signing)
+	}
+
+	if oneEntry[0].ConnectedAt.Format(time.ANSIC) != "Sun May 16 11:55:36 2021" {
+		t.Errorf("The ConnectedAt %s is not the expected Sun May 16 11:55:36 2021", oneEntry[0].ConnectedAt.Format(time.ANSIC))
+	}
+}
+
+func TestGetShareData4Line(t *testing.T) {
+	entries := GetShareData(smbstatusout.ShareData4Lines)
+
+	if len(entries) != 4 {
+		t.Errorf("Got %d entries, expected 4", len(entries))
+	}
+
+	if entries[0].ConnectedAt.Format(time.ANSIC) != "Sun May 16 11:55:36 2021" {
+		t.Errorf("The ConnectedAt %s is not the expected Sun May 16 11:55:36 2021", entries[0].ConnectedAt.Format(time.ANSIC))
+	}
+
+	if entries[1].ConnectedAt.Format(time.ANSIC) != "Mon May 17 10:56:56 2021" {
+		t.Errorf("The ConnectedAt %s is not the expected Mon May 17 10:56:56 2021", entries[1].ConnectedAt.Format(time.ANSIC))
+	}
+
+	if entries[2].ConnectedAt.Format(time.ANSIC) != "Tue May 18 09:52:38 2021" {
+		t.Errorf("The ConnectedAt %s is not the expected Tue May 18 09:52:38 2021", entries[2].ConnectedAt.Format(time.ANSIC))
+	}
+
+	if entries[3].ConnectedAt.Format(time.ANSIC) != "Fri May 21 18:46:29 2021" {
+		t.Errorf("The ConnectedAt %s is not the expected Fri May 21 18:46:29 2021", entries[3].ConnectedAt.Format(time.ANSIC))
+	}
+}
+
+func TestGetShareDataWrongData(t *testing.T) {
+	entries := GetShareData(smbstatusout.LockData4Lines)
+
+	if len(entries) != 0 {
+		t.Errorf("Got %d entries, but expected none", len(entries))
+	}
+}

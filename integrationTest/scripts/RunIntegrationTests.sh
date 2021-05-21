@@ -104,7 +104,7 @@ assert_raises "$samba_exporter -test-mode -verbose" 0
 
 assert_raises "$samba_exporter -test-mode -verbose | grep \"192.168.1.242\"" 0
 sleep 0.1
-assert_raises "$samba_exporter -test-mode -verbose | grep \"1080\"" 0
+assert_raises "$samba_exporter -test-mode -verbose | grep \"Service: IPC$; PID: 1119; Machine: 192.168.1.242; ConnectedAt: 2021-05-16T11:55:36+02:00; Encryption: -; Signing: -;\"" 0
 sleep 0.1
 assert_raises "$samba_exporter -test-mode -verbose | grep \"PID: 1120; UserID: 1080; DenyMode: DENY_NONE; Access: 0x80; AccessMode: RDONLY; Oplock: NONE; SharePath: /usr/share/data; Name: .: Time 2021-05-16T12:07:02Z;\"" 0
 sleep 0.1

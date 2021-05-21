@@ -25,6 +25,7 @@ type LockData struct {
 	Time       time.Time
 }
 
+// Implement Stringer Interface for LockData
 func (lockData LockData) String() string {
 	return fmt.Sprintf("PID: %d; UserID: %d; DenyMode: %s; Access: %s; AccessMode: %s; Oplock: %s; SharePath: %s; Name: %s: Time %s;",
 		lockData.PID, lockData.UserID, lockData.DenyMode, lockData.Access, lockData.AccessMode, lockData.Oplock,
@@ -91,10 +92,54 @@ type ShareData struct {
 	Signing     string
 }
 
+// Implement Stringer Interface for ShareData
 func (shareData ShareData) String() string {
 	return fmt.Sprintf("Service: %s; PID: %d; Machine: %s; ConnectedAt: %s; Encryption: %s; Signing: %s;",
 		shareData.Service, shareData.PID, shareData.Machine, shareData.ConnectedAt.Format(time.RFC3339),
 		shareData.Encryption, shareData.Signing)
+}
+
+// GetShareData - Get the entries out of the 'smbstatus -S' output table multiline string
+// Will return an empty array if the data is in unexpected format
+func GetShareData(data string) []ShareData {
+	var ret []ShareData
+	lines := strings.Split(data, "\n")
+	sepLineIndex := findSeperatorLineIndex(lines)
+
+	if sepLineIndex < 0 {
+		return ret
+	}
+
+	tableHeaderMatrix := getFieldMatrix(lines[sepLineIndex-1:sepLineIndex], "  ", 6)
+	if len(tableHeaderMatrix) != 1 {
+		return ret
+	}
+	tableHeaderFields := tableHeaderMatrix[0]
+
+	if tableHeaderFields[0] != "Service" && tableHeaderFields[3] != "Connected at" {
+		return ret
+	}
+
+	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], " ", 12) {
+		var err error
+		var entry ShareData
+		entry.Service = fields[0]
+		entry.PID, err = strconv.Atoi(fields[1])
+		if err != nil {
+			continue
+		}
+		entry.Machine = fields[2]
+		timeStr := fmt.Sprintf("%s %s %s %s %s %s %s", fields[3], fields[4], fields[5], fields[6], fields[7], fields[8], fields[9])
+		entry.ConnectedAt, err = time.Parse("Mon Jan 02 03:04:05 PM 2006 MST", timeStr)
+		if err != nil {
+			continue
+		}
+		entry.Encryption = fields[10]
+		entry.Signing = fields[11]
+
+		ret = append(ret, entry)
+	}
+	return ret
 }
 
 func getFieldMatrix(dataLines []string, seperator string, lineFields int) [][]string {
