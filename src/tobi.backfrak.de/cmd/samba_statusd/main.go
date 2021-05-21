@@ -60,6 +60,9 @@ func main() {
 
 	// Wait for pipe input and process it in an infinite loop
 	for {
+		if params.Verbose {
+			fmt.Fprintln(os.Stdout, fmt.Sprintf("Wait for requests in: %s", requestHandler.GetPipeFilePath()))
+		}
 		received, errRecv := requestHandler.WaitForPipeInputString()
 		if errRecv != nil {
 			fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while receive data from the pipe: %s", errRecv))

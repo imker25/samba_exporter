@@ -99,6 +99,9 @@ statusdPID=$(pidof $samba_statusd)
 echo "$samba_statusd running with PID $statusdPID"
 
 echo "Test IPC"
+echo "$samba_exporter -test-mode -verbose"
+$samba_exporter -test-mode -verbose
+
 assert_raises "$samba_exporter -test-mode" 0
 assert_raises "$samba_exporter -test-mode -verbose" 0
 
