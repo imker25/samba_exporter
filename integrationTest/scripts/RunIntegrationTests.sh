@@ -100,18 +100,18 @@ echo "$samba_statusd running with PID $statusdPID"
 
 echo "# ###################################################################"
 echo "Test IPC"
-echo "$samba_exporter -test-mode -verbose"
-$samba_exporter -test-mode -verbose
+echo "$samba_exporter -test-mode -verbose -test-pipe"
+$samba_exporter -test-mode -verbose -test-pipe
 
 echo "# ###################################################################"
 assert_raises "$samba_exporter -test-mode" 0
-assert_raises "$samba_exporter -test-mode -verbose" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe" 0
 
-assert_raises "$samba_exporter -test-mode -verbose | grep \"PID: 1117; UserID: 1080; Group: ssl-cert; Machine: 192.168.1.242 (ipv4:192.168.1.242:42296); ProtocolVersion: SMB3_11; Encryption: -; Signing: partial(AES-128-CMAC);\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"PID: 1117; UserID: 1080; Group: ssl-cert; Machine: 192.168.1.242 (ipv4:192.168.1.242:42296); ProtocolVersion: SMB3_11; Encryption: -; Signing: partial(AES-128-CMAC);\"" 0
 sleep 0.1
-assert_raises "$samba_exporter -test-mode -verbose | grep \"Service: IPC$; PID: 1119; Machine: 192.168.1.242; ConnectedAt: 2021-05-16T11:55:36\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"Service: IPC$; PID: 1119; Machine: 192.168.1.242; ConnectedAt: 2021-05-16T11:55:36\"" 0
 sleep 0.1
-assert_raises "$samba_exporter -test-mode -verbose | grep \"PID: 1120; UserID: 1080; DenyMode: DENY_NONE; Access: 0x80; AccessMode: RDONLY; Oplock: NONE; SharePath: /usr/share/data; Name: .: Time 2021-05-16T12:07:02Z;\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"PID: 1120; UserID: 1080; DenyMode: DENY_NONE; Access: 0x80; AccessMode: RDONLY; Oplock: NONE; SharePath: /usr/share/data; Name: .: Time 2021-05-16T12:07:02Z;\"" 0
 sleep 0.1
 echo "# ###################################################################"
 echo "End $samba_statusd with PID $statusdPID"

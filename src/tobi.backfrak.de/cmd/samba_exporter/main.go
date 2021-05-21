@@ -57,38 +57,52 @@ func main() {
 		os.Exit(0)
 	}
 
+	if params.TestPipeMode {
+		errTest := testPipeMode(requestHandler, responseHandler)
+		if errTest != nil {
+			fmt.Fprintln(os.Stderr, errTest)
+		}
+		os.Exit(0)
+	}
+	os.Exit(0)
+}
+
+func testPipeMode(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler) error {
+	var processes []smbstatusreader.ProcessData
+	var shares []smbstatusreader.ShareData
+	var locks []smbstatusreader.LockData
 	res, errGet := getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.PROCESS_REQUEST)
 	if errGet != nil {
-		fmt.Fprintln(os.Stderr, errGet)
+		return errGet
 	} else {
-		processes := smbstatusreader.GetProcessData(res)
+		processes = smbstatusreader.GetProcessData(res)
 		if len(processes) != 1 {
-			fmt.Fprintln(os.Stderr, "Got an unexpected Process response")
+			return NewSmbStatusUnexpectedResponseError(res)
 		}
 		fmt.Fprintln(os.Stdout, processes[0].String())
 	}
 	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SHARE_REQUEST)
 	if errGet != nil {
-		fmt.Fprintln(os.Stderr, errGet)
+		return errGet
 	} else {
-		shares := smbstatusreader.GetShareData(res)
+		shares = smbstatusreader.GetShareData(res)
 		if len(shares) != 1 {
-			fmt.Fprintln(os.Stderr, "Got an unexpected Share response")
+			return NewSmbStatusUnexpectedResponseError(res)
 		}
 		fmt.Fprintln(os.Stdout, shares[0].String())
 	}
 	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.LOCK_REQUEST)
 	if errGet != nil {
-		fmt.Fprintln(os.Stderr, errGet)
+		return errGet
 	} else {
-		locks := smbstatusreader.GetLockData(res)
+		locks = smbstatusreader.GetLockData(res)
 		if len(locks) != 1 {
-			fmt.Fprintln(os.Stderr, "Got an unexpected Lock response")
+			return NewSmbStatusUnexpectedResponseError(res)
 		}
 		fmt.Fprintln(os.Stdout, locks[0].String())
 	}
 
-	os.Exit(0)
+	return nil
 }
 
 func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType) (string, error) {

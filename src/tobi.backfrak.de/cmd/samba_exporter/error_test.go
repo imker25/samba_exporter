@@ -24,3 +24,16 @@ func TestSmbStatusTimeOutError(t *testing.T) {
 		t.Errorf("The error message of SmbStatusTimeOutError does not contain the expected request")
 	}
 }
+
+func TestSmbStatusUnexpectedResponseError(t *testing.T) {
+	path := "/some/sample/path"
+	err := NewSmbStatusUnexpectedResponseError(path)
+
+	if string(err.Response) != path {
+		t.Errorf("The File was %s, but %s was expected", err.Response, path)
+	}
+
+	if strings.Contains(err.Error(), path) == false {
+		t.Errorf("The error message of SmbStatusUnexpectedResponseError does not contain the expected request")
+	}
+}
