@@ -24,10 +24,11 @@ type SambaExporter struct {
 	ResponseHander commonbl.PipeHandler
 	Descriptions   map[string]prometheus.Desc
 	hostName       string
+	Verbose        bool
 }
 
 // Get a new instance of the SambaExporter
-func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander commonbl.PipeHandler) *SambaExporter {
+func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander commonbl.PipeHandler, verbose bool) *SambaExporter {
 	var ret SambaExporter
 	ret.RequestHandler = requestHandler
 	ret.ResponseHander = responseHander
@@ -37,17 +38,28 @@ func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander common
 	if err != nil {
 		ret.hostName = "127.0.0.1"
 	}
+	ret.Verbose = verbose
 
 	return &ret
 }
 
 // Describe function for the Prometheus Exporter Interface
 func (smbExporter *SambaExporter) Describe(ch chan<- *prometheus.Desc) {
-	locks, processes, shares, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander)
+
+	if smbExporter.Verbose {
+		fmt.Fprintln(os.Stdout, "Request samba_statusd to get prometheus descriptions")
+	}
+
+	locks, processes, shares, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander, smbExporter.Verbose)
 	if errGet != nil {
 		fmt.Fprintln(os.Stderr, errGet)
 		return
 	}
+
+	if smbExporter.Verbose {
+		fmt.Fprintln(os.Stdout, "Handle samba_statusd response and set prometheus descriptions")
+	}
+
 	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares)
 
 	if stats == nil {
@@ -64,11 +76,21 @@ func (smbExporter *SambaExporter) Describe(ch chan<- *prometheus.Desc) {
 
 // Collect function for the Prometheus Exporter Interface
 func (smbExporter *SambaExporter) Collect(ch chan<- prometheus.Metric) {
-	locks, processes, shares, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander)
+
+	if smbExporter.Verbose {
+		fmt.Fprintln(os.Stdout, "Request samba_statusd to get prometheus metrics")
+	}
+
+	locks, processes, shares, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander, smbExporter.Verbose)
 	if errGet != nil {
 		fmt.Fprintln(os.Stderr, errGet)
 		return
 	}
+
+	if smbExporter.Verbose {
+		fmt.Fprintln(os.Stdout, "Handle samba_statusd response and set prometheus metrics")
+	}
+
 	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares)
 
 	if stats == nil {

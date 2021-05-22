@@ -6,6 +6,8 @@ package pipecomunication
 // LICENSE file.
 
 import (
+	"fmt"
+	"os"
 	"sync"
 	"time"
 
@@ -25,11 +27,12 @@ type smbResponse struct {
 }
 
 // GetSambaStatus - Get the output of all data tables from samba_statusd
-func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler) ([]smbstatusreader.LockData, []smbstatusreader.ProcessData, []smbstatusreader.ShareData, error) {
+func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, verbose bool) ([]smbstatusreader.LockData, []smbstatusreader.ProcessData, []smbstatusreader.ShareData, error) {
 	var processes []smbstatusreader.ProcessData
 	var shares []smbstatusreader.ShareData
 	var locks []smbstatusreader.LockData
-	res, errGet := getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.PROCESS_REQUEST)
+
+	res, errGet := getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.PROCESS_REQUEST, verbose)
 	if errGet != nil {
 		return nil, nil, nil, errGet
 	} else {
@@ -38,7 +41,7 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 			return nil, nil, nil, NewSmbStatusUnexpectedResponseError(res)
 		}
 	}
-	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SHARE_REQUEST)
+	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SHARE_REQUEST, verbose)
 	if errGet != nil {
 		return nil, nil, nil, errGet
 	} else {
@@ -47,7 +50,7 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 			return nil, nil, nil, NewSmbStatusUnexpectedResponseError(res)
 		}
 	}
-	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.LOCK_REQUEST)
+	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.LOCK_REQUEST, verbose)
 	if errGet != nil {
 		return nil, nil, nil, errGet
 	} else {
@@ -60,10 +63,10 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 	return locks, processes, shares, nil
 }
 
-func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType) (string, error) {
+func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType, verbose bool) (string, error) {
 	c := make(chan smbResponse, 1)
 	var data string
-	go goGetSmbStatusData(requestHandler, responseHandler, request, c)
+	go goGetSmbStatusData(requestHandler, responseHandler, request, verbose, c)
 	select {
 	case res := <-c:
 		if res.Error == nil {
@@ -78,27 +81,32 @@ func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandle
 	return data, nil
 }
 
-func goGetSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType, c chan smbResponse) {
-	retStr, err := getSmbStatusData(requestHandler, responseHandler, request)
+func goGetSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType, verbose bool, c chan smbResponse) {
+	retStr, err := getSmbStatusData(requestHandler, responseHandler, request, verbose)
 
 	ret := smbResponse{retStr, err}
 
 	c <- ret
 }
 
-func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType) (string, error) {
+func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType, verbose bool) (string, error) {
 	requestCount++
 	requestString := commonbl.GetRequest(request, requestCount)
 
 	// Ensure we run only one request per time on the pipes
 	mux.Lock()
 	defer mux.Unlock()
-
+	if verbose {
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Send \"%s\" request on pipe", request))
+	}
 	errWrite := requestHandler.WritePipeString(requestString)
 	if errWrite != nil {
 		return "", errWrite
 	}
 
+	if verbose {
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Wait for \"%s\" response on pipe", request))
+	}
 	var errRead error
 	response := requestString
 	for response == requestString && errRead == nil {
@@ -107,6 +115,9 @@ func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commo
 	}
 	if errRead != nil {
 		return "", errRead
+	}
+	if verbose {
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("Handle \"%s\" response from pipe", request))
 	}
 
 	header, data, errSplit := commonbl.SplitResponse(response)

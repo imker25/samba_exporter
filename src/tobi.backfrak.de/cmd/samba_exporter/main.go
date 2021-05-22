@@ -75,7 +75,7 @@ func main() {
 
 	fmt.Fprintln(os.Stdout, fmt.Sprintf("Start %s, get metrics on %s%s", os.Args[0], params.ListenAddress, params.MetricsPath))
 
-	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler)
+	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler, params.Verbose)
 	prometheus.MustRegister(exporter)
 
 	http.Handle(params.MetricsPath, promhttp.Handler())
@@ -102,12 +102,16 @@ func testPipeMode(requestHandler commonbl.PipeHandler, responseHandler commonbl.
 	var shares []smbstatusreader.ShareData
 	var locks []smbstatusreader.LockData
 	var errGet error
-
-	locks, processes, shares, errGet = pipecomunication.GetSambaStatus(requestHandler, responseHandler)
+	if params.Verbose {
+		fmt.Fprintln(os.Stdout, "Request samba_statusd to get metrics for test-pipe mode")
+	}
+	locks, processes, shares, errGet = pipecomunication.GetSambaStatus(requestHandler, responseHandler, params.Verbose)
 	if errGet != nil {
 		return errGet
 	}
-
+	if params.Verbose {
+		fmt.Fprintln(os.Stdout, "Handle samba_statusd  response in test-pipe mode")
+	}
 	for _, share := range shares {
 		fmt.Fprintln(os.Stdout, share.String())
 	}
