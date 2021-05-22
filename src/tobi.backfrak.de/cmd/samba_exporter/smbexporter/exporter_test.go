@@ -24,4 +24,12 @@ func TestNewSambaExporter(t *testing.T) {
 	if exporter.ResponseHander.PipeType != commonbl.ResposePipe {
 		t.Errorf("The exporter.RequestHandler is not of the expected type")
 	}
+
+	if exporter.hostName == "" {
+		t.Errorf("The exporter.hostName is empty")
+	}
+
+	if exporter.Descriptions == nil {
+		t.Errorf("exporter.Descriptions are nil")
+	}
 }

@@ -130,6 +130,12 @@ assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"promhttp_metric_handler_requests_total\""
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"process_virtual_memory_max_bytes\""
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"promhttp_metric_handler_requests_in_flight 1\""
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_individual_user_count\""
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"# HELP samba_individual_user_count The number of users connected to this samba server\""
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_individual_user_count\""
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"# TYPE samba_individual_user_count gauge\""
+
+
 
 echo "# ###################################################################"
 echo "End $samba_statusd with PID $statusdPID"

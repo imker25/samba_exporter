@@ -6,6 +6,7 @@ package pipecomunication
 // LICENSE file.
 
 import (
+	"sync"
 	"time"
 
 	"tobi.backfrak.de/cmd/samba_exporter/smbstatusreader"
@@ -16,6 +17,7 @@ import (
 const requestTimeOut = 2
 
 var requestCount = 0
+var mux sync.Mutex
 
 type smbResponse struct {
 	Data  string
@@ -87,6 +89,11 @@ func goGetSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler com
 func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType) (string, error) {
 	requestCount++
 	requestString := commonbl.GetRequest(request, requestCount)
+
+	// Ensure we run only one request per time on the pipes
+	mux.Lock()
+	defer mux.Unlock()
+
 	errWrite := requestHandler.WritePipeString(requestString)
 	if errWrite != nil {
 		return "", errWrite
