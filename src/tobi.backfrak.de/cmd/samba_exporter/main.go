@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"tobi.backfrak.de/cmd/samba_exporter/smbstatusreader"
+	"tobi.backfrak.de/cmd/samba_exporter/statisticsGenerator"
 	"tobi.backfrak.de/internal/commonbl"
 )
 
@@ -20,6 +21,7 @@ const Authors = "tobi@backfrak.de"
 
 // The timeout for a request to samba_statusd in seconds
 const requestTimeOut = 2
+const exporter_label_prefix = "samba"
 
 // The version of this program, will be set at compile time by the gradle build script
 var version = "undefined"
@@ -100,6 +102,11 @@ func testPipeMode(requestHandler commonbl.PipeHandler, responseHandler commonbl.
 			return NewSmbStatusUnexpectedResponseError(res)
 		}
 		fmt.Fprintln(os.Stdout, locks[0].String())
+	}
+
+	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares)
+	for _, stat := range stats {
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("%s_%s: %d", exporter_label_prefix, stat.Name, stat.Value))
 	}
 
 	return nil

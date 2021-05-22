@@ -23,4 +23,4 @@ const TestProcessResponse = `
 Samba version 4.11.6-Ubuntu
 PID     Username     Group        Machine                                   Protocol Version  Encryption           Signing              
 ----------------------------------------------------------------------------------------------------------------------------------------
-1117    1080    ssl-cert     192.168.1.242 (ipv4:192.168.1.242:42296)  SMB3_11           -                    partial(AES-128-CMAC)`
+1117    1080    117     192.168.1.242 (ipv4:192.168.1.242:42296)  SMB3_11           -                    partial(AES-128-CMAC)`

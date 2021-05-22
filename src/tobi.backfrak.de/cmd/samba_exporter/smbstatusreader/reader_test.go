@@ -232,8 +232,8 @@ func TestGetProcessDataOneLine(t *testing.T) {
 		t.Errorf("The UserID %d is not the expected 1080", oneProcess[0].UserID)
 	}
 
-	if oneProcess[0].Group != "ssl-cert" {
-		t.Errorf("The Group %s is not the expected ssl-cert", oneProcess[0].Group)
+	if oneProcess[0].GroupID != 117 {
+		t.Errorf("The Group %d is not the expected 117", oneProcess[0].GroupID)
 	}
 
 	if oneProcess[0].Machine != "192.168.1.242 (ipv4:192.168.1.242:42296)" {

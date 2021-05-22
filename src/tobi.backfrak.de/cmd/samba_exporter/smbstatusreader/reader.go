@@ -146,7 +146,7 @@ func GetShareData(data string) []ShareData {
 type ProcessData struct {
 	PID             int
 	UserID          int
-	Group           string
+	GroupID         int
 	Machine         string
 	ProtocolVersion string
 	Encryption      string
@@ -155,8 +155,8 @@ type ProcessData struct {
 
 // Implement Stringer Interface for ProcessData
 func (processData ProcessData) String() string {
-	return fmt.Sprintf("PID: %d; UserID: %d; Group: %s; Machine: %s; ProtocolVersion: %s; Encryption: %s; Signing: %s;",
-		processData.PID, processData.UserID, processData.Group, processData.Machine, processData.ProtocolVersion,
+	return fmt.Sprintf("PID: %d; UserID: %d; GroupID: %d; Machine: %s; ProtocolVersion: %s; Encryption: %s; Signing: %s;",
+		processData.PID, processData.UserID, processData.GroupID, processData.Machine, processData.ProtocolVersion,
 		processData.Encryption, processData.Signing)
 }
 
@@ -192,7 +192,10 @@ func GetProcessData(data string) []ProcessData {
 		if err != nil {
 			continue
 		}
-		entry.Group = fields[2]
+		entry.GroupID, err = strconv.Atoi(fields[2])
+		if err != nil {
+			continue
+		}
 		entry.Machine = fmt.Sprintf("%s %s", fields[3], fields[4])
 		entry.ProtocolVersion = fields[5]
 		entry.Encryption = fields[6]
