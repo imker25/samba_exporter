@@ -125,6 +125,17 @@ echo "$samba_exporter running with PID $exporterPID"
 echo "# ###################################################################"
 echo "Test samba_exporter webinterface"
 
+echo "# ###################################################################"
+echo "Get the enpoint:"
+echo "curl http://127.0.0.1:9922"
+curl http://127.0.0.1:9922
+echo "# ###################################################################"
+echo "Get metrics"
+echo "curl http://127.0.0.1:9922/metrics"
+curl http://127.0.0.1:9922/metrics
+echo ""
+echo "# ###################################################################"
+
 assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\""
 assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\""
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"promhttp_metric_handler_requests_total\""
