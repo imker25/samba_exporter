@@ -95,8 +95,9 @@ fi
 # Start samba_statusd as daemon
 $samba_statusd -test-mode -verbose &
 statusdPID=$(pidof $samba_statusd)
-
 echo "$samba_statusd running with PID $statusdPID"
+# Wait a bit to ensure the process is running
+sleep 0.1
 
 echo "# ###################################################################"
 echo "Test IPC"
@@ -122,18 +123,21 @@ echo "Start as daemon: $samba_exporter -test-mode -verbose"
 $samba_exporter -test-mode -verbose &
 exporterPID=$(pidof $samba_exporter)
 echo "$samba_exporter running with PID $exporterPID"
+# Wait a bit to ensure the process is running
+sleep 0.1
 echo "# ###################################################################"
 echo "Test samba_exporter webinterface"
 
 echo "# ###################################################################"
 echo "Get the enpoint:"
-echo "curl http://127.0.0.1:9922"
+echo "Call: curl http://127.0.0.1:9922"
 curl http://127.0.0.1:9922
+echo " "
 echo "# ###################################################################"
 echo "Get metrics"
-echo "curl http://127.0.0.1:9922/metrics"
+echo "Call: curl http://127.0.0.1:9922/metrics"
 curl http://127.0.0.1:9922/metrics
-echo ""
+echo " "
 echo "# ###################################################################"
 
 assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\""
