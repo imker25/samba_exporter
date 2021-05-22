@@ -91,43 +91,48 @@ if [ -p "$response_pipe_file" ]; then
     rm "$response_pipe_file"
 fi
 
-
-# Start samba_statusd as daemon
+echo "# ###################################################################"
+echo "Start as daemon: $samba_statusd -test-mode -verbose"
 $samba_statusd -test-mode -verbose &
 statusdPID=$(pidof $samba_statusd)
-echo "$samba_statusd running with PID $statusdPID"
+
 # Wait a bit to ensure the process is running
 sleep 0.1
+echo "# ###################################################################"
+echo "$samba_statusd running with PID $statusdPID"
 
 echo "# ###################################################################"
 echo "Test IPC"
+# Show the output of -test-pipe mode for debug propose
 echo "$samba_exporter -test-mode -verbose -test-pipe"
 $samba_exporter -test-mode -verbose -test-pipe
 
 echo "# ###################################################################"
+# Test the response code of -test-pipe mode
 assert_raises "$samba_exporter -test-mode -test-pipe" 0
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe" 0
 
+# Test the output of -test-pipe mode
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"PID: 1117; UserID: 1080; GroupID: 117; Machine: 192.168.1.242 (ipv4:192.168.1.242:42296); ProtocolVersion: SMB3_11; Encryption: -; Signing: partial(AES-128-CMAC);\"" 0
-
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"Service: IPC$; PID: 1119; Machine: 192.168.1.242; ConnectedAt: 2021-05-16T11:55:36\"" 0
-
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"PID: 1120; UserID: 1080; DenyMode: DENY_NONE; Access: 0x80; AccessMode: RDONLY; Oplock: NONE; SharePath: /usr/share/data; Name: .: Time 2021-05-16T12:07:02Z;\"" 0
-
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_individual_user_count: 1\"" 0
-
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_pid_count: 3\"" 0
 
 echo "# ###################################################################"
 echo "Start as daemon: $samba_exporter -test-mode -verbose"
 $samba_exporter -test-mode -verbose &
 exporterPID=$(pidof $samba_exporter)
-echo "$samba_exporter running with PID $exporterPID"
+
 # Wait a bit to ensure the process is running
 sleep 0.1
 echo "# ###################################################################"
+echo "$samba_exporter running with PID $exporterPID"
+
+echo "# ###################################################################"
 echo "Test samba_exporter webinterface"
 
+# Get the outputs of the promethues web requests for debug propose
 echo "# ###################################################################"
 echo "Get the enpoint:"
 echo "Call: curl http://127.0.0.1:9922"
@@ -140,6 +145,7 @@ curl http://127.0.0.1:9922/metrics
 echo " "
 echo "# ###################################################################"
 
+# Test the output of promethues web requests 
 assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\""
 assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\""
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"promhttp_metric_handler_requests_total\""
@@ -150,15 +156,14 @@ assert_raises "curl http://127.0.0.1:9922/metrics | grep \"# HELP samba_individu
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_individual_user_count\""
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"# TYPE samba_individual_user_count gauge\""
 
-
-
+# End daemons
 echo "# ###################################################################"
 echo "End $samba_statusd with PID $statusdPID"
 kill $statusdPID
 echo "End $samba_exporter with PID $exporterPID"
 kill $exporterPID
 
-
-
+# Finish test run
 assert_end samba-exporter_IntegrationTests
+
 exit 0
