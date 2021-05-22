@@ -12,10 +12,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"tobi.backfrak.de/cmd/samba_exporter/pipecomunication"
 	"tobi.backfrak.de/cmd/samba_exporter/smbexporter"
 	"tobi.backfrak.de/cmd/samba_exporter/smbstatusreader"
 	"tobi.backfrak.de/cmd/samba_exporter/statisticsGenerator"
@@ -25,13 +25,8 @@ import (
 // Authors - Information about the authors of the program. You might want to add your name here when contributing to this software
 const Authors = "tobi@backfrak.de"
 
-// The timeout for a request to samba_statusd in seconds
-const requestTimeOut = 2
-const exporter_label_prefix = "samba"
-
 // The version of this program, will be set at compile time by the gradle build script
 var version = "undefined"
-var requestCount = 0
 
 type SmbResponse struct {
 	Data  string
@@ -106,99 +101,29 @@ func testPipeMode(requestHandler commonbl.PipeHandler, responseHandler commonbl.
 	var processes []smbstatusreader.ProcessData
 	var shares []smbstatusreader.ShareData
 	var locks []smbstatusreader.LockData
-	res, errGet := getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.PROCESS_REQUEST)
+	var errGet error
+
+	locks, processes, shares, errGet = pipecomunication.GetSambaStatus(requestHandler, responseHandler)
 	if errGet != nil {
 		return errGet
-	} else {
-		processes = smbstatusreader.GetProcessData(res)
-		if len(processes) != 1 {
-			return NewSmbStatusUnexpectedResponseError(res)
-		}
-		fmt.Fprintln(os.Stdout, processes[0].String())
 	}
-	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SHARE_REQUEST)
-	if errGet != nil {
-		return errGet
-	} else {
-		shares = smbstatusreader.GetShareData(res)
-		if len(shares) != 1 {
-			return NewSmbStatusUnexpectedResponseError(res)
-		}
-		fmt.Fprintln(os.Stdout, shares[0].String())
+
+	for _, share := range shares {
+		fmt.Fprintln(os.Stdout, share.String())
 	}
-	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.LOCK_REQUEST)
-	if errGet != nil {
-		return errGet
-	} else {
-		locks = smbstatusreader.GetLockData(res)
-		if len(locks) != 1 {
-			return NewSmbStatusUnexpectedResponseError(res)
-		}
-		fmt.Fprintln(os.Stdout, locks[0].String())
+	for _, process := range processes {
+		fmt.Fprintln(os.Stdout, process.String())
+	}
+	for _, lock := range locks {
+		fmt.Fprintln(os.Stdout, lock.String())
 	}
 
 	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares)
 	for _, stat := range stats {
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("%s_%s: %d", exporter_label_prefix, stat.Name, stat.Value))
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("%s_%s: %d", smbexporter.EXPORTER_LABEL_PREFIX, stat.Name, stat.Value))
 	}
 
 	return nil
-}
-
-func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType) (string, error) {
-	c := make(chan SmbResponse, 1)
-	var data string
-	go goGetSmbStatusData(requestHandler, responseHandler, request, c)
-	select {
-	case res := <-c:
-		if res.Error == nil {
-			data = res.Data
-		} else {
-			return "", res.Error
-		}
-	case <-time.After(requestTimeOut * time.Second):
-		return "", NewSmbStatusTimeOutError(request)
-	}
-
-	return data, nil
-}
-
-func goGetSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType, c chan SmbResponse) {
-	retStr, err := getSmbStatusData(requestHandler, responseHandler, request)
-
-	ret := SmbResponse{retStr, err}
-
-	c <- ret
-}
-
-func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType) (string, error) {
-	requestCount++
-	requestString := commonbl.GetRequest(request, requestCount)
-	errWrite := requestHandler.WritePipeString(requestString)
-	if errWrite != nil {
-		return "", errWrite
-	}
-
-	var errRead error
-	response := requestString
-	for response == requestString && errRead == nil {
-		time.Sleep(time.Millisecond)
-		response, errRead = responseHandler.WaitForPipeInputString()
-	}
-	if errRead != nil {
-		return "", errRead
-	}
-
-	header, data, errSplit := commonbl.SplitResponse(response)
-	if errSplit != nil {
-		return "", errSplit
-	}
-
-	if !commonbl.CheckResponseHeader(header, request, requestCount) {
-		return "", commonbl.NewReaderError(response)
-	}
-
-	return data, nil
 }
 
 func waitforKillSignalAndExit() {

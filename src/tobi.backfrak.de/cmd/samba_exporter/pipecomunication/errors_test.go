@@ -1,4 +1,4 @@
-package main
+package pipecomunication
 
 // Copyright 2021 by tobi@backfrak.de. All
 // rights reserved. Use of this source code is governed
