@@ -37,7 +37,7 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 		return nil, nil, nil, errGet
 	} else {
 		processes = smbstatusreader.GetProcessData(res)
-		if len(processes) != 1 {
+		if len(processes) < 1 {
 			return nil, nil, nil, NewSmbStatusUnexpectedResponseError(res)
 		}
 	}
@@ -46,7 +46,7 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 		return nil, nil, nil, errGet
 	} else {
 		shares = smbstatusreader.GetShareData(res)
-		if len(shares) != 1 {
+		if len(shares) < 1 {
 			return nil, nil, nil, NewSmbStatusUnexpectedResponseError(res)
 		}
 	}
@@ -55,7 +55,7 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 		return nil, nil, nil, errGet
 	} else {
 		locks = smbstatusreader.GetLockData(res)
-		if len(locks) != 1 {
+		if len(locks) < 1 {
 			return nil, nil, nil, NewSmbStatusUnexpectedResponseError(res)
 		}
 	}
