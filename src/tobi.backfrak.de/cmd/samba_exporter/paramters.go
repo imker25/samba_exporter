@@ -16,7 +16,9 @@ import (
 // The paramters for this executable
 type parmeters struct {
 	commonbl.Parmeters
-	TestPipeMode bool
+	TestPipeMode  bool
+	ListenAddress string
+	MetricsPath   string
 }
 
 var params parmeters
@@ -31,6 +33,8 @@ func handleComandlineOptions() {
 		"Run the program in test mode. In this mode the program will always return the same test data. To work with samba_statusd both programs needs to run in test mode or not.")
 	flag.BoolVar(&params.Help, "help", false, "Print this help message")
 	flag.BoolVar(&params.TestPipeMode, "test-pipe", false, "Requests status from samba_statusd and exits. May be combinde with -test-mode.")
+	flag.StringVar(&params.ListenAddress, "web.listen-address", ":9922", "Address to listen on for web interface and telemetry.")
+	flag.StringVar(&params.MetricsPath, "web.telemetry-path", "/metrics", "Path under which to expose metrics.")
 
 	// Overwrite the std Usage function with some custom stuff
 	flag.Usage = customHelpMessage

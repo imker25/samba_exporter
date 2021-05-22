@@ -104,7 +104,7 @@ echo "$samba_exporter -test-mode -verbose -test-pipe"
 $samba_exporter -test-mode -verbose -test-pipe
 
 echo "# ###################################################################"
-assert_raises "$samba_exporter -test-mode" 0
+assert_raises "$samba_exporter -test-mode -test-pipe" 0
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe" 0
 
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"PID: 1117; UserID: 1080; GroupID: 117; Machine: 192.168.1.242 (ipv4:192.168.1.242:42296); ProtocolVersion: SMB3_11; Encryption: -; Signing: partial(AES-128-CMAC);\"" 0
@@ -118,8 +118,24 @@ assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_ind
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_pid_count: 3\"" 0
 
 echo "# ###################################################################"
+echo "Start as daemon: $samba_exporter -test-mode -verbose"
+$samba_exporter -test-mode -verbose &
+exporterPID=$(pidof $samba_exporter)
+echo "$samba_exporter running with PID $exporterPID"
+echo "# ###################################################################"
+echo "Test samba_exporter webinterface"
+
+assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\""
+assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\""
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"promhttp_metric_handler_requests_total\""
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"process_virtual_memory_max_bytes\""
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"promhttp_metric_handler_requests_in_flight 1\""
+
+echo "# ###################################################################"
 echo "End $samba_statusd with PID $statusdPID"
 kill $statusdPID
+echo "End $samba_exporter with PID $exporterPID"
+kill $exporterPID
 
 
 

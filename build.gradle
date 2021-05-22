@@ -302,6 +302,17 @@ task build(dependsOn: 'clean') {
         println '##################################################################################'
         println 'Build'
         println '##################################################################################'
+        println 'Get dependencies' 
+        exec {
+            workingDir "$scriptDirectory"
+            commandLine 'go', 'get', 'github.com/prometheus/client_golang/prometheus'
+            environment('GOPATH', goPath)
+        }
+        exec {
+            workingDir "$scriptDirectory"
+            commandLine 'go', 'get', 'github.com/prometheus/client_golang/prometheus/promhttp'
+            environment('GOPATH', goPath)
+        }
     }
     doLast {
         println "go install -v -ldflags=\"-X main.version=${programVersion}\" $packagesToBuild"

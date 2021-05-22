@@ -8,9 +8,15 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"tobi.backfrak.de/cmd/samba_exporter/smbexporter"
 	"tobi.backfrak.de/cmd/samba_exporter/smbstatusreader"
 	"tobi.backfrak.de/cmd/samba_exporter/statisticsGenerator"
 	"tobi.backfrak.de/internal/commonbl"
@@ -63,10 +69,37 @@ func main() {
 		errTest := testPipeMode(requestHandler, responseHandler)
 		if errTest != nil {
 			fmt.Fprintln(os.Stderr, errTest)
+			os.Exit(-2)
 		}
 		os.Exit(0)
 	}
-	os.Exit(0)
+
+	// Ensure we exit clean on term and kill signals
+	go waitforKillSignalAndExit()
+	go waitforTermSignalAndExit()
+
+	fmt.Fprintln(os.Stdout, fmt.Sprintf("Start %s, get metrics on %s%s", os.Args[0], params.ListenAddress, params.MetricsPath))
+
+	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler)
+	prometheus.MustRegister(exporter)
+
+	http.Handle(params.MetricsPath, promhttp.Handler())
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(`
+			<html>
+			<head><title>Samba Exporter</title></head>
+			<body>
+			<h1>Samba Exporter</h1>
+			<p><a href='` + params.MetricsPath + `'>Metrics</a></p>
+			</body>
+			</html>`))
+	})
+
+	errListen := http.ListenAndServe(params.ListenAddress, nil)
+	if errListen != nil {
+		fmt.Fprintln(os.Stderr, errListen)
+		os.Exit(-1)
+	}
 }
 
 func testPipeMode(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler) error {
@@ -166,6 +199,27 @@ func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commo
 	}
 
 	return data, nil
+}
+
+func waitforKillSignalAndExit() {
+	killSignal := make(chan os.Signal, syscall.SIGKILL)
+	signal.Notify(killSignal, os.Interrupt)
+	<-killSignal
+
+	if params.Verbose {
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("End: %s due to kill signal", os.Args[0]))
+	}
+	os.Exit(0)
+}
+
+func waitforTermSignalAndExit() {
+	termSignal := make(chan os.Signal, syscall.SIGTERM)
+	signal.Notify(termSignal, os.Interrupt)
+	<-termSignal
+	if params.Verbose {
+		fmt.Fprintln(os.Stdout, fmt.Sprintf("End: %s due to terminate signal", os.Args[0]))
+	}
+	os.Exit(0)
 }
 
 // Prints the version string
