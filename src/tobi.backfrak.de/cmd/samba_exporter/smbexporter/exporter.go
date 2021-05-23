@@ -78,6 +78,7 @@ func (smbExporter *SambaExporter) Collect(ch chan<- prometheus.Metric) {
 	smbServerUp := 1
 	locks, processes, shares, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander, smbExporter.Logger)
 	if errGet != nil {
+		smbExporter.Logger.WriteError(errGet)
 		switch errGet.(type) {
 		case *pipecomunication.SmbStatusTimeOutError:
 			smbStatusUp = 0
@@ -85,7 +86,6 @@ func (smbExporter *SambaExporter) Collect(ch chan<- prometheus.Metric) {
 		case *pipecomunication.SmbStatusUnexpectedResponseError:
 			smbServerUp = 0
 		default:
-			smbExporter.Logger.WriteError(errGet)
 			return
 		}
 	}
