@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -36,6 +37,11 @@ func main() {
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
 	logger = *commonbl.NewLogger(params.Verbose)
+
+	if !strings.HasPrefix(params.MetricsPath, "/") {
+		params.MetricsPath = fmt.Sprintf("/%s", params.MetricsPath)
+	}
+
 	if params.Verbose {
 		args := ""
 		for _, arg := range os.Args {
