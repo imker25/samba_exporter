@@ -60,7 +60,11 @@ func (smbExporter *SambaExporter) Describe(ch chan<- *prometheus.Desc) {
 	}
 
 	for _, stat := range stats {
-		desc := prometheus.NewDesc(prometheus.BuildFQName(EXPORTER_LABEL_PREFIX, "", stat.Name), stat.Help, []string{"machine"}, nil)
+		// Example with label
+		//desc := prometheus.NewDesc(prometheus.BuildFQName(EXPORTER_LABEL_PREFIX, "", stat.Name), stat.Help, []string{"machine"}, nil)
+
+		// Without label
+		desc := prometheus.NewDesc(prometheus.BuildFQName(EXPORTER_LABEL_PREFIX, "", stat.Name), stat.Help, []string{}, nil)
 		smbExporter.Descriptions[stat.Name] = *desc
 		ch <- desc
 	}
@@ -87,7 +91,11 @@ func (smbExporter *SambaExporter) Collect(ch chan<- prometheus.Metric) {
 		if found == false {
 			smbExporter.Logger.WriteErrorMessage(fmt.Sprintf("No description found for %s", stat.Name))
 		}
-		met := prometheus.MustNewConstMetric(&desc, prometheus.GaugeValue, float64(stat.Value), smbExporter.hostName)
+		// Example with label
+		// met := prometheus.MustNewConstMetric(&desc, prometheus.GaugeValue, float64(stat.Value), smbExporter.hostName)
+
+		// Without label
+		met := prometheus.MustNewConstMetric(&desc, prometheus.GaugeValue, float64(stat.Value))
 		ch <- met
 	}
 

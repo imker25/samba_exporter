@@ -28,11 +28,7 @@ const Authors = "tobi@backfrak.de"
 // The version of this program, will be set at compile time by the gradle build script
 var version = "undefined"
 
-type SmbResponse struct {
-	Data  string
-	Error error
-}
-
+// The logger used in the program
 var logger commonbl.Logger
 
 func main() {
