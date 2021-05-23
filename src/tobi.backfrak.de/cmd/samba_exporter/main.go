@@ -33,10 +33,13 @@ type SmbResponse struct {
 	Error error
 }
 
+var logger commonbl.Logger
+
 func main() {
 	handleComandlineOptions()
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
+	logger = *commonbl.NewLogger(params.Verbose)
 	if params.Verbose {
 		args := ""
 		for _, arg := range os.Args {
@@ -46,9 +49,10 @@ func main() {
 		if !params.PrintVersion {
 			printVersion()
 		}
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("Named pipe for requests: %s", requestHandler.GetPipeFilePath()))
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("Named pipe for response: %s", responseHandler.GetPipeFilePath()))
 	}
+
+	logger.WriteVerbose(fmt.Sprintf("Named pipe for requests: %s", requestHandler.GetPipeFilePath()))
+	logger.WriteVerbose(fmt.Sprintf("Named pipe for response: %s", responseHandler.GetPipeFilePath()))
 
 	if params.PrintVersion {
 		printVersion()
@@ -63,7 +67,7 @@ func main() {
 	if params.TestPipeMode {
 		errTest := testPipeMode(requestHandler, responseHandler)
 		if errTest != nil {
-			fmt.Fprintln(os.Stderr, errTest)
+			logger.WriteError(errTest)
 			os.Exit(-2)
 		}
 		os.Exit(0)
@@ -73,9 +77,9 @@ func main() {
 	go waitforKillSignalAndExit()
 	go waitforTermSignalAndExit()
 
-	fmt.Fprintln(os.Stdout, fmt.Sprintf("Start %s, get metrics on %s%s", os.Args[0], params.ListenAddress, params.MetricsPath))
+	logger.WriteInformation(fmt.Sprintf("Started %s, get metrics on %s%s", os.Args[0], params.ListenAddress, params.MetricsPath))
 
-	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler, params.Verbose)
+	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler, logger)
 	prometheus.MustRegister(exporter)
 
 	http.Handle(params.MetricsPath, promhttp.Handler())
@@ -92,7 +96,7 @@ func main() {
 
 	errListen := http.ListenAndServe(params.ListenAddress, nil)
 	if errListen != nil {
-		fmt.Fprintln(os.Stderr, errListen)
+		logger.WriteError(errListen)
 		os.Exit(-1)
 	}
 }
@@ -102,16 +106,15 @@ func testPipeMode(requestHandler commonbl.PipeHandler, responseHandler commonbl.
 	var shares []smbstatusreader.ShareData
 	var locks []smbstatusreader.LockData
 	var errGet error
-	if params.Verbose {
-		fmt.Fprintln(os.Stdout, "Request samba_statusd to get metrics for test-pipe mode")
-	}
-	locks, processes, shares, errGet = pipecomunication.GetSambaStatus(requestHandler, responseHandler, params.Verbose)
+
+	logger.WriteVerbose("Request samba_statusd to get metrics for test-pipe mode")
+	locks, processes, shares, errGet = pipecomunication.GetSambaStatus(requestHandler, responseHandler, logger)
 	if errGet != nil {
 		return errGet
 	}
-	if params.Verbose {
-		fmt.Fprintln(os.Stdout, "Handle samba_statusd  response in test-pipe mode")
-	}
+
+	logger.WriteVerbose("Handle samba_statusd  response in test-pipe mode")
+
 	for _, share := range shares {
 		fmt.Fprintln(os.Stdout, share.String())
 	}
@@ -135,9 +138,8 @@ func waitforKillSignalAndExit() {
 	signal.Notify(killSignal, os.Interrupt)
 	<-killSignal
 
-	if params.Verbose {
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("End: %s due to kill signal", os.Args[0]))
-	}
+	logger.WriteVerbose(fmt.Sprintf("End %s due to kill signal", os.Args[0]))
+
 	os.Exit(0)
 }
 
@@ -145,9 +147,9 @@ func waitforTermSignalAndExit() {
 	termSignal := make(chan os.Signal, syscall.SIGTERM)
 	signal.Notify(termSignal, os.Interrupt)
 	<-termSignal
-	if params.Verbose {
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("End: %s due to terminate signal", os.Args[0]))
-	}
+
+	logger.WriteVerbose(fmt.Sprintf("End %s due to terminate signal", os.Args[0]))
+
 	os.Exit(0)
 }
 

@@ -27,10 +27,14 @@ var version = "undefined"
 // Type for functions that can create a response string
 type response func(commonbl.PipeHandler, int) error
 
+// The logger for this programm
+var logger commonbl.Logger
+
 func main() {
 	handleComandlineOptions()
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
+	logger = *commonbl.NewLogger(params.Verbose)
 	if params.Verbose {
 		args := ""
 		for _, arg := range os.Args {
@@ -40,9 +44,9 @@ func main() {
 		if !params.PrintVersion {
 			printVersion()
 		}
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("Named pipe for requests: %s", requestHandler.GetPipeFilePath()))
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("Named pipe for response: %s", responseHandler.GetPipeFilePath()))
 	}
+	logger.WriteVerbose(fmt.Sprintf("Named pipe for requests: %s", requestHandler.GetPipeFilePath()))
+	logger.WriteVerbose(fmt.Sprintf("Named pipe for response: %s", responseHandler.GetPipeFilePath()))
 
 	if params.PrintVersion {
 		printVersion()
@@ -59,13 +63,12 @@ func main() {
 	go waitforTermSignalAndExit()
 
 	// Wait for pipe input and process it in an infinite loop
+	logger.WriteInformation("Started, waiting for requests in pipe")
 	for {
-		if params.Verbose {
-			fmt.Fprintln(os.Stdout, fmt.Sprintf("Wait for requests in: %s", requestHandler.GetPipeFilePath()))
-		}
+		logger.WriteVerbose(fmt.Sprintf("Wait for requests in: %s", requestHandler.GetPipeFilePath()))
 		received, errRecv := requestHandler.WaitForPipeInputString()
 		if errRecv != nil {
-			fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while receive data from the pipe: %s", errRecv))
+			logger.WriteErrorMessage(fmt.Sprintf("Receive data from the pipe: %s", errRecv))
 			os.Exit(-1)
 		}
 
@@ -79,7 +82,7 @@ func main() {
 		}
 
 		if err != nil {
-			fmt.Fprintln(os.Stderr, fmt.Sprintf("Error while handle request \"%s\": %s", received, err))
+			logger.WriteErrorMessage(fmt.Sprintf("Handle request \"%s\"\n\n: %s", received, err))
 			os.Exit(-2)
 		}
 
@@ -93,9 +96,7 @@ func handleRequest(handler commonbl.PipeHandler, request string, requestType com
 	if errConv != nil {
 		return nil // In case we cant find an ID, we simply ingnor the request as any other invalid input
 	}
-	if params.Verbose {
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("Handle \"%s\" with id %d", requestType, id))
-	}
+	logger.WriteVerbose(fmt.Sprintf("Handle \"%s\" with id %d", requestType, id))
 
 	var writeErr error
 	if !params.Test {
@@ -111,19 +112,19 @@ func handleRequest(handler commonbl.PipeHandler, request string, requestType com
 }
 
 func lockResponse(handler commonbl.PipeHandler, id int) error {
-	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
+	logger.WriteErrorMessage(fmt.Sprintf("Productive code not implemented yet"))
 
 	return &strconv.NumError{}
 }
 
 func shareResponse(handler commonbl.PipeHandler, id int) error {
-	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
+	logger.WriteErrorMessage(fmt.Sprintf("Productive code not implemented yet"))
 
 	return &strconv.NumError{}
 }
 
 func processResponse(handler commonbl.PipeHandler, id int) error {
-	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: Productive code not implemented yet"))
+	logger.WriteErrorMessage(fmt.Sprintf("Productive code not implemented yet"))
 
 	return &strconv.NumError{}
 }
@@ -154,9 +155,8 @@ func waitforKillSignalAndExit() {
 	signal.Notify(killSignal, os.Interrupt)
 	<-killSignal
 
-	if params.Verbose {
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("End: %s due to kill signal", os.Args[0]))
-	}
+	logger.WriteVerbose(fmt.Sprintf("End %s due to kill signal", os.Args[0]))
+
 	os.Exit(0)
 }
 
@@ -164,9 +164,9 @@ func waitforTermSignalAndExit() {
 	termSignal := make(chan os.Signal, syscall.SIGTERM)
 	signal.Notify(termSignal, os.Interrupt)
 	<-termSignal
-	if params.Verbose {
-		fmt.Fprintln(os.Stdout, fmt.Sprintf("End: %s due to terminate signal", os.Args[0]))
-	}
+
+	logger.WriteVerbose(fmt.Sprintf("End %s due to terminate signal", os.Args[0]))
+
 	os.Exit(0)
 }
 

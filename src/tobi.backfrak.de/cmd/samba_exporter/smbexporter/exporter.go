@@ -24,11 +24,11 @@ type SambaExporter struct {
 	ResponseHander commonbl.PipeHandler
 	Descriptions   map[string]prometheus.Desc
 	hostName       string
-	Verbose        bool
+	Logger         commonbl.Logger
 }
 
 // Get a new instance of the SambaExporter
-func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander commonbl.PipeHandler, verbose bool) *SambaExporter {
+func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander commonbl.PipeHandler, logger commonbl.Logger) *SambaExporter {
 	var ret SambaExporter
 	ret.RequestHandler = requestHandler
 	ret.ResponseHander = responseHander
@@ -38,32 +38,24 @@ func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander common
 	if err != nil {
 		ret.hostName = "127.0.0.1"
 	}
-	ret.Verbose = verbose
+	ret.Logger = logger
 
 	return &ret
 }
 
 // Describe function for the Prometheus Exporter Interface
 func (smbExporter *SambaExporter) Describe(ch chan<- *prometheus.Desc) {
-
-	if smbExporter.Verbose {
-		fmt.Fprintln(os.Stdout, "Request samba_statusd to get prometheus descriptions")
-	}
-
-	locks, processes, shares, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander, smbExporter.Verbose)
+	smbExporter.Logger.WriteVerbose("Request samba_statusd to get prometheus descriptions")
+	locks, processes, shares, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander, smbExporter.Logger)
 	if errGet != nil {
-		fmt.Fprintln(os.Stderr, errGet)
+		smbExporter.Logger.WriteError(errGet)
 		return
 	}
 
-	if smbExporter.Verbose {
-		fmt.Fprintln(os.Stdout, "Handle samba_statusd response and set prometheus descriptions")
-	}
-
+	smbExporter.Logger.WriteVerbose("Handle samba_statusd response and set prometheus descriptions")
 	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares)
-
 	if stats == nil {
-		fmt.Fprintln(os.Stderr, pipecomunication.NewSmbStatusUnexpectedResponseError("Empty response from samba_statusd"))
+		smbExporter.Logger.WriteError(pipecomunication.NewSmbStatusUnexpectedResponseError("Empty response from samba_statusd"))
 		return
 	}
 
@@ -76,32 +68,24 @@ func (smbExporter *SambaExporter) Describe(ch chan<- *prometheus.Desc) {
 
 // Collect function for the Prometheus Exporter Interface
 func (smbExporter *SambaExporter) Collect(ch chan<- prometheus.Metric) {
-
-	if smbExporter.Verbose {
-		fmt.Fprintln(os.Stdout, "Request samba_statusd to get prometheus metrics")
-	}
-
-	locks, processes, shares, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander, smbExporter.Verbose)
+	smbExporter.Logger.WriteVerbose("Request samba_statusd to get prometheus metrics")
+	locks, processes, shares, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander, smbExporter.Logger)
 	if errGet != nil {
-		fmt.Fprintln(os.Stderr, errGet)
+		smbExporter.Logger.WriteError(errGet)
 		return
 	}
 
-	if smbExporter.Verbose {
-		fmt.Fprintln(os.Stdout, "Handle samba_statusd response and set prometheus metrics")
-	}
-
+	smbExporter.Logger.WriteVerbose("Handle samba_statusd response and set prometheus metrics")
 	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares)
-
 	if stats == nil {
-		fmt.Fprintln(os.Stderr, pipecomunication.NewSmbStatusUnexpectedResponseError("Empty response from samba_statusd"))
+		smbExporter.Logger.WriteError(pipecomunication.NewSmbStatusUnexpectedResponseError("Empty response from samba_statusd"))
 		return
 	}
 
 	for _, stat := range stats {
 		desc, found := smbExporter.Descriptions[stat.Name]
 		if found == false {
-			fmt.Fprintln(os.Stderr, fmt.Sprintf("No description found for %s", stat.Name))
+			smbExporter.Logger.WriteErrorMessage(fmt.Sprintf("No description found for %s", stat.Name))
 		}
 		met := prometheus.MustNewConstMetric(&desc, prometheus.GaugeValue, float64(stat.Value), smbExporter.hostName)
 		ch <- met
