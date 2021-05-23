@@ -14,27 +14,29 @@ script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 branch_dir="$script_dir/../.."
 request_pipe_file="/dev/shm/samba_exporter.request.pipe"
 response_pipe_file="/dev/shm/samba_exporter.response.pipe"
-samba_statusd_log="$branch_dir/logs/samba_statusd.log"
-samba_exporter_log="$branch_dir/logs/samba_exporter.log"
 
 if [ "$1" == "container" ]; then
     samba_exporter="/samba_exporter/samba_exporter"
     samba_statusd="/samba_statusd/samba_statusd"
+    samba_statusd_log="/samba_statusd/samba_statusd.log"
+    samba_exporter_log="/samba_exporter/samba_exporter.log"
 else
     samba_exporter="$branch_dir/bin/samba_exporter"
     samba_statusd="$branch_dir/bin/samba_statusd"
+    samba_statusd_log="$branch_dir/logs/samba_statusd.log"
+    samba_exporter_log="$branch_dir/logs/samba_exporter.log"
+    if [ -d "$branch_dir/logs/" ]; then
+        if [ -f "$samba_statusd_log"]; then 
+            rm "$samba_statusd_log"
+        fi
+        if [ -f "$samba_exporter_log"]; then 
+            rm "$samba_exporter_log"
+        fi
+    else 
+        mkdir -p "$branch_dir/logs/"
+    fi
 fi
 
-if [ -d "$branch_dir/logs/" ]; then
-    if [ -f "$samba_statusd_log"]; then 
-        rm "$samba_statusd_log"
-    fi
-    if [ -f "$samba_exporter_log"]; then 
-        rm "$samba_exporter_log"
-    fi
-else 
-    mkdir -p "$branch_dir/logs/"
-fi
 
 # ###########################################################################################
 # Test code
