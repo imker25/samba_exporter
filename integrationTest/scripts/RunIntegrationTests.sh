@@ -146,15 +146,17 @@ echo " "
 echo "# ###################################################################"
 
 # Test the output of promethues web requests 
-assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\""
-assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\""
-assert_raises "curl http://127.0.0.1:9922/metrics | grep \"promhttp_metric_handler_requests_total\""
-assert_raises "curl http://127.0.0.1:9922/metrics | grep \"process_virtual_memory_max_bytes\""
-assert_raises "curl http://127.0.0.1:9922/metrics | grep \"promhttp_metric_handler_requests_in_flight 1\""
-assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_individual_user_count\""
-assert_raises "curl http://127.0.0.1:9922/metrics | grep \"# HELP samba_individual_user_count The number of users connected to this samba server\""
-assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_individual_user_count\""
-assert_raises "curl http://127.0.0.1:9922/metrics | grep \"# TYPE samba_individual_user_count gauge\""
+assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\"" 0
+assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\"" 0 
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"promhttp_metric_handler_requests_total\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"process_virtual_memory_max_bytes\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"promhttp_metric_handler_requests_in_flight 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_individual_user_count\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"# HELP samba_individual_user_count The number of users connected to this samba server\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_individual_user_count 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"# TYPE samba_individual_user_count gauge\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
 
 # End daemons
 echo "# ###################################################################"
