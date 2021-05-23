@@ -96,14 +96,14 @@ func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commo
 	mux.Lock()
 	defer mux.Unlock()
 
-	logger.WriteVerbose(fmt.Sprintf("Send \"%s\" request on pipe", request))
+	logger.WriteVerbose(fmt.Sprintf("Send \"%s\" request with ID %d on pipe", request, requestCount))
 
 	errWrite := requestHandler.WritePipeString(requestString)
 	if errWrite != nil {
 		return "", errWrite
 	}
 
-	logger.WriteVerbose(fmt.Sprintf("Wait for \"%s\" response on pipe", request))
+	logger.WriteVerbose(fmt.Sprintf("Wait for \"%s\" response with ID %d on pipe", request, requestCount))
 
 	var errRead error
 	response := requestString
@@ -115,7 +115,7 @@ func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commo
 		return "", errRead
 	}
 
-	logger.WriteVerbose(fmt.Sprintf("Handle \"%s\" response from pipe", request))
+	logger.WriteVerbose(fmt.Sprintf("Handle \"%s\" response with ID %d from pipe", request, requestCount))
 
 	header, data, errSplit := commonbl.SplitResponse(response)
 	if errSplit != nil {
