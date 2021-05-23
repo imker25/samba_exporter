@@ -5,13 +5,16 @@ package statisticsGenerator
 // by a BSD-style license that can be found in the
 // LICENSE file.
 
-import "tobi.backfrak.de/cmd/samba_exporter/smbstatusreader"
+import (
+	"tobi.backfrak.de/cmd/samba_exporter/smbstatusreader"
+)
 
 // Type for numeric statistic values from the samba server
 type SmbStatisticsNumeric struct {
-	Name  string
-	Value int
-	Help  string
+	Name   string
+	Value  float64
+	Help   string
+	Labels map[string]string
 }
 
 // GetSmbStatistics - Get the statistic data for prometheus out of the response data arrays
@@ -22,6 +25,7 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 	var pids []int
 	var shares []string
 	var clients []string
+	locksPerShare := make(map[string]int, 0)
 
 	for _, lock := range lockData {
 		if !intArrContains(users, lock.UserID) {
@@ -30,6 +34,13 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 
 		if !intArrContains(pids, lock.PID) {
 			pids = append(pids, lock.PID)
+		}
+
+		locksOfShare, found := locksPerShare[lock.SharePath]
+		if found == false {
+			locksPerShare[lock.SharePath] = 1
+		} else {
+			locksPerShare[lock.SharePath] = locksOfShare + 1
 		}
 	}
 
@@ -57,11 +68,20 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 		}
 	}
 
-	ret = append(ret, SmbStatisticsNumeric{"individual_user_count", len(users), "The number of users connected to this samba server"})
-	ret = append(ret, SmbStatisticsNumeric{"locked_file_count", len(lockData), "Number of files locked by the samba server"})
-	ret = append(ret, SmbStatisticsNumeric{"pid_count", len(pids), "Number of processes running by the samba server"})
-	ret = append(ret, SmbStatisticsNumeric{"share_count", len(shares), "Number of shares used by clients of the samba server"})
-	ret = append(ret, SmbStatisticsNumeric{"client_count", len(clients), "Number of clients using the samba server"})
+	ret = append(ret, SmbStatisticsNumeric{"individual_user_count", float64(len(users)), "The number of users connected to this samba server", nil})
+	ret = append(ret, SmbStatisticsNumeric{"locked_file_count", float64(len(lockData)), "Number of files locked by the samba server", nil})
+	ret = append(ret, SmbStatisticsNumeric{"pid_count", float64(len(pids)), "Number of processes running by the samba server", nil})
+	ret = append(ret, SmbStatisticsNumeric{"share_count", float64(len(shares)), "Number of shares used by clients of the samba server", nil})
+	ret = append(ret, SmbStatisticsNumeric{"client_count", float64(len(clients)), "Number of clients using the samba server", nil})
+
+	if len(locksPerShare) > 0 {
+		for share, locks := range locksPerShare {
+			ret = append(ret, SmbStatisticsNumeric{"locks_per_share", float64(locks), "Number of locks on share", map[string]string{"share": share}})
+		}
+	} else {
+		// Add this value even if no locks found, so prometheus description will be created
+		ret = append(ret, SmbStatisticsNumeric{"locks_per_share", float64(0), "Number of locks on share", map[string]string{"share": ""}})
+	}
 
 	return ret
 }

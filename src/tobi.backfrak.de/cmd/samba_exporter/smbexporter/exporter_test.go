@@ -25,10 +25,6 @@ func TestNewSambaExporter(t *testing.T) {
 		t.Errorf("The exporter.RequestHandler is not of the expected type")
 	}
 
-	if exporter.hostName == "" {
-		t.Errorf("The exporter.hostName is empty")
-	}
-
 	if exporter.Descriptions == nil {
 		t.Errorf("exporter.Descriptions are nil")
 	}

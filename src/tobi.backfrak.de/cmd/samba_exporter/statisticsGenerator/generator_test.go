@@ -19,7 +19,7 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 5 {
+	if len(ret) != 6 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -31,6 +31,25 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 
 }
 
+func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
+	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines)
+
+	ret := GetSmbStatistics(locks, processes, shares)
+	if len(ret) != 6 {
+		t.Errorf("The number of resturn values %d was not expected", len(ret))
+	}
+
+	if ret[5].Name != "locks_per_share" {
+		t.Errorf("The Name \"%s\" is not expected", ret[5].Name)
+	}
+
+	if ret[5].Labels["share"] != "" {
+		t.Errorf("The Labels[\"share\"] %s is not expected", ret[5].Labels["share"])
+	}
+}
+
 func TestGetSmbStatistics(t *testing.T) {
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines)
@@ -38,7 +57,7 @@ func TestGetSmbStatistics(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 5 {
+	if len(ret) != 9 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -54,7 +73,7 @@ func TestGetSmbStatistics(t *testing.T) {
 		t.Errorf("The locked_file_count is not at expecgted place")
 	}
 
-	if ret[1].Value != len(locks) {
+	if ret[1].Value != float64(len(locks)) {
 		t.Errorf("The locked_file_count is not the expected value")
 	}
 

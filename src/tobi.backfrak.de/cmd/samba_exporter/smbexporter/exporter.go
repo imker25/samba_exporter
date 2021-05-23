@@ -7,7 +7,6 @@ package smbexporter
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"tobi.backfrak.de/cmd/samba_exporter/pipecomunication"
@@ -23,7 +22,6 @@ type SambaExporter struct {
 	RequestHandler commonbl.PipeHandler
 	ResponseHander commonbl.PipeHandler
 	Descriptions   map[string]prometheus.Desc
-	hostName       string
 	Logger         commonbl.Logger
 }
 
@@ -32,13 +30,8 @@ func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander common
 	var ret SambaExporter
 	ret.RequestHandler = requestHandler
 	ret.ResponseHander = responseHander
-	ret.Descriptions = make(map[string]prometheus.Desc)
-	var err error
-	ret.hostName, err = os.Hostname()
-	if err != nil {
-		ret.hostName = "127.0.0.1"
-	}
 	ret.Logger = logger
+	ret.Descriptions = make(map[string]prometheus.Desc)
 
 	return &ret
 }
@@ -62,13 +55,16 @@ func (smbExporter *SambaExporter) Describe(ch chan<- *prometheus.Desc) {
 		// Exit with panic, since this means there are no descriptions setup for further operation
 		panic(errGet)
 	}
-
-	for _, stat := range stats {
-		smbExporter.setGaugeDescriptionNoLabel(stat.Name, stat.Help, ch)
-	}
-
 	smbExporter.setGaugeDescriptionNoLabel("server_up", "1 if the samba server seems to be running", ch)
 	smbExporter.setGaugeDescriptionNoLabel("satutsd_up", "1 if the samba_statusd seems to be running", ch)
+
+	for _, stat := range stats {
+		if stat.Labels == nil {
+			smbExporter.setGaugeDescriptionNoLabel(stat.Name, stat.Help, ch)
+		} else {
+			smbExporter.setGaugeDescriptionWithLabel(stat.Name, stat.Help, stat.Labels, ch)
+		}
+	}
 }
 
 // Collect function for the Prometheus Exporter Interface
@@ -91,8 +87,8 @@ func (smbExporter *SambaExporter) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	smbExporter.Logger.WriteVerbose("Handle samba_statusd response and set prometheus metrics")
-	smbExporter.setGaugeIntMetricNoLabel("server_up", smbServerUp, ch)
-	smbExporter.setGaugeIntMetricNoLabel("satutsd_up", smbStatusUp, ch)
+	smbExporter.setGaugeIntMetricNoLabel("server_up", float64(smbServerUp), ch)
+	smbExporter.setGaugeIntMetricNoLabel("satutsd_up", float64(smbStatusUp), ch)
 
 	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares)
 	if stats == nil {
@@ -101,29 +97,63 @@ func (smbExporter *SambaExporter) Collect(ch chan<- prometheus.Metric) {
 	}
 
 	for _, stat := range stats {
-		smbExporter.setGaugeIntMetricNoLabel(stat.Name, stat.Value, ch)
+		if stat.Labels == nil {
+			smbExporter.setGaugeIntMetricNoLabel(stat.Name, stat.Value, ch)
+		} else {
+			smbExporter.setGaugeIntMetricWithLabel(stat.Name, stat.Value, stat.Labels, ch)
+		}
 	}
 
 }
 
-func (smbExporter *SambaExporter) setGaugeIntMetricNoLabel(name string, value int, ch chan<- prometheus.Metric) {
+func (smbExporter *SambaExporter) setGaugeIntMetricNoLabel(name string, value float64, ch chan<- prometheus.Metric) {
 	desc, found := smbExporter.Descriptions[name]
 	if found == false {
 		smbExporter.Logger.WriteErrorMessage(fmt.Sprintf("No description found for %s", name))
+		return
 	}
-	// Example with label
-	// met := prometheus.MustNewConstMetric(&desc, prometheus.GaugeValue, float64(stat.Value), "labelValue")
-	met := prometheus.MustNewConstMetric(&desc, prometheus.GaugeValue, float64(value))
 
+	met := prometheus.MustNewConstMetric(&desc, prometheus.GaugeValue, value)
+	ch <- met
+}
+
+func (smbExporter *SambaExporter) setGaugeIntMetricWithLabel(name string, value float64, labels map[string]string, ch chan<- prometheus.Metric) {
+	desc, found := smbExporter.Descriptions[name]
+	if found == false {
+		smbExporter.Logger.WriteErrorMessage(fmt.Sprintf("No description found for %s", name))
+		return
+	}
+	var labelValues []string
+	for _, value := range labels {
+		if value != "" {
+			labelValues = append(labelValues, value)
+		} else {
+			// if a labels value is "", we don't add the value at all
+			return
+		}
+	}
+
+	met := prometheus.MustNewConstMetric(&desc, prometheus.GaugeValue, value, labelValues...)
 	ch <- met
 }
 
 func (smbExporter *SambaExporter) setGaugeDescriptionNoLabel(name string, help string, ch chan<- *prometheus.Desc) {
-	// Example with label
-	//desc := prometheus.NewDesc(prometheus.BuildFQName(EXPORTER_LABEL_PREFIX, "", stat.Name), stat.Help, []string{"labelname"}, nil)
-
-	// Without label
 	desc := prometheus.NewDesc(prometheus.BuildFQName(EXPORTER_LABEL_PREFIX, "", name), help, []string{}, nil)
 	smbExporter.Descriptions[name] = *desc
 	ch <- desc
+}
+
+func (smbExporter *SambaExporter) setGaugeDescriptionWithLabel(name string, help string, labels map[string]string, ch chan<- *prometheus.Desc) {
+	// Since the a the same label can have multiple values, we need only one description
+	_, found := smbExporter.Descriptions[name]
+	if found == false {
+		var labelKeys []string
+		for key, _ := range labels {
+			labelKeys = append(labelKeys, key)
+		}
+
+		desc := prometheus.NewDesc(prometheus.BuildFQName(EXPORTER_LABEL_PREFIX, "", name), help, labelKeys, nil)
+		smbExporter.Descriptions[name] = *desc
+		ch <- desc
+	}
 }

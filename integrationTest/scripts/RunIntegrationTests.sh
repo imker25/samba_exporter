@@ -157,6 +157,7 @@ assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_individual_user
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"# TYPE samba_individual_user_count gauge\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"/usr/share/data\"" 0
 
 # End daemons
 echo "# ###################################################################"
