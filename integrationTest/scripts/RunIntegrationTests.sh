@@ -221,10 +221,13 @@ cat $samba_statusd_log
 echo "# ###################################################################"
 
 echo "Check log files"
-wc -l $samba_exporter_log | awk '{print $1}' 
-wc -l $samba_statusd_log | awk '{print $1}' 
-# assert_raises "wc -l $samba_exporter_log | awk '{print $1}' | grep \"1\"" 0
-# assert_raises "wc -l $samba_statusd_log | awk '{print $1}' | grep \"1\"" 0
+samba_exporter_log_lines=$(wc -l $samba_exporter_log | awk '{print $1}' )
+samba_statusd_log_lines=$(wc -l $samba_statusd_log | awk '{print $1}' )
+echo "$samba_exporter_log has $samba_exporter_log_lines lines"
+echo "$samba_statusd_log has $samba_statusd_log_lines lines"
+
+assert "echo $samba_exporter_log_lines" "1"
+assert "echo $samba_statusd_log_lines" "1"
 
 echo "End Tests"
 echo "# ###################################################################"
