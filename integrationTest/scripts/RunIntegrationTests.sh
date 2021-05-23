@@ -14,6 +14,8 @@ script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 branch_dir="$script_dir/../.."
 request_pipe_file="/dev/shm/samba_exporter.request.pipe"
 response_pipe_file="/dev/shm/samba_exporter.response.pipe"
+samba_statusd_log="$branch_dir/logs/samba_statusd.log"
+samba_exporter_log="$branch_dir/logs/samba_exporter.log"
 
 if [ "$1" == "container" ]; then
     samba_exporter="/samba_exporter/samba_exporter"
@@ -21,6 +23,17 @@ if [ "$1" == "container" ]; then
 else
     samba_exporter="$branch_dir/bin/samba_exporter"
     samba_statusd="$branch_dir/bin/samba_statusd"
+fi
+
+if [ -d "$branch_dir/logs/" ]; then
+    if [ -f "$samba_statusd_log"]; then 
+        rm "$samba_statusd_log"
+    fi
+    if [ -f "$samba_exporter_log"]; then 
+        rm "$samba_exporter_log"
+    fi
+else 
+    mkdir -p "$branch_dir/logs/"
 fi
 
 # ###########################################################################################
@@ -166,6 +179,51 @@ kill $statusdPID
 echo "End $samba_exporter with PID $exporterPID"
 kill $exporterPID
 
+echo "# ###################################################################"
+echo "Test in daemons non verbose mode"
+echo "# ###################################################################"
+echo "$samba_statusd -test-mode > $samba_statusd_log 2>&1 &"
+$samba_statusd -test-mode > $samba_statusd_log 2>&1 &
+statusdPID=$(pidof $samba_statusd)
+sleep 0.1
+echo "$samba_exporter -test-mode > $samba_exporter_log 2>&1 &"
+$samba_exporter -test-mode > $samba_exporter_log 2>&1 &
+exporterPID=$(pidof $samba_exporter)
+sleep 0.1
+echo "$samba_statusd running with PID $statusdPID"
+echo "$samba_exporter running with PID $exporterPID"
+echo "# ###################################################################"
+
+echo "Test Web Interface"
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"/usr/share/data\"" 0
+assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\"" 0
+assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\"" 0 
+echo "# ###################################################################"
+
+# End daemons
+echo "# ###################################################################"
+echo "End $samba_statusd with PID $statusdPID"
+kill $statusdPID
+echo "End $samba_exporter with PID $exporterPID"
+kill $exporterPID
+echo "# ###################################################################"
+
+echo "Print Log files"
+echo "cat $samba_exporter_log"
+cat $samba_exporter_log
+echo "# ###################################################################"
+echo "cat $samba_statusd_log"
+cat $samba_statusd_log
+echo "# ###################################################################"
+
+echo "Check log files"
+assert_raises "wc -l $samba_exporter_log | awk '{print $1}' | grep \"1\"" 0
+assert_raises "wc -l $samba_statusd_log | awk '{print $1}' | grep \"1\"" 0
+
+echo "End Tests"
+echo "# ###################################################################"
 # Finish test run
 assert_end samba-exporter_IntegrationTests
 

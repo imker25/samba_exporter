@@ -63,7 +63,7 @@ func main() {
 	go waitforTermSignalAndExit()
 
 	// Wait for pipe input and process it in an infinite loop
-	logger.WriteInformation("Started, waiting for requests in pipe")
+	logger.WriteInformation(fmt.Sprintf("Started %s, waiting for requests in pipe", os.Args[0]))
 	for {
 		logger.WriteVerbose(fmt.Sprintf("Wait for requests in: %s", requestHandler.GetPipeFilePath()))
 		received, errRecv := requestHandler.WaitForPipeInputString()
@@ -155,7 +155,7 @@ func waitforKillSignalAndExit() {
 	signal.Notify(killSignal, os.Interrupt)
 	<-killSignal
 
-	logger.WriteVerbose(fmt.Sprintf("End %s due to kill signal", os.Args[0]))
+	logger.WriteInformation(fmt.Sprintf("End %s due to kill signal", os.Args[0]))
 
 	os.Exit(0)
 }
@@ -165,7 +165,7 @@ func waitforTermSignalAndExit() {
 	signal.Notify(termSignal, os.Interrupt)
 	<-termSignal
 
-	logger.WriteVerbose(fmt.Sprintf("End %s due to terminate signal", os.Args[0]))
+	logger.WriteInformation(fmt.Sprintf("End %s due to terminate signal", os.Args[0]))
 
 	os.Exit(0)
 }

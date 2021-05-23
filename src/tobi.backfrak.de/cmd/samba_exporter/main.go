@@ -134,7 +134,7 @@ func waitforKillSignalAndExit() {
 	signal.Notify(killSignal, os.Interrupt)
 	<-killSignal
 
-	logger.WriteVerbose(fmt.Sprintf("End %s due to kill signal", os.Args[0]))
+	logger.WriteInformation(fmt.Sprintf("End %s due to kill signal", os.Args[0]))
 
 	os.Exit(0)
 }
@@ -144,7 +144,7 @@ func waitforTermSignalAndExit() {
 	signal.Notify(termSignal, os.Interrupt)
 	<-termSignal
 
-	logger.WriteVerbose(fmt.Sprintf("End %s due to terminate signal", os.Args[0]))
+	logger.WriteInformation(fmt.Sprintf("End %s due to terminate signal", os.Args[0]))
 
 	os.Exit(0)
 }
