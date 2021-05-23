@@ -89,12 +89,11 @@ func goGetSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler com
 }
 
 func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType, logger commonbl.Logger) (string, error) {
-	requestCount++
-	requestString := commonbl.GetRequest(request, requestCount)
-
 	// Ensure we run only one request per time on the pipes
 	mux.Lock()
 	defer mux.Unlock()
+	requestCount++
+	requestString := commonbl.GetRequest(request, requestCount)
 
 	logger.WriteVerbose(fmt.Sprintf("Send \"%s\" request with ID %d on pipe", request, requestCount))
 
