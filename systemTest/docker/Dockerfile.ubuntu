@@ -34,7 +34,4 @@ RUN chmod 775 /usr/bin/start_samba_statusd.sh
 COPY install/etc/systemd/system/samba_statusd.service /etc/systemd/system/samba_statusd.service
 COPY install/etc/systemd/system/samba_exporter.service /etc/systemd/system/samba_exporter.service
 
-# Install the services
-RUN systemctl daemon-reload && \
-    systemctl enable samba_statusd.service && \
-    systemctl enable samba_exporter.service
+

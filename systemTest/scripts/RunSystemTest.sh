@@ -41,6 +41,12 @@ echo "# ###################################################################"
 echo "$(date) - Prepare for System testing"
 echo "# ###################################################################"
 
+echo "systemctl daemon-reload "
+systemctl daemon-reload 
+echo "systemctl enable samba_statusd.service"
+systemctl enable samba_statusd.service
+echo "systemctl enable samba_exporter.service"
+systemctl enable samba_exporter.service
 echo "systemctl stop samba_statusd.service"
 systemctl stop samba_statusd.service
 echo "systemctl stop samba_exporter.service"
