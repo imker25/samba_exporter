@@ -65,21 +65,20 @@ echo "Test in daemons verbose mode"
 echo "# ###################################################################"
 echo "$samba_statusd -verbose &"
 $samba_statusd -verbose  &
-statusdPID=$(pidof samba_statusd)
 sleep 0.1
+statusdPID=$(pidof samba_statusd)
 echo "$samba_statusd running with PID $statusdPID"
 echo " "
 echo "$su -s /bin/bash  samba-exporter -c \"samba_exporter -verbose &\""
 su -s /bin/bash  samba-exporter -c "$samba_exporter -verbose  &"
-exporterPID=$(pidof samba_exporter)
 sleep 0.1
+exporterPID=$(pidof samba_exporter)
 echo "$samba_exporter running with PID $exporterPID"
 echo "# ###################################################################"
 
 echo "Test Web Interface"
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
-assert_raises "curl http://127.0.0.1:9922/metrics | grep \"/usr/share/data\"" 0
 assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\"" 0
 assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\"" 0 
 
