@@ -19,16 +19,16 @@ RUN apt-get install -y wget curl coreutils mawk < /bin/true
 COPY systemTest/scripts/RunSystemTest.sh /RunSystemTest.sh
 
 # Install the samba_exporter
-COPY bin/samba_exporter/samba_exporter /usr/bin/samba_exporter
-RUN chmod 775 /usr/bin/samba_exporter
+COPY bin/samba_exporter/samba_exporter /usr/local/bin/samba_exporter
+RUN chmod 775 /usr/local/bin/samba_exporter
 
 # Install the samba_statusd 
-COPY bin/samba_statusd/samba_statusd /usr/bin/samba_statusd 
-RUN chmod 775 /usr/bin/samba_statusd 
+COPY bin/samba_statusd/samba_statusd /usr/local/bin/samba_statusd 
+RUN chmod 775 /usr/local/bin/samba_statusd 
 
 # Install the start_samba_statusd.sh
-COPY install/usr/bin/start_samba_statusd.sh /usr/bin/start_samba_statusd.sh
-RUN chmod 775 /usr/bin/start_samba_statusd.sh
+COPY install/usr/local/bin/start_samba_statusd.sh /usr/local/bin/start_samba_statusd.sh
+RUN chmod 775 /usr/local/bin/start_samba_statusd.sh
 
 # Install the unit files
 COPY install/etc/systemd/system/samba_statusd.service /etc/systemd/system/samba_statusd.service

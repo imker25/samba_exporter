@@ -2,8 +2,8 @@
 
 request_pipe_file="/run/samba_exporter.request.pipe"
 response_pipe_file="/run/samba_exporter.response.pipe"
-samba_exporter="/usr/bin/samba_exporter"
-samba_statusd="/usr/bin/start_samba_statusd.sh"
+samba_exporter="/usr/local/bin/samba_exporter"
+samba_statusd="/usr/local/bin/start_samba_statusd.sh"
 samba_statusd_log="/var/log/samba_statusd.log"
 samba_exporter_log="/var/log/samba_exporter.log"
 

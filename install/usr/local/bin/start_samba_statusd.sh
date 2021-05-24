@@ -16,7 +16,7 @@ pipe_permissions="660"
 pipe_owner="root:samba-exporter"
 request_pipe_file="/run/samba_exporter.request.pipe"
 response_pipe_file="/run/samba_exporter.response.pipe"
-samba_statusd="/usr/bin/samba_statusd"
+samba_statusd="/usr/local/bin/samba_statusd"
 
 # Check that samba_statusd is installed as expected
 if [ ! -f "$samba_statusd" ]; then
