@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"os/user"
 	"strings"
 	"syscall"
 	"time"
@@ -62,6 +63,18 @@ func main() {
 	}
 
 	if !params.Test {
+
+		currentUser, errUserGet := user.Current()
+		if errUserGet != nil {
+			logger.WriteErrorMessage(fmt.Sprintf("Error when trying to get the current user: %s", errUserGet.Error()))
+			os.Exit(-5)
+		}
+
+		if currentUser.Username != "root" {
+			logger.WriteErrorMessage(fmt.Sprintf("The current user %s is not root.", currentUser.Username))
+			os.Exit(-6)
+		}
+
 		var errLookPath error
 		smbstatusPath, errLookPath = exec.LookPath("smbstatus")
 		if errLookPath != nil {
@@ -70,6 +83,7 @@ func main() {
 		} else {
 			logger.WriteVerbose(fmt.Sprintf("Use %s to get samba status.", smbstatusPath))
 		}
+
 	}
 
 	// Ensure we exit clean on term and kill signals
