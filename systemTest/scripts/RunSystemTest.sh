@@ -61,7 +61,7 @@ echo "$(date) - Run System tests"
 echo "# ###################################################################"
 
 echo "# ###################################################################"
-echo "Test in daemons verbose mode"
+echo "Run in daemons verbose mode"
 echo "# ###################################################################"
 echo "$samba_statusd -verbose &"
 $samba_statusd -verbose  &
@@ -74,6 +74,16 @@ su -s /bin/bash  samba-exporter -c "$samba_exporter -verbose  &"
 sleep 0.1
 exporterPID=$(pidof samba_exporter)
 echo "$samba_exporter running with PID $exporterPID"
+
+echo "# ###################################################################"
+echo "Get the enpoint:"
+echo "Call: curl http://127.0.0.1:9922"
+curl http://127.0.0.1:9922
+echo " "
+echo "# ###################################################################"
+echo "Get metrics"
+echo "Call: curl http://127.0.0.1:9922/metrics"
+curl http://127.0.0.1:9922/metrics 
 echo "# ###################################################################"
 
 echo "Test Web Interface"
