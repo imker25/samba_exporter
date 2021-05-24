@@ -63,10 +63,10 @@ echo "Test in daemons verbose mode"
 echo "# ###################################################################"
 echo "$samba_statusd -verbose &"
 $samba_statusd -verbose  &
-statusdPID=$(pidof $samba_statusd)
+statusdPID=$(pidof /usr/bin/samba_statusd)
 sleep 0.1
-echo "$su samba-exporter -c \"samba_exporter -verbose\" &"
-su samba-exporter -c "$samba_exporter -verbose"  &
+echo "$su -s /bin/bash  samba-exporter -c \"samba_exporter -verbose &\""
+su -s /bin/bash  samba-exporter -c "$samba_exporter -verbose  &"
 exporterPID=$(pidof $samba_exporter)
 sleep 0.1
 echo "$samba_statusd running with PID $statusdPID"
