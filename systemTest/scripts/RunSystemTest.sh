@@ -2,6 +2,10 @@
 
 request_pipe_file="/run/samba_exporter.request.pipe"
 response_pipe_file="/run/samba_exporter.response.pipe"
+samba_exporter="/samba_exporter/samba_exporter"
+samba_statusd="/samba_statusd/samba_statusd"
+samba_statusd_log="/samba_statusd/samba_statusd.log"
+samba_exporter_log="/samba_exporter/samba_exporter.log"
 
 # ###########################################################################################
 # Test code
@@ -53,6 +57,9 @@ fi
 echo "# ###################################################################"
 echo "$(date) - Run System tests"
 echo "# ###################################################################"
+
+echo "id"
+id
 
 echo "# ###################################################################"
 echo "$(date) End Tests"
