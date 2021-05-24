@@ -89,4 +89,4 @@ jobs:
       - name: Build test environment container
         run: docker build --file systemTest/docker/Dockerfile.ubuntu --tag system-test-container .
       - name: Run System tests
-        run: docker run -i system-test-container /bin/bash -c "/RunSystemTest.sh"          
+        run: docker run --privileged -i system-test-container /bin/bash -c "/RunSystemTest.sh"          
