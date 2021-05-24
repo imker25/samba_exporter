@@ -53,7 +53,9 @@ else
     echo "Error while getting https://github.com/lehmannro/assert.sh"
     exit -1
 fi
-
+echo "# ###################################################################"
+echo "id samba-exporter"
+id samba-exporter
 echo "# ###################################################################"
 echo "$(date) - Run System tests"
 echo "# ###################################################################"
