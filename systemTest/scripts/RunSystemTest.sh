@@ -75,7 +75,7 @@ sleep 0.1
 statusdPID=$(pidof samba_statusd)
 echo "$samba_statusd running with PID $statusdPID"
 echo " "
-echo "$su -s /bin/bash  samba-exporter -c \"samba_exporter -verbose &\""
+echo "su -s /bin/bash  samba-exporter -c \"samba_exporter -verbose &\""
 su -s /bin/bash  samba-exporter -c "$samba_exporter -verbose  &"
 sleep 0.1
 exporterPID=$(pidof samba_exporter)
@@ -113,7 +113,7 @@ echo "$samba_statusd &"
 $samba_statusd  &
 sleep 0.1
 echo " "
-echo "$su -s /bin/bash  samba-exporter -c \"samba_exporter &\""
+echo "su -s /bin/bash  samba-exporter -c \"samba_exporter &\""
 su -s /bin/bash  samba-exporter -c "$samba_exporter &"
 sleep 0.1
 echo "# ###################################################################"
