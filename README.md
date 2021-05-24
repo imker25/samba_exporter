@@ -34,12 +34,15 @@ scp ./install/etc/systemd/system/samba_statusd.service <target>:/etc/systemd/sys
 scp ./install/etc/systemd/system/samba_exporter.service <target>:/etc/systemd/system/samba_exporter.service
 ```
 
-Now login to your target machine and run the commands below to enable the services:
+Now login to your target machine and run the commands below to enable the services and create the needed user and group:
 
 ```sh
 systemctl daemon-reload
 systemctl enable samba_statusd.service
 systemctl enable samba_exporter.service
+addgroup --system samba-exporter
+adduser --system --no-create-home --disabled-login samba-exporter
+adduser samba-exporter samba-exporter
 ```
 
 Finally you are abel to start the services:
