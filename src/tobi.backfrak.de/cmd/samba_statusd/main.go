@@ -9,8 +9,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/exec"
 	"os/signal"
-	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -29,6 +29,9 @@ type response func(commonbl.PipeHandler, int) error
 
 // The logger for this programm
 var logger commonbl.Logger
+
+// Path to the smbstatus executable
+var smbstatusPath string
 
 func main() {
 	handleComandlineOptions()
@@ -56,6 +59,17 @@ func main() {
 	if params.Help {
 		flag.Usage()
 		os.Exit(0)
+	}
+
+	if !params.Test {
+		var errLookPath error
+		smbstatusPath, errLookPath = exec.LookPath("smbstatus")
+		if errLookPath != nil {
+			logger.WriteErrorMessage("Can not find \"smbstatus\" executable. Please install the needed package.")
+			os.Exit(-3)
+		} else {
+			logger.WriteVerbose(fmt.Sprintf("Use %s to get samba status.", smbstatusPath))
+		}
 	}
 
 	// Ensure we exit clean on term and kill signals
@@ -112,21 +126,39 @@ func handleRequest(handler commonbl.PipeHandler, request string, requestType com
 }
 
 func lockResponse(handler commonbl.PipeHandler, id int) error {
-	logger.WriteErrorMessage(fmt.Sprintf("Productive code not implemented yet"))
+	header := commonbl.GetTestResponseHeader(commonbl.LOCK_REQUEST, id)
+	data, err := exec.Command(smbstatusPath, "-L", "-n").Output()
+	if err != nil {
+		logger.WriteErrorMessage(fmt.Sprintf("\"%s -L -n\"  returned the following error: %s", smbstatusPath, err))
+		os.Exit(-4)
+	}
+	response := commonbl.GetResponse(header, string(data))
 
-	return &strconv.NumError{}
+	return handler.WritePipeString(response)
 }
 
 func shareResponse(handler commonbl.PipeHandler, id int) error {
-	logger.WriteErrorMessage(fmt.Sprintf("Productive code not implemented yet"))
+	header := commonbl.GetTestResponseHeader(commonbl.SHARE_REQUEST, id)
+	data, err := exec.Command(smbstatusPath, "-S", "-n").Output()
+	if err != nil {
+		logger.WriteErrorMessage(fmt.Sprintf("\"%s -S -n\"  returned the following error: %s", smbstatusPath, err))
+		os.Exit(-4)
+	}
+	response := commonbl.GetResponse(header, string(data))
 
-	return &strconv.NumError{}
+	return handler.WritePipeString(response)
 }
 
 func processResponse(handler commonbl.PipeHandler, id int) error {
-	logger.WriteErrorMessage(fmt.Sprintf("Productive code not implemented yet"))
+	header := commonbl.GetTestResponseHeader(commonbl.PROCESS_REQUEST, id)
+	data, err := exec.Command(smbstatusPath, "-p", "-n").Output()
+	if err != nil {
+		logger.WriteErrorMessage(fmt.Sprintf("\"%s -p -n\"  returned the following error: %s", smbstatusPath, err))
+		os.Exit(-4)
+	}
+	response := commonbl.GetResponse(header, string(data))
 
-	return &strconv.NumError{}
+	return handler.WritePipeString(response)
 }
 
 func testProcessResponse(handler commonbl.PipeHandler, id int) error {
