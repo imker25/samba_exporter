@@ -66,3 +66,27 @@ jobs:
         run: docker build --file integrationTest/docker/Dockerfile.ubuntu --tag integration-test-container .
       - name: Run integration tests
         run: docker run -i integration-test-container /bin/bash -c "/RunIntegrationTests.sh container"
+  system-test:
+    needs: build-unit_test
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download samba_exporter artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: samba_exporter
+          path: bin/samba_exporter  
+      - name: Download samba_statusd artifact
+        uses: actions/download-artifact@v2  
+        with:
+          name: samba_statusd
+          path: bin/samba_statusd
+      - name: Check artifacts
+        run: ls -l bin/ &&  ls -l bin/samba_exporter/ && ls -l bin/samba_statusd/ 
+      - name: Build test environment container
+        run: docker build --file systemTest/docker/Dockerfile.ubuntu --tag system-test-container .
+      - name: Run System tests
+        run: docker run -i system-test-container /bin/bash -c "/RunSystemTest.sh"          
