@@ -1,15 +1,19 @@
 # Container image that runs your code
 FROM ubuntu:groovy
 
-RUN apt-get update && apt-get install -y wget curl coreutils mawk
+# Ensure we use the latest versions of all packages
+RUN apt-get update && apt-get dist-upgrade -y < /bin/true
+
+# Install dependencies for testing
+RUN apt-get install -y wget curl coreutils mawk
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
 COPY systemTest/scripts/RunSystemTest.sh /RunSystemTest.sh
 
 # The bin/samba_exporter from build output is restored as bin/samba_exporter/samba_exporter
-COPY bin/samba_exporter /samba_exporter
-RUN chmod 777 /samba_exporter/samba_exporter
+COPY bin/samba_exporter/samba_exporter /usr/bin/samba_exporter
+RUN chmod 775 /usr/bin/samba_exporter
 
 # The bin/samba_statusd from build output is restored as bin/samba_statusd/samba_statusd 
-COPY bin/samba_statusd  /samba_statusd
-RUN chmod 777 /samba_statusd/samba_statusd 
+COPY bin/samba_statusd/samba_statusd /usr/bin/samba_statusd 
+RUN chmod 775 /usr/bin/samba_statusd 

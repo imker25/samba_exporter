@@ -2,10 +2,10 @@
 
 request_pipe_file="/run/samba_exporter.request.pipe"
 response_pipe_file="/run/samba_exporter.response.pipe"
-samba_exporter="/samba_exporter/samba_exporter"
-samba_statusd="/samba_statusd/samba_statusd"
-samba_statusd_log="/samba_statusd/samba_statusd.log"
-samba_exporter_log="/samba_exporter/samba_exporter.log"
+samba_exporter="/usr/bin/samba_exporter"
+samba_statusd="/usr/bin/samba_statusd"
+samba_statusd_log="/var/log/samba_statusd.log"
+samba_exporter_log="/var/log/samba_exporter.log"
 
 # ###########################################################################################
 # Test code
