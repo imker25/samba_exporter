@@ -40,6 +40,7 @@ fi
 echo "# ###################################################################"
 echo "$(date) - Prepare for System testing"
 echo "# ###################################################################"
+systemctl daemon-reload
 echo "systemctl stop samba_statusd.service"
 systemctl stop samba_statusd.service
 echo "systemctl stop samba_exporter.service"
