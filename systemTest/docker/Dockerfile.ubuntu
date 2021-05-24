@@ -1,11 +1,11 @@
 # Container image that runs your code
-FROM ubuntu:groovy
+FROM jrei/systemd-ubuntu:20.04
 
 # Ensure we use the latest versions of all packages
 RUN apt-get update && apt-get dist-upgrade -y < /bin/true
 
-# Install samba, samba client and systemd 
-RUN apt-get install -y  samba smbclient systemd < /bin/true
+# Install samba and samba client
+RUN apt-get install -y  samba smbclient < /bin/true
 
 # Setup the user and group for the samba-exporter
 RUN addgroup --system samba-exporter
@@ -33,3 +33,8 @@ RUN chmod 775 /usr/bin/start_samba_statusd.sh
 # Install the unit files
 COPY install/etc/systemd/system/samba_statusd.service /etc/systemd/system/samba_statusd.service
 COPY install/etc/systemd/system/samba_exporter.service /etc/systemd/system/samba_exporter.service
+
+# Install the services
+RUN systemctl daemon-reload && \
+    systemctl enable samba_statusd.service && \
+    systemctl enable samba_exporter.service
