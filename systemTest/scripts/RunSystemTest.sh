@@ -3,7 +3,7 @@
 request_pipe_file="/run/samba_exporter.request.pipe"
 response_pipe_file="/run/samba_exporter.response.pipe"
 samba_exporter="/usr/bin/samba_exporter"
-samba_statusd="/usr/bin/samba_statusd"
+samba_statusd="/usr/bin/start_samba_statusd.sh"
 samba_statusd_log="/var/log/samba_statusd.log"
 samba_exporter_log="/var/log/samba_exporter.log"
 
@@ -58,9 +58,39 @@ echo "# ###################################################################"
 echo "$(date) - Run System tests"
 echo "# ###################################################################"
 
-echo "id"
-id
+echo "# ###################################################################"
+echo "Test in daemons verbose mode"
+echo "# ###################################################################"
+echo "$samba_statusd -verbose &"
+$samba_statusd -verbose  &
+statusdPID=$(pidof $samba_statusd)
+sleep 0.1
+echo "$su samba-exporter -c \"samba_exporter -verbose\" &"
+su samba-exporter -c "$samba_exporter -verbose"  &
+exporterPID=$(pidof $samba_exporter)
+sleep 0.1
+echo "$samba_statusd running with PID $statusdPID"
+echo "$samba_exporter running with PID $exporterPID"
+echo "# ###################################################################"
+
+echo "Test Web Interface"
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"/usr/share/data\"" 0
+assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\"" 0
+assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\"" 0 
+
+# End daemons
+echo "# ###################################################################"
+echo "End $samba_statusd with PID $statusdPID"
+kill $statusdPID
+echo "End $samba_exporter with PID $exporterPID"
+kill $exporterPID
+echo "# ###################################################################"
 
 echo "# ###################################################################"
 echo "$(date) End Tests"
 echo "# ###################################################################"
+# Finish test run
+assert_end samba-exporter_IntegrationTests
+exit 0
