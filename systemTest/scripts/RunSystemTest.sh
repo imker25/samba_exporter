@@ -41,16 +41,10 @@ echo "# ###################################################################"
 echo "$(date) - Prepare for System testing"
 echo "# ###################################################################"
 
-echo "systemctl daemon-reload "
-systemctl daemon-reload 
 echo "systemctl enable samba_statusd.service"
 systemctl enable samba_statusd.service
 echo "systemctl enable samba_exporter.service"
 systemctl enable samba_exporter.service
-echo "systemctl stop samba_statusd.service"
-systemctl stop samba_statusd.service
-echo "systemctl stop samba_exporter.service"
-systemctl stop samba_statusd.service
 
 if [ -f "$script_dir/assert.sh" ]; then
     echo "Remove old $script_dir/assert.sh"
@@ -115,15 +109,18 @@ echo "# ###################################################################"
 echo "# ###################################################################"
 echo "Test Services"
 echo "# ###################################################################"
-echo "systemctl start samba_statusd.service"
-systemctl start samba_statusd.service
-echo "systemctl start samba_exporter.service"
-systemctl start samba_statusd.service
+echo "$samba_statusd &"
+$samba_statusd  &
+sleep 0.1
+echo " "
+echo "$su -s /bin/bash  samba-exporter -c \"samba_exporter &\""
+su -s /bin/bash  samba-exporter -c "$samba_exporter &"
+sleep 0.1
 echo "# ###################################################################"
 exporterPID=$(pidof samba_exporter)
 echo "$samba_exporter running with PID $exporterPID"
-exporterPID=$(pidof samba_exporter)
-echo "$samba_exporter running with PID $exporterPID"
+statusdPID=$(pidof samba_statusd)
+echo "$samba_statusd running with PID $statusdPID"
 echo "# ###################################################################"
 
 echo "# ###################################################################"
