@@ -50,10 +50,11 @@ func (smbExporter *SambaExporter) Describe(ch chan<- *prometheus.Desc) {
 	smbExporter.Logger.WriteVerbose("Handle samba_statusd response and set prometheus descriptions")
 	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares)
 	if stats == nil {
-		smbExporter.Logger.WriteError(pipecomunication.NewSmbStatusUnexpectedResponseError("Empty response from samba_statusd"))
+		err := pipecomunication.NewSmbStatusUnexpectedResponseError("Empty response from samba_statusd")
+		smbExporter.Logger.WriteError(err)
 
 		// Exit with panic, since this means there are no descriptions setup for further operation
-		panic(errGet)
+		panic(err)
 	}
 	smbExporter.setGaugeDescriptionNoLabel("server_up", "1 if the samba server seems to be running", ch)
 	smbExporter.setGaugeDescriptionNoLabel("satutsd_up", "1 if the samba_statusd seems to be running", ch)
