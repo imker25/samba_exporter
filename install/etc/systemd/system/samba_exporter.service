@@ -1,0 +1,14 @@
+[Unit]
+Description=Prometheus-samba-exporter service, based on https://github.com/imker25/samba_exporter
+Requires=samba_statusd.service
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/samba_exporter
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+KillSignal=SIGINT
+User=samba-exporter 
+
+[Install]
+WantedBy=multi-user.target

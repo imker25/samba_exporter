@@ -40,8 +40,8 @@ mkfifo "$response_pipe_file"
 chown "$pipe_owner" "$response_pipe_file"
 chmod "$pipe_permissions" "$response_pipe_file"
 
-# Run samba_statusd with the given arguments
-$samba_statusd $*
+# Run samba_statusd with the given arguments as daemon
+$samba_statusd $* &
 
-# Exit the script with the exit code from samba_statusd
-exit $?
+# Exit the startup script
+exit 0

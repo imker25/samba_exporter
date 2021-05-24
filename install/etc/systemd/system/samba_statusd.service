@@ -1,0 +1,14 @@
+[Unit]
+Description=Prometheus-samba-statusd service, based on https://github.com/imker25/samba_exporter
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/usr/bin/start_samba_statusd.sh
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=on-failure
+KillSignal=SIGINT
+User=root 
+
+[Install]
+WantedBy=multi-user.target

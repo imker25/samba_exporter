@@ -40,6 +40,11 @@ fi
 echo "# ###################################################################"
 echo "$(date) - Prepare for System testing"
 echo "# ###################################################################"
+echo "systemctl stop samba_statusd.service"
+systemctl stop samba_statusd.service
+echo "systemctl stop samba_exporter.service"
+systemctl stop samba_statusd.service
+
 if [ -f "$script_dir/assert.sh" ]; then
     echo "Remove old $script_dir/assert.sh"
     rm -rf "$script_dir/assert.sh"
@@ -99,6 +104,37 @@ kill $statusdPID
 echo "End $samba_exporter with PID $exporterPID"
 kill $exporterPID
 echo "# ###################################################################"
+
+echo "# ###################################################################"
+echo "Test Services"
+echo "# ###################################################################"
+echo "systemctl start samba_statusd.service"
+systemctl start samba_statusd.service
+echo "systemctl start samba_exporter.service"
+systemctl start samba_statusd.service
+echo "# ###################################################################"
+exporterPID=$(pidof samba_exporter)
+echo "$samba_exporter running with PID $exporterPID"
+exporterPID=$(pidof samba_exporter)
+echo "$samba_exporter running with PID $exporterPID"
+echo "# ###################################################################"
+
+echo "# ###################################################################"
+echo "Get the enpoint:"
+echo "Call: curl http://127.0.0.1:9922"
+curl http://127.0.0.1:9922
+echo " "
+echo "# ###################################################################"
+echo "Get metrics"
+echo "Call: curl http://127.0.0.1:9922/metrics"
+curl http://127.0.0.1:9922/metrics 
+echo "# ###################################################################"
+
+echo "Test Web Interface"
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\"" 0
+assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\"" 0 
 
 echo "# ###################################################################"
 echo "$(date) End Tests"
