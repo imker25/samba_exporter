@@ -2,6 +2,7 @@
 defaultTasks 'build'
 def programVersion=''
 def programVersionNumber=''
+def packageVersion=''
 def goPath
 def scriptDirectory
 def scriptFile
@@ -109,10 +110,20 @@ task getEnvironment {
         } else {
             raceParameter = '-race'
         }
+        
+
         programVersion=new File(versionFile).text
         programVersionNumber = programVersion + "." + getGitHight()
         programVersion= programVersionNumber + "-" + getGitHash()
+
+        if ("${System.env.GITHUB_RUNNER_OS}" != "null") {
+            packageVersion = "${programVersion}+${System.env.GITHUB_RUNNER_OS}"
+        } else {
+            packageVersion = "${programVersion}"
+        }
+
         println "Program version: ${programVersion}"
+        println "Package version: ${packageVersion}"
         println "GOPATH=$goPath"
 
         // Find all directories within src/ that contains *.go files
@@ -149,9 +160,10 @@ task getBuildName(dependsOn: 'clean') {
 
     }
     doLast {
-        
-        println "Build Name: ${programVersionNumber}"
+        println "Program Version: ${programVersionNumber}"
+        println "Package Version: ${packageVersion}"
         file("${logDir}${File.separator}Version.txt").text = "${programVersionNumber}"
+        file("${logDir}${File.separator}PackageVersion.txt").text = "${packageVersion}"
 
     }
 }
