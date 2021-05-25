@@ -31,6 +31,7 @@ def getGitHash = { ->
 def getGitHight = { ->
 
     // Get the last commit in Version.txt
+    println "Get commit id of ${versionFile}"
     def stdout = new ByteArrayOutputStream()
     def lastVersionChange 
     exec {
@@ -39,7 +40,7 @@ def getGitHight = { ->
     }
     lastVersionChange = stdout.toString().trim()
     lastVersionChange = lastVersionChange.replaceAll (/"/, '') 
-
+    println "Last Change in Version File: ${lastVersionChange}"
     // Get the last commit in the repo
     stdout = new ByteArrayOutputStream()
     def head 
@@ -49,7 +50,7 @@ def getGitHight = { ->
     }
     head = stdout.toString().trim()
     head = head.replaceAll (/"/, '') 
-
+    println "Last head: ${head}"
     // Count commits between lastVersionChange and head (this is the hight)
     stdout = new ByteArrayOutputStream()
     def hight 
@@ -58,6 +59,7 @@ def getGitHight = { ->
         standardOutput = stdout
     }
     hight = stdout.toString().trim() 
+    println "Git hight: ${hight}"
 
     return hight
 }
