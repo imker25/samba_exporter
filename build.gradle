@@ -2,7 +2,8 @@
 defaultTasks 'build'
 def programVersion=''
 def programVersionNumber=''
-def packageVersion=''
+def debPackageName=''
+def debPackageTmpDir=''
 def goPath
 def scriptDirectory
 def scriptFile
@@ -12,6 +13,7 @@ String srcDir
 String binDir
 String pkgDir
 String logDir
+String tmpDir
 String versionFile
 String packagesToBuild = ''
 String packagesToTest = ''
@@ -80,6 +82,7 @@ task getEnvironment {
         binDir = "$scriptDirectory" + File.separator + "bin" + File.separator
         pkgDir = "$scriptDirectory" + File.separator + "pkg" + File.separator
         logDir = "$scriptDirectory" + File.separator + "logs" + File.separator
+        tmpDir = "$scriptDirectory" + File.separator + "tmp" + File.separator
         versionFile = "$scriptDirectory" + File.separator + "VersionMaster.txt"
 
         def logDirBase = new File(logDir)
@@ -116,15 +119,16 @@ task getEnvironment {
         programVersion=new File(versionFile).text
         programVersionNumber = programVersion + "." + getGitHight()
         programVersion= programVersionNumber + "-" + getGitHash()
+        
 
         if (("${System.env.GITHUB_RUNNER_OS}" != "null") && ("${System.env.GITHUB_RUNNER_OS}" != "")) {
-            packageVersion = "${programVersion}+${System.env.GITHUB_RUNNER_OS}"
+            debPackageName = "samba_exporter-${programVersion}+${System.env.GITHUB_RUNNER_OS}"
         } else {
-            packageVersion = "${programVersion}"
+            debPackageName = "samba_exporter-${programVersion}"
         }
-
+        debPackageTmpDir = "$tmpDir" + File.separator + "${debPackageName}" + File.separator
         println "Program version: ${programVersion}"
-        println "Package version: ${packageVersion}"
+        println "Package version: ${debPackageName}"
         println "GOPATH=$goPath"
 
         // Find all directories within src/ that contains *.go files
@@ -162,9 +166,9 @@ task getBuildName(dependsOn: 'clean') {
     }
     doLast {
         println "Program Version: ${programVersionNumber}"
-        println "Package Version: ${packageVersion}"
+        println "Package Version: ${debPackageName}"
         file("${logDir}${File.separator}Version.txt").text = "${programVersionNumber}"
-        file("${logDir}${File.separator}PackageVersion.txt").text = "${packageVersion}"
+        file("${logDir}${File.separator}PackageName.txt").text = "${debPackageName}"
 
     }
 }
@@ -205,6 +209,11 @@ task clean(dependsOn: 'getEnvironment') {
         }
         println "Delete logs in $logDir"
         delete fileTree(logDir) {
+
+        }
+        
+        println "Delete tmp files in $tmpDir"
+        delete fileTree(tmpDir) {
 
         }
 
@@ -339,9 +348,37 @@ task build(dependsOn: 'clean') {
             args callArgs
             environment('GOPATH', goPath)
         }
+
+  
     }
 }
 
+task preparePack(dependsOn: 'build') {
+    description 'Prepare a folder for packageing'
+    doFirst {
+        println '##################################################################################'
+        println 'Prepare a folder for packageing'
+        println '##################################################################################'
+        println "Copy files for packaging to ${debPackageTmpDir}"
+    }
+    
+    doLast {
+        copy {
+            from ('install'){
+                include '**/**'
+            }
+            into "${debPackageTmpDir}"
+        }
+
+        copy {
+            from('bin') {
+                include 'samba_exporter'
+                include 'samba_statusd'
+            }
+            into "${debPackageTmpDir}usr/local/bin/"
+        }
+    }
+}
 
 // Do something after each task, no taking care about the state
 gradle.taskGraph.afterTask { taskWasRunning, TaskState state ->

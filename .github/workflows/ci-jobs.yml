@@ -21,7 +21,7 @@ jobs:
         GITHUB_RUNNER_OS:  ${{ matrix.os }}
       uses: eskatos/gradle-command-action@v1
       with:
-        arguments: getBuildName build test 
+        arguments: getBuildName build test preparePack
     - name: "Convert test results"
       uses: eskatos/gradle-command-action@v1
       if: always()
@@ -44,6 +44,12 @@ jobs:
         name: samba_statusd
         path: bin/samba_statusd
         retention-days: 1
+    - name: 'Upload Artifact PackageName.txt'
+      uses: actions/upload-artifact@v2
+      with:
+        name: PackageName.txt
+        path: logs/PackageName.txt
+        retention-days: 1        
   integration-test:
     needs: build-unit_test
     strategy:
