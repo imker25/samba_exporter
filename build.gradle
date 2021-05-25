@@ -31,7 +31,6 @@ def getGitHash = { ->
 def getGitHight = { ->
 
     // Get the last commit in Version.txt
-    println "Get commit id of ${versionFile}"
     def stdout = new ByteArrayOutputStream()
     def lastVersionChange 
     exec {
@@ -40,7 +39,7 @@ def getGitHight = { ->
     }
     lastVersionChange = stdout.toString().trim()
     lastVersionChange = lastVersionChange.replaceAll (/"/, '') 
-    println "Last Change in Version File: ${lastVersionChange}"
+
     // Get the last commit in the repo
     stdout = new ByteArrayOutputStream()
     def head 
@@ -50,7 +49,7 @@ def getGitHight = { ->
     }
     head = stdout.toString().trim()
     head = head.replaceAll (/"/, '') 
-    println "Last head: ${head}"
+
     // Count commits between lastVersionChange and head (this is the hight)
     stdout = new ByteArrayOutputStream()
     def hight 
@@ -130,7 +129,7 @@ task getEnvironment {
         }
         debPackageTmpDir = "$tmpDir" + "${debPackageName}" + File.separator
         println "Program version: ${programVersion}"
-        println "Package version: ${debPackageName}"
+        println "Package Name: ${debPackageName}"
         println "GOPATH=$goPath"
 
         // Find all directories within src/ that contains *.go files
@@ -168,7 +167,7 @@ task getBuildName(dependsOn: 'clean') {
     }
     doLast {
         println "Program Version: ${programVersionNumber}"
-        println "Package Version: ${debPackageName}"
+        println "Package Name: ${debPackageName}"
         file("${logDir}${File.separator}Version.txt").text = "${programVersionNumber}"
         file("${logDir}${File.separator}PackageName.txt").text = "${debPackageName}"
 
