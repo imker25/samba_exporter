@@ -13,6 +13,8 @@ logs/*
 logs\*
 src/github.com/*
 src\github.com\*
+tmp/*
+tmp\*
 
 *.zip
 *.log

@@ -7,7 +7,6 @@ def scriptDirectory
 def scriptFile
 def osName
 def osVersion
-def buildName
 String srcDir
 String binDir
 String pkgDir
@@ -147,20 +146,12 @@ task getEnvironment {
 task getBuildName(dependsOn: 'clean') {
     description 'Just print out the version and number of the build'
     doFirst {
-        buildName = ""
+
     }
     doLast {
         
-        if ("${System.env.BUILD_NUMBER}" != "null" )
-        {
-            buildName =  "${programVersion}-${System.env.BUILD_NUMBER}"
-        } else  {
-            buildName = "${programVersion}"
-        }
-        println "Build Name: ${buildName}"
-        file("${logDir}${File.separator}BuildName.txt").text = "${buildName}"
+        println "Build Name: ${programVersionNumber}"
         file("${logDir}${File.separator}Version.txt").text = "${programVersionNumber}"
-        file("${logDir}${File.separator}dummy.json").text = "{\"key\":\"value\"}"
 
     }
 }
@@ -338,30 +329,6 @@ task build(dependsOn: 'clean') {
     }
 }
 
-
-task createBuildZip(type: Zip, dependsOn: 'createBinZip') {
-    from "."
-    include "bin${File.separator}**"
-    include "pkg${File.separator}**"
-    include "logs${File.separator}**"
-    archiveFileName = org.gradle.internal.os.OperatingSystem.current().getName() + "_Build.zip"
-    destinationDirectory = file( buildscript.sourceFile.getParent())
-
-    doFirst {
-        println "Create the \"${org.gradle.internal.os.OperatingSystem.current().getName()}_Build.zip\" file in $scriptDirectory"
-    }
-}
-
-task createBinZip(type: Zip, dependsOn: 'getEnvironment') {
-    from "."
-    include "bin${File.separator}**"
-    archiveFileName = org.gradle.internal.os.OperatingSystem.current().getName() + "_bin.zip"
-    destinationDirectory = file( buildscript.sourceFile.getParent())
-
-    doFirst {
-        println "Create the \"${org.gradle.internal.os.OperatingSystem.current().getName()}_bin.zip\" file in $scriptDirectory"
-    }
-}
 
 // Do something after each task, no taking care about the state
 gradle.taskGraph.afterTask { taskWasRunning, TaskState state ->
