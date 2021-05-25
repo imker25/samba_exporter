@@ -69,6 +69,7 @@ task getEnvironment {
         osName = org.gradle.internal.os.OperatingSystem.current().getName()
         osVersion = org.gradle.internal.os.OperatingSystem.current().getVersion()
         println "$osName $osVersion was detected."
+        println "Github Runner OS: ${System.env.GITHUB_RUNNER_OS}"
 
         // Find the location in the file system
         scriptFile = buildscript.sourceFile
@@ -116,7 +117,7 @@ task getEnvironment {
         programVersionNumber = programVersion + "." + getGitHight()
         programVersion= programVersionNumber + "-" + getGitHash()
 
-        if ("${System.env.GITHUB_RUNNER_OS}" != "null") {
+        if (("${System.env.GITHUB_RUNNER_OS}" != "null") && ("${System.env.GITHUB_RUNNER_OS}" != "")) {
             packageVersion = "${programVersion}+${System.env.GITHUB_RUNNER_OS}"
         } else {
             packageVersion = "${programVersion}"
