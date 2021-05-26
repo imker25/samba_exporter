@@ -109,16 +109,12 @@ echo "# ###################################################################"
 echo "# ###################################################################"
 echo "Test Services"
 echo "# ###################################################################"
-echo '/bin/bash -c "source /etc/default/samba_statusd && $samba_statusd $ARGS &"'
-echo '#!/bin/bash \n source /etc/default/samba_statusd \n $samba_statusd $ARGS &' > /tmp/samba_statusd
-chmod 700 /tmp/samba_statusd
-/tmp/samba_statusd
+echo "/bin/bash -c \"source /etc/default/samba_statusd && $samba_statusd \$ARGS &\""
+/bin/bash -c "source /etc/default/samba_statusd && $samba_statusd \$ARGS &"
 sleep 0.1
 echo " "
-echo "su -s /bin/bash  samba-exporter -c \"source /etc/default/samba_exporter && samba_exporter $ARGS &\""
-echo '#!/bin/bash \n su samba-exporter -s /bin/bash -c "source /etc/default/samba_exporter && samba_exporter $ARGS &"' > /tmp/samba_exporter
-chmod 700 /tmp/samba_exporter
-/tmp/samba_exporter
+echo "su -s /bin/bash  samba-exporter -c \"source /etc/default/samba_exporter && samba_exporter \$ARGS &\""
+su -s /bin/bash  samba-exporter -c "source /etc/default/samba_exporter && $samba_exporter \$ARGS &"
 sleep 0.1
 echo "# ###################################################################"
 exporterPID=$(pidof samba_exporter)
