@@ -1,6 +1,7 @@
 // Build script for this project. May used in IDE or CI environment
 defaultTasks 'build'
 def programVersion=''
+def programVersionShort=''
 def programVersionNumber=''
 def debPackageName=''
 def debPackageTmpDir=''
@@ -117,8 +118,8 @@ task getEnvironment {
         }
         
 
-        programVersion=new File(versionFile).text
-        programVersionNumber = programVersion + "." + getGitHight()
+        programVersionShort=new File(versionFile).text
+        programVersionNumber = programVersionShort + "." + getGitHight()
         programVersion= programVersionNumber + "-" + getGitHash()
         
 
@@ -365,6 +366,7 @@ task preparePack(dependsOn: 'build') {
     
     doLast {
         copy {
+            // Copy all data from the install directory to the package tmp dir
             from ('install'){
                 include '**/**'
             }
@@ -372,11 +374,21 @@ task preparePack(dependsOn: 'build') {
         }
 
         copy {
+            // Copy binaries to the package tmp dir
             from('bin') {
                 include 'samba_exporter'
                 include 'samba_statusd'
             }
             into "${debPackageTmpDir}usr/local/bin/"
+        }
+
+        copy {
+            // Copy docs to the package tmp dir
+            from('.') {
+                include 'README.md'
+                include 'LICENSE'
+            }
+            into "${debPackageTmpDir}/usr/share/doc/samba_exporter-${programVersionShort}/"
         }
     }
 }
