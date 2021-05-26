@@ -11,7 +11,7 @@
 # Environment
 # ###########################################################################################
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-branch_dir="$script_dir/../.."
+branch_dir="$script_dir/../../.."
 request_pipe_file="/dev/shm/samba_exporter.request.pipe"
 response_pipe_file="/dev/shm/samba_exporter.response.pipe"
 
@@ -109,6 +109,7 @@ fi
 echo "# ###################################################################"
 echo "Start as daemon: $samba_statusd -test-mode -verbose"
 $samba_statusd -test-mode -verbose &
+sleep 0.1
 statusdPID=$(pidof $samba_statusd)
 
 # Wait a bit to ensure the process is running
@@ -137,6 +138,7 @@ assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_pid
 echo "# ###################################################################"
 echo "Start as daemon: $samba_exporter -test-mode -verbose"
 $samba_exporter -test-mode -verbose &
+sleep 0.1
 exporterPID=$(pidof $samba_exporter)
 
 # Wait a bit to ensure the process is running
@@ -186,10 +188,12 @@ echo "Test in daemons non verbose mode"
 echo "# ###################################################################"
 echo "$samba_statusd -test-mode > $samba_statusd_log 2>&1 &"
 $samba_statusd -test-mode > $samba_statusd_log 2>&1 &
+sleep 0.1
 statusdPID=$(pidof $samba_statusd)
 sleep 0.1
 echo "$samba_exporter -test-mode > $samba_exporter_log 2>&1 &"
 $samba_exporter -test-mode > $samba_exporter_log 2>&1 &
+sleep 0.1
 exporterPID=$(pidof $samba_exporter)
 sleep 0.1
 echo "$samba_statusd running with PID $statusdPID"

@@ -144,5 +144,5 @@ echo "# ###################################################################"
 echo "$(date) End Tests"
 echo "# ###################################################################"
 # Finish test run
-assert_end samba-exporter_IntegrationTests
+assert_end samba-exporter_SystemTests
 exit 0
