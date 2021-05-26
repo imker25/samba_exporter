@@ -16,7 +16,7 @@ RUN adduser samba-exporter samba-exporter
 RUN apt-get install -y wget curl coreutils mawk < /bin/true
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
-COPY systemTest/scripts/RunSystemTest.sh /RunSystemTest.sh
+COPY test/systemTest/scripts/RunSystemTest.sh /RunSystemTest.sh
 
 # Install the samba_exporter
 COPY bin/samba_exporter/samba_exporter /usr/local/bin/samba_exporter

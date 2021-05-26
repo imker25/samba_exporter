@@ -23,4 +23,4 @@ tmp\*
 out.abs
 out.abc
 
-integrationTest/scripts/assert.sh
+test/integrationTest/scripts/assert.sh

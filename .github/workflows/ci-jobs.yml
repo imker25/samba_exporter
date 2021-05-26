@@ -73,7 +73,7 @@ jobs:
       - name: Check artifacts
         run: ls -l bin/
       - name: Build test environment container
-        run: docker build --file integrationTest/docker/Dockerfile.ubuntu --tag integration-test-container .
+        run: docker build --file test/integrationTest/docker/Dockerfile.ubuntu --tag integration-test-container .
       - name: Run integration tests
         run: docker run -i integration-test-container /bin/bash -c "/RunIntegrationTests.sh container"
   system-test:
@@ -97,6 +97,6 @@ jobs:
       - name: Check artifacts
         run: ls -l bin/ &&  ls -l bin/samba_exporter/ && ls -l bin/samba_statusd/ 
       - name: Build test environment container
-        run: docker build --file systemTest/docker/Dockerfile.ubuntu --tag system-test-container .
+        run: docker build --file test/systemTest/docker/Dockerfile.ubuntu --tag system-test-container .
       - name: Run System tests
         run: docker run --security-opt seccomp=unconfined -v /sys/fs/cgroup:/sys/fs/cgroup:ro -i system-test-container /bin/bash -c "/RunSystemTest.sh"          
