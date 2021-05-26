@@ -1,5 +1,13 @@
 # Set the command-line arguments to pass to the samba_exporter daemon
+
+# The prometheus exporter endpoint only listen on localhost by default
 ARGS='-web.listen-address=127.0.0.1:9922'
+
+# The prometheus exporter endpoint listen on all network interfaces
+# ARGS=''
+
+# The prometheus exporter endpoint only listen on 192.168.0.1 and gives verbose log output
+# ARGS='-web.listen-address=192.168.0.1:9922 -verbose'
 
 # Usage of samba_exporter
 #  -help

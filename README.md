@@ -97,3 +97,5 @@ samba_server_up 1
 # TYPE samba_share_count gauge
 samba_share_count 0
 ```
+
+By default the prometheus exporter endpoint only listen on localhost. To change this behavior update `/etc/default/samba_exporter` on the target machine according to your needs and restart the `samba_exporter` service.
