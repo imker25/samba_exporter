@@ -109,12 +109,12 @@ echo "# ###################################################################"
 echo "# ###################################################################"
 echo "Test Services"
 echo "# ###################################################################"
-echo "$samba_statusd &"
-$samba_statusd  &
+echo "/bin/bash -c \"source /etc/default/samba_statusd && $samba_statusd $ARGS &\""
+/bin/bash -c "source /etc/default/samba_statusd && $samba_statusd $ARGS &"
 sleep 0.1
 echo " "
-echo "su -s /bin/bash  samba-exporter -c \"samba_exporter &\""
-su -s /bin/bash  samba-exporter -c "$samba_exporter &"
+echo "su -s /bin/bash  samba-exporter -c \"source /etc/default/samba_exporter && samba_exporter $ARGS &\""
+su -s /bin/bash  samba-exporter -c "source /etc/default/samba_exporter && $samba_exporter $ARGS &"
 sleep 0.1
 echo "# ###################################################################"
 exporterPID=$(pidof samba_exporter)

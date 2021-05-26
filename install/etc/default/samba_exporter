@@ -1,0 +1,18 @@
+# Set the command-line arguments to pass to the samba_exporter daemon
+ARGS='-web.listen-address=127.0.0.1:9922'
+
+# Usage of samba_exporter
+#  -help
+#        Print this help message
+#  -print-version
+#        With this flag the program will only print it's version and exit
+#  -test-mode
+#        Run the program in test mode. In this mode the program will always return the same test data. To work with samba_statusd both programs needs to run in test mode or not.
+#  -test-pipe
+#        Requests status from samba_statusd and exits. May be combinde with -test-mode.
+#  -verbose
+#        With this flag the program will print verbose output
+#  -web.listen-address string
+#        Address to listen on for web interface and telemetry. (default ":9922")
+#  -web.telemetry-path string
+#        Path under which to expose metrics. (default "/metrics")

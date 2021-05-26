@@ -4,7 +4,8 @@ Requires=samba_statusd.service
 After=network-online.target
 
 [Service]
-ExecStart=/usr/local/bin/samba_exporter
+EnvironmentFile=/etc/default/samba_exporter
+ExecStart=/usr/local/bin/samba_exporter $ARGS
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=on-failure
 KillSignal=SIGINT

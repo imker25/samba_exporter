@@ -33,5 +33,7 @@ RUN chmod 775 /usr/local/bin/start_samba_statusd.sh
 # Install the unit files
 COPY install/etc/systemd/system/samba_statusd.service /etc/systemd/system/samba_statusd.service
 COPY install/etc/systemd/system/samba_exporter.service /etc/systemd/system/samba_exporter.service
+COPY install/etc/default/samba_exporter /etc/default/samba_exporter
+COPY install/etc/default/samba_statusd /etc/default/samba_statusd
 
 

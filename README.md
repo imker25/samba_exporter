@@ -32,6 +32,8 @@ scp ./bin/samba_statusd <target>:/usr/local/bin/samba_statusd
 scp ./install/usr/local/bin/start_samba_statusd.sh <target>:/usr/local/bin/start_samba_statusd.sh
 scp ./install/etc/systemd/system/samba_statusd.service <target>:/etc/systemd/system/samba_statusd.service
 scp ./install/etc/systemd/system/samba_exporter.service <target>:/etc/systemd/system/samba_exporter.service
+scp install/etc/default/samba_exporter <target>:/etc/default/samba_exporter
+scp install/etc/default/samba_statusd <target>:/etc/default/samba_statusd
 ```
 
 Now login to your target machine and run the commands below to enable the services and create the needed user and group:
