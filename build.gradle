@@ -131,7 +131,7 @@ task getEnvironment {
         } else {
             debPackageVersion= "${programVersion}"
         }
-        debPackageName = "samba-exporter-${debPackageVersion}"
+        debPackageName = "samba-exporter_${debPackageVersion}"
 
         debPackageTmpDir = "$tmpDir" + "${debPackageName}" + File.separator
         println "Program version: ${programVersion}"
