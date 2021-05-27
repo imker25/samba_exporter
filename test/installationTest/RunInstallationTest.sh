@@ -7,4 +7,5 @@ if [ -f "${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb" ]; then
     echo "Install package found on : ${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb"
 else
     echo "Error: Installer \"${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb\" not found"
+    exit 1
 fi
