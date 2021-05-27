@@ -46,10 +46,12 @@ jobs:
         name: samba_statusd
         path: bin/samba_statusd
         retention-days: 1
-    - name: 'Get Package name from logs/PackageName.txt'
-      run: |
-            packageName=$(cat logs/PackageName.txt)
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV
+    - name: 'Upload Artifact PackageName.txt'
+      uses: actions/upload-artifact@v2
+      with:
+        name: PackageName.txt
+        path: logs/PackageName.txt
+        retention-days: 1         
   integration-test:
     needs: build-unit_test
     strategy:
@@ -104,8 +106,19 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
     runs-on: ${{ matrix.os }}
-    steps:   
-      - name: "Run installation tests"
-        env:
-          SAMBA_EXPORTER_PACKAGE_NAME:  ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
-        run: echo "SAMBA_EXPORTER_PACKAGE_NAME=$SAMBA_EXPORTER_PACKAGE_NAME"
+    steps: 
+    - uses: actions/checkout@v2
+    - name: Download samba_exporter artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: PackageName.txt      
+    - name: 'Get Package name from logs/PackageName.txt'
+      run: |
+            ls -l .
+            ls -l ./logs
+            packageName=$(cat logs/PackageName.txt)
+            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV      
+    - name: "Run installation tests"
+      env:
+        SAMBA_EXPORTER_PACKAGE_NAME:  ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
+      run: echo "SAMBA_EXPORTER_PACKAGE_NAME=$SAMBA_EXPORTER_PACKAGE_NAME"
