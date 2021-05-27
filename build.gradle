@@ -4,6 +4,7 @@ def programVersion=''
 def programVersionShort=''
 def programVersionNumber=''
 def debPackageName=''
+def debPackageVersion=''
 def debPackageTmpDir=''
 def goPath
 def scriptDirectory
@@ -124,10 +125,14 @@ task getEnvironment {
         
 
         if (("${System.env.GITHUB_RUNNER_OS}" != "null") && ("${System.env.GITHUB_RUNNER_OS}" != "")) {
-            debPackageName = "samba-exporter-${programVersion}+${System.env.GITHUB_RUNNER_OS}"
+            debPackageVersion= "${programVersion}+${System.env.GITHUB_RUNNER_OS}"
+            
+
         } else {
-            debPackageName = "samba-exporter-${programVersion}"
+            debPackageVersion= "${programVersion}"
         }
+        debPackageName = "samba-exporter-${debPackageVersion}"
+
         debPackageTmpDir = "$tmpDir" + "${debPackageName}" + File.separator
         println "Program version: ${programVersion}"
         println "Package Name: ${debPackageName}"
@@ -167,9 +172,9 @@ task getBuildName(dependsOn: 'clean') {
 
     }
     doLast {
-        println "Program Version: ${programVersion}"
+        println "Package Version: ${debPackageVersion}"
         println "Package Name: ${debPackageName}"
-        file("${logDir}${File.separator}Version.txt").text = "${programVersion}"
+        file("${logDir}${File.separator}Version.txt").text = "${debPackageVersion}"
         file("${logDir}${File.separator}PackageName.txt").text = "${debPackageName}"
 
     }
