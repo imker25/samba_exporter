@@ -34,6 +34,14 @@ jobs:
       if: always()
       with:
         files: logs/TestsResult.xml
+    - name: 'Get Package name and version from logs/ to GITHUB_ENVIRONMENT'
+      run: |
+            packageName=$(cat logs/PackageName.txt)
+            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName"
+            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV   
+            packageVersion=$(cat logs/Version.txt)  
+            echo "SAMBA_EXPORTER_VERSION=$packageVersion" 
+            echo "SAMBA_EXPORTER_VERSION=$packageVersion"  >> $GITHUB_ENV           
     - name: 'Upload Artifact samba_exporter'
       uses: actions/upload-artifact@v2
       with:
@@ -52,18 +60,10 @@ jobs:
         name: PackageName.txt
         path: logs/PackageName.txt
         retention-days: 1 
-    - name: 'Get Package name and version from logs/'
-      run: |
-            packageName=$(cat logs/PackageName.txt)
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$SAMBA_EXPORTER_PACKAGE_NAME"
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV   
-            packageVersion=$(cat logs/Version.txt)  
-            echo "SAMBA_EXPORTER_VERSION=$packageVersion" 
-            echo "SAMBA_EXPORTER_VERSION=$packageVersion"  >> $GITHUB_ENV   
     - uses: jiro4989/build-deb-action@v2
       name: "Pack deb package"
       with:
-        package: samba_exporter
+        package: samba-exporter
         package_root: tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
         maintainer: tobi@backfrak.de
         version: ${{ env.SAMBA_EXPORTER_VERSION }}
