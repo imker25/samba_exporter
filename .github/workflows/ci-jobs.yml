@@ -74,7 +74,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: samba_exporter.deb
-        path: tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}.deb
+        path: ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}.deb
         retention-days: 1                          
   integration-test:
     needs: build-unit_test
