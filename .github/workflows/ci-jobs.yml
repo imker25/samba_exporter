@@ -70,11 +70,16 @@ jobs:
         arch: 'amd64'
         depends: 'libc6 (>= 2.3.2), systemd'
         desc: 'Prometheus exporter to get metrics of a samba server'  
+    - name: Find Package 
+      run: |
+            ls -l .
+            ls -l tmp/
+            ls -l tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}       
     - name: "Upload Artifact samba_exporter*.deb"
       uses: actions/upload-artifact@v2
       with:
         name: samba_exporter.deb
-        path: ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}.deb
+        path: ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}_amd64.deb
         retention-days: 1                          
   integration-test:
     needs: build-unit_test
