@@ -111,12 +111,14 @@ jobs:
     - name: Download samba_exporter artifact
       uses: actions/download-artifact@v2
       with:
-        name: PackageName.txt      
+        name: PackageName.txt   
+        path: logs/   
     - name: 'Get Package name from logs/PackageName.txt'
       run: |
             ls -l .
             ls -l ./logs
             packageName=$(cat logs/PackageName.txt)
+            echo "SAMBA_EXPORTER_PACKAGE_NAME=$SAMBA_EXPORTER_PACKAGE_NAME"
             echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV      
     - name: "Run installation tests"
       env:
