@@ -40,7 +40,7 @@ func GetLockData(data string) []LockData {
 	lines := strings.Split(data, "\n")
 	sepLineIndex := findSeperatorLineIndex(lines)
 
-	if sepLineIndex < 0 {
+	if sepLineIndex < 1 {
 		return ret
 	}
 
@@ -106,7 +106,7 @@ func GetShareData(data string) []ShareData {
 	lines := strings.Split(data, "\n")
 	sepLineIndex := findSeperatorLineIndex(lines)
 
-	if sepLineIndex < 0 {
+	if sepLineIndex < 1 {
 		return ret
 	}
 
@@ -151,6 +151,7 @@ type ProcessData struct {
 	ProtocolVersion string
 	Encryption      string
 	Signing         string
+	SambaVersion    string
 }
 
 // Implement Stringer Interface for ProcessData
@@ -167,7 +168,15 @@ func GetProcessData(data string) []ProcessData {
 	lines := strings.Split(data, "\n")
 	sepLineIndex := findSeperatorLineIndex(lines)
 
-	if sepLineIndex < 0 {
+	if sepLineIndex < 2 {
+		return ret
+	}
+
+	var sambaVersion string
+	sambaVersionLine := lines[sepLineIndex-2 : sepLineIndex-1][0]
+	if strings.HasPrefix(sambaVersionLine, "Samba version") {
+		sambaVersion = strings.TrimSpace(strings.Replace(sambaVersionLine, "Samba version", "", 1))
+	} else {
 		return ret
 	}
 
@@ -200,6 +209,7 @@ func GetProcessData(data string) []ProcessData {
 		entry.ProtocolVersion = fields[5]
 		entry.Encryption = fields[6]
 		entry.Signing = fields[7]
+		entry.SambaVersion = sambaVersion
 
 		ret = append(ret, entry)
 	}

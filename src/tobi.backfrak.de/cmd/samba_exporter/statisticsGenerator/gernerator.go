@@ -25,6 +25,7 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 	var pids []int
 	var shares []string
 	var clients []string
+	var sambaVersion string
 	locksPerShare := make(map[string]int, 0)
 
 	for _, lock := range lockData {
@@ -52,6 +53,7 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 		if !intArrContains(pids, process.PID) {
 			pids = append(pids, process.PID)
 		}
+		sambaVersion = process.SambaVersion
 	}
 
 	for _, share := range shareData {
@@ -82,6 +84,8 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 		// Add this value even if no locks found, so prometheus description will be created
 		ret = append(ret, SmbStatisticsNumeric{"locks_per_share_count", float64(0), "Number of locks on share", map[string]string{"share": ""}})
 	}
+
+	ret = append(ret, SmbStatisticsNumeric{"server_information", 1, "Version of the samba server", map[string]string{"version": sambaVersion}})
 
 	return ret
 }

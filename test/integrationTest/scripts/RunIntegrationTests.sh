@@ -206,6 +206,8 @@ assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\""
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"/usr/share/data\"" 0
 assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\"" 0
 assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\"" 0 
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_exporter_information\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_information\"" 0
 echo "# ###################################################################"
 
 # End daemons

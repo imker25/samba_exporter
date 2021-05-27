@@ -19,14 +19,35 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 6 {
+	if len(ret) != 7 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
-	for _, field := range ret {
+	for _, field := range ret[0:6] {
 		if field.Value != 0 {
 			t.Errorf("The value is not 0 when reading only empty tables")
 		}
+	}
+
+	if ret[6].Name != "server_information" {
+		t.Errorf("The Name \"%s\" is not expected", ret[6].Name)
+	}
+
+	if ret[6].Value != 1 {
+		t.Errorf("The Value %f is not expected", ret[6].Value)
+	}
+
+	if len(ret[6].Labels) != 1 {
+		t.Errorf("There are more labels than expected")
+	}
+
+	value, found := ret[6].Labels["version"]
+	if !found {
+		t.Errorf("No label with key \"version\" found")
+	}
+
+	if value != "" {
+		t.Errorf("The SambaVersion \"%s\" is not expected", value)
 	}
 
 }
@@ -37,7 +58,7 @@ func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines)
 
 	ret := GetSmbStatistics(locks, processes, shares)
-	if len(ret) != 6 {
+	if len(ret) != 7 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -57,7 +78,7 @@ func TestGetSmbStatistics(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 9 {
+	if len(ret) != 10 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -99,6 +120,27 @@ func TestGetSmbStatistics(t *testing.T) {
 
 	if ret[4].Value != 4 {
 		t.Errorf("The client_count is not the expected value")
+	}
+
+	if ret[9].Name != "server_information" {
+		t.Errorf("The Name \"%s\" is not expected", ret[6].Name)
+	}
+
+	if ret[9].Value != 1 {
+		t.Errorf("The Value %f is not expected", ret[6].Value)
+	}
+
+	if len(ret[9].Labels) != 1 {
+		t.Errorf("There are more labels than expected")
+	}
+
+	value, found := ret[9].Labels["version"]
+	if !found {
+		t.Errorf("No label with key \"version\" found")
+	}
+
+	if value != "4.11.6-Ubuntu" {
+		t.Errorf("The SambaVersion \"%s\" is not expected", value)
 	}
 
 }

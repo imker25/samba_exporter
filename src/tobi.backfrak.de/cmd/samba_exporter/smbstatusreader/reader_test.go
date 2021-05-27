@@ -274,6 +274,12 @@ func TestGetProcessData4Line(t *testing.T) {
 	if enties[3].Machine != "192.168.1.245 (ipv4:192.168.1.245:47514)" {
 		t.Errorf("The Machine \"%s\" is not the expected \"192.168.1.245 (ipv4:192.168.1.245:47514)\"", enties[3].Machine)
 	}
+
+	for _, entry := range enties {
+		if entry.SambaVersion != "4.11.6-Ubuntu" {
+			t.Errorf("The SambaVersion \"%s\" is not expected", entry.SambaVersion)
+		}
+	}
 }
 
 func TestGetProcessDataWrongData(t *testing.T) {
