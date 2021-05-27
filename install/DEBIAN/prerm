@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = remove ]; then
+    # Stop the services before removing the package
+    systemctl stop samba_statusd.service
+    systemctl stop samba_exporter.service
+fi

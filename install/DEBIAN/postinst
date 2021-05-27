@@ -1,0 +1,47 @@
+#!/bin/sh
+
+set -e
+
+# summary of how this script can be called:
+#        * <postinst> `configure' <most-recently-configured-version>
+#        * <old-postinst> `abort-upgrade' <new version>
+#        * <conflictor's-postinst> `abort-remove' `in-favour' <package>
+#          <new-version>
+#        * <deconfigured's-postinst> `abort-deconfigure' `in-favour'
+#          <failed-install-package> <version> `removing'
+#          <conflicting-package> <version>
+# for details, see http://www.debian.org/doc/debian-policy/ or
+# the debian-policy package
+#
+# quoting from the policy:
+#     Any necessary prompting should almost always be confined to the
+#     post-installation script, and should be protected with a conditional
+#     so that unnecessary prompting doesn't happen if a package's
+#     installation fails and the `postinst' is called with `abort-upgrade',
+#     `abort-remove' or `abort-deconfigure'.
+
+case "$1" in
+  configure)
+    # Add samba-exporter user if needed
+    if ! getent passwd samba-exporter > /dev/null; then
+        adduser --quiet --system --no-create-home --group --gecos "samba-exporter daemon" samba-exporter || true
+    fi
+    # Ensure the daemons are known
+    systemctl daemon-reload
+    # Ensure the daemons start automaticaly
+    systemctl enable samba_statusd.service
+    systemctl enable samba_exporter.service
+    # Ensure the daemons run the latest version
+    systemctl restart samba_statusd.service
+    systemctl restart samba_exporter.service
+  ;;
+
+  abort-upgrade|abort-remove|abort-deconfigure)
+    :
+  ;;
+
+  *)
+    echo "postinst called with unknown argument \`$1'" >&2
+    exit 1
+  ;;
+esac
