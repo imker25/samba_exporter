@@ -81,7 +81,7 @@ func main() {
 
 	logger.WriteInformation(fmt.Sprintf("Started %s, get metrics on %s%s", os.Args[0], params.ListenAddress, params.MetricsPath))
 
-	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler, logger)
+	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler, logger, version)
 	prometheus.MustRegister(exporter)
 
 	http.Handle(params.MetricsPath, promhttp.Handler())

@@ -41,7 +41,7 @@ func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
-	if ret[5].Name != "locks_per_share" {
+	if ret[5].Name != "locks_per_share_count" {
 		t.Errorf("The Name \"%s\" is not expected", ret[5].Name)
 	}
 

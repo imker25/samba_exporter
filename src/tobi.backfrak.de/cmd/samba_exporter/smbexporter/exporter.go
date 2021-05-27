@@ -23,14 +23,16 @@ type SambaExporter struct {
 	ResponseHander commonbl.PipeHandler
 	Descriptions   map[string]prometheus.Desc
 	Logger         commonbl.Logger
+	Version        string
 }
 
 // Get a new instance of the SambaExporter
-func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander commonbl.PipeHandler, logger commonbl.Logger) *SambaExporter {
+func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander commonbl.PipeHandler, logger commonbl.Logger, version string) *SambaExporter {
 	var ret SambaExporter
 	ret.RequestHandler = requestHandler
 	ret.ResponseHander = responseHander
 	ret.Logger = logger
+	ret.Version = version
 	ret.Descriptions = make(map[string]prometheus.Desc)
 
 	return &ret
@@ -58,6 +60,7 @@ func (smbExporter *SambaExporter) Describe(ch chan<- *prometheus.Desc) {
 	}
 	smbExporter.setGaugeDescriptionNoLabel("server_up", "1 if the samba server seems to be running", ch)
 	smbExporter.setGaugeDescriptionNoLabel("satutsd_up", "1 if the samba_statusd seems to be running", ch)
+	smbExporter.setGaugeDescriptionWithLabel("exporter_information", "Information of the samba_exporter", map[string]string{"version": smbExporter.Version}, ch)
 
 	for _, stat := range stats {
 		if stat.Labels == nil {
@@ -90,6 +93,7 @@ func (smbExporter *SambaExporter) Collect(ch chan<- prometheus.Metric) {
 	smbExporter.Logger.WriteVerbose("Handle samba_statusd response and set prometheus metrics")
 	smbExporter.setGaugeIntMetricNoLabel("server_up", float64(smbServerUp), ch)
 	smbExporter.setGaugeIntMetricNoLabel("satutsd_up", float64(smbStatusUp), ch)
+	smbExporter.setGaugeIntMetricWithLabel("exporter_information", 1, map[string]string{"version": smbExporter.Version}, ch)
 
 	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares)
 	if stats == nil {

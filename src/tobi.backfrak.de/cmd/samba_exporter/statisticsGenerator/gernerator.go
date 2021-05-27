@@ -76,11 +76,11 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 
 	if len(locksPerShare) > 0 {
 		for share, locks := range locksPerShare {
-			ret = append(ret, SmbStatisticsNumeric{"locks_per_share", float64(locks), "Number of locks on share", map[string]string{"share": share}})
+			ret = append(ret, SmbStatisticsNumeric{"locks_per_share_count", float64(locks), "Number of locks on share", map[string]string{"share": share}})
 		}
 	} else {
 		// Add this value even if no locks found, so prometheus description will be created
-		ret = append(ret, SmbStatisticsNumeric{"locks_per_share", float64(0), "Number of locks on share", map[string]string{"share": ""}})
+		ret = append(ret, SmbStatisticsNumeric{"locks_per_share_count", float64(0), "Number of locks on share", map[string]string{"share": ""}})
 	}
 
 	return ret

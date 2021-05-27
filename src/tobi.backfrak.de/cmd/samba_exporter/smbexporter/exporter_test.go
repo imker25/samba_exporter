@@ -15,7 +15,7 @@ func TestNewSambaExporter(t *testing.T) {
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
-	exporter := NewSambaExporter(requestHandler, responseHandler, logger)
+	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0")
 
 	if exporter.RequestHandler.PipeType != commonbl.RequestPipe {
 		t.Errorf("The exporter.RequestHandler is not of the expected type")
@@ -31,5 +31,9 @@ func TestNewSambaExporter(t *testing.T) {
 
 	if logger.Verbose != exporter.Logger.Verbose {
 		t.Errorf("The exporter uses the wrong logger")
+	}
+
+	if exporter.Version != "0.0.0" {
+		t.Errorf("The Version \"%s\" is not expected", exporter.Version)
 	}
 }
