@@ -124,9 +124,9 @@ task getEnvironment {
         
 
         if (("${System.env.GITHUB_RUNNER_OS}" != "null") && ("${System.env.GITHUB_RUNNER_OS}" != "")) {
-            debPackageName = "samba_exporter-${programVersion}+${System.env.GITHUB_RUNNER_OS}"
+            debPackageName = "samba-exporter-${programVersion}+${System.env.GITHUB_RUNNER_OS}"
         } else {
-            debPackageName = "samba_exporter-${programVersion}"
+            debPackageName = "samba-exporter-${programVersion}"
         }
         debPackageTmpDir = "$tmpDir" + "${debPackageName}" + File.separator
         println "Program version: ${programVersion}"
@@ -167,9 +167,9 @@ task getBuildName(dependsOn: 'clean') {
 
     }
     doLast {
-        println "Program Version: ${programVersionNumber}"
+        println "Program Version: ${programVersion}"
         println "Package Name: ${debPackageName}"
-        file("${logDir}${File.separator}Version.txt").text = "${programVersionNumber}"
+        file("${logDir}${File.separator}Version.txt").text = "${programVersion}"
         file("${logDir}${File.separator}PackageName.txt").text = "${debPackageName}"
 
     }
