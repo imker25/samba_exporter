@@ -69,16 +69,11 @@ jobs:
         version: ${{ env.SAMBA_EXPORTER_VERSION }}
         arch: 'amd64'
         depends: 'libc6 (>= 2.3.2), systemd'
-        desc: 'Prometheus exporter to get metrics of a samba server'  
-    - name: Find Package 
-      run: |
-            ls -l .
-            ls -l tmp/
-            ls -l tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}       
+        desc: 'Prometheus exporter to get metrics of a samba server'       
     - name: "Upload Artifact samba_exporter*.deb"
       uses: actions/upload-artifact@v2
       with:
-        name: samba_exporter.deb
+        name: samba_exporter-${{ matrix.os }}.deb
         path: ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}_amd64.deb
         retention-days: 1                          
   integration-test:
@@ -137,17 +132,24 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps: 
     - uses: actions/checkout@v2
-    - name: Download samba_exporter artifact
+    - name: Download PackageName.txt artifact
       uses: actions/download-artifact@v2
       with:
         name: PackageName.txt   
-        path: logs/   
+        path: logs/ 
+    - uses: actions/checkout@v2
+    - name: Download samba_exporter package artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: samba_exporter-${{ matrix.os }}.deb  
+        path: .           
     - name: 'Get Package name from logs/PackageName.txt'
       run: |
+            ls -l
             packageName=$(cat logs/PackageName.txt)
             echo "SAMBA_EXPORTER_PACKAGE_NAME=$SAMBA_EXPORTER_PACKAGE_NAME"
             echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV      
     - name: "Run installation tests"
       env:
         SAMBA_EXPORTER_PACKAGE_NAME:  ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
-      run: echo "SAMBA_EXPORTER_PACKAGE_NAME=$SAMBA_EXPORTER_PACKAGE_NAME"
+      run: test/installationTest/RunInstallationTest.sh
