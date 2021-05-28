@@ -32,7 +32,6 @@ case "$1" in
     systemctl enable samba_statusd.service
     systemctl enable samba_exporter.service
     # Ensure the daemons run the latest version
-    systemctl restart samba_statusd.service
     systemctl restart samba_exporter.service
   ;;
 
