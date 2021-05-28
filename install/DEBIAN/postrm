@@ -6,7 +6,6 @@ case "$1" in
   purge)
         # In case the pacakge gets purged, we remove the daemon user
         deluser --system samba-exporter
-        delgroup --system samba-exporter
         systemctl daemon-reload
     ;;
   remove)

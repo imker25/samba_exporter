@@ -45,6 +45,8 @@ echo "sudo dpkg --install  \"./${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb"
 sudo dpkg --install  "./${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb"
 echo "# ###################################################################"
 assert "echo \"$?\"" "0"
+sleep 0.4
+
 assert_raises "samba_exporter --help" 0
 assert_raises "samba_statusd --help" 0
 
@@ -55,6 +57,9 @@ statusdPID=$(pidof samba_statusd)
 echo "samba_statusd running with PID $statusdPID"
 
 # *** Just print out intresting info, no tests
+echo "# ###################################################################"
+echo "ls -l /run"
+ls -l /run
 echo "# ###################################################################"
 echo "ps aux"
 ps aux
@@ -90,6 +95,9 @@ ls -l /etc/default
 echo "# ###################################################################"
 echo "ls -l /etc/systemd/system"
 ls -l /etc/systemd/system
+echo "# ###################################################################"
+echo "ls -l /run"
+ls -l /run
 echo "# ###################################################################"
 echo "ps aux"
 ps aux
