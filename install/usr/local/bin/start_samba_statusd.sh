@@ -12,7 +12,7 @@
 # - Will ensure that the pipes for comunication between samba_statusd and samba_exporter
 #   are correctly setup and then start samba_statusd with any given paramter
 # #########################################################################################
-echo "Startup samba_statusd with ARGS: $*"
+# echo "Startup samba_statusd with ARGS: $*"
 pipe_permissions="660"
 pipe_owner="root:samba-exporter"
 request_pipe_file="/run/samba_exporter.request.pipe"
@@ -42,7 +42,7 @@ chown "$pipe_owner" "$response_pipe_file"
 chmod "$pipe_permissions" "$response_pipe_file"
 
 # Run samba_statusd with the given arguments as daemon
-echo "Starting as daemon: $samba_statusd $*"
+# echo "Starting as daemon: $samba_statusd $*"
 $samba_statusd $* &
 
 # Ensure deamon is up
