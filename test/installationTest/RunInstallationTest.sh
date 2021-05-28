@@ -50,9 +50,24 @@ assert_raises "samba_statusd --help" 0
 
 
 exporterPID=$(pidof samba_exporter)
-echo "$samba_exporter running with PID $exporterPID"
+echo "samba_exporter running with PID $exporterPID"
 statusdPID=$(pidof samba_statusd)
-echo "$samba_statusd running with PID $statusdPID"
+echo "samba_statusd running with PID $statusdPID"
+
+# *** Just print out intresting info, no tests
+echo "# ###################################################################"
+echo "ps aux"
+ps aux
+echo "# ###################################################################"
+echo "sudo journalctl -u samba_exporter.service"
+sudo journalctl -u samba_exporter.service
+echo "# ###################################################################"
+echo "sudo journalctl -u samba_statusd.service"
+sudo journalctl -u samba_statusd.service
+echo "# ###################################################################"
+echo "curl http://127.0.0.1:9922/metrics"
+curl http://127.0.0.1:9922/metrics
+# Just print out intresting info, no tests ***
 
 
 echo "# ###################################################################"
@@ -63,5 +78,23 @@ sudo dpkg --purge samba-exporter
 assert "echo \"$?\"" "0"
 echo "# ###################################################################"
 
+# *** Just print out intresting info, no tests
+echo "ls -l /user/local/bin"
+ls -l /user/local/bin
+echo "# ###################################################################"
+echo "ls -l /user/share/doc"
+ls -l /user/share/doc
+echo "# ###################################################################"
+echo "ls -l /etc/default"
+ls -l /etc/default
+echo "# ###################################################################"
+echo "ls -l /etc/systemd/system"
+ls -l /etc/systemd/system
+echo "# ###################################################################"
+echo "ps aux"
+ps aux
+# Just print out intresting info, no tests ***
+
+echo "# ###################################################################"
 assert_end samba-exporter_InstallationTests
 exit 0

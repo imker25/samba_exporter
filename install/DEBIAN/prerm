@@ -1,8 +1,15 @@
 #!/bin/sh
 set -e
-
+request_pipe_file="/run/samba_exporter.request.pipe"
+response_pipe_file="/run/samba_exporter.response.pipe"
 if [ "$1" = remove ]; then
     # Stop the services before removing the package
     systemctl stop samba_statusd.service
     systemctl stop samba_exporter.service
+    if [ -p "$request_pipe_file" ]; then
+        rm "$request_pipe_file"
+    fi
+    if [ -p "$response_pipe_file" ]; then
+        rm "$response_pipe_file"
+    fi
 fi
