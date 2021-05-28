@@ -1,10 +1,14 @@
 #!/bin/bash
+script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+branch_dir="$script_dir/../.."
 
 # Run some installation tests for the samba_exporter package
 echo "# ###################################################################"
 echo "# Prepare for Installation test"
 echo "# ###################################################################"
 echo "SAMBA_EXPORTER_PACKAGE_NAME=$SAMBA_EXPORTER_PACKAGE_NAME"
+echo "script_dir=$script_dir"
+echo "branch_dir=$branch_dir"
 
 if [ -f "./${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb" ]; then
     echo "Install package found on : ${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb"
