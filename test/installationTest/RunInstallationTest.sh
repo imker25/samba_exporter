@@ -84,12 +84,6 @@ assert "echo \"$?\"" "0"
 echo "# ###################################################################"
 
 # *** Just print out intresting info, no tests
-echo "ls -l /user/local/bin"
-ls -l /user/local/bin
-echo "# ###################################################################"
-echo "ls -l /user/share/doc"
-ls -l /user/share/doc
-echo "# ###################################################################"
 echo "ls -l /etc/default"
 ls -l /etc/default
 echo "# ###################################################################"

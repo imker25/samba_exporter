@@ -1,10 +1,10 @@
 # Set the command-line arguments to pass to the samba_statusd daemon
 
 # The samba_statusd running without args by default
-ARGS=''
+# ARGS=''
 
 # The samba_statusd running without verbose output
-# ARGS='-verbose'
+ARGS='-verbose'
 
 # Usage of samba_statusd
 #  -help
