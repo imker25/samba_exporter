@@ -42,7 +42,7 @@ echo "# ###################################################################"
 echo "# Installation test"
 echo "# ###################################################################"
 echo "sudo dpkg --install  \"./${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb"
-sudo dpkg --install  \"./${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb\"
+sudo dpkg --install  "./${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb"
 echo "# ###################################################################"
 assert "echo \"$?\"" "0"
 assert_raises "samba_exporter --help" 0
