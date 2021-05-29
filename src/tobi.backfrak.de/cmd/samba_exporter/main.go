@@ -79,10 +79,12 @@ func main() {
 	go waitforKillSignalAndExit()
 	go waitforTermSignalAndExit()
 
-	logger.WriteInformation(fmt.Sprintf("Started %s, get metrics on %s%s", os.Args[0], params.ListenAddress, params.MetricsPath))
+	logger.WriteVerbose("Setup prometheus exporter")
 
 	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler, logger, version)
 	prometheus.MustRegister(exporter)
+
+	logger.WriteInformation(fmt.Sprintf("Started %s, get metrics on %s%s", os.Args[0], params.ListenAddress, params.MetricsPath))
 
 	http.Handle(params.MetricsPath, promhttp.Handler())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

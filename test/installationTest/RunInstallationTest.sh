@@ -77,7 +77,7 @@ echo "Test Jornal for the servives"
 sudo journalctl -u samba_exporter.service > $tmp_dir/samba_exporter.service.1.log
 sudo journalctl -u samba_statusd.service > $tmp_dir/samba_statusd.service.1.log
 samba_exporter_log_lines=$(wc -l $tmp_dir/samba_exporter.service.1.log| awk '{print $1}' )
-samba_statusd_log_lines=$(wc -l $tmp_dir/samba_exporter.service.1.log | awk '{print $1}' )
+samba_statusd_log_lines=$(wc -l $tmp_dir/samba_statusd.service.1.log | awk '{print $1}' )
 echo "$tmp_dir/samba_exporter.service.1.log has $samba_exporter_log_lines lines"
 echo "$tmp_dir/samba_exporter.service.1.log has $samba_statusd_log_lines lines"
 
@@ -161,7 +161,7 @@ echo "Check logs before purge"
 sudo journalctl -u samba_exporter.service > $tmp_dir/samba_exporter.service.2.log
 sudo journalctl -u samba_statusd.service > $tmp_dir/samba_statusd.service.2.log
 samba_exporter_log_lines=$(wc -l $tmp_dir/samba_exporter.service.2.log| awk '{print $1}' )
-samba_statusd_log_lines=$(wc -l $tmp_dir/samba_exporter.service.2.log | awk '{print $1}' )
+samba_statusd_log_lines=$(wc -l $tmp_dir/samba_statusd.service.2.log | awk '{print $1}' )
 echo "$tmp_dir/samba_exporter.service.1.log has $samba_exporter_log_lines lines"
 echo "$tmp_dir/samba_exporter.service.1.log has $samba_statusd_log_lines lines"
 

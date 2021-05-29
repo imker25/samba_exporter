@@ -41,7 +41,7 @@ func TestWriteVerbose(t *testing.T) {
 
 func TestWriteError(t *testing.T) {
 	logger := NewLogger(false)
-	err := NewReaderError("my data")
+	err := NewReaderError("my data", LOCK_REQUEST, 3)
 
 	logger.WriteError(err)
 }

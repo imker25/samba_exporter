@@ -9,9 +9,10 @@ import "fmt"
 
 // ReaderError - Error when trying to read from the buffer
 type ReaderError struct {
-	err string
-	// File - The path to the dir that caused this error
-	Data string
+	err     string
+	Data    string
+	Request RequestType
+	ID      int
 }
 
 func (e *ReaderError) Error() string { // Implement the Error Interface for the ReaderError struct
@@ -19,8 +20,8 @@ func (e *ReaderError) Error() string { // Implement the Error Interface for the 
 }
 
 // NewReaderError- Get a new OutFileIsDirError struct
-func NewReaderError(data string) *ReaderError {
-	return &ReaderError{fmt.Sprintf("The received data \"%s\" was not expected", data), data}
+func NewReaderError(data string, rType RequestType, id int) *ReaderError {
+	return &ReaderError{fmt.Sprintf("The received data \"%s\" was not expected for reqest \"%s\" with ID %d", data, rType, id), data, rType, id}
 }
 
 // WriterError - Error when trying to write to the buffer

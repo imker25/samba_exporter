@@ -6,20 +6,39 @@ package commonbl
 // LICENSE file.
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
 
 func TestReaderError(t *testing.T) {
 	path := "/some/sample/path"
-	err := NewReaderError(path)
+	id := 123
+	rType := LOCK_REQUEST
+	err := NewReaderError(path, rType, id)
 
 	if err.Data != path {
-		t.Errorf("The File was %s, but %s was expected", err.Data, path)
+		t.Errorf("The Data was %s, but %s was expected", err.Data, path)
+	}
+
+	if string(err.Request) != string(LOCK_REQUEST) {
+		t.Errorf("The Request was %s, but %s was expected", err.Request, path)
+	}
+
+	if err.ID != id {
+		t.Errorf("The ID was %d, but %d was expected", err.ID, id)
 	}
 
 	if strings.Contains(err.Error(), path) == false {
 		t.Errorf("The error message of ReaderError does not contain the expected data")
+	}
+
+	if strings.Contains(err.Error(), string(rType)) == false {
+		t.Errorf("The error message of ReaderError does not contain the expected request type")
+	}
+
+	if strings.Contains(err.Error(), fmt.Sprintf("%d", id)) == false {
+		t.Errorf("The error message of ReaderError does not contain the expected request id")
 	}
 }
 

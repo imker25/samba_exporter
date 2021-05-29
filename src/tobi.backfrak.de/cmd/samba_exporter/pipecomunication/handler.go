@@ -108,7 +108,7 @@ func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commo
 	}
 
 	if !commonbl.CheckResponseHeader(header, request, requestCount) {
-		return "", commonbl.NewReaderError(response)
+		return "", commonbl.NewReaderError(response, request, requestCount)
 	}
 
 	return data, nil
