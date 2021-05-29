@@ -197,6 +197,10 @@ assert_raises "fileExists \"/etc/systemd/system/samba_statusd.service\"" 0
 assert_raises "fileExists \"/run/samba_exporter.request.pipe\"" 0
 assert_raises "fileExists \"/run/samba_exporter.response.pipe\"" 0
 
+if getent passwd samba-exporter > /dev/null; then
+    assert "echo \"User samba-exporter exists after purgig the package\"" ""
+fi
+
 echo "Tests done"
 echo "# ###################################################################"
 assert_end samba-exporter_InstallationTests

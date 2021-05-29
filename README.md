@@ -42,6 +42,8 @@ Options:
 
 You may not want to start the service with arguments that will exit before listening starts like `-help` or `-print-version`.
 
+To stop, start or restart the service use `systemctl`, e. g.: `sudo systemctl stop samba_statusd`. To the the log output use `journalctl`, e. g. `sudo journalctl -u samba_statusd`.
+
 ### samba_exporter service
 
 To change the behavior of the samba_exporter service update the `/etc/default/samba_exporter` according to your needs. You can add any option shown in the help output of `samba_exporter` to the `ARGS` variable.
@@ -72,6 +74,10 @@ Options:
 ```
 
 You may not want to start the service with arguments that will exit before listening starts like `-test-pipe`, `-help` or `-print-version`.
+
+To stop, start or restart the service use `systemctl`, e. g.: `sudo systemctl stop samba_exporter`. To the the log output use `journalctl`, e. g. `sudo journalctl -u samba_exporter`.
+
+**Remark:** Due to the services dependencies `samba_exporter` service stops whenever `samba_statusd` stops. And `samba_statusd` always starts when `samba_exporter` is started.
 
 ## Build and manual install
 

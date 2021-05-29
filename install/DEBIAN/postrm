@@ -5,7 +5,9 @@ set -e
 case "$1" in
   purge)
         # In case the pacakge gets purged, we remove the daemon user
-        deluser --system samba-exporter
+        if getent passwd samba-exporter > /dev/null; then
+          deluser --system samba-exporter
+        fi
         systemctl daemon-reload
     ;;
   remove)
