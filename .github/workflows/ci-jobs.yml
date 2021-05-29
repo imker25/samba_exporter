@@ -45,19 +45,19 @@ jobs:
     - name: 'Upload Artifact samba_exporter'
       uses: actions/upload-artifact@v2
       with:
-        name: samba_exporter
+        name: samba_exporter-${{ matrix.os }}
         path: bin/samba_exporter
         retention-days: 1
     - name: 'Upload Artifact samba_statusd'
       uses: actions/upload-artifact@v2
       with:
-        name: samba_statusd
+        name: samba_statusd-${{ matrix.os }}
         path: bin/samba_statusd
         retention-days: 1
     - name: 'Upload Artifact PackageName.txt'
       uses: actions/upload-artifact@v2
       with:
-        name: PackageName.txt
+        name: PackageName-${{ matrix.os }}.txt
         path: logs/PackageName.txt
         retention-days: 1 
     - uses: jiro4989/build-deb-action@v2
@@ -87,12 +87,12 @@ jobs:
       - name: Download samba_exporter artifact
         uses: actions/download-artifact@v2
         with:
-          name: samba_exporter
+          name: samba_exporter-${{ matrix.os }}
           path: bin/samba_exporter  
       - name: Download samba_statusd artifact
         uses: actions/download-artifact@v2  
         with:
-          name: samba_statusd
+          name: samba_statusd-${{ matrix.os }}
           path: bin/samba_statusd
       - name: Check artifacts
         run: ls -l bin/
@@ -111,12 +111,12 @@ jobs:
       - name: Download samba_exporter artifact
         uses: actions/download-artifact@v2
         with:
-          name: samba_exporter
+          name: samba_exporter-${{ matrix.os }}
           path: bin/samba_exporter  
       - name: Download samba_statusd artifact
         uses: actions/download-artifact@v2  
         with:
-          name: samba_statusd
+          name: samba_statusd-${{ matrix.os }}
           path: bin/samba_statusd
       - name: Check artifacts
         run: ls -l bin/ &&  ls -l bin/samba_exporter/ && ls -l bin/samba_statusd/ 
@@ -135,7 +135,7 @@ jobs:
     - name: Download PackageName.txt artifact
       uses: actions/download-artifact@v2
       with:
-        name: PackageName.txt   
+        name: PackageName-${{ matrix.os }}.txt   
         path: logs/ 
     - name: Download samba_exporter package artifact
       uses: actions/download-artifact@v2
@@ -146,7 +146,7 @@ jobs:
       run: |
             ls -l
             packageName=$(cat logs/PackageName.txt)
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$SAMBA_EXPORTER_PACKAGE_NAME"
+            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName"
             echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV      
     - name: "Run installation tests"
       env:

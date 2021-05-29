@@ -21,7 +21,12 @@ fi
 echo "# ###################################################################"
 echo "sudo apt-get update && sudo apt-get install -y  samba smbclient wget curl coreutils mawk"
 # Install dependencies for testing 
-sudo apt-get update && sudo apt-get install -y  samba smbclient wget curl coreutils mawk < /bin/true | cat >> /dev/null
+sudo apt-get update | cat >> /dev/null
+if [ "$?" != "0" ]; then 
+    echo "Error while apt-get update"
+    exit 1
+fi
+sudo apt-get install -y  samba smbclient wget curl coreutils mawk < /bin/true | cat >> /dev/null
 if [ "$?" != "0" ]; then 
     echo "Error while samba package installation"
     exit 1
