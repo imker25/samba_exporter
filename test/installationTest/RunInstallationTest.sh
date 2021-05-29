@@ -85,6 +85,10 @@ assert "echo $samba_exporter_log_lines" "4"
 assert "echo $samba_statusd_log_lines" "4"
 assert_raises "cat $tmp_dir/samba_exporter.service.1.log | grep \"get metrics on 127.0.0.1:9922/metrics\"" 0
 
+exporterPID=$(pidof samba_exporter)
+uidOfexporterPID=$(awk '/^Uid:/{print $2}' /proc/$exporterPID/status)
+userOfexporterPID=$(getent passwd "$uidOfexporterPID" | awk -F: '{print $1}')
+assert "echo $userOfexporterPID" "samba-exporter"
 
 echo "# ###################################################################"
 echo "Test Service start stop"
@@ -134,10 +138,10 @@ echo "samba_statusd running with PID $statusdPIDBefore"
 
 echo "sudo systemctl restart samba_statusd"
 sudo systemctl restart samba_statusd
-sleep 0.1
+sleep 0.2
 echo "sudo systemctl restart samba_exporter"
 sudo systemctl restart samba_exporter
-sleep 0.1
+sleep 0.2
 assert_raises "processWithNameIsRunning samba_statusd" 1
 assert_raises "processWithNameIsRunning samba_exporter" 1
 
