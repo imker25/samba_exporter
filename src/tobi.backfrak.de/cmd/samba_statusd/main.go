@@ -140,7 +140,7 @@ func handleRequest(handler commonbl.PipeHandler, request string, requestType com
 }
 
 func lockResponse(handler commonbl.PipeHandler, id int) error {
-	header := commonbl.GetTestResponseHeader(commonbl.LOCK_REQUEST, id)
+	header := commonbl.GetResponseHeader(commonbl.LOCK_REQUEST, id)
 	data, err := exec.Command(smbstatusPath, "-L", "-n").Output()
 	if err != nil {
 		logger.WriteErrorMessage(fmt.Sprintf("\"%s -L -n\"  returned the following error: %s", smbstatusPath, err))
@@ -152,7 +152,7 @@ func lockResponse(handler commonbl.PipeHandler, id int) error {
 }
 
 func shareResponse(handler commonbl.PipeHandler, id int) error {
-	header := commonbl.GetTestResponseHeader(commonbl.SHARE_REQUEST, id)
+	header := commonbl.GetResponseHeader(commonbl.SHARE_REQUEST, id)
 	data, err := exec.Command(smbstatusPath, "-S", "-n").Output()
 	if err != nil {
 		logger.WriteErrorMessage(fmt.Sprintf("\"%s -S -n\"  returned the following error: %s", smbstatusPath, err))
@@ -164,7 +164,7 @@ func shareResponse(handler commonbl.PipeHandler, id int) error {
 }
 
 func processResponse(handler commonbl.PipeHandler, id int) error {
-	header := commonbl.GetTestResponseHeader(commonbl.PROCESS_REQUEST, id)
+	header := commonbl.GetResponseHeader(commonbl.PROCESS_REQUEST, id)
 	data, err := exec.Command(smbstatusPath, "-p", "-n").Output()
 	if err != nil {
 		logger.WriteErrorMessage(fmt.Sprintf("\"%s -p -n\"  returned the following error: %s", smbstatusPath, err))
