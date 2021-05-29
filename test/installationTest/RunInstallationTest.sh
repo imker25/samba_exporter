@@ -61,8 +61,8 @@ sudo dpkg --install  "./${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb"
 echo "# ###################################################################"
 assert "echo \"$?\"" "0"
 sleep 0.4
-assert_raises "fileExists \"/etc/default/samba_exporter\"" 0
-assert_raises "fileExists \"/etc/default/samba_statusd\"" 0
+assert_raises "fileExists \"/etc/default/samba_exporter\"" 1
+assert_raises "fileExists \"/etc/default/samba_statusd\"" 1
 
 assert_raises "samba_exporter --help" 0
 assert_raises "samba_statusd --help" 0
