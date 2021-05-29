@@ -10,6 +10,7 @@ echo "# ###################################################################"
 echo "SAMBA_EXPORTER_PACKAGE_NAME=$SAMBA_EXPORTER_PACKAGE_NAME"
 echo "script_dir=$script_dir"
 echo "branch_dir=$branch_dir"
+source "$branch_dir/test/import/functions.sh"
 
 if [ -f "./${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb" ]; then
     echo "Install package found on : ${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb"
@@ -60,21 +61,17 @@ sudo dpkg --install  "./${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb"
 echo "# ###################################################################"
 assert "echo \"$?\"" "0"
 sleep 0.4
+assert_raises "fileExists \"/etc/default/samba_exporter\"" 0
+assert_raises "fileExists \"/etc/default/samba_statusd\"" 0
 
 assert_raises "samba_exporter --help" 0
 assert_raises "samba_statusd --help" 0
 
 
-exporterPID=$(pidof samba_exporter)
-echo "samba_exporter running with PID $exporterPID"
-statusdPID=$(pidof samba_statusd)
-echo "samba_statusd running with PID $statusdPID"
-if [ "$statusdPID" == "" ]; then
-    assert "echo \"samba_statusd not running\"" ""
-fi
-if [ "$exporterPID" == "" ]; then
-    assert "echo \"samba_exporter not running\"" ""
-fi
+processWithNameIsRunning samba_statusd
+processWithNameIsRunning samba_exporter
+assert_raises "processWithNameIsRunning samba_statusd" 1
+assert_raises "processWithNameIsRunning samba_exporter" 1
 
 echo "Test Jornal for the servives"
 sudo journalctl -u samba_exporter.service > $tmp_dir/samba_exporter.service.1.log
@@ -104,16 +101,10 @@ sudo dpkg --purge samba-exporter
 assert "echo \"$?\"" "0"
 echo "# ###################################################################"
 
-exporterPID=$(pidof samba_exporter)
-echo "samba_exporter running with PID $exporterPID"
-statusdPID=$(pidof samba_statusd)
-echo "samba_statusd running with PID $statusdPID"
-if [ "$statusdPID" != "" ]; then
-    assert "echo \"samba_statusd still running\"" ""
-fi
-if [ "$exporterPID" != "" ]; then
-    assert "echo \"samba_exporter still running\"" ""
-fi
+assert_raises "processWithNameIsRunning samba_statusd" 0
+assert_raises "processWithNameIsRunning samba_exporter" 0
+assert_raises "fileExists \"/etc/default/samba_exporter\"" 0
+assert_raises "fileExists \"/etc/default/samba_statusd\"" 0
 
 echo "# ###################################################################"
 assert_end samba-exporter_InstallationTests
