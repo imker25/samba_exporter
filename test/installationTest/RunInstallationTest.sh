@@ -43,7 +43,7 @@ else
     exit -1
 fi
 
-if [ ! -d "$tmp_dir"]; then
+if [ ! -d "$tmp_dir" ]; then
     mkdir -p "$tmp_dir"
 fi
 
