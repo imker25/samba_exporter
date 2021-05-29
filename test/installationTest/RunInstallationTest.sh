@@ -94,7 +94,7 @@ assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</
 
 echo "# ###################################################################"
 echo "sudo systemctl stop samba_satutsd.service "
-sudo systemctl stop samba_satutsd.service 
+sudo systemctl stop samba_statusd.service
 assert_raises "processWithNameIsRunning samba_statusd" 0
 assert_raises "processWithNameIsRunning samba_exporter" 1
 
