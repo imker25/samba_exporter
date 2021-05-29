@@ -96,20 +96,17 @@ echo "# ###################################################################"
 echo "sudo systemctl stop samba_satutsd.service "
 sudo systemctl stop samba_statusd.service
 assert_raises "processWithNameIsRunning samba_statusd" 0
-assert_raises "processWithNameIsRunning samba_exporter" 1
+assert_raises "processWithNameIsRunning samba_exporter" 0
 
 echo "# ###################################################################"
 echo "sudo journalctl -u samba_statusd.service "
 sudo journalctl -u samba_statusd.service 
 echo "# ###################################################################"
+echo "sudo journalctl -u samba_statusd.service "
+sudo journalctl -u samba_exporter.service 
+echo "# ###################################################################"
 
-assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 0\"" 0
-assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 0\"" 0
-echo "sudo systemctl stop samba_satutsd.service "
-sudo systemctl stop samba_exporter.service 
 assert_raises "curl http://127.0.0.1:9922/metrics" 7
-assert_raises "processWithNameIsRunning samba_statusd" 0
-assert_raises "processWithNameIsRunning samba_exporter" 0
 echo "sudo systemctl start samba_exporter"
 sudo systemctl start samba_exporter
 sleep 0.4
@@ -139,6 +136,7 @@ assert_raises "fileExists \"/usr/local/bin/samba_exporter\"" 0
 assert_raises "fileExists \"/etc/systemd/system/samba_exporter.service\"" 0
 assert_raises "fileExists \"/etc/systemd/system/samba_statusd.service\"" 0
 
+echo "Tests done"
 echo "# ###################################################################"
 assert_end samba-exporter_InstallationTests
 exit 0
