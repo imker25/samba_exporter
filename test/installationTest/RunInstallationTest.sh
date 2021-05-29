@@ -93,18 +93,10 @@ assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics
 assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\"" 0 
 
 echo "# ###################################################################"
-echo "sudo systemctl stop samba_satutsd.service "
-sudo systemctl stop samba_statusd.service
+echo "sudo systemctl stop samba_satutsd "
+sudo systemctl stop samba_statusd
 assert_raises "processWithNameIsRunning samba_statusd" 0
 assert_raises "processWithNameIsRunning samba_exporter" 0
-
-echo "# ###################################################################"
-echo "sudo journalctl -u samba_statusd.service "
-sudo journalctl -u samba_statusd.service 
-echo "# ###################################################################"
-echo "sudo journalctl -u samba_statusd.service "
-sudo journalctl -u samba_exporter.service 
-echo "# ###################################################################"
 
 assert_raises "curl http://127.0.0.1:9922/metrics" 7
 echo "sudo systemctl start samba_exporter"
@@ -117,6 +109,19 @@ assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
 assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\"" 0
 assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\"" 0 
+
+echo "sudo systemctl stop samba_exporter"
+sudo systemctl stop samba_exporter
+assert_raises "processWithNameIsRunning samba_statusd" 1
+assert_raises "processWithNameIsRunning samba_exporter" 0
+
+echo "# ###################################################################"
+echo "sudo journalctl -u samba_statusd.service "
+sudo journalctl -u samba_statusd.service 
+echo "# ###################################################################"
+echo "sudo journalctl -u samba_statusd.service "
+sudo journalctl -u samba_exporter.service 
+echo "# ###################################################################"
 
 echo "# ###################################################################"
 echo "# Purge package test"
