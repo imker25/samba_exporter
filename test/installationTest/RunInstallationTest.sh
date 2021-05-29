@@ -83,6 +83,7 @@ echo "$tmp_dir/samba_exporter.service.1.log has $samba_statusd_log_lines lines"
 
 assert "echo $samba_exporter_log_lines" "4"
 assert "echo $samba_statusd_log_lines" "4"
+assert_raises "cat $tmp_dir/samba_exporter.service.1.log | grep \"get metrics on 127.0.0.1:9922/metrics\"" 0
 
 
 echo "# ###################################################################"
@@ -193,6 +194,8 @@ assert_raises "fileExists \"/usr/local/bin/samba_statusd\"" 0
 assert_raises "fileExists \"/usr/local/bin/samba_exporter\"" 0
 assert_raises "fileExists \"/etc/systemd/system/samba_exporter.service\"" 0
 assert_raises "fileExists \"/etc/systemd/system/samba_statusd.service\"" 0
+assert_raises "fileExists \"/run/samba_exporter.request.pipe\"" 0
+assert_raises "fileExists \"/run/samba_exporter.response.pipe\"" 0
 
 echo "Tests done"
 echo "# ###################################################################"
