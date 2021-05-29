@@ -1,5 +1,5 @@
 [Unit]
-Description=Prometheus-samba-statusd service, based on https://github.com/imker25/samba_exporter
+Description=samba-statusd service for prometheus samba-exporter, based on https://github.com/imker25/samba_exporter
 Requires=network-online.target
 After=network-online.target
 

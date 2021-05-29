@@ -177,7 +177,7 @@ echo "# ###################################################################"
 echo "sudo journalctl -u samba_statusd.service "
 sudo journalctl -u samba_statusd.service 
 echo "# ###################################################################"
-echo "sudo journalctl -u samba_statusd.service "
+echo "sudo journalctl -u samba_exporter.service "
 sudo journalctl -u samba_exporter.service 
 echo "# ###################################################################"
 
