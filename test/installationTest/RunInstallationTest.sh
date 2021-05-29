@@ -92,6 +92,28 @@ assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\""
 assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\"" 0
 assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\"" 0 
 
+echo "# ###################################################################"
+echo "sudo systemctl stop samba_satutsd"
+sudo systemctl stop samba_satutsd
+assert_raises "processWithNameIsRunning samba_statusd" 0
+assert_raises "processWithNameIsRunning samba_exporter" 1
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 0\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 0\"" 0
+echo "sudo systemctl stop samba_satutsd"
+sudo systemctl stop samba_exporter
+assert_raises "curl http://127.0.0.1:9922/metrics" 7
+assert_raises "processWithNameIsRunning samba_statusd" 0
+assert_raises "processWithNameIsRunning samba_exporter" 0
+echo "sudo systemctl start samba_exporter"
+sudo systemctl start samba_exporter
+sleep 0.4
+assert_raises "processWithNameIsRunning samba_statusd" 1
+assert_raises "processWithNameIsRunning samba_exporter" 1
+
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\"" 0
+assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\"" 0 
 
 echo "# ###################################################################"
 echo "# Purge package test"
@@ -105,6 +127,11 @@ assert_raises "processWithNameIsRunning samba_statusd" 0
 assert_raises "processWithNameIsRunning samba_exporter" 0
 assert_raises "fileExists \"/etc/default/samba_exporter\"" 0
 assert_raises "fileExists \"/etc/default/samba_statusd\"" 0
+assert_raises "fileExists \"/usr/local/bin/start_samba_statusd.sh\"" 0
+assert_raises "fileExists \"/usr/local/bin/samba_statusd\"" 0
+assert_raises "fileExists \"/usr/local/bin/samba_exporter\"" 0
+assert_raises "fileExists \"/etc/systemd/system/samba_exporter.service\"" 0
+assert_raises "fileExists \"/etc/systemd/system/samba_statusd.service\"" 0
 
 echo "# ###################################################################"
 assert_end samba-exporter_InstallationTests
