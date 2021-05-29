@@ -1,6 +1,7 @@
 #!/bin/bash
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 branch_dir="$script_dir/../.."
+tmp_dir="$branch_dir/tmp"
 
 # Run some installation tests for the samba_exporter package
 echo "# ###################################################################"
@@ -20,7 +21,11 @@ fi
 echo "# ###################################################################"
 echo "sudo apt-get update && sudo apt-get install -y  samba smbclient wget curl coreutils mawk"
 # Install dependencies for testing 
-sudo apt-get update && sudo apt-get install -y  samba smbclient wget curl coreutils mawk < /bin/true
+sudo apt-get update && sudo apt-get install -y  samba smbclient wget curl coreutils mawk < /bin/true | cat >> /dev/null
+if [ "$?" != "0" ]; then 
+    echo "Error while samba package installation"
+    exit 1
+fi
 
 echo "# ###################################################################"
 if [ -f "$script_dir/assert.sh" ]; then
@@ -38,8 +43,12 @@ else
     exit -1
 fi
 
+if [ ! -d "$tmp_dir"]; then
+    mkdir -p "$tmp_dir"
+fi
+
 echo "# ###################################################################"
-echo "# Installation test"
+echo "# Install package test"
 echo "# ###################################################################"
 echo "sudo dpkg --install  \"./${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb"
 sudo dpkg --install  "./${SAMBA_EXPORTER_PACKAGE_NAME}_amd64.deb"
@@ -55,47 +64,51 @@ exporterPID=$(pidof samba_exporter)
 echo "samba_exporter running with PID $exporterPID"
 statusdPID=$(pidof samba_statusd)
 echo "samba_statusd running with PID $statusdPID"
+if [ "$statusdPID" == "" ]; then
+    assert "echo \"samba_statusd not running\"" ""
+fi
+if [ "$exporterPID" == "" ]; then
+    assert "echo \"samba_exporter not running\"" ""
+fi
 
-# *** Just print out intresting info, no tests
-echo "# ###################################################################"
-echo "ls -l /run"
-ls -l /run
-echo "# ###################################################################"
-echo "ps aux"
-ps aux
-echo "# ###################################################################"
-echo "sudo journalctl -u samba_exporter.service"
-sudo journalctl -u samba_exporter.service
-echo "# ###################################################################"
-echo "sudo journalctl -u samba_statusd.service"
-sudo journalctl -u samba_statusd.service
-echo "# ###################################################################"
-echo "curl http://127.0.0.1:9922/metrics"
-curl http://127.0.0.1:9922/metrics
-# Just print out intresting info, no tests ***
+echo "Test Jornal for the servives"
+sudo journalctl -u samba_exporter.service > $tmp_dir/samba_exporter.service.1.log
+sudo journalctl -u samba_statusd.service > $tmp_dir/samba_statusd.service.1.log
+samba_exporter_log_lines=$(wc -l $tmp_dir/samba_exporter.service.1.log| awk '{print $1}' )
+samba_statusd_log_lines=$(wc -l $tmp_dir/samba_exporter.service.1.log | awk '{print $1}' )
+echo "$tmp_dir/samba_exporter.service.1.log has $samba_exporter_log_lines lines"
+echo "$tmp_dir/samba_exporter.service.1.log has $samba_statusd_log_lines lines"
+
+assert "echo $samba_exporter_log_lines" "4"
+assert "echo $samba_statusd_log_lines" "4"
 
 
 echo "# ###################################################################"
-echo "# Purge test"
+echo "Test Web Interface"
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\"" 0
+assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\"" 0 
+
+
+echo "# ###################################################################"
+echo "# Purge package test"
 echo "# ###################################################################"
 echo "sudo dpkg --purge samba-exporter"
 sudo dpkg --purge samba-exporter
 assert "echo \"$?\"" "0"
 echo "# ###################################################################"
 
-# *** Just print out intresting info, no tests
-echo "ls -l /etc/default"
-ls -l /etc/default
-echo "# ###################################################################"
-echo "ls -l /etc/systemd/system"
-ls -l /etc/systemd/system
-echo "# ###################################################################"
-echo "ls -l /run"
-ls -l /run
-echo "# ###################################################################"
-echo "ps aux"
-ps aux
-# Just print out intresting info, no tests ***
+exporterPID=$(pidof samba_exporter)
+echo "samba_exporter running with PID $exporterPID"
+statusdPID=$(pidof samba_statusd)
+echo "samba_statusd running with PID $statusdPID"
+if [ "$statusdPID" != "" ]; then
+    assert "echo \"samba_statusd still running\"" ""
+fi
+if [ "$exporterPID" != "" ]; then
+    assert "echo \"samba_exporter still running\"" ""
+fi
 
 echo "# ###################################################################"
 assert_end samba-exporter_InstallationTests
