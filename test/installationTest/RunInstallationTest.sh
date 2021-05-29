@@ -115,6 +115,16 @@ sudo systemctl stop samba_exporter
 assert_raises "processWithNameIsRunning samba_statusd" 1
 assert_raises "processWithNameIsRunning samba_exporter" 0
 
+echo "sudo systemctl start samba_exporter"
+sudo systemctl start samba_exporter
+assert_raises "processWithNameIsRunning samba_statusd" 1
+assert_raises "processWithNameIsRunning samba_exporter" 1
+
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
+
+
+
 echo "# ###################################################################"
 echo "sudo journalctl -u samba_statusd.service "
 sudo journalctl -u samba_statusd.service 
