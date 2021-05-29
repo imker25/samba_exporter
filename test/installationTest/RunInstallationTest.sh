@@ -86,7 +86,7 @@ assert "echo $samba_statusd_log_lines" "4"
 
 
 echo "# ###################################################################"
-echo "Test Web Interface"
+echo "Test Service start stop"
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
 assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics</a></p>\"" 0
@@ -101,7 +101,7 @@ assert_raises "processWithNameIsRunning samba_exporter" 0
 assert_raises "curl http://127.0.0.1:9922/metrics" 7
 echo "sudo systemctl start samba_exporter"
 sudo systemctl start samba_exporter
-sleep 0.4
+sleep 0.1
 assert_raises "processWithNameIsRunning samba_statusd" 1
 assert_raises "processWithNameIsRunning samba_exporter" 1
 
@@ -117,13 +117,44 @@ assert_raises "processWithNameIsRunning samba_exporter" 0
 
 echo "sudo systemctl start samba_exporter"
 sudo systemctl start samba_exporter
+sleep 0.1
 assert_raises "processWithNameIsRunning samba_statusd" 1
 assert_raises "processWithNameIsRunning samba_exporter" 1
 
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
 
+echo "# ###################################################################"
+echo "Test Service restart"
+exporterPIDBefore=$(pidof samba_exporter)
+echo "samba_exporter running with PID $exporterPIDBefore"
+statusdPIDBefore=$(pidof samba_statusd)
+echo "samba_statusd running with PID $statusdPIDBefore"
 
+echo "sudo systemctl restart samba_statusd"
+sudo systemctl restart samba_statusd
+sleep 0.1
+echo "sudo systemctl restart samba_exporter"
+sudo systemctl restart samba_exporter
+sleep 0.1
+assert_raises "processWithNameIsRunning samba_statusd" 1
+assert_raises "processWithNameIsRunning samba_exporter" 1
+
+exporterPIDAfter=$(pidof samba_exporter)
+echo "samba_exporter running with PID $exporterPIDAfter"
+statusdPIDAfter=$(pidof samba_statusd)
+echo "samba_statusd running with PID $statusdPIDAfter"
+
+if [ "$exporterPIDBefore" == "$exporterPIDAfter" ]; then
+    asster "echo \"samba_exporter was not restarted\"" ""
+fi
+
+if [ "$statusdPIDBefore" == "$statusdPIDAfter" ]; then
+    asster "echo \"samba_exporter was not restarted\"" ""
+fi
+
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
 
 echo "# ###################################################################"
 echo "sudo journalctl -u samba_statusd.service "
