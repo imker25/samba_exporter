@@ -13,6 +13,66 @@ Since the tool [smbstatus](https://www.samba.org/samba/docs/current/man-html/smb
 
 Both services can communicate using a named pipe owned by a common group.
 
+## Usage
+
+It's is assumed both services are installed as shown in the installation section.
+
+### samba_statusd service
+
+To change the behavior of the samba_statusd service update the `/etc/default/samba_statusd` according to your needs. You can add any option shown in the help output of `samba_statusd` to the `ARGS` variable.
+
+Get help:
+
+```sh
+samba_statusd -help
+samba_statusd: Wrapper for smbstatus. Collects data used by the samba_exporter service.
+Program Version: 0.1.164-2c3eda2
+
+Usage: ./bin/samba_statusd [options]
+Options:
+  -help
+        Print this help message
+  -print-version
+        With this flag the program will only print it's version and exit
+  -test-mode
+        Run the program in test mode. In this mode the program will always return the same test data. To work with samba_exporter both programs needs to run in test mode or not.
+  -verbose
+        With this flag the program will print verbose output
+```
+
+You may not want to start the service with arguments that will exit before listening starts like `-help` or `-print-version`.
+
+### samba_exporter service
+
+To change the behavior of the samba_exporter service update the `/etc/default/samba_exporter` according to your needs. You can add any option shown in the help output of `samba_exporter` to the `ARGS` variable.
+
+Get help:
+
+```sh
+samba_exporter -help     
+samba_exporter: prometheus exporter for the samba file server. Collects data using the samba_statusd service.
+Program Version: 0.1.164-2c3eda2
+
+Usage: ./bin/samba_exporter [options]
+Options:
+  -help
+        Print this help message
+  -print-version
+        With this flag the program will only print it's version and exit
+  -test-mode
+        Run the program in test mode. In this mode the program will always return the same test data. To work with samba_statusd both programs needs to run in test mode or not.
+  -test-pipe
+        Requests status from samba_statusd and exits. May be combinde with -test-mode.
+  -verbose
+        With this flag the program will print verbose output
+  -web.listen-address string
+        Address to listen on for web interface and telemetry. (default ":9922")
+  -web.telemetry-path string
+        Path under which to expose metrics. (default "/metrics")
+```
+
+You may not want to start the service with arguments that will exit before listening starts like `-test-pipe`, `-help` or `-print-version`.
+
 ## Build and manual install
 
 To build the project you need [Go](https://golang.org/) Version 1.14.x and [Java](https://java.com/) Version 11 on your development machine. 
