@@ -9,6 +9,7 @@ EnvironmentFile=/etc/default/samba_statusd
 ExecStart=/usr/local/bin/start_samba_statusd.sh $ARGS
 ExecReload=/bin/kill -HUP $MAINPID
 Restart=on-failure
+ExecStop=/bin/kill $MAINPID
 KillSignal=SIGTERM
 User=root 
 
