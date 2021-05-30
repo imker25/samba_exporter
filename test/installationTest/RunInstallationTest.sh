@@ -175,8 +175,8 @@ assert "echo $samba_statusd_log_lines" "16"
 
 echo "Restart samba server with updated settings, so a share is provided"
 echo "# ###################################################################"
-echo "mkdir -p /srv/test"
-mkdir -p /srv/test
+echo "sudo mkdir -p /srv/test"
+sudo mkdir -p /srv/test
 echo "chmod 777 /srv/test"
 chmod 777 /srv/test
 echo "cat $script_dir/additional.smb.conf >> /etc/samba/smb.conf"
@@ -193,7 +193,7 @@ echo "sudo journalctl -u samba_statusd.service "
 sudo journalctl -u samba_statusd.service 
 echo "# ###################################################################"
 echo "sudo journalctl -u samba_exporter.service "
-sudo journalctl -u samba_exporter.service > 
+sudo journalctl -u samba_exporter.service 
 echo "# ###################################################################"
 
 echo "# ###################################################################"
