@@ -177,8 +177,8 @@ echo "Restart samba server with updated settings, so a share is provided"
 echo "# ###################################################################"
 echo "sudo mkdir -p /srv/test"
 sudo mkdir -p /srv/test
-echo "chmod 777 /srv/test"
-chmod 777 /srv/test
+echo "sudo chmod 777 /srv/test"
+sudo chmod 777 /srv/test
 echo "cat $script_dir/additional.smb.conf >> /etc/samba/smb.conf"
 sudo /bin/bash -c "cat $script_dir/additional.smb.conf >> /etc/samba/smb.conf"
 echo "sudo systemctl restart smbd.service"
@@ -187,7 +187,11 @@ echo "# ###################################################################"
 echo "sudo systemctl status smbd.service"
 sudo systemctl status smbd.service > "$tmp_dir/samba.service.status.1.log"
 cat "$tmp_dir/samba.service.status.1.log"
-
+echo "echo \"My awsome test file\" > /srv/test/test.file"
+echo "My awsome test file" > /srv/test/test.file
+echo "# ###################################################################"
+echo "curl http://127.0.0.1:9922/metrics"
+curl http://127.0.0.1:9922/metrics 
 echo "# ###################################################################"
 echo "sudo journalctl -u samba_statusd.service "
 sudo journalctl -u samba_statusd.service 
