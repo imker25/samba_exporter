@@ -173,12 +173,27 @@ echo "$tmp_dir/samba_exporter.service.2.log has $samba_statusd_log_lines lines"
 assert "echo $samba_exporter_log_lines" "28"
 assert "echo $samba_statusd_log_lines" "16"
 
+echo "Restart samba server with updated settings, so a share is provided"
+echo "# ###################################################################"
+echo "mkdir -p /srv/test"
+mkdir -p /srv/test
+echo "chmod 777 /srv/test"
+chmod 777 /srv/test
+echo "cat $script_dir/additional.smb.conf >> /etc/samba/smb.conf"
+sudo /bin/bash -c "cat $script_dir/additional.smb.conf >> /etc/samba/smb.conf"
+echo "sudo systemctl restart smbd.service"
+sudo systemctl restart smbd.service
+echo "# ###################################################################"
+echo "sudo systemctl status smbd.service"
+sudo systemctl status smbd.service > "$tmp_dir/samba.service.status.1.log"
+cat "$tmp_dir/samba.service.status.1.log"
+
 echo "# ###################################################################"
 echo "sudo journalctl -u samba_statusd.service "
 sudo journalctl -u samba_statusd.service 
 echo "# ###################################################################"
 echo "sudo journalctl -u samba_exporter.service "
-sudo journalctl -u samba_exporter.service 
+sudo journalctl -u samba_exporter.service > 
 echo "# ###################################################################"
 
 echo "# ###################################################################"
@@ -204,6 +219,7 @@ assert_raises "fileExists \"/run/samba_exporter.response.pipe\"" 0
 if getent passwd samba-exporter > /dev/null; then
     assert "echo \"User samba-exporter exists after purgig the package\"" ""
 fi
+
 
 echo "Tests done"
 echo "# ###################################################################"
