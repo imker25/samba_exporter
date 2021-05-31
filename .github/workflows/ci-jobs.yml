@@ -153,7 +153,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: PackageName-ubuntu-20.04.txt   
-        path: logs/         
+        path: logs/ubuntu-20.04/         
     - name: Download ShortVersion.txt artifact
       uses: actions/download-artifact@v2
       with:
@@ -162,16 +162,35 @@ jobs:
     - name: 'Get needed environment from artifacts'
       run: |
             ls -l
-            packageName=$(cat logs/PackageName.txt)
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName"
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV       
-            shortVersion=$(cat logs/PackageName.txt)
-            echo "SAMBA_EXPORTER_SHORT_VERSION=$shortVersion"
-            echo "SAMBA_EXPORTER_SHORT_VERSION=$shortVersion" >> $GITHUB_ENV  
+            packageubuntu2004Name=$(cat logs/ubuntu-20.04/PackageName.txt)
+            echo "SAMBA_EXPORTER_UBUNTU_2004_PACKAGE_NAME=$packageubuntu2004Name"
+            echo "SAMBA_EXPORTER_UBUNTU_2004_PACKAGE_NAME=$packageubuntu2004Name" >> $GITHUB_ENV       
+            shortVersion=$(cat logs/ShortVersion.txt)
             if [ "$GITHUB_REF" == 'refs/heads/main' ]; then
                   echo "SAMBA_EXPORTER_PRE_RELEASE=true"
                   echo "SAMBA_EXPORTER_PRE_RELEASE=true" >> $GITHUB_ENV 
+
+                  echo "SAMBA_EXPORTER_SHORT_VERSION=$shortVersion-pre"
+                  echo "SAMBA_EXPORTER_SHORT_VERSION=$shortVersion-pre" >> $GITHUB_ENV  
+
+                  echo "SAMBA_EXPORTER_RELEASE_TITLE=Pre release of samba_exporter packages"
+                  echo "SAMBA_EXPORTER_RELEASE_TITLE=Pre release of samba_exporter packages"  >> $GITHUB_ENV                 
             else 
                   echo "SAMBA_EXPORTER_PRE_RELEASE=false"
                   echo "SAMBA_EXPORTER_PRE_RELEASE=false" >> $GITHUB_ENV 
+
+                  echo "SAMBA_EXPORTER_SHORT_VERSION=$shortVersion"
+                  echo "SAMBA_EXPORTER_SHORT_VERSION=$shortVersion" >> $GITHUB_ENV   
+                  
+                  echo "SAMBA_EXPORTER_RELEASE_TITLE=Pre release of samba_exporter packages"
+                  echo "SAMBA_EXPORTER_RELEASE_TITLE=Release of samba_exporter packages"  >> $GITHUB_ENV                      
             fi
+    - uses: "marvinpinto/action-automatic-releases@latest"
+      name: Release the packages
+      with:
+        repo_token: "${{ secrets.GITHUB_TOKEN }}"
+        automatic_release_tag: ${{ env.SAMBA_EXPORTER_SHORT_VERSION }}
+        prerelease: ${{ env.SAMBA_EXPORTER_PRE_RELEASE }}
+        title: ${{ env.SAMBA_EXPORTER_RELEASE_TITLE}}
+        files: |
+          ${{ env.SAMBA_EXPORTER_UBUNTU_2004_PACKAGE_NAME }}_amd64.deb            
