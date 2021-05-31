@@ -184,8 +184,8 @@ echo "# ###################################################################"
 echo "Mount samba share"
 echo "sudo mkdir /mnt/test"
 sudo mkdir /mnt/test
-echo "sudo mount -t cifs -o username=guest //127.0.0.1/test /mnt/test/" 
-sudo mount -t cifs -o username=guest //127.0.0.1/test /mnt/test/
+echo "sudo mount -t cifs -o username=guest,password=\"\" //127.0.0.1/test /mnt/test/" 
+sudo mount -t cifs -o username=guest,password="" //127.0.0.1/test /mnt/test/
 echo "sudo cat /mnt/test/test.file" 
 sudo cat /mnt/test/test.file
 assert "sudo cat /mnt/test/test.file" "My awsome test file"
