@@ -22,13 +22,13 @@ wget https://github.com/imker25/samba_exporter/releases/download/0.1.192-pre/sam
 sudo dpkg --install ./samba-exporter_0.1.192-f6b01a7+ubuntu-20.04_amd64.deb
 ```
 
-By default the prometheus exporter endpoint only listen on localhost. To change this behavior update `/etc/default/samba_exporter` on the target machine according to your needs and restart the `samba_exporter` service. See [samba_statusd service](samba_statusd-service) for details.
+By default the prometheus exporter endpoint only listen on localhost. To change this behavior update `/etc/default/samba_exporter` on the target machine according to your needs and restart the `samba_exporter` service. See [samba_statusd service](###samba_statusd-service) for details.
 
-For manual installation see [Build and manual install](Build-and-manual-install).
+For manual installation see [Build and manual install](##build-and-manual-install).
 
 ## Usage
 
-It's is assumed both services are installed as shown in the [installation](Installation) section.
+It's is assumed both services are installed as shown in the [installation](##Installation) section.
 
 ### samba_statusd service
 
