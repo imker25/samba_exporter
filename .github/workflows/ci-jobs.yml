@@ -147,17 +147,17 @@ jobs:
     - name: Download samba_exporter package artifact
       uses: actions/download-artifact@v2
       with:
-        name: samba_exporter-${{ matrix.os }}.deb  
+        name: samba_exporter-ubuntu-20.04.deb  
         path: . 
     - name: Download PackageName.txt artifact
       uses: actions/download-artifact@v2
       with:
-        name: PackageName-${{ matrix.os }}.txt   
+        name: PackageName-ubuntu-20.04.txt   
         path: logs/         
     - name: Download ShortVersion.txt artifact
       uses: actions/download-artifact@v2
       with:
-        name: ShortVersion-${{ matrix.os }}.txt   
+        name: ShortVersion-ubuntu-20.04.txt   
         path: logs/  
     - name: 'Get needed environment from artifacts'
       run: |
