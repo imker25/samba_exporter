@@ -13,9 +13,22 @@ Since the tool [smbstatus](https://www.samba.org/samba/docs/current/man-html/smb
 
 Both services can communicate using a named pipe owned by a common group.
 
+## Installation
+
+Install the latest [Release](https://github.com/imker25/samba_exporter/releases) by downloading the debian package and installing it. For example (Link and Version needs to be adapted to the latest release):
+
+```sh
+wget https://github.com/imker25/samba_exporter/releases/download/0.1.192-pre/samba-exporter_0.1.192-f6b01a7+ubuntu-20.04_amd64.deb
+sudo dpkg --install ./samba-exporter_0.1.192-f6b01a7+ubuntu-20.04_amd64.deb
+```
+
+By default the prometheus exporter endpoint only listen on localhost. To change this behavior update `/etc/default/samba_exporter` on the target machine according to your needs and restart the `samba_exporter` service. See [samba_statusd service](samba_statusd-service) for details.
+
+For manual installation see [Build and manual install](Build-and-manual-install).
+
 ## Usage
 
-It's is assumed both services are installed as shown in the installation section.
+It's is assumed both services are installed as shown in the [installation](Installation) section.
 
 ### samba_statusd service
 
@@ -166,4 +179,4 @@ samba_server_up 1
 samba_share_count 0
 ```
 
-By default the prometheus exporter endpoint only listen on localhost. To change this behavior update `/etc/default/samba_exporter` on the target machine according to your needs and restart the `samba_exporter` service.
+
