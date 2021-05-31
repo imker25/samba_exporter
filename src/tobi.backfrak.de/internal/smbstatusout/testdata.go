@@ -24,6 +24,8 @@ Pid          User(ID)   DenyMode   Access      R/W        Oplock           Share
 1120         1080       DENY_NONE  0x80        RDONLY     NONE             /usr/share/film    .   Mon May 17 07:09:38 2021
 1120         1080       DENY_NONE  0x80        RDONLY     NONE             /usr/share/music   .   Fri May 21 18:46:29 2021`
 
+const LockDataNoData = `No locked files`
+
 const ShareDataOneLine = `
 Service      pid     Machine       Connected at                      Encryption   Signing     
 ---------------------------------------------------------------------------------------------

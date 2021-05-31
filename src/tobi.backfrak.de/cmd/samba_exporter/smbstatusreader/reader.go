@@ -37,6 +37,10 @@ func (lockData LockData) String() string {
 func GetLockData(data string) []LockData {
 	var ret []LockData
 
+	if strings.TrimSpace(data) == "No locked files" {
+		return ret
+	}
+
 	lines := strings.Split(data, "\n")
 	sepLineIndex := findSeperatorLineIndex(lines)
 

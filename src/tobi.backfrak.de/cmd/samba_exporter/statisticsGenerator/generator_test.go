@@ -12,6 +12,22 @@ import (
 	"tobi.backfrak.de/internal/smbstatusout"
 )
 
+func TestGetSmbStatisticsNoLockData(t *testing.T) {
+	locks := smbstatusreader.GetLockData(smbstatusout.LockDataNoData)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataOneLine)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataOneLine)
+
+	ret := GetSmbStatistics(locks, processes, shares)
+
+	if len(ret) != 7 {
+		t.Errorf("The number of resturn values %d was not expected", len(ret))
+	}
+
+	if ret[0].Name != "individual_user_count" && ret[0].Value != 1.0 {
+		t.Errorf("The individual_user_count does not match as expected")
+	}
+}
+
 func TestGetSmbStatisticsEmptyData(t *testing.T) {
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line)

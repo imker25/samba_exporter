@@ -145,6 +145,14 @@ func TestGetLockData0Input(t *testing.T) {
 	}
 }
 
+func TestGetLockDataNoDta(t *testing.T) {
+	entryList := GetLockData(smbstatusout.LockDataNoData)
+
+	if len(entryList) != 0 {
+		t.Errorf("Got entries when reading wrong input")
+	}
+}
+
 func TestGetShareDataOneLine(t *testing.T) {
 	oneEntry := GetShareData(smbstatusout.ShareDataOneLine)
 
