@@ -37,6 +37,7 @@ jobs:
         files: logs/TestsResult.xml
     - name: 'Get Package name and version from logs/ to GITHUB_ENVIRONMENT'
       run: |
+            echo " GITHUB_REF= $GITHUB_REF"
             packageName=$(cat logs/PackageName.txt)
             echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName"
             echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV   
@@ -129,7 +130,6 @@ jobs:
         path: .           
     - name: 'Get Package name from logs/PackageName.txt'
       run: |
-            ls -l
             packageName=$(cat logs/PackageName.txt)
             echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName"
             echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV      
@@ -140,7 +140,7 @@ jobs:
   release-to-github:
     needs: [ installation-test, integration-test ]
     runs-on: "ubuntu-20.04"
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release/*'
+    if: ((github.ref == 'refs/heads/main') || contains(github.ref, 'release'))
     timeout-minutes: 10
     steps: 
     - uses: actions/checkout@v2      
@@ -161,7 +161,6 @@ jobs:
         path: logs/  
     - name: 'Get needed environment from artifacts'
       run: |
-            ls -l
             packageubuntu2004Name=$(cat logs/ubuntu-20.04/PackageName.txt)
             echo "SAMBA_EXPORTER_UBUNTU_2004_PACKAGE_NAME=$packageubuntu2004Name"
             echo "SAMBA_EXPORTER_UBUNTU_2004_PACKAGE_NAME=$packageubuntu2004Name" >> $GITHUB_ENV       
