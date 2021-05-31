@@ -102,31 +102,6 @@ jobs:
         run: docker build --file test/integrationTest/docker/Dockerfile.ubuntu --tag integration-test-container .
       - name: Run integration tests
         run: docker run -i integration-test-container /bin/bash -c "/RunIntegrationTests.sh container"
-  system-test:
-    needs: build-unit_test
-    strategy:
-      matrix:
-        os: [ubuntu-20.04]
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v2
-      - name: Download samba_exporter artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: samba_exporter-${{ matrix.os }}
-          path: bin/samba_exporter  
-      - name: Download samba_statusd artifact
-        uses: actions/download-artifact@v2  
-        with:
-          name: samba_statusd-${{ matrix.os }}
-          path: bin/samba_statusd
-      - name: Check artifacts
-        run: ls -l bin/ &&  ls -l bin/samba_exporter/ && ls -l bin/samba_statusd/ 
-      - name: Build test environment container
-        run: docker build --file test/systemTest/docker/Dockerfile.ubuntu --tag system-test-container .
-      - name: Run System tests
-        run: docker run --security-opt seccomp=unconfined -v /sys/fs/cgroup:/sys/fs/cgroup:ro -i system-test-container /bin/bash -c "/RunSystemTest.sh"  
   installation-test:
     needs: build-unit_test
     strategy:
