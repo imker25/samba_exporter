@@ -161,18 +161,6 @@ fi
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
 
-echo "# ###################################################################"
-echo "Check logs before purge"
-sudo journalctl -u samba_exporter.service > $tmp_dir/samba_exporter.service.2.log
-sudo journalctl -u samba_statusd.service > $tmp_dir/samba_statusd.service.2.log
-samba_exporter_log_lines=$(wc -l $tmp_dir/samba_exporter.service.2.log| awk '{print $1}' )
-samba_statusd_log_lines=$(wc -l $tmp_dir/samba_statusd.service.2.log | awk '{print $1}' )
-echo "$tmp_dir/samba_exporter.service.2.log has $samba_exporter_log_lines lines"
-echo "$tmp_dir/samba_exporter.service.2.log has $samba_statusd_log_lines lines"
-
-assert "echo $samba_exporter_log_lines" "28"
-assert "echo $samba_statusd_log_lines" "16"
-
 echo "Restart samba server with updated settings, so a share is provided"
 echo "# ###################################################################"
 echo "sudo mkdir -p /srv/test"
@@ -190,6 +178,17 @@ cat "$tmp_dir/samba.service.status.1.log"
 echo "echo \"My awsome test file\" > /srv/test/test.file"
 echo "My awsome test file" > /srv/test/test.file
 
+echo "# ###################################################################"
+echo "sudo smbstatus -L -n"
+sudo smbstatus -L -n
+
+echo "# ###################################################################"
+echo "sudo smbstatus -S -n"
+sudo smbstatus -S -n
+
+echo "# ###################################################################"
+echo "sudo smbstatus -p -n"
+sudo smbstatus -p -n
 
 echo "# ###################################################################"
 echo "curl http://127.0.0.1:9922/metrics"
@@ -203,6 +202,17 @@ echo "# ###################################################################"
 echo "sudo journalctl -u samba_exporter.service "
 sudo journalctl -u samba_exporter.service 
 echo "# ###################################################################"
+
+echo "# ###################################################################"
+echo "Check logs before purge"
+sudo journalctl -u samba_exporter.service > $tmp_dir/samba_exporter.service.2.log
+sudo journalctl -u samba_statusd.service > $tmp_dir/samba_statusd.service.2.log
+samba_exporter_log_lines=$(wc -l $tmp_dir/samba_exporter.service.2.log| awk '{print $1}' )
+samba_statusd_log_lines=$(wc -l $tmp_dir/samba_statusd.service.2.log | awk '{print $1}' )
+echo "$tmp_dir/samba_exporter.service.2.log has $samba_exporter_log_lines lines"
+echo "$tmp_dir/samba_exporter.service.2.log has $samba_statusd_log_lines lines"
+assert "echo $samba_exporter_log_lines" "28"
+assert "echo $samba_statusd_log_lines" "16"
 
 echo "# ###################################################################"
 echo "# Purge package test"
