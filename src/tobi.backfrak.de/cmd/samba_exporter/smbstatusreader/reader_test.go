@@ -153,6 +153,14 @@ func TestGetLockDataNoDta(t *testing.T) {
 	}
 }
 
+func TestGetShareDataDifferentTimeStampLines(t *testing.T) {
+	entryList := GetShareData(smbstatusout.ShareDataDifferentTimeStampLines)
+
+	if len(entryList) != 2 {
+		t.Errorf("Got wrong amount of entries %d", len(entryList))
+	}
+}
+
 func TestGetShareDataOneLine(t *testing.T) {
 	oneEntry := GetShareData(smbstatusout.ShareDataOneLine)
 

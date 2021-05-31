@@ -43,6 +43,12 @@ foto         1121    192.168.1.243  Mon May 17 10:56:56 AM 2021 CEST -          
 film         1117    192.168.1.244  Tue May 18 09:52:38 AM 2021 CEST -            -           
 musik        1117    192.168.1.245  Fri May 21 06:46:29 PM 2021 CEST -            -           `
 
+const ShareDataDifferentTimeStampLines = `
+Service      pid     Machine       Connected at                     Encryption   Signing     
+---------------------------------------------------------------------------------------------
+test         4642    127.0.0.1     Mon May 31 17:23:44 2021 UTC     -            -           
+IPC$         4642    127.0.0.1     Mon May 31 17:23:44 2021 UTC     -            -    `
+
 const ProcessDataOneLine = `
 Samba version 4.11.6-Ubuntu
 PID     Username     Group        Machine                                   Protocol Version  Encryption           Signing              

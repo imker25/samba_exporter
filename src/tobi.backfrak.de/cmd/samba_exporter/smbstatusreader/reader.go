@@ -123,25 +123,50 @@ func GetShareData(data string) []ShareData {
 	if tableHeaderFields[0] != "Service" || tableHeaderFields[3] != "Connected at" {
 		return ret
 	}
+	fieldMatrix := getFieldMatrix(lines[sepLineIndex+1:], " ", 12)
+	if fieldMatrix != nil {
+		for _, fields := range fieldMatrix {
+			var err error
+			var entry ShareData
+			entry.Service = fields[0]
+			entry.PID, err = strconv.Atoi(fields[1])
+			if err != nil {
+				continue
+			}
+			entry.Machine = fields[2]
+			timeStr := fmt.Sprintf("%s %s %s %s %s %s %s", fields[3], fields[4], fields[5], fields[6], fields[7], fields[8], fields[9])
+			entry.ConnectedAt, err = time.Parse("Mon Jan 02 03:04:05 PM 2006 MST", timeStr)
+			if err != nil {
+				continue
+			}
+			entry.Encryption = fields[10]
+			entry.Signing = fields[11]
 
-	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], " ", 12) {
-		var err error
-		var entry ShareData
-		entry.Service = fields[0]
-		entry.PID, err = strconv.Atoi(fields[1])
-		if err != nil {
-			continue
+			ret = append(ret, entry)
 		}
-		entry.Machine = fields[2]
-		timeStr := fmt.Sprintf("%s %s %s %s %s %s %s", fields[3], fields[4], fields[5], fields[6], fields[7], fields[8], fields[9])
-		entry.ConnectedAt, err = time.Parse("Mon Jan 02 03:04:05 PM 2006 MST", timeStr)
-		if err != nil {
-			continue
-		}
-		entry.Encryption = fields[10]
-		entry.Signing = fields[11]
+	} else {
+		fieldMatrix = getFieldMatrix(lines[sepLineIndex+1:], " ", 11)
+		if fieldMatrix != nil {
+			for _, fields := range fieldMatrix {
+				var err error
+				var entry ShareData
+				entry.Service = fields[0]
+				entry.PID, err = strconv.Atoi(fields[1])
+				if err != nil {
+					continue
+				}
+				entry.Machine = fields[2]
+				timeStr := fmt.Sprintf("%s %s %s %s %s %s", fields[3], fields[4], fields[5], fields[6], fields[7], fields[8])
+				entry.ConnectedAt, err = time.Parse("Mon Jan 02 15:04:05 2006 MST", timeStr)
+				if err != nil {
+					continue
+				}
+				entry.Encryption = fields[9]
+				entry.Signing = fields[10]
 
-		ret = append(ret, entry)
+				ret = append(ret, entry)
+			}
+		}
 	}
 	return ret
 }
