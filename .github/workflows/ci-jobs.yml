@@ -61,6 +61,12 @@ jobs:
         name: PackageName-${{ matrix.os }}.txt
         path: logs/PackageName.txt
         retention-days: 1 
+    - name: 'Upload Artifact ShortVersion.txt'
+      uses: actions/upload-artifact@v2
+      with:
+        name: ShortVersion-${{ matrix.os }}.txt
+        path: logs/ShortVersion.txt
+        retention-days: 1     
     - uses: jiro4989/build-deb-action@v2
       name: "Pack deb package"
       with:
@@ -131,3 +137,41 @@ jobs:
       env:
         SAMBA_EXPORTER_PACKAGE_NAME:  ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
       run: test/installationTest/RunInstallationTest.sh
+  release-to-github:
+    needs: [ installation-test, integration-test ]
+    runs-on: "ubuntu-20.04"
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release/*'
+    timeout-minutes: 10
+    steps: 
+    - uses: actions/checkout@v2      
+    - name: Download samba_exporter package artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: samba_exporter-${{ matrix.os }}.deb  
+        path: . 
+    - name: Download PackageName.txt artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: PackageName-${{ matrix.os }}.txt   
+        path: logs/         
+    - name: Download ShortVersion.txt artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: ShortVersion-${{ matrix.os }}.txt   
+        path: logs/  
+    - name: 'Get needed environment from artifacts'
+      run: |
+            ls -l
+            packageName=$(cat logs/PackageName.txt)
+            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName"
+            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV       
+            shortVersion=$(cat logs/PackageName.txt)
+            echo "SAMBA_EXPORTER_SHORT_VERSION=$shortVersion"
+            echo "SAMBA_EXPORTER_SHORT_VERSION=$shortVersion" >> $GITHUB_ENV  
+            if [ "$GITHUB_REF" == 'refs/heads/main' ]; then
+                  echo "SAMBA_EXPORTER_PRE_RELEASE=true"
+                  echo "SAMBA_EXPORTER_PRE_RELEASE=true" >> $GITHUB_ENV 
+            else 
+                  echo "SAMBA_EXPORTER_PRE_RELEASE=false"
+                  echo "SAMBA_EXPORTER_PRE_RELEASE=false" >> $GITHUB_ENV 
+            fi

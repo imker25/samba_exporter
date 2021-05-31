@@ -176,6 +176,7 @@ task getBuildName(dependsOn: 'clean') {
         println "Package Name: ${debPackageName}"
         file("${logDir}${File.separator}Version.txt").text = "${debPackageVersion}"
         file("${logDir}${File.separator}PackageName.txt").text = "${debPackageName}"
+        file("${logDir}${File.separator}ShortVersion.txt").text = "${programVersionNumber}"
 
     }
 }
