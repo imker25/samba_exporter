@@ -7,6 +7,7 @@ jobs:
         go-version: [1.14.x]
         os: [ubuntu-20.04]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     steps:
     - uses: actions/checkout@v2
       with:
@@ -82,6 +83,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v2
       - name: Download samba_exporter artifact
@@ -106,6 +108,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v2
       - name: Download samba_exporter artifact
@@ -130,6 +133,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
     steps: 
     - uses: actions/checkout@v2
     - name: Download PackageName.txt artifact
