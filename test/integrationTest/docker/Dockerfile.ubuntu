@@ -5,6 +5,9 @@ RUN apt-get update && apt-get install -y wget curl coreutils mawk
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
 COPY test/integrationTest/scripts/RunIntegrationTests.sh /RunIntegrationTests.sh
+RUN chmod 777 /RunIntegrationTests.sh
+COPY test/import/functions.sh /functions.sh
+RUN chmod 777 /functions.sh
 
 # The bin/samba_exporter from build output is restored as bin/samba_exporter/samba_exporter
 COPY bin/samba_exporter /samba_exporter

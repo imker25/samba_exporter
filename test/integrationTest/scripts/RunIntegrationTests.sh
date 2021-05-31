@@ -16,11 +16,13 @@ request_pipe_file="/dev/shm/samba_exporter.request.pipe"
 response_pipe_file="/dev/shm/samba_exporter.response.pipe"
 
 if [ "$1" == "container" ]; then
+    source "/functions.sh"
     samba_exporter="/samba_exporter/samba_exporter"
     samba_statusd="/samba_statusd/samba_statusd"
     samba_statusd_log="/samba_statusd/samba_statusd.log"
     samba_exporter_log="/samba_exporter/samba_exporter.log"
 else
+    source "$branch_dir/test/import/functions.sh"
     samba_exporter="$branch_dir/bin/samba_exporter"
     samba_statusd="$branch_dir/bin/samba_statusd"
     samba_statusd_log="$branch_dir/logs/samba_statusd.log"
@@ -116,6 +118,7 @@ statusdPID=$(pidof $samba_statusd)
 sleep 0.1
 echo "# ###################################################################"
 echo "$samba_statusd running with PID $statusdPID"
+assert_raises "processWithNameIsRunning $samba_statusd" 1
 
 echo "# ###################################################################"
 echo "Test IPC"
@@ -145,6 +148,7 @@ exporterPID=$(pidof $samba_exporter)
 sleep 0.1
 echo "# ###################################################################"
 echo "$samba_exporter running with PID $exporterPID"
+assert_raises "processWithNameIsRunning $samba_exporter" 1
 
 echo "# ###################################################################"
 echo "Test samba_exporter webinterface"
@@ -183,6 +187,10 @@ kill $statusdPID
 echo "End $samba_exporter with PID $exporterPID"
 kill $exporterPID
 
+assert_raises "processWithNameIsRunning $samba_exporter" 0
+assert_raises "processWithNameIsRunning $samba_statusd" 0
+
+
 echo "# ###################################################################"
 echo "Test in daemons non verbose mode"
 echo "# ###################################################################"
@@ -199,6 +207,9 @@ sleep 0.1
 echo "$samba_statusd running with PID $statusdPID"
 echo "$samba_exporter running with PID $exporterPID"
 echo "# ###################################################################"
+
+assert_raises "processWithNameIsRunning $samba_exporter" 1
+assert_raises "processWithNameIsRunning $samba_statusd" 1
 
 echo "Test Web Interface"
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
@@ -217,6 +228,9 @@ kill $statusdPID
 echo "End $samba_exporter with PID $exporterPID"
 kill $exporterPID
 echo "# ###################################################################"
+
+assert_raises "processWithNameIsRunning $samba_exporter" 0
+assert_raises "processWithNameIsRunning $samba_statusd" 0
 
 echo "Print Log files"
 echo "cat $samba_exporter_log"
