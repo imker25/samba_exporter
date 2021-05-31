@@ -20,14 +20,14 @@ else
 fi
 
 echo "# ###################################################################"
-echo "sudo apt-get update && sudo apt-get install -y  samba smbclient wget curl coreutils mawk"
+echo "sudo apt-get update && sudo apt-get install -y  samba smbclient wget curl coreutils mawk nano"
 # Install dependencies for testing 
 sudo apt-get update | cat >> /dev/null
 if [ "$?" != "0" ]; then 
     echo "Error while apt-get update"
     exit 1
 fi
-sudo apt-get install -y  samba smbclient wget curl coreutils mawk < /bin/true | cat >> /dev/null
+sudo apt-get install -y  samba smbclient wget curl coreutils mawk nano < /bin/true | cat >> /dev/null
 if [ "$?" != "0" ]; then 
     echo "Error while samba package installation"
     exit 1
@@ -177,6 +177,18 @@ sudo systemctl status smbd.service > "$tmp_dir/samba.service.status.1.log"
 cat "$tmp_dir/samba.service.status.1.log"
 echo "echo \"My awsome test file\" > /srv/test/test.file"
 echo "My awsome test file" > /srv/test/test.file
+echo "smbclient -L //127.0.0.1"
+smbclient -L //127.0.0.1
+
+echo "# ###################################################################"
+echo "Mount samba share"
+echo "sudo mkdir /mnt/test"
+sudo mkdir /mnt/test
+echo "sudo mount -t cifs //127.0.0.1/test /mnt/test/"
+sudo mount -t cifs //127.0.0.1/test /mnt/test/
+echo "sudo cat /mnt/test/test.file"
+sudo cat /mnt/test/test.file
+assert "sudo cat /mnt/test/test.file" "My awsome test file"
 
 echo "# ###################################################################"
 echo "sudo smbstatus -L -n"
@@ -201,7 +213,7 @@ sudo journalctl -u samba_statusd.service
 echo "# ###################################################################"
 echo "sudo journalctl -u samba_exporter.service "
 sudo journalctl -u samba_exporter.service 
-echo "# ###################################################################"
+
 
 echo "# ###################################################################"
 echo "Check logs before purge"
