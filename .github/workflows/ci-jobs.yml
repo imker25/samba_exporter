@@ -140,7 +140,7 @@ jobs:
   release-to-github:
     needs: [ installation-test, integration-test ]
     runs-on: "ubuntu-20.04"
-    if: ((github.ref == 'refs/heads/main') || contains(github.ref, "release"))
+    if: ((github.ref == 'refs/heads/main') || contains(github.ref, 'release'))
     timeout-minutes: 10
     steps: 
     - uses: actions/checkout@v2      
