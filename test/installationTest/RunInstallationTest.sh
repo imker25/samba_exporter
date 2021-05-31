@@ -160,6 +160,7 @@ fi
 
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_client_count 0\"" 0
 
 echo "Restart samba server with updated settings, so a share is provided"
 echo "# ###################################################################"
@@ -206,6 +207,11 @@ echo "# ###################################################################"
 echo "curl http://127.0.0.1:9922/metrics"
 curl http://127.0.0.1:9922/metrics 
 
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_client_count 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_share_count 2\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_individual_user_count 1\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_information\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_pid_count 1\"" 0
 
 echo "# ###################################################################"
 echo "sudo journalctl -u samba_statusd.service "
