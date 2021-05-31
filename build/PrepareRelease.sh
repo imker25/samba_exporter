@@ -6,7 +6,7 @@
 function print_usage()  {
     echo "Usage: $0 options"
     echo "-help    Print this help"
-    echo "This script will do all needed steps to do a new gpsa release localy."
+    echo "This script will do all needed steps to do a new samba_exporter release localy."
     echo "And ask in the end if the result should be published on GutHub"
 }
 
