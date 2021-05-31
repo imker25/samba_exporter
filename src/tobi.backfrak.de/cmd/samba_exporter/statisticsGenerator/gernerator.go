@@ -73,7 +73,7 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 	ret = append(ret, SmbStatisticsNumeric{"individual_user_count", float64(len(users)), "The number of users connected to this samba server", nil})
 	ret = append(ret, SmbStatisticsNumeric{"locked_file_count", float64(len(lockData)), "Number of files locked by the samba server", nil})
 	ret = append(ret, SmbStatisticsNumeric{"pid_count", float64(len(pids)), "Number of processes running by the samba server", nil})
-	ret = append(ret, SmbStatisticsNumeric{"share_count", float64(len(shares)), "Number of shares used by clients of the samba server", nil})
+	ret = append(ret, SmbStatisticsNumeric{"share_count", float64(len(shares)), "Number of shares servered by the samba server", nil})
 	ret = append(ret, SmbStatisticsNumeric{"client_count", float64(len(clients)), "Number of clients using the samba server", nil})
 
 	if len(locksPerShare) > 0 {
