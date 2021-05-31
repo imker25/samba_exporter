@@ -50,6 +50,14 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 		locks = smbstatusreader.GetLockData(res)
 	}
 
+	if len(shares) < 1 {
+		logger.WriteVerbose("Got an empty share table when requesting \"smbstatus -S -n\" from samba_statusd")
+	}
+
+	if len(processes) < 1 {
+		logger.WriteVerbose("Got an empty process table when requesting \"smbstatus -p -n\" from samba_statusd")
+	}
+
 	return locks, processes, shares, nil
 }
 
