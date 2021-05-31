@@ -42,7 +42,9 @@ Options:
 
 You may not want to start the service with arguments that will exit before listening starts like `-help` or `-print-version`.
 
-To stop, start or restart the service use `systemctl`, e. g.: `sudo systemctl stop samba_statusd`. To the the log output use `journalctl`, e. g. `sudo journalctl -u samba_statusd`.
+To stop, start or restart the service use `systemctl`, e. g.: `sudo systemctl stop samba_statusd`. To read the log output use `journalctl`, e. g. `sudo journalctl -u samba_statusd`.
+
+**Remark:** Due to the services dependencies `samba_exporter` service stops whenever `samba_statusd` stops. And `samba_statusd` always starts when `samba_exporter` is started if not already running.
 
 ### samba_exporter service
 
@@ -75,9 +77,9 @@ Options:
 
 You may not want to start the service with arguments that will exit before listening starts like `-test-pipe`, `-help` or `-print-version`.
 
-To stop, start or restart the service use `systemctl`, e. g.: `sudo systemctl stop samba_exporter`. To the the log output use `journalctl`, e. g. `sudo journalctl -u samba_exporter`.
+To stop, start or restart the service use `systemctl`, e. g.: `sudo systemctl stop samba_exporter`. To read the log output use `journalctl`, e. g. `sudo journalctl -u samba_exporter`.
 
-**Remark:** Due to the services dependencies `samba_exporter` service stops whenever `samba_statusd` stops. And `samba_statusd` always starts when `samba_exporter` is started.
+**Remark:** Due to the services dependencies `samba_exporter` service stops whenever `samba_statusd` stops. And `samba_statusd` always starts when `samba_exporter` is started if not already running.
 
 ## Build and manual install
 
