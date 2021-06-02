@@ -157,7 +157,7 @@ func GetShareData(data string) []ShareData {
 				}
 				entry.Machine = fields[2]
 				timeStr := fmt.Sprintf("%s %s %s %s %s %s", fields[3], fields[4], fields[5], fields[6], fields[7], fields[8])
-				entry.ConnectedAt, err = time.Parse("Mon Jan 02 15:04:05 2006 MST", timeStr)
+				entry.ConnectedAt, err = time.Parse("Mon Jan _2 15:04:05 2006 MST", timeStr)
 				if err != nil {
 					continue
 				}

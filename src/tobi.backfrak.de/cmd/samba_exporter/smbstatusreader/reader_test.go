@@ -159,6 +159,10 @@ func TestGetShareDataDifferentTimeStampLines(t *testing.T) {
 	if len(entryList) != 2 {
 		t.Errorf("Got wrong amount of entries %d", len(entryList))
 	}
+
+	if entryList[1].ConnectedAt.Format(time.ANSIC) != "Wed Jun  2 21:32:31 2021" {
+		t.Errorf("The time %s is not expected", entryList[1].ConnectedAt.Format(time.ANSIC))
+	}
 }
 
 func TestGetShareDataOneLine(t *testing.T) {
