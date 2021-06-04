@@ -19,7 +19,7 @@ func TestGetSmbStatisticsNoLockData(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 7 {
+	if len(ret) != 8 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -35,7 +35,7 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 7 {
+	if len(ret) != 8 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -74,7 +74,7 @@ func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines)
 
 	ret := GetSmbStatistics(locks, processes, shares)
-	if len(ret) != 7 {
+	if len(ret) != 8 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -94,7 +94,7 @@ func TestGetSmbStatistics(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 10 {
+	if len(ret) != 14 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
