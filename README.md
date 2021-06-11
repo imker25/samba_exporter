@@ -96,7 +96,7 @@ To stop, start or restart the service use `systemctl`, e. g.: `sudo systemctl st
 
 ## Build and manual install
 
-To build the project you need [Go](https://golang.org/) Version 1.14.x and [Java](https://java.com/) Version 11 on your development machine. 
+To build the project you need [Go](https://golang.org/) Version 1.16.x and [Java](https://java.com/) Version 11 on your development machine. 
 On your target machine, the samba server you want to monitor, you need [samba](https://www.samba.org/) and [systemd](https://www.freedesktop.org/wiki/Software/systemd/) installed.
 
 To build the software change to the repositories directory and run:
