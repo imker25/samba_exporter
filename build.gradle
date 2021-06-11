@@ -300,15 +300,7 @@ task build(dependsOn: 'clean') {
         println '##################################################################################'
         println 'Build'
         println '##################################################################################'
-        println 'Get dependencies' 
-        exec {
-            workingDir "$scriptDirectory"
-            commandLine 'go', 'get', 'github.com/prometheus/client_golang/prometheus'
-        }
-        exec {
-            workingDir "$scriptDirectory"
-            commandLine 'go', 'get', 'github.com/prometheus/client_golang/prometheus/promhttp'
-        }
+
     }
     doLast {
         def versionArg ='-X main.version=' + "${programVersion}" +''
