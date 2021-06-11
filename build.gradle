@@ -6,7 +6,6 @@ def programVersionNumber=''
 def debPackageName=''
 def debPackageVersion=''
 def debPackageTmpDir=''
-def goPath
 def scriptDirectory
 def scriptFile
 def osName
@@ -91,27 +90,6 @@ task getEnvironment {
         def logDirBase = new File(logDir)
         logDirBase.mkdirs()
 
-        // Make sure the gopath is valid for build
-        goPath = "${System.env.GOPATH}"
-
-        if ("$goPath"!="null" ) {
-            if (goPath.contains(scriptDirectory) == false) {
-                println "GOPATH needs to be extended with: $scriptDirectory"
-                if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
-                    println "Go Path will be set to: $goPath;$scriptDirectory"
-                    goPath ="$goPath;$scriptDirectory"
-                } else {
-                    println "Go Path will be set to: $goPath:$scriptDirectory"
-                    goPath ="$goPath:$scriptDirectory"
-                }
-            } else {
-                println 'GOPATH already contains all needed'
-            }
-        } else {
-            println "No GOPATH set. Set it to: $scriptDirectory"
-            goPath ="$scriptDirectory"
-        }
-
         if ( osName.contains('Windows') == true) {
             raceParameter = ''
         } else {
@@ -136,14 +114,16 @@ task getEnvironment {
         debPackageTmpDir = "$tmpDir" + "${debPackageName}" + File.separator
         println "Program version: ${programVersion}"
         println "Package Name: ${debPackageName}"
-        println "GOPATH=$goPath"
+       
 
         // Find all directories within src/ that contains *.go files
         new File(srcDir).traverse( [maxDepth: 100, filter: ~/.*.go/ , type: groovy.io.FileType.FILES]){
                 String packageDir = it.getParent()
                 String packageName = packageDir.replaceAll(java.util.regex.Matcher.quoteReplacement(srcDir), '')
-                if ((packagesToBuild.contains(packageName + ' ') == false) && (packageName.contains('tobi.backfrak.de') == true)) {
-                    packagesToBuild = packageName + ' ' + packagesToBuild
+                if ((packagesToBuild.contains(packageName + ' ') == false) 
+                    && (packageName.contains("tobi.backfrak.de${File.separator}cmd") == true) 
+                    && file("${packageDir}${File.separator}main.go").exists()) {
+                    packagesToBuild = "src${File.separator}${packageName}" + ' ' + packagesToBuild
                 }
         }
 
@@ -151,8 +131,10 @@ task getEnvironment {
         new File(srcDir).traverse( [maxDepth: 100, filter: ~/.*_test.go/, type: groovy.io.FileType.FILES]){
                 String packageDir = it.getParent()
                 String packageName = packageDir.replaceAll(java.util.regex.Matcher.quoteReplacement(srcDir), '')
-                if ((packagesToTest.contains(packageName + ' ') == false) && (packageName.contains('tobi.backfrak.de') == true)) {
-                    packagesToTest = packageName + ' ' + packagesToTest
+                if ((packagesToTest.contains(packageName + ' ') == false) 
+                    && (packageName.contains('tobi.backfrak.de') == true) 
+                    && file("${packageDir}${File.separator}go.mod").exists()) {
+                    packagesToTest = "src${File.separator}${packageName}" + ' ' + packagesToTest
                 }
         }
         if (File.separator == '\\') {
@@ -190,11 +172,10 @@ task installTestConvert(dependsOn: 'getEnvironment') {
     }
     doLast {
         // Install go get github.com/tebeka/go2xunit so it can be used after test execution
-        println "go get github.com/tebeka/go2xunit"
+        println "go install -v github.com/tebeka/go2xunit@v1.4.10"
         exec {
             workingDir "$scriptDirectory"
-            commandLine 'go', 'get', 'github.com/tebeka/go2xunit'
-            environment('GOPATH', goPath)
+            commandLine 'go', 'install', '-v' ,'github.com/tebeka/go2xunit@v1.4.10'
         }
     }
 }
@@ -240,29 +221,25 @@ task test(dependsOn: 'getEnvironment') {
         println '##################################################################################'
     }
     doLast {
-        println "go test -v $raceParameter -timeout 30s $packagesToTest > ${logDir}TestsRun.log "
         def packageArray = packagesToTest.split(' ');
-        def callArgsTestRun = new String[packageArray.length + 5]
+        def callArgsTestRun = new String[3]
         callArgsTestRun[0] = 'test'
         callArgsTestRun[1] = '-v'
         callArgsTestRun[2] = raceParameter
-        callArgsTestRun[3] = '-timeout'
-        callArgsTestRun[4] = '30s'
-        def i = 0
-        packageArray.each {
-            callArgsTestRun[i + 5] = it
-            i = i + 1
-        }
+        def outtext = ""
+        packageArray.each { packageDir ->
+            def outputStream = new ByteArrayOutputStream()
+            println "cd $packageDir && go test -v $raceParameter  >> ${logDir}TestsRun.log "
+            exec {
+                workingDir "${scriptDirectory}${File.separator}${packageDir}"
+                executable "go"
+                args callArgsTestRun
 
-        def logFileStream = new FileOutputStream(logDir + "TestsRun.log")
-        exec {
-            workingDir "$scriptDirectory"
-            executable "go"
-            args callArgsTestRun
-            environment('GOPATH', goPath)
-
-            standardOutput logFileStream
-            errorOutput logFileStream
+                standardOutput outputStream
+                errorOutput outputStream
+            } 
+            outtext = outtext + outputStream.toString()
+            file("${logDir}TestsRun.log").text = outtext 
         }
     }
 }
@@ -275,24 +252,25 @@ task cover(dependsOn: 'getEnvironment') {
         println '##################################################################################'
     }
     doLast {
-        println "go test -cover $packagesToTest"
         def packageArray = packagesToTest.split(' ');
-        def callArgsTestRun = new String[packageArray.length + 3]
+        def callArgsTestRun = new String[3]
         callArgsTestRun[0] = 'test'
         callArgsTestRun[1] = '-v'
         callArgsTestRun[2] = '-cover'
-        def i = 0
-        packageArray.each {
-            callArgsTestRun[i + 3] = it
-            i = i + 1
-        }
+        def outtext = ""
+        packageArray.each { packageDir ->
+            def outputStream = new ByteArrayOutputStream()
+            println "cd $packageDir && go test -v -cover  >> ${logDir}TestsCoverRun.log "
+            exec {
+                workingDir "${scriptDirectory}${File.separator}${packageDir}"
+                executable "go"
+                args callArgsTestRun
 
-        exec {
-            workingDir "$scriptDirectory"
-            executable "go"
-            args callArgsTestRun
-            environment('GOPATH', goPath)
-
+                standardOutput outputStream
+                errorOutput outputStream
+            } 
+            outtext = outtext + outputStream.toString()
+            file("${logDir}TestsCoverRun.log").text = outtext 
         }
     }
 }
@@ -308,11 +286,10 @@ task convertTestResults(dependsOn: 'installTestConvert') {
         def logTextFile = logDir + 'TestsRun.log'
         def logXMLFile = logDir + 'TestsResult.xml'
         def convertExe = binDir + 'go2xunit'
-        println "${convertExe} -input ${logTextFile} -output ${logXMLFile}"
+        println "go run github.com/tebeka/go2xunit -input ${logTextFile} -output ${logXMLFile}"
         exec {
             workingDir "$scriptDirectory"
             commandLine 'go', 'run', 'github.com/tebeka/go2xunit', '-input', logTextFile, '-output', logXMLFile
-            environment('GOPATH', goPath)
         }
     }
 }
@@ -327,37 +304,31 @@ task build(dependsOn: 'clean') {
         exec {
             workingDir "$scriptDirectory"
             commandLine 'go', 'get', 'github.com/prometheus/client_golang/prometheus'
-            environment('GOPATH', goPath)
         }
         exec {
             workingDir "$scriptDirectory"
             commandLine 'go', 'get', 'github.com/prometheus/client_golang/prometheus/promhttp'
-            environment('GOPATH', goPath)
         }
     }
     doLast {
-        println "go install -v -ldflags=\"-X main.version=${programVersion}\" $packagesToBuild"
         def versionArg ='-X main.version=' + "${programVersion}" +''
         def packageArray = packagesToBuild.split(' ');
-        def callArgs = new String[packageArray.length + 4]
-        callArgs[0] = 'install'
+        def callArgs = new String[6]
+        callArgs[0] = 'build'
         callArgs[1] = '-v'
         callArgs[2] = "-ldflags"
         callArgs[3] = versionArg
-        def i = 0
-        packageArray.each {
-            callArgs[i + 4] = it
-            i = i + 1
-        }
+        callArgs[4] = '-o'
+        callArgs[5] = "$binDir"
+        packageArray.each { packageDir ->
+            println "cd $packageDir && go build -o $binDir -v -ldflags=\"-X main.version=${programVersion}\""
+            exec {
+                workingDir "${scriptDirectory}${File.separator}${packageDir}"
+                executable "go"
+                args callArgs
+            }
 
-        exec {
-            workingDir "$scriptDirectory"
-            executable "go"
-            args callArgs
-            environment('GOPATH', goPath)
         }
-
-  
     }
 }
 

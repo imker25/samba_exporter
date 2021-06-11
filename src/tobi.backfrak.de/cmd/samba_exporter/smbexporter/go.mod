@@ -13,4 +13,7 @@ replace tobi.backfrak.de/cmd/samba_exporter/statisticsGenerator v0.0.0 => ../sta
 require tobi.backfrak.de/cmd/samba_exporter/smbstatusreader v0.0.0
 replace tobi.backfrak.de/cmd/samba_exporter/smbstatusreader v0.0.0 => ../smbstatusreader
 
+require tobi.backfrak.de/internal/smbstatusout v0.0.0
+replace tobi.backfrak.de/internal/smbstatusout v0.0.0 => ../../../internal/smbstatusout
+
 require github.com/prometheus/client_golang v1.11.0
