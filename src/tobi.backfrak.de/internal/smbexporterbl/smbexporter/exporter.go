@@ -9,9 +9,9 @@ import (
 	"fmt"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"tobi.backfrak.de/cmd/samba_exporter/pipecomunication"
-	"tobi.backfrak.de/cmd/samba_exporter/smbstatusreader"
-	"tobi.backfrak.de/cmd/samba_exporter/statisticsGenerator"
+	"tobi.backfrak.de/internal/smbexporterbl/pipecomunication"
+	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
+	"tobi.backfrak.de/internal/smbexporterbl/statisticsGenerator"
 	"tobi.backfrak.de/internal/commonbl"
 )
 

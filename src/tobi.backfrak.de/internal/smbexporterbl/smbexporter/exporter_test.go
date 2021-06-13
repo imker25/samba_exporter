@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"tobi.backfrak.de/cmd/samba_exporter/smbstatusreader"
+	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 	"tobi.backfrak.de/internal/commonbl"
 	"tobi.backfrak.de/internal/smbstatusout"
 )

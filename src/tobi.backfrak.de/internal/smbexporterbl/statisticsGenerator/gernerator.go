@@ -6,7 +6,7 @@ package statisticsGenerator
 // LICENSE file.
 
 import (
-	"tobi.backfrak.de/cmd/samba_exporter/smbstatusreader"
+	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 )
 
 // Type for numeric statistic values from the samba server

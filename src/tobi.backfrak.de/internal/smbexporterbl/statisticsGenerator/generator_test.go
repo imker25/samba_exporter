@@ -8,7 +8,7 @@ package statisticsGenerator
 import (
 	"testing"
 
-	"tobi.backfrak.de/cmd/samba_exporter/smbstatusreader"
+	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 	"tobi.backfrak.de/internal/smbstatusout"
 )
 
