@@ -356,6 +356,7 @@ task preparePack(dependsOn: 'build') {
             from('.') {
                 include 'README.md'
                 include 'LICENSE'
+                include 'CHANGELOG'
             }
             into "${debPackageTmpDir}/usr/share/doc/samba_exporter-${programVersionShort}/"
         }

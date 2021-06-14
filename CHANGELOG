@@ -1,0 +1,7 @@
+Version 0.4
+
+- Features
+  - Enhanced metrics
+  - Enhanced logging for type conversion errors
+- Internal enhancements
+  - Adapt folder structure for compatibility to go tools and VS Code plugins
