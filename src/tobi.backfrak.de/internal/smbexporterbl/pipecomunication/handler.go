@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 	"tobi.backfrak.de/internal/commonbl"
+	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 )
 
 // The timeout for a request to samba_statusd in seconds
@@ -35,19 +35,19 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 	if errGet != nil {
 		return nil, nil, nil, errGet
 	} else {
-		processes = smbstatusreader.GetProcessData(res)
+		processes = smbstatusreader.GetProcessData(res, logger)
 	}
 	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SHARE_REQUEST, logger)
 	if errGet != nil {
 		return nil, nil, nil, errGet
 	} else {
-		shares = smbstatusreader.GetShareData(res)
+		shares = smbstatusreader.GetShareData(res, logger)
 	}
 	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.LOCK_REQUEST, logger)
 	if errGet != nil {
 		return nil, nil, nil, errGet
 	} else {
-		locks = smbstatusreader.GetLockData(res)
+		locks = smbstatusreader.GetLockData(res, logger)
 	}
 
 	if len(shares) < 1 {

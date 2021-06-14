@@ -11,8 +11,8 @@ import (
 	"testing"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 	"tobi.backfrak.de/internal/commonbl"
+	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 	"tobi.backfrak.de/internal/smbstatusout"
 )
 
@@ -48,9 +48,9 @@ func TestSetDescriptionsFromResponse(t *testing.T) {
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
-	locks := smbstatusreader.GetLockData(smbstatusout.LockDataNoData)
-	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataOneLine)
-	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataOneLine)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockDataNoData, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataOneLine, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataOneLine, logger)
 	ch := make(chan *prometheus.Desc, expectedChanels)
 	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0")
 	exporter.setDescriptionsFromResponse(locks, processes, shares, ch)
@@ -66,9 +66,9 @@ func TestSetMetricsFromResponse(t *testing.T) {
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
-	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines)
-	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines)
-	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
 	chDesc := make(chan *prometheus.Desc, expectedDescChanels)
 	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0")
 	exporter.setDescriptionsFromResponse(locks, processes, shares, chDesc)
@@ -87,9 +87,9 @@ func TestSetMetricsFromEmptyResponse(t *testing.T) {
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
-	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line)
-	shares := smbstatusreader.GetShareData(smbstatusout.LockData0Line)
-	processes := smbstatusreader.GetProcessData(smbstatusout.LockData0Line)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.LockData0Line, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.LockData0Line, logger)
 	chDesc := make(chan *prometheus.Desc, expectedDescChanels)
 	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0")
 	exporter.setDescriptionsFromResponse(locks, processes, shares, chDesc)

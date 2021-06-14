@@ -8,14 +8,16 @@ package statisticsGenerator
 import (
 	"testing"
 
+	"tobi.backfrak.de/internal/commonbl"
 	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 	"tobi.backfrak.de/internal/smbstatusout"
 )
 
 func TestGetSmbStatisticsNoLockData(t *testing.T) {
-	locks := smbstatusreader.GetLockData(smbstatusout.LockDataNoData)
-	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataOneLine)
-	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataOneLine)
+	logger := *commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockDataNoData, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataOneLine, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataOneLine, logger)
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
@@ -29,9 +31,10 @@ func TestGetSmbStatisticsNoLockData(t *testing.T) {
 }
 
 func TestGetSmbStatisticsEmptyData(t *testing.T) {
-	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line)
-	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line)
-	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines)
+	logger := *commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines, logger)
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
@@ -69,9 +72,10 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 }
 
 func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
-	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line)
-	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line)
-	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines)
+	logger := *commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines, logger)
 
 	ret := GetSmbStatistics(locks, processes, shares)
 	if len(ret) != 8 {
@@ -88,9 +92,10 @@ func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
 }
 
 func TestGetSmbStatistics(t *testing.T) {
-	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines)
-	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines)
-	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines)
+	logger := *commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
 	ret := GetSmbStatistics(locks, processes, shares)
 

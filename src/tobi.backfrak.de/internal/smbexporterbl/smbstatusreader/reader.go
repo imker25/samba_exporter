@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"tobi.backfrak.de/internal/commonbl"
 )
 
 // Type to represent a entry in the 'smbstatus -L -n' output table
@@ -34,7 +36,7 @@ func (lockData LockData) String() string {
 
 // GetLockData - Get the entries out of the 'smbstatus -L -n' output table multiline string
 // Will return an empty array if the data is in unexpected format
-func GetLockData(data string) []LockData {
+func GetLockData(data string, logger commonbl.Logger) []LockData {
 	var ret []LockData
 
 	if strings.TrimSpace(data) == "No locked files" {
@@ -63,10 +65,12 @@ func GetLockData(data string) []LockData {
 		var entry LockData
 		entry.PID, err = strconv.Atoi(fields[0])
 		if err != nil {
+			logger.WriteError(err)
 			continue
 		}
 		entry.UserID, err = strconv.Atoi(fields[1])
 		if err != nil {
+			logger.WriteError(err)
 			continue
 		}
 		entry.DenyMode = fields[2]
@@ -77,6 +81,7 @@ func GetLockData(data string) []LockData {
 		entry.Name = fields[7]
 		entry.Time, err = time.Parse(time.ANSIC, fmt.Sprintf("%s %s %s %s %s", fields[8], fields[9], fields[10], fields[11], fields[12]))
 		if err != nil {
+			logger.WriteError(err)
 			continue
 		}
 
@@ -105,7 +110,7 @@ func (shareData ShareData) String() string {
 
 // GetShareData - Get the entries out of the 'smbstatus -S -n' output table multiline string
 // Will return an empty array if the data is in unexpected format
-func GetShareData(data string) []ShareData {
+func GetShareData(data string, logger commonbl.Logger) []ShareData {
 	var ret []ShareData
 	lines := strings.Split(data, "\n")
 	sepLineIndex := findSeperatorLineIndex(lines)
@@ -131,12 +136,14 @@ func GetShareData(data string) []ShareData {
 			entry.Service = fields[0]
 			entry.PID, err = strconv.Atoi(fields[1])
 			if err != nil {
+				logger.WriteError(err)
 				continue
 			}
 			entry.Machine = fields[2]
 			timeStr := fmt.Sprintf("%s %s %s %s %s %s %s", fields[3], fields[4], fields[5], fields[6], fields[7], fields[8], fields[9])
 			entry.ConnectedAt, err = time.Parse("Mon Jan 02 03:04:05 PM 2006 MST", timeStr)
 			if err != nil {
+				logger.WriteError(err)
 				continue
 			}
 			entry.Encryption = fields[10]
@@ -153,12 +160,14 @@ func GetShareData(data string) []ShareData {
 				entry.Service = fields[0]
 				entry.PID, err = strconv.Atoi(fields[1])
 				if err != nil {
+					logger.WriteError(err)
 					continue
 				}
 				entry.Machine = fields[2]
 				timeStr := fmt.Sprintf("%s %s %s %s %s %s", fields[3], fields[4], fields[5], fields[6], fields[7], fields[8])
 				entry.ConnectedAt, err = time.Parse("Mon Jan _2 15:04:05 2006 MST", timeStr)
 				if err != nil {
+					logger.WriteError(err)
 					continue
 				}
 				entry.Encryption = fields[9]
@@ -192,7 +201,7 @@ func (processData ProcessData) String() string {
 
 // GetProcessData - Get the entries out of the 'smbstatus -p -n' output table multiline string
 // Will return an empty array if the data is in unexpected format
-func GetProcessData(data string) []ProcessData {
+func GetProcessData(data string, logger commonbl.Logger) []ProcessData {
 	var ret []ProcessData
 	lines := strings.Split(data, "\n")
 	sepLineIndex := findSeperatorLineIndex(lines)
@@ -224,14 +233,17 @@ func GetProcessData(data string) []ProcessData {
 		var entry ProcessData
 		entry.PID, err = strconv.Atoi(fields[0])
 		if err != nil {
+			logger.WriteError(err)
 			continue
 		}
 		entry.UserID, err = strconv.Atoi(fields[1])
 		if err != nil {
+			logger.WriteError(err)
 			continue
 		}
 		entry.GroupID, err = strconv.Atoi(fields[2])
 		if err != nil {
+			logger.WriteError(err)
 			continue
 		}
 		entry.Machine = fmt.Sprintf("%s %s", fields[3], fields[4])
