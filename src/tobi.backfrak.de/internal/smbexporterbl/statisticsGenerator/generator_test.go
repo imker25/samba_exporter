@@ -21,7 +21,7 @@ func TestGetSmbStatisticsNoLockData(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 9 {
+	if len(ret) != 11 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -38,7 +38,7 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 9 {
+	if len(ret) != 11 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -78,7 +78,7 @@ func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines, logger)
 
 	ret := GetSmbStatistics(locks, processes, shares)
-	if len(ret) != 9 {
+	if len(ret) != 11 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -99,7 +99,7 @@ func TestGetSmbStatistics(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 15 {
+	if len(ret) != 17 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -171,6 +171,32 @@ func TestGetSmbStatistics(t *testing.T) {
 
 	if value != "SMB3_11" {
 		t.Errorf("The Protocol Version \"%s\" is not expected", value)
+	}
+
+	if ret[14].Value != 4 {
+		t.Errorf("The value %f is not expected", ret[14].Value)
+	}
+
+	value, found = ret[15].Labels["signing"]
+	if !found {
+		t.Errorf("No label with key \"signing\" found")
+	}
+
+	if value != "partial(AES-128-CMAC)" {
+		t.Errorf("The signing \"%s\" is not expected", value)
+	}
+
+	if ret[14].Value != 4 {
+		t.Errorf("The value %f is not expected", ret[14].Value)
+	}
+
+	value, found = ret[16].Labels["encryption"]
+	if !found {
+		t.Errorf("No label with key \"signing\" found")
+	}
+
+	if value != "-" {
+		t.Errorf("The encryption \"%s\" is not expected", value)
 	}
 
 	if ret[14].Value != 4 {

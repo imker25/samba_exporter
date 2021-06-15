@@ -44,7 +44,7 @@ func TestNewSambaExporter(t *testing.T) {
 }
 
 func TestSetDescriptionsFromResponse(t *testing.T) {
-	expectedChanels := 12
+	expectedChanels := 14
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
@@ -61,8 +61,8 @@ func TestSetDescriptionsFromResponse(t *testing.T) {
 }
 
 func TestSetMetricsFromResponse(t *testing.T) {
-	expectedDescChanels := 18
-	expectedMetChanels := 18
+	expectedDescChanels := 20
+	expectedMetChanels := 20
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
@@ -82,7 +82,7 @@ func TestSetMetricsFromResponse(t *testing.T) {
 }
 
 func TestSetMetricsFromEmptyResponse(t *testing.T) {
-	expectedDescChanels := 12
+	expectedDescChanels := 14
 	expectedMetChanels := 8
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)

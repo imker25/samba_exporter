@@ -225,6 +225,9 @@ assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_process_per_cli
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"SMB3_11\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"4.11.6-Ubuntu\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_protocol_version_count\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_signing_method_count\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"partial(AES-128-CMAC)\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_encryption_method_count\"" 0
 
 
 # End daemons

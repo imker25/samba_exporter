@@ -29,6 +29,8 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 	locksPerShare := make(map[string]int, 0)
 	processPerClient := make(map[string]int, 0)
 	protocolVersionCount := make(map[string]int, 0)
+	signingMethodCount := make(map[string]int, 0)
+	encryptionMethodCount := make(map[string]int, 0)
 
 	for _, lock := range lockData {
 		if !intArrContains(users, lock.UserID) {
@@ -69,6 +71,20 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 			protocolVersionCount[process.ProtocolVersion] = 1
 		} else {
 			protocolVersionCount[process.ProtocolVersion] = versionCount + 1
+		}
+
+		signingCount, foundS := signingMethodCount[process.Signing]
+		if !foundS {
+			signingMethodCount[process.Signing] = 1
+		} else {
+			signingMethodCount[process.Signing] = signingCount + 1
+		}
+
+		encryptionCount, foundE := encryptionMethodCount[process.Encryption]
+		if !foundE {
+			encryptionMethodCount[process.Encryption] = 1
+		} else {
+			encryptionMethodCount[process.Encryption] = encryptionCount + 1
 		}
 	}
 
@@ -117,6 +133,22 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 		}
 	} else {
 		ret = append(ret, SmbStatisticsNumeric{"protocol_version_count", float64(0), "Number of processes on the server using the protocol", map[string]string{"protocol_version": ""}})
+	}
+
+	if len(signingMethodCount) > 0 {
+		for method, count := range signingMethodCount {
+			ret = append(ret, SmbStatisticsNumeric{"signing_method_count", float64(count), "Number of processes on the server using the signing", map[string]string{"signing": method}})
+		}
+	} else {
+		ret = append(ret, SmbStatisticsNumeric{"signing_method_count", float64(0), "Number of processes on the server using the signing", map[string]string{"signing": ""}})
+	}
+
+	if len(encryptionMethodCount) > 0 {
+		for method, count := range encryptionMethodCount {
+			ret = append(ret, SmbStatisticsNumeric{"encryption_method_count", float64(count), "Number of processes on the server using the encryption", map[string]string{"encryption": method}})
+		}
+	} else {
+		ret = append(ret, SmbStatisticsNumeric{"encryption_method_count", float64(0), "Number of processes on the server using the encryption", map[string]string{"encryption": ""}})
 	}
 
 	return ret
