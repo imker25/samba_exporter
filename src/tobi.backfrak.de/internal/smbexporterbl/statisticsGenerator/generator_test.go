@@ -21,7 +21,7 @@ func TestGetSmbStatisticsNoLockData(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 8 {
+	if len(ret) != 9 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -38,7 +38,7 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 8 {
+	if len(ret) != 9 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -78,7 +78,7 @@ func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines, logger)
 
 	ret := GetSmbStatistics(locks, processes, shares)
-	if len(ret) != 8 {
+	if len(ret) != 9 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -99,7 +99,7 @@ func TestGetSmbStatistics(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 14 {
+	if len(ret) != 15 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -162,6 +162,19 @@ func TestGetSmbStatistics(t *testing.T) {
 
 	if value != "4.11.6-Ubuntu" {
 		t.Errorf("The SambaVersion \"%s\" is not expected", value)
+	}
+
+	value, found = ret[14].Labels["protocol_version"]
+	if !found {
+		t.Errorf("No label with key \"protocol_version\" found")
+	}
+
+	if value != "SMB3_11" {
+		t.Errorf("The Protocol Version \"%s\" is not expected", value)
+	}
+
+	if ret[14].Value != 4 {
+		t.Errorf("The value %f is not expected", ret[14].Value)
 	}
 
 }

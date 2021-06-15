@@ -28,6 +28,7 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 	var sambaVersion string
 	locksPerShare := make(map[string]int, 0)
 	processPerClient := make(map[string]int, 0)
+	protocolVersionCount := make(map[string]int, 0)
 
 	for _, lock := range lockData {
 		if !intArrContains(users, lock.UserID) {
@@ -56,11 +57,18 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 		}
 		sambaVersion = process.SambaVersion
 
-		processOnShare, found := processPerClient[process.Machine]
-		if !found {
+		processOnShare, foundC := processPerClient[process.Machine]
+		if !foundC {
 			processPerClient[process.Machine] = 1
 		} else {
 			processPerClient[process.Machine] = processOnShare + 1
+		}
+
+		versionCount, foundV := protocolVersionCount[process.ProtocolVersion]
+		if !foundV {
+			protocolVersionCount[process.ProtocolVersion] = 1
+		} else {
+			protocolVersionCount[process.ProtocolVersion] = versionCount + 1
 		}
 	}
 
@@ -101,6 +109,14 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 		}
 	} else {
 		ret = append(ret, SmbStatisticsNumeric{"process_per_client_count", float64(0), "Number of processes on the server used by one client", map[string]string{"client": ""}})
+	}
+
+	if len(protocolVersionCount) > 0 {
+		for version, count := range protocolVersionCount {
+			ret = append(ret, SmbStatisticsNumeric{"protocol_version_count", float64(count), "Number of processes on the server using the protocol", map[string]string{"protocol_version": version}})
+		}
+	} else {
+		ret = append(ret, SmbStatisticsNumeric{"protocol_version_count", float64(0), "Number of processes on the server using the protocol", map[string]string{"protocol_version": ""}})
 	}
 
 	return ret
