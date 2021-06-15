@@ -103,9 +103,15 @@ func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commo
 
 	logger.WriteVerbose(fmt.Sprintf("Wait for \"%s\" response with ID %d on pipe", request, requestCount))
 
-	response, errRead := responseHandler.WaitForPipeInputString()
-	if errRead != nil {
-		return "", errRead
+	response := ""
+	var errRead error
+
+	// as long as the response pipe is empty, wait for response
+	for response == "" {
+		response, errRead = responseHandler.WaitForPipeInputString()
+		if errRead != nil {
+			return "", errRead
+		}
 	}
 
 	logger.WriteVerbose(fmt.Sprintf("Handle \"%s\" response with ID %d from pipe", request, requestCount))
