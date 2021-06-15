@@ -2,7 +2,7 @@
 
 A prometheus exporter for statistic data of the samba file server
 
-**Still in development, but basic metrics are working. Tested only on Ubuntu 20.04**
+**Exports basic metics, tested only on Ubuntu 20.04**
 
 ## Concept
 
@@ -22,7 +22,7 @@ wget https://github.com/imker25/samba_exporter/releases/download/0.1.192-pre/sam
 sudo dpkg --install ./samba-exporter_0.1.192-f6b01a7+ubuntu-20.04_amd64.deb
 ```
 
-By default the prometheus exporter endpoint only listen on localhost. To change this behavior update `/etc/default/samba_exporter` on the target machine according to your needs and restart the `samba_exporter` service. See [samba_statusd service](#samba_statusd-service) for details.
+By default the prometheus exporter endpoint only listen on localhost. To change this behavior update `/etc/default/samba_exporter` according to your needs and restart the `samba_exporter` service. See [samba_statusd service](#samba_statusd-service) for details.
 
 For manual installation see [Build and manual install](#build-and-manual-install).
 
@@ -179,4 +179,12 @@ samba_server_up 1
 samba_share_count 0
 ```
 
+### Developer Hints
 
+In case you want develop this software with [VS Code](https://code.visualstudio.com/) you need to add the repositories root folder to the **GOPATH** within the `VS Code Settings` to get golang extension and golang tools work, e. g.:
+
+```json
+{
+      "go.gopath": "${env:GOPATH}:${workspaceFolder}",
+}
+```
