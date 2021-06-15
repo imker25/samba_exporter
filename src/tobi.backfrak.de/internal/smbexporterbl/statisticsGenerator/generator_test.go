@@ -8,18 +8,20 @@ package statisticsGenerator
 import (
 	"testing"
 
-	"tobi.backfrak.de/cmd/samba_exporter/smbstatusreader"
+	"tobi.backfrak.de/internal/commonbl"
+	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 	"tobi.backfrak.de/internal/smbstatusout"
 )
 
 func TestGetSmbStatisticsNoLockData(t *testing.T) {
-	locks := smbstatusreader.GetLockData(smbstatusout.LockDataNoData)
-	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataOneLine)
-	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataOneLine)
+	logger := *commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockDataNoData, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataOneLine, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataOneLine, logger)
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 7 {
+	if len(ret) != 11 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -29,13 +31,14 @@ func TestGetSmbStatisticsNoLockData(t *testing.T) {
 }
 
 func TestGetSmbStatisticsEmptyData(t *testing.T) {
-	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line)
-	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line)
-	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines)
+	logger := *commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines, logger)
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 7 {
+	if len(ret) != 11 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -69,12 +72,13 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 }
 
 func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
-	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line)
-	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line)
-	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines)
+	logger := *commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines, logger)
 
 	ret := GetSmbStatistics(locks, processes, shares)
-	if len(ret) != 7 {
+	if len(ret) != 11 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -88,13 +92,14 @@ func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
 }
 
 func TestGetSmbStatistics(t *testing.T) {
-	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines)
-	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines)
-	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines)
+	logger := *commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 10 {
+	if len(ret) != 17 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -157,6 +162,45 @@ func TestGetSmbStatistics(t *testing.T) {
 
 	if value != "4.11.6-Ubuntu" {
 		t.Errorf("The SambaVersion \"%s\" is not expected", value)
+	}
+
+	value, found = ret[14].Labels["protocol_version"]
+	if !found {
+		t.Errorf("No label with key \"protocol_version\" found")
+	}
+
+	if value != "SMB3_11" {
+		t.Errorf("The Protocol Version \"%s\" is not expected", value)
+	}
+
+	if ret[14].Value != 4 {
+		t.Errorf("The value %f is not expected", ret[14].Value)
+	}
+
+	value, found = ret[15].Labels["signing"]
+	if !found {
+		t.Errorf("No label with key \"signing\" found")
+	}
+
+	if value != "partial(AES-128-CMAC)" {
+		t.Errorf("The signing \"%s\" is not expected", value)
+	}
+
+	if ret[14].Value != 4 {
+		t.Errorf("The value %f is not expected", ret[14].Value)
+	}
+
+	value, found = ret[16].Labels["encryption"]
+	if !found {
+		t.Errorf("No label with key \"signing\" found")
+	}
+
+	if value != "-" {
+		t.Errorf("The encryption \"%s\" is not expected", value)
+	}
+
+	if ret[14].Value != 4 {
+		t.Errorf("The value %f is not expected", ret[14].Value)
 	}
 
 }

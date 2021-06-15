@@ -180,6 +180,7 @@ assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"/usr/share/data\"" 0
 
+
 # End daemons
 echo "# ###################################################################"
 echo "End $samba_statusd with PID $statusdPID"
@@ -212,6 +213,7 @@ assert_raises "processWithNameIsRunning $samba_exporter" 1
 assert_raises "processWithNameIsRunning $samba_statusd" 1
 
 echo "Test Web Interface"
+echo "# ###################################################################"
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_up 1\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_satutsd_up 1\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"/usr/share/data\"" 0
@@ -219,10 +221,16 @@ assert_raises "curl http://127.0.0.1:9922 | grep \"<p><a href='/metrics'>Metrics
 assert_raises "curl http://127.0.0.1:9922 | grep \"<head><title>Samba Exporter</title></head>\"" 0 
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_exporter_information\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_server_information\"" 0
-echo "# ###################################################################"
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_process_per_client_count\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"SMB3_11\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"4.11.6-Ubuntu\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_protocol_version_count\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_signing_method_count\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"partial(AES-128-CMAC)\"" 0
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_encryption_method_count\"" 0
+
 
 # End daemons
-echo "# ###################################################################"
 echo "End $samba_statusd with PID $statusdPID"
 kill $statusdPID
 echo "End $samba_exporter with PID $exporterPID"

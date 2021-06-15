@@ -174,7 +174,7 @@ task installTestConvert(dependsOn: 'getEnvironment') {
         // Install go get github.com/tebeka/go2xunit so it can be used after test execution
         println "go install -v github.com/tebeka/go2xunit@v1.4.10"
         exec {
-            workingDir "$scriptDirectory"
+            workingDir "${scriptDirectory}${File.separator}build"
             commandLine 'go', 'install', '-v' ,'github.com/tebeka/go2xunit@v1.4.10'
         }
     }
@@ -288,7 +288,7 @@ task convertTestResults(dependsOn: 'installTestConvert') {
         def convertExe = binDir + 'go2xunit'
         println "go run github.com/tebeka/go2xunit -input ${logTextFile} -output ${logXMLFile}"
         exec {
-            workingDir "$scriptDirectory"
+            workingDir "${scriptDirectory}${File.separator}build"
             commandLine 'go', 'run', 'github.com/tebeka/go2xunit', '-input', logTextFile, '-output', logXMLFile
         }
     }
@@ -356,6 +356,7 @@ task preparePack(dependsOn: 'build') {
             from('.') {
                 include 'README.md'
                 include 'LICENSE'
+                include 'CHANGELOG'
             }
             into "${debPackageTmpDir}/usr/share/doc/samba_exporter-${programVersionShort}/"
         }

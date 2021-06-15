@@ -47,7 +47,7 @@ const ShareDataDifferentTimeStampLines = `
 Service      pid     Machine       Connected at                     Encryption   Signing     
 ---------------------------------------------------------------------------------------------
 test         4642    127.0.0.1     Mon May 31 17:23:44 2021 UTC     -            -           
-IPC$         4642    127.0.0.1     Mon May 31 17:23:44 2021 UTC     -            -    `
+IPC$         4642    127.0.0.1     Wed Jun  2 21:32:31 2021 UTC     -            -    `
 
 const ProcessDataOneLine = `
 Samba version 4.11.6-Ubuntu
