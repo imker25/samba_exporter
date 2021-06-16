@@ -83,7 +83,7 @@ echo "$tmp_dir/samba_exporter.service.1.log has $samba_statusd_log_lines lines"
 
 assert "echo $samba_exporter_log_lines" "4"
 assert "echo $samba_statusd_log_lines" "4"
-assert_raises "cat $tmp_dir/samba_exporter.service.1.log | grep \"get metrics on 127.0.0.1:9922/metrics\"" 0
+assert_raises "cat $tmp_dir/samba_exporter.service.1.log | grep \"get metrics on http://127.0.0.1:9922/metrics\"" 0
 
 exporterPID=$(pidof samba_exporter)
 uidOfexporterPID=$(awk '/^Uid:/{print $2}' /proc/$exporterPID/status)
