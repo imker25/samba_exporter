@@ -16,9 +16,10 @@ import (
 // The paramters for this executable
 type parmeters struct {
 	commonbl.Parmeters
-	TestPipeMode  bool
-	ListenAddress string
-	MetricsPath   string
+	TestPipeMode   bool
+	ListenAddress  string
+	MetricsPath    string
+	RequestTimeOut int
 }
 
 var params parmeters
@@ -35,6 +36,7 @@ func handleComandlineOptions() {
 	flag.BoolVar(&params.TestPipeMode, "test-pipe", false, "Requests status from samba_statusd and exits. May be combinde with -test-mode.")
 	flag.StringVar(&params.ListenAddress, "web.listen-address", ":9922", "Address to listen on for web interface and telemetry.")
 	flag.StringVar(&params.MetricsPath, "web.telemetry-path", "/metrics", "Path under which to expose metrics.")
+	flag.IntVar(&params.RequestTimeOut, "request-timeout", 5, "The timeout for a request to samba_statusd")
 
 	// Overwrite the std Usage function with some custom stuff
 	flag.Usage = customHelpMessage

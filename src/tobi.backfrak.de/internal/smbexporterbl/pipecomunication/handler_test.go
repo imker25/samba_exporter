@@ -17,7 +17,7 @@ func TestGetSambaStatusTimeout(t *testing.T) {
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
-	_, _, _, err := GetSambaStatus(requestHandler, responseHandler, logger)
+	_, _, _, err := GetSambaStatus(requestHandler, responseHandler, logger, 2)
 
 	if err == nil {
 		t.Errorf("Exptected an error but got none")

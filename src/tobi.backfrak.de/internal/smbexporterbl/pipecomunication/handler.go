@@ -14,9 +14,6 @@ import (
 	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 )
 
-// The timeout for a request to samba_statusd in seconds
-const requestTimeOut = 2
-
 var requestCount = 0
 var mux sync.Mutex
 
@@ -26,24 +23,24 @@ type smbResponse struct {
 }
 
 // GetSambaStatus - Get the output of all data tables from samba_statusd
-func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, logger commonbl.Logger) ([]smbstatusreader.LockData, []smbstatusreader.ProcessData, []smbstatusreader.ShareData, error) {
+func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, logger commonbl.Logger, requestTimeOut int) ([]smbstatusreader.LockData, []smbstatusreader.ProcessData, []smbstatusreader.ShareData, error) {
 	var processes []smbstatusreader.ProcessData
 	var shares []smbstatusreader.ShareData
 	var locks []smbstatusreader.LockData
 
-	res, errGet := getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.PROCESS_REQUEST, logger)
+	res, errGet := getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.PROCESS_REQUEST, logger, requestTimeOut)
 	if errGet != nil {
 		return nil, nil, nil, errGet
 	} else {
 		processes = smbstatusreader.GetProcessData(res, logger)
 	}
-	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SHARE_REQUEST, logger)
+	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SHARE_REQUEST, logger, requestTimeOut)
 	if errGet != nil {
 		return nil, nil, nil, errGet
 	} else {
 		shares = smbstatusreader.GetShareData(res, logger)
 	}
-	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.LOCK_REQUEST, logger)
+	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.LOCK_REQUEST, logger, requestTimeOut)
 	if errGet != nil {
 		return nil, nil, nil, errGet
 	} else {
@@ -61,9 +58,10 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 	return locks, processes, shares, nil
 }
 
-func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType, logger commonbl.Logger) (string, error) {
+func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType, logger commonbl.Logger, requestTimeOut int) (string, error) {
 	c := make(chan smbResponse, 1)
 	var data string
+
 	go goGetSmbStatusData(requestHandler, responseHandler, request, logger, c)
 	select {
 	case res := <-c:
@@ -72,7 +70,7 @@ func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandle
 		} else {
 			return "", res.Error
 		}
-	case <-time.After(requestTimeOut * time.Second):
+	case <-time.After(time.Second * time.Duration(requestTimeOut)):
 		return "", NewSmbStatusTimeOutError(request)
 	}
 

@@ -16,11 +16,11 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"tobi.backfrak.de/internal/commonbl"
 	"tobi.backfrak.de/internal/smbexporterbl/pipecomunication"
 	"tobi.backfrak.de/internal/smbexporterbl/smbexporter"
 	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 	"tobi.backfrak.de/internal/smbexporterbl/statisticsGenerator"
-	"tobi.backfrak.de/internal/commonbl"
 )
 
 // Authors - Information about the authors of the program. You might want to add your name here when contributing to this software
@@ -81,10 +81,10 @@ func main() {
 
 	logger.WriteVerbose("Setup prometheus exporter")
 
-	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler, logger, version)
+	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler, logger, version, params.RequestTimeOut)
 	prometheus.MustRegister(exporter)
 
-	logger.WriteInformation(fmt.Sprintf("Started %s, get metrics on %s%s", os.Args[0], params.ListenAddress, params.MetricsPath))
+	logger.WriteInformation(fmt.Sprintf("Started %s, get metrics on http://%s%s", os.Args[0], params.ListenAddress, params.MetricsPath))
 
 	http.Handle(params.MetricsPath, promhttp.Handler())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -112,7 +112,7 @@ func testPipeMode(requestHandler commonbl.PipeHandler, responseHandler commonbl.
 	var errGet error
 
 	logger.WriteVerbose("Request samba_statusd to get metrics for test-pipe mode")
-	locks, processes, shares, errGet = pipecomunication.GetSambaStatus(requestHandler, responseHandler, logger)
+	locks, processes, shares, errGet = pipecomunication.GetSambaStatus(requestHandler, responseHandler, logger, params.RequestTimeOut)
 	if errGet != nil {
 		return errGet
 	}
