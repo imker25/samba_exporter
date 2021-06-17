@@ -1,4 +1,11 @@
-Version 0.4
+# Change log for samba-exporter package
+
+## Version 0.5
+
+- Features
+  - Add `-request-timeout` option to samba_exporter
+
+## Version 0.4
 
 - Features
   - Enhanced metrics

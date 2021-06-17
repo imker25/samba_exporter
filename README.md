@@ -76,6 +76,8 @@ Options:
         Print this help message
   -print-version
         With this flag the program will only print it's version and exit
+  -request-timeout int
+        The timeout for a request to samba_statusd (default 5)        
   -test-mode
         Run the program in test mode. In this mode the program will always return the same test data. To work with samba_statusd both programs needs to run in test mode or not.
   -test-pipe
