@@ -172,7 +172,7 @@ func scheduleWriter(t *testing.T) {
 	handler := NewPipeHandler(true, RequestPipe)
 	err := handler.WritePipeBytes(testData)
 	if err != nil {
-		t.Fatalf("Got error \"%s\" but expected none", err)
+		t.Errorf("Got error \"%s\" but expected none", err)
 	}
 }
 
@@ -182,6 +182,6 @@ func scheduleStringWriter(t *testing.T) {
 	handler := NewPipeHandler(true, RequestPipe)
 	err := handler.WritePipeString(testDataString)
 	if err != nil {
-		t.Fatalf("Got error \"%s\" but expected none", err)
+		t.Errorf("Got error \"%s\" but expected none", err)
 	}
 }

@@ -71,7 +71,6 @@ func (handler *PipeHandler) PipeExists() bool {
 // 	Remember: This is a blocking call and will return once data can be read from the pipe
 func (handler *PipeHandler) GetReaderPipe() (*bufio.Reader, error) {
 
-	
 	if !handler.PipeExists() {
 		errCreate := handler.createPipe()
 		if errCreate != nil {
@@ -118,7 +117,7 @@ func (handler *PipeHandler) WaitForPipeInputBytes() ([]byte, error) {
 		if errRead != io.EOF {
 			return []byte{}, errRead
 		}
-		return []byte{}, nil
+		return received, nil
 	}
 
 	return received[0 : len(received)-1], nil

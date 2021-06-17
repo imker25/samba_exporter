@@ -31,21 +31,22 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 	res, errGet := getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.PROCESS_REQUEST, logger, requestTimeOut)
 	if errGet != nil {
 		return nil, nil, nil, errGet
-	} else {
-		processes = smbstatusreader.GetProcessData(res, logger)
 	}
+	processes = smbstatusreader.GetProcessData(res, logger)
+	time.Sleep(time.Millisecond)
+
 	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SHARE_REQUEST, logger, requestTimeOut)
 	if errGet != nil {
 		return nil, nil, nil, errGet
-	} else {
-		shares = smbstatusreader.GetShareData(res, logger)
 	}
+	shares = smbstatusreader.GetShareData(res, logger)
+	time.Sleep(time.Millisecond)
+
 	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.LOCK_REQUEST, logger, requestTimeOut)
 	if errGet != nil {
 		return nil, nil, nil, errGet
-	} else {
-		locks = smbstatusreader.GetLockData(res, logger)
 	}
+	locks = smbstatusreader.GetLockData(res, logger)
 
 	if len(shares) < 1 {
 		logger.WriteVerbose("Got an empty share table when requesting \"smbstatus -S -n\" from samba_statusd")
@@ -71,6 +72,11 @@ func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandle
 			return "", res.Error
 		}
 	case <-time.After(time.Second * time.Duration(requestTimeOut)):
+		logger.WriteVerbose("Clear request pipe after request time out")
+		errClear := requestHandler.WritePipeString("")
+		if errClear != nil {
+			panic(errClear)
+		}
 		return "", NewSmbStatusTimeOutError(request)
 	}
 
