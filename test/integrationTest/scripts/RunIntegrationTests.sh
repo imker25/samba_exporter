@@ -228,7 +228,7 @@ assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_protocol_versio
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_signing_method_count\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"partial(AES-128-CMAC)\"" 0
 assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_encryption_method_count\"" 0
-
+assert_raises "curl http://127.0.0.1:9922/metrics | grep \"samba_request_time\"" 0
 
 # End daemons
 echo "End $samba_statusd with PID $statusdPID"

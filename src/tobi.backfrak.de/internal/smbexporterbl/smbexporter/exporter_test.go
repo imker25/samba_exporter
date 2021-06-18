@@ -44,7 +44,7 @@ func TestNewSambaExporter(t *testing.T) {
 }
 
 func TestSetDescriptionsFromResponse(t *testing.T) {
-	expectedChanels := 14
+	expectedChanels := 15
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
@@ -61,8 +61,8 @@ func TestSetDescriptionsFromResponse(t *testing.T) {
 }
 
 func TestSetMetricsFromResponse(t *testing.T) {
-	expectedDescChanels := 20
-	expectedMetChanels := 20
+	expectedDescChanels := 21
+	expectedMetChanels := 21
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
@@ -73,7 +73,7 @@ func TestSetMetricsFromResponse(t *testing.T) {
 	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5)
 	exporter.setDescriptionsFromResponse(locks, processes, shares, chDesc)
 	chMet := make(chan prometheus.Metric, expectedMetChanels)
-	exporter.setMetricsFromResponse(locks, processes, shares, 1, 1, chMet)
+	exporter.setMetricsFromResponse(locks, processes, shares, 1, 1, 31, chMet)
 
 	if len(chMet) != expectedMetChanels {
 		t.Errorf("Got %d metric chanels, but expected %d", len(chMet), expectedMetChanels)
@@ -82,8 +82,8 @@ func TestSetMetricsFromResponse(t *testing.T) {
 }
 
 func TestSetMetricsFromEmptyResponse(t *testing.T) {
-	expectedDescChanels := 14
-	expectedMetChanels := 8
+	expectedDescChanels := 15
+	expectedMetChanels := 9
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
@@ -94,7 +94,7 @@ func TestSetMetricsFromEmptyResponse(t *testing.T) {
 	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5)
 	exporter.setDescriptionsFromResponse(locks, processes, shares, chDesc)
 	chMet := make(chan prometheus.Metric, expectedMetChanels)
-	exporter.setMetricsFromResponse(locks, processes, shares, 1, 1, chMet)
+	exporter.setMetricsFromResponse(locks, processes, shares, 1, 1, 32, chMet)
 
 	if len(chMet) != expectedMetChanels {
 		t.Errorf("Got %d metric chanels, but expected %d", len(chMet), expectedMetChanels)

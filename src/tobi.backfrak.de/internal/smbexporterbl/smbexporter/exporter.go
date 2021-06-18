@@ -7,6 +7,7 @@ package smbexporter
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"tobi.backfrak.de/internal/commonbl"
@@ -61,6 +62,7 @@ func (smbExporter *SambaExporter) Collect(ch chan<- prometheus.Metric) {
 	smbExporter.Logger.WriteVerbose("Request samba_statusd to get prometheus metrics")
 	smbStatusUp := 1
 	smbServerUp := 1
+	start := time.Now()
 	locks, processes, shares, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander, smbExporter.Logger, smbExporter.RequestTimeOut)
 	if errGet != nil {
 		smbExporter.Logger.WriteError(errGet)
@@ -74,14 +76,14 @@ func (smbExporter *SambaExporter) Collect(ch chan<- prometheus.Metric) {
 			return
 		}
 	}
-
-	smbExporter.setMetricsFromResponse(locks, processes, shares, smbStatusUp, smbServerUp, ch)
+	elapsed := time.Since(start)
+	elapsedFloat := float64(elapsed.Milliseconds())
+	smbExporter.setMetricsFromResponse(locks, processes, shares, smbStatusUp, smbServerUp, elapsedFloat, ch)
 
 	return
-
 }
 
-func (smbExporter *SambaExporter) setMetricsFromResponse(locks []smbstatusreader.LockData, processes []smbstatusreader.ProcessData, shares []smbstatusreader.ShareData, smbStatusUp int, smbServerUp int, ch chan<- prometheus.Metric) {
+func (smbExporter *SambaExporter) setMetricsFromResponse(locks []smbstatusreader.LockData, processes []smbstatusreader.ProcessData, shares []smbstatusreader.ShareData, smbStatusUp int, smbServerUp int, requestTime float64, ch chan<- prometheus.Metric) {
 	smbExporter.Logger.WriteVerbose("Handle samba_statusd response and set prometheus metrics")
 	smbExporter.setGaugeIntMetricNoLabel("server_up", float64(smbServerUp), ch)
 	smbExporter.setGaugeIntMetricNoLabel("satutsd_up", float64(smbStatusUp), ch)
@@ -100,6 +102,7 @@ func (smbExporter *SambaExporter) setMetricsFromResponse(locks []smbstatusreader
 			smbExporter.setGaugeIntMetricWithLabel(stat.Name, stat.Value, stat.Labels, ch)
 		}
 	}
+	smbExporter.setGaugeIntMetricNoLabel("request_time", requestTime, ch)
 }
 
 func (smbExporter *SambaExporter) setDescriptionsFromResponse(locks []smbstatusreader.LockData, processes []smbstatusreader.ProcessData, shares []smbstatusreader.ShareData, ch chan<- *prometheus.Desc) {
@@ -123,6 +126,8 @@ func (smbExporter *SambaExporter) setDescriptionsFromResponse(locks []smbstatusr
 			smbExporter.setGaugeDescriptionWithLabel(stat.Name, stat.Help, stat.Labels, ch)
 		}
 	}
+
+	smbExporter.setGaugeDescriptionNoLabel("request_time", "Time it took to reqest the samba status from samba_statusd [ms]", ch)
 }
 
 func (smbExporter *SambaExporter) setGaugeIntMetricNoLabel(name string, value float64, ch chan<- prometheus.Metric) {
