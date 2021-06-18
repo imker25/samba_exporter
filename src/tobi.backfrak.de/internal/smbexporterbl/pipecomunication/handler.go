@@ -15,7 +15,8 @@ import (
 )
 
 var requestCount = 0
-var mux sync.Mutex
+var requestMux sync.Mutex
+var collectMux sync.Mutex
 
 type smbResponse struct {
 	Data  string
@@ -27,6 +28,8 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 	var processes []smbstatusreader.ProcessData
 	var shares []smbstatusreader.ShareData
 	var locks []smbstatusreader.LockData
+	collectMux.Lock()
+	defer collectMux.Unlock()
 
 	res, errGet := getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.PROCESS_REQUEST, logger, requestTimeOut)
 	if errGet != nil {
@@ -93,8 +96,8 @@ func goGetSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler com
 
 func getSmbStatusData(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType, logger commonbl.Logger) (string, error) {
 	// Ensure we run only one request per time on the pipes
-	mux.Lock()
-	defer mux.Unlock()
+	requestMux.Lock()
+	defer requestMux.Unlock()
 	requestCount++
 	requestString := commonbl.GetRequest(request, requestCount)
 

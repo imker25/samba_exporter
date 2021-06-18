@@ -114,7 +114,7 @@ func main() {
 			os.Exit(-2)
 		}
 
-		time.Sleep(time.Millisecond)
+		time.Sleep(time.Microsecond * 500)
 	}
 
 }
