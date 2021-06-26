@@ -111,7 +111,7 @@ Replace `server.local` with the network name of your samba server.
 
 ## Grafana
 
-For [grafana](https://grafana.com) an example dashboard is installed with the debian package and can be found at `/usr/share/doc/samba_exporter-V0.5/grafana/SambaService.json`.
+For [grafana](https://grafana.com) an example dashboard is installed with the debian package and can be found at `/usr/share/doc/samba_exporter-Vx.y/grafana/SambaService.json` (Replace x.y with the current version).
 
 When [importing](https://grafana.com/docs/grafana/latest/dashboards/export-import/#import-dashboard) this dashboard you need to change `server.local` to the network name of your samba server.
 
