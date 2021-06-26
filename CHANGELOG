@@ -2,8 +2,11 @@
 
 ## Version 0.5
 
+- Bugfix
+  - Stabilizes the pipe communication, see https://github.com/imker25/samba_exporter/issues/17 
 - Features
   - Add `-request-timeout` option to samba_exporter
+  - Add example configurations for grafana and prometheus
 
 ## Version 0.4
 

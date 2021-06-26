@@ -358,7 +358,15 @@ task preparePack(dependsOn: 'build') {
                 include 'LICENSE'
                 include 'CHANGELOG'
             }
-            into "${debPackageTmpDir}/usr/share/doc/samba_exporter-${programVersionShort}/"
+            into "${debPackageTmpDir}/usr/share/doc/samba_exporter-V${programVersionShort}/"
+        }
+        
+        copy {
+            // Copy examples to the package tmp dir
+            from('src/example') {
+                include '**/**'
+            }
+            into "${debPackageTmpDir}/usr/share/doc/samba_exporter-V${programVersionShort}/"
         }
     }
 }

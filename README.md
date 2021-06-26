@@ -96,6 +96,25 @@ To stop, start or restart the service use `systemctl`, e. g.: `sudo systemctl st
 
 **Remark:** Due to the services dependencies `samba_exporter` service stops whenever `samba_statusd` stops. And `samba_statusd` always starts when `samba_exporter` is started if not already running.
 
+## Prometheus
+
+To add this exporter to your [prometheus database](https://prometheus.io/) you have to add the endpoint as scrape job to the `/etc/prometheus/prometheus.yml` on your prometheus server. Therefor add the lines shown below:
+
+```yaml
+  - job_name: 'Samba exporter node on server.local'
+    metrics_path: metrics
+    static_configs:
+      - targets: ['server.local:9922']
+```
+
+Replace `server.local` with the network name of your samba server.
+
+## Grafana
+
+For [grafana](https://grafana.com) an example dashboard is installed with the debian package and can be found at `/usr/share/doc/samba_exporter-V0.5/grafana/SambaService.json`.
+
+When [importing](https://grafana.com/docs/grafana/latest/dashboards/export-import/#import-dashboard) this dashboard you need to change `server.local` to the network name of your samba server.
+
 ## Build and manual install
 
 To build the project you need [Go](https://golang.org/) Version 1.16.x and [Java](https://java.com/) Version 11 on your development machine. 
