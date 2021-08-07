@@ -360,6 +360,14 @@ task preparePack(dependsOn: 'build') {
             }
             into "${debPackageTmpDir}/usr/share/doc/samba_exporter-V${programVersionShort}/"
         }
+
+        copy {
+            // Copy docs to the package tmp dir
+            from('install/DEBIAN') {
+                include 'copyright'
+            }
+            into "${debPackageTmpDir}/usr/share/doc/samba_exporter-V${programVersionShort}/"
+        }
         
         copy {
             // Copy examples to the package tmp dir

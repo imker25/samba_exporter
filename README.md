@@ -15,12 +15,14 @@ Both services can communicate using a named pipe owned by a common group.
 
 ## Installation
 
-Install the latest [Release](https://github.com/imker25/samba_exporter/releases) by downloading the debian package and installing it. For example (Link and Version needs to be adapted to the latest release):
+Install the [latest Release](https://github.com/imker25/samba_exporter/releases/latest) by downloading the debian package and installing it. For example:
 
 ```sh
 wget https://github.com/imker25/samba_exporter/releases/download/0.1.192-pre/samba-exporter_0.1.192-f6b01a7+ubuntu-20.04_amd64.deb
 sudo dpkg --install ./samba-exporter_0.1.192-f6b01a7+ubuntu-20.04_amd64.deb
 ```
+
+**Hint:** Link and file name needs to be adapted to the latest release.
 
 By default the prometheus exporter endpoint only listen on localhost. To change this behavior update `/etc/default/samba_exporter` according to your needs and restart the `samba_exporter` service. See [samba_statusd service](#samba_statusd-service) for details.
 
