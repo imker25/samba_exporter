@@ -1,4 +1,10 @@
 // Build script for this project. May used in IDE or CI environment
+
+// Copyright 2021 by tobi@backfrak.de. All
+// rights reserved. Use of this source code is governed
+// by a BSD-style license that can be found in the
+// LICENSE file.
+
 defaultTasks 'build'
 def programVersion=''
 def programVersionShort=''
@@ -340,6 +346,10 @@ task preparePack(dependsOn: 'build') {
                 include '**/**'
             }
             into "${debPackageTmpDir}"
+        }
+
+        ant.replaceregexp(match:'%VERSION%', replace:"${debPackageVersion}", flags:'g', byline:true) {
+            fileset(dir: "${debPackageTmpDir}/DEBIAN", includes: 'control')
         }
 
         copy {
