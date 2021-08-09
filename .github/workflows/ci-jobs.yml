@@ -75,6 +75,8 @@ jobs:
         package_root: tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
         maintainer: tobi@backfrak.de
         version: ${{ env.SAMBA_EXPORTER_VERSION }}
+        depends: 'libc6 (>= 2.3.2), systemd'
+        desc: 'Prometheus exporter to get metrics of a samba server'  
     - name: "Upload Artifact samba_exporter*.deb"
       uses: actions/upload-artifact@v2
       with:
