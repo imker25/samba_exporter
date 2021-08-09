@@ -3,6 +3,8 @@ samba-exporter (0.6) focal; urgency=low
   [ Tobias Zellner ] 
   * Internal Enhancement: Add debian style build
 
+  -- Tobias Zellner <tobi@backfrak.de> Mon, 09 Aug 2021 13:45:55 +0200
+
 samba-exporter (0.5) focal; urgency=high
 
   [ Tobias Zellner ] 
@@ -10,9 +12,13 @@ samba-exporter (0.5) focal; urgency=high
   * Feature: Add `-request-timeout` option to samba_exporter
   * Feature: Add example configurations for grafana and prometheus
 
+  -- Tobias Zellner <tobi@backfrak.de> Fri, 18 Jun 2021 16:12:55 +0200
+
 samba-exporter (0.4) focal; urgency=low
 
   [ Tobias Zellner ]
   * Feature: Enhanced metrics
   * Enhanced: logging for type conversion errors
   * Internal Enhancement: Adapt folder structure for compatibility to go tools and VS Code plugins
+
+  -- Tobias Zellner <tobi@backfrak.de> Tue, 15 Jun 2021 10:45:55 +0200
