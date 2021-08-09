@@ -353,6 +353,14 @@ task preparePack(dependsOn: 'build') {
         }
 
         copy {
+            // Copy docs to the package tmp dir
+            from('.') {
+                include 'changelog'
+            }
+            into "${debPackageTmpDir}/DEBIAN"
+        }
+
+        copy {
             // Copy binaries to the package tmp dir
             from('bin') {
                 include 'samba_exporter'
@@ -366,7 +374,7 @@ task preparePack(dependsOn: 'build') {
             from('.') {
                 include 'README.md'
                 include 'LICENSE'
-                include 'CHANGELOG'
+                include 'changelog'
             }
             into "${debPackageTmpDir}/usr/share/doc/samba_exporter-V${programVersionShort}/"
         }

@@ -1,0 +1,18 @@
+samba-exporter (0.6) focal; urgency=low
+
+  [ Tobias Zellner ] 
+  * Internal Enhancement: Add debian style build
+
+samba-exporter (0.5) focal; urgency=high
+
+  [ Tobias Zellner ] 
+  * Closes: Bug#17 Stabilizes the pipe communication, see https://github.com/imker25/samba_exporter/issues/17 
+  * Feature: Add `-request-timeout` option to samba_exporter
+  * Feature: Add example configurations for grafana and prometheus
+
+samba-exporter (0.4) focal; urgency=low
+
+  [ Tobias Zellner ]
+  * Feature: Enhanced metrics
+  * Enhanced: logging for type conversion errors
+  * Internal Enhancement: Adapt folder structure for compatibility to go tools and VS Code plugins

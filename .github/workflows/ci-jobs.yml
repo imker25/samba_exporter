@@ -71,8 +71,7 @@ jobs:
     - uses: dawidd6/action-debian-package@v1
       name: "Pack deb package"
       with:
-        source_directory: tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}   
-        os_distribution: focal   
+        source_directory: tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}    
     - name: "Upload Artifact samba_exporter*.deb"
       uses: actions/upload-artifact@v2
       with:
