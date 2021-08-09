@@ -64,7 +64,7 @@ jobs:
     - uses: jiro4989/build-deb-action@v2
       name: "Pack deb package"
       with:
-        package: ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
+        package: ${{ env.SAMBA_EXPORTER_PACKAGE }}
         package_root: tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
         maintainer: ${{ env.SAMBA_EXPORTER_PACKAGE_MAINTAINER }}
         version: ${{ env.SAMBA_EXPORTER_VERSION }}

@@ -29,8 +29,8 @@ do
   fi  
   if [[ $line = Package:* ]]; then
     pack=${line/Package: /}
-    echo "SAMBA_EXPORTER_PACKAGE_NAME=$pack"
-    echo "SAMBA_EXPORTER_PACKAGE_NAME=$pack" >> $GITHUB_ENV 
+    echo "SAMBA_EXPORTER_PACKAGE=$pack"
+    echo "SAMBA_EXPORTER_PACKAGE=$pack" >> $GITHUB_ENV 
   fi   
 done < "$controlFile"
 
