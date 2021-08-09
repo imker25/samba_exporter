@@ -68,10 +68,13 @@ jobs:
         name: ShortVersion-${{ matrix.os }}.txt
         path: logs/ShortVersion.txt
         retention-days: 1     
-    - uses: dawidd6/action-debian-package@v1
+    - uses: jiro4989/build-deb-action@v2
       name: "Pack deb package"
       with:
-        source_directory: tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}    
+        package: samba-exporter
+        package_root: tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
+        maintainer: tobi@backfrak.de
+        version: ${{ env.SAMBA_EXPORTER_VERSION }}
     - name: "Upload Artifact samba_exporter*.deb"
       uses: actions/upload-artifact@v2
       with:

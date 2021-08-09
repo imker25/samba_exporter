@@ -10,4 +10,3 @@ Architecture: amd64
 Depends: libc6 (>= 2.3.2), systemd
 Description: Prometheus exporter to get metrics of a samba server
 HomePage: https://github.com/imker25/samba_exporter
-Version: %VERSION%

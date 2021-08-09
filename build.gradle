@@ -348,10 +348,6 @@ task preparePack(dependsOn: 'build') {
             into "${debPackageTmpDir}"
         }
 
-        ant.replaceregexp(match:'%VERSION%', replace:"${debPackageVersion}", flags:'g', byline:true) {
-            fileset(dir: "${debPackageTmpDir}/debian", includes: 'control')
-        }
-
         copy {
             // Copy docs to the package tmp dir
             from('.') {
