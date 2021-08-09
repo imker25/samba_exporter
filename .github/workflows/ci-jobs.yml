@@ -64,12 +64,12 @@ jobs:
     - uses: jiro4989/build-deb-action@v2
       name: "Pack deb package"
       with:
-        package: samba-exporter
+        package: ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
         package_root: tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
-        maintainer: tobi@backfrak.de
+        maintainer: ${{ env.SAMBA_EXPORTER_PACKAGE_MAINTAINER }}
         version: ${{ env.SAMBA_EXPORTER_VERSION }}
-        depends: 'libc6 (>= 2.3.2), systemd'
-        desc: 'Prometheus exporter to get metrics of a samba server'  
+        depends: ${{ env.SAMBA_EXPORTER_PACKAGE_DEPENDS }}
+        desc: ${{ env.SAMBA_EXPORTER_PACKAGE_DESCRIPTION }} 
     - name: "Upload Artifact samba_exporter*.deb"
       uses: actions/upload-artifact@v2
       with:
