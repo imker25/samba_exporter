@@ -36,14 +36,7 @@ jobs:
       with:
         files: logs/TestsResult.xml
     - name: 'Get Package name and version from logs/ to GITHUB_ENVIRONMENT'
-      run: |
-            echo " GITHUB_REF= $GITHUB_REF"
-            packageName=$(cat logs/PackageName.txt)
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName"
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV   
-            packageVersion=$(cat logs/Version.txt)  
-            echo "SAMBA_EXPORTER_VERSION=$packageVersion" 
-            echo "SAMBA_EXPORTER_VERSION=$packageVersion"  >> $GITHUB_ENV           
+      run: ./build/GithubEnv.sh           
     - name: 'Upload Artifact samba_exporter'
       uses: actions/upload-artifact@v2
       with:
@@ -128,10 +121,7 @@ jobs:
         name: samba_exporter-${{ matrix.os }}.deb  
         path: .           
     - name: 'Get Package name from logs/PackageName.txt'
-      run: |
-            packageName=$(cat logs/PackageName.txt)
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName"
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV      
+      run: ./build/GithubEnv.sh        
     - name: "Run installation tests"
       env:
         SAMBA_EXPORTER_PACKAGE_NAME:  ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
