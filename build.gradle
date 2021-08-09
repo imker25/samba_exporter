@@ -353,7 +353,7 @@ task preparePack(dependsOn: 'build') {
             from('.') {
                 include 'changelog'
             }
-            into "${debPackageTmpDir}/debian"
+            into "${debPackageTmpDir}/DEBIAN"
         }
 
         copy {
@@ -377,7 +377,7 @@ task preparePack(dependsOn: 'build') {
 
         copy {
             // Copy docs to the package tmp dir
-            from('install/debian') {
+            from('install/DEBIAN') {
                 include 'copyright'
             }
             into "${debPackageTmpDir}/usr/share/doc/samba_exporter-V${programVersionShort}/"
