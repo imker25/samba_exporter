@@ -349,7 +349,7 @@ task preparePack(dependsOn: 'build') {
         }
 
         ant.replaceregexp(match:'%VERSION%', replace:"${debPackageVersion}", flags:'g', byline:true) {
-            fileset(dir: "${debPackageTmpDir}/DEBIAN", includes: 'control')
+            fileset(dir: "${debPackageTmpDir}/debian", includes: 'control')
         }
 
         copy {
@@ -357,7 +357,7 @@ task preparePack(dependsOn: 'build') {
             from('.') {
                 include 'changelog'
             }
-            into "${debPackageTmpDir}/DEBIAN"
+            into "${debPackageTmpDir}/debian"
         }
 
         copy {
@@ -381,7 +381,7 @@ task preparePack(dependsOn: 'build') {
 
         copy {
             // Copy docs to the package tmp dir
-            from('install/DEBIAN') {
+            from('install/debian') {
                 include 'copyright'
             }
             into "${debPackageTmpDir}/usr/share/doc/samba_exporter-V${programVersionShort}/"
