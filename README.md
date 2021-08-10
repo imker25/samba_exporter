@@ -1,8 +1,11 @@
 # samba_exporter
 
-A prometheus exporter for statistic data of the samba file server
+A prometheus exporter for statistic data of the samba file server.
 
-**Exports basic metics, tested only on Ubuntu 20.04**
+It uses smbstatus to collect the data and converts the result into prometheus style data.
+The prometheus style data can be requested manually on port 9922 using a http client. Or a prometheus database sever can be configured to collect the data by scraping port 9922 on the samba server.
+
+**Tested only on Ubuntu 20.04**
 
 ## Concept
 
