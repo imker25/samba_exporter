@@ -6,8 +6,8 @@ After=network-online.target
 [Service]
 Type=forking
 EnvironmentFile=/etc/default/samba_statusd
-ExecStart=/usr/local/bin/start_samba_statusd.sh $ARGS
-ExecReload=/bin/kill -TERM $MAINPID && /usr/local/bin/start_samba_statusd.sh $ARGS
+ExecStart=/usr/bin/start_samba_statusd.sh $ARGS
+ExecReload=/bin/kill -TERM $MAINPID && /usr/bin/start_samba_statusd.sh $ARGS
 Restart=on-failure
 ExecStop=/bin/kill -TERM $MAINPID
 KillSignal=SIGTERM

@@ -134,9 +134,9 @@ To build the software change to the repositories directory and run:
 For manual install on the `target` machine do the following copies:
 
 ```sh
-scp ./bin/samba_exporter <target>:/usr/local/bin/samba_exporter
-scp ./bin/samba_statusd <target>:/usr/local/bin/samba_statusd 
-scp ./install/usr/local/bin/start_samba_statusd.sh <target>:/usr/local/bin/start_samba_statusd.sh
+scp ./bin/samba_exporter <target>:/usr/bin/samba_exporter
+scp ./bin/samba_statusd <target>:/usr/bin/samba_statusd 
+scp ./install/usr/bin/start_samba_statusd.sh <target>:/usr/bin/start_samba_statusd.sh
 scp ./install/lib/systemd/system/samba_statusd.service <target>:/lib/systemd/system/samba_statusd.service
 scp ./install/lib/systemd/system/samba_exporter.service <target>:/lib/systemd/system/samba_exporter.service
 scp install/etc/default/samba_exporter <target>:/etc/default/samba_exporter

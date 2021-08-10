@@ -362,7 +362,7 @@ task preparePack(dependsOn: 'build') {
                 include 'samba_exporter'
                 include 'samba_statusd'
             }
-            into "${debPackageTmpDir}usr/local/bin/"
+            into "${debPackageTmpDir}usr/bin/"
         }
 
         copy {
