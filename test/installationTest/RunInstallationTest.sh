@@ -244,7 +244,7 @@ assert_raises "processWithNameIsRunning samba_statusd" 0
 assert_raises "processWithNameIsRunning samba_exporter" 0
 assert_raises "fileExists \"/etc/default/samba_exporter\"" 0
 assert_raises "fileExists \"/etc/default/samba_statusd\"" 0
-assert_raises "fileExists \"/usr/bin/start_samba_statusd.sh\"" 0
+assert_raises "fileExists \"/usr/bin/start_samba_statusd\"" 0
 assert_raises "fileExists \"/usr/bin/samba_statusd\"" 0
 assert_raises "fileExists \"/usr/bin/samba_exporter\"" 0
 assert_raises "fileExists \"/lib/systemd/system/samba_exporter.service\"" 0
