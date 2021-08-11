@@ -8,8 +8,8 @@
 # Script to read infos from files into the github environment during a actions workflow
 # ######################################################################################
 
-# Read package info from install/DEBIAN/control file
-controlFile="./install/DEBIAN/control"
+# Read package info from install/debian/control file
+controlFile="./install/debian/control"
 while IFS= read -r line
 do
   if [[ $line = Description:* ]]; then
