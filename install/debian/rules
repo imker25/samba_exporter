@@ -1,0 +1,14 @@
+#!/usr/bin/make -f
+
+alias go="/usr/lib/go-1.16/bin/go"
+
+
+override_dh_auto_clean:
+    $(CURDIR)/gradlew -PgoExe=/usr/lib/go-1.16/bin/go clean
+
+override_dh_auto_build:
+    $(CURDIR)/gradlew -PgoExe=/usr/lib/go-1.16/bin/go getBuildName build preparePack
+
+
+%:
+	dh $@

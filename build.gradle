@@ -6,7 +6,7 @@
 // LICENSE file.
 
 defaultTasks 'build'
-def goExe='go'
+ext.goExe = project.hasProperty('goExe') ? project.getProperty('goExe') : 'go'
 def programVersion=''
 def programVersionShort=''
 def programVersionNumber=''
