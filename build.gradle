@@ -6,7 +6,7 @@
 // LICENSE file.
 
 defaultTasks 'build'
-def goExe='/usr/lib/go-1.16/bin/go'
+def goExe='go'
 def programVersion=''
 def programVersionShort=''
 def programVersionNumber=''
