@@ -6,6 +6,7 @@
 // LICENSE file.
 
 defaultTasks 'build'
+def goExe='/usr/lib/go-1.16/bin/go'
 def programVersion=''
 def programVersionShort=''
 def programVersionNumber=''
@@ -178,10 +179,10 @@ task installTestConvert(dependsOn: 'getEnvironment') {
     }
     doLast {
         // Install go get github.com/tebeka/go2xunit so it can be used after test execution
-        println "go install -v github.com/tebeka/go2xunit@v1.4.10"
+        println "${goExe} install -v github.com/tebeka/go2xunit@v1.4.10"
         exec {
             workingDir "${scriptDirectory}${File.separator}build"
-            commandLine 'go', 'install', '-v' ,'github.com/tebeka/go2xunit@v1.4.10'
+            commandLine "${goExe}", 'install', '-v' ,'github.com/tebeka/go2xunit@v1.4.10'
         }
     }
 }
@@ -235,10 +236,10 @@ task test(dependsOn: 'getEnvironment') {
         def outtext = ""
         packageArray.each { packageDir ->
             def outputStream = new ByteArrayOutputStream()
-            println "cd $packageDir && go test -v $raceParameter  >> ${logDir}TestsRun.log "
+            println "cd $packageDir && ${goExe} test -v $raceParameter  >> ${logDir}TestsRun.log "
             exec {
                 workingDir "${scriptDirectory}${File.separator}${packageDir}"
-                executable "go"
+                executable "${goExe}"
                 args callArgsTestRun
 
                 standardOutput outputStream
@@ -266,10 +267,10 @@ task cover(dependsOn: 'getEnvironment') {
         def outtext = ""
         packageArray.each { packageDir ->
             def outputStream = new ByteArrayOutputStream()
-            println "cd $packageDir && go test -v -cover  >> ${logDir}TestsCoverRun.log "
+            println "cd $packageDir && ${goExe} test -v -cover  >> ${logDir}TestsCoverRun.log "
             exec {
                 workingDir "${scriptDirectory}${File.separator}${packageDir}"
-                executable "go"
+                executable "${goExe}"
                 args callArgsTestRun
 
                 standardOutput outputStream
@@ -292,10 +293,10 @@ task convertTestResults(dependsOn: 'installTestConvert') {
         def logTextFile = logDir + 'TestsRun.log'
         def logXMLFile = logDir + 'TestsResult.xml'
         def convertExe = binDir + 'go2xunit'
-        println "go run github.com/tebeka/go2xunit -input ${logTextFile} -output ${logXMLFile}"
+        println "${goExe} run github.com/tebeka/go2xunit -input ${logTextFile} -output ${logXMLFile}"
         exec {
             workingDir "${scriptDirectory}${File.separator}build"
-            commandLine 'go', 'run', 'github.com/tebeka/go2xunit', '-input', logTextFile, '-output', logXMLFile
+            commandLine "${goExe}", 'run', 'github.com/tebeka/go2xunit', '-input', logTextFile, '-output', logXMLFile
         }
     }
 }
@@ -319,10 +320,10 @@ task build(dependsOn: 'clean') {
         callArgs[4] = '-o'
         callArgs[5] = "$binDir"
         packageArray.each { packageDir ->
-            println "cd $packageDir && go build -o $binDir -v -ldflags=\"-X main.version=${programVersion}\""
+            println "cd $packageDir && ${goExe} build -o $binDir -v -ldflags=\"-X main.version=${programVersion}\""
             exec {
                 workingDir "${scriptDirectory}${File.separator}${packageDir}"
-                executable "go"
+                executable "${goExe}"
                 args callArgs
             }
 
