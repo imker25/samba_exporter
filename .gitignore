@@ -24,3 +24,5 @@ out.abs
 out.abc
 
 test/integrationTest/scripts/assert.sh
+debian/samba-exporter**
+install/debian/samba-exporter**

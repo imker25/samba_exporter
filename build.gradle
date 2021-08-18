@@ -22,6 +22,7 @@ String binDir
 String pkgDir
 String logDir
 String tmpDir
+ext.packageRoot = project.hasProperty('packageRoot') ? project.getProperty('packageRoot') : 'tmp'
 String versionFile
 String packagesToBuild = ''
 String packagesToTest = ''
@@ -118,7 +119,7 @@ task getEnvironment {
         }
         debPackageName = "samba-exporter_${debPackageVersion}"
 
-        debPackageTmpDir = "$tmpDir" + "${debPackageName}" + File.separator
+        debPackageTmpDir = "$scriptDirectory" + File.separator + "${packageRoot}" + File.separator + "${debPackageName}" + File.separator
         println "Program version: ${programVersion}"
         println "Package Name: ${debPackageName}"
        
@@ -359,13 +360,15 @@ task preparePack(dependsOn: 'build') {
 
         file("${debPackageTmpDir}/debian").renameTo(file("${debPackageTmpDir}/DEBIAN"))
 
-        copy {
-            // Copy binaries to the package tmp dir
-            from('bin') {
-                include 'samba_exporter'
-                include 'samba_statusd'
-            }
-            into "${debPackageTmpDir}usr/bin/"
+        // Copy and strip bin files
+        exec {
+            commandLine 'install', '-d', '-m', '755', "${debPackageTmpDir}usr/bin/"
+        }
+        exec {
+            commandLine 'install', '-s', '-m', '755', "${scriptDirectory}/bin/samba_exporter", "${debPackageTmpDir}usr/bin/samba_exporter"
+        }
+        exec {
+            commandLine 'install', '-s', '-m', '755', "${scriptDirectory}/bin/samba_statusd", "${debPackageTmpDir}usr/bin/samba_statusd"
         }
 
         copy {
