@@ -62,7 +62,9 @@ jobs:
         path: logs/ShortVersion.txt
         retention-days: 1 
     - name: 'Create man pages'
-      run:  build/CreateManPage.sh  
+      run:  |
+              sudo apt-get install -y ronn
+              build/CreateManPage.sh  
     - name: 'Fix file ownership'
       run: sudo chown root:root -R tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}                 
     - uses: jiro4989/build-deb-action@v2
