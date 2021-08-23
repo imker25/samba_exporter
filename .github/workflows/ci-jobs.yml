@@ -61,8 +61,10 @@ jobs:
         name: ShortVersion-${{ matrix.os }}.txt
         path: logs/ShortVersion.txt
         retention-days: 1 
+    - name: 'Create man pages'
+      run:  build/CreateManPage.sh  
     - name: 'Fix file ownership'
-      run: sudo chown root:root -R tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}           
+      run: sudo chown root:root -R tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}                 
     - uses: jiro4989/build-deb-action@v2
       name: "Pack deb package"
       with:
