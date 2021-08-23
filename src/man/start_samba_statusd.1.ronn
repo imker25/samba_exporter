@@ -1,0 +1,29 @@
+start_samba_statusd(1) -- part of the samba-exporter package
+=============================================
+
+## SYNOPSIS
+
+`start_samba_statusd` [options]
+
+## DESCRIPTION
+
+**start_samba_statusd** Script used by systemd to start the samba_statusd as service<br>
+The script ensures that the named pipes `/run/samba_exporter.request.pipe` and `/run/samba_exporter.response.pipe` 
+exists in the right state when the samba_statusd service starts.
+
+## OPTIONS
+
+As a startup script it passthrough all arguments to `samba_statusd`. So please see `man samba_statusd` for more information.
+
+## BUGS
+
+See <https://github.com/imker25/samba_exporter/issues> <br>
+In case you found a new bug please also report as github issue on the projects page.
+
+## COPYRIGHT
+
+samba_statusd is Copyright (C) 2021 Tobias Zellner <tobi@backfraki.de>
+
+## SEE ALSO
+
+samba_exporter(1), samba_statusd(1)
