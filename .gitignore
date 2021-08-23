@@ -29,7 +29,10 @@ install/debian/samba-exporter**
 
 src/man/samba_exporter.1.html
 src/man/samba_exporter.1
+src/man/samba_exporter.1.gz
 src/man/start_samba_statusd.1.html
 src/man/start_samba_statusd.1
+src/man/start_samba_statusd.1.gz
 src/man/samba_statusd.1.html
 src/man/samba_statusd.1
+src/man/samba_statusd.1.gz
