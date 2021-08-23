@@ -42,8 +42,12 @@ You might want to use one of the following optional parameters.
   * `-web.telemetry-path`:
         Path under which to expose metrics. (default "/metrics")
 
-To change the startup behavior of the service edit the `/etc/default/samba_exporter` configuration file.<br>
-You may not want to start the service with arguments that will exit before listening starts like `-test-pipe`, `-help` or `-print-version`.
+To change the behavior of the samba_exporter service update the `/etc/default/samba_exporter` according to your needs. 
+You can add any option shown in the help output of `samba_exporter` to the `ARGS` variable.<br>
+You may not want to start the service with arguments that will exit before listening starts like `-test-pipe`, `-help` or `-print-version`.<br>
+The service will start with `-web.listen-address=127.0.0.1:9922` by default, in case your prometheus server is running on a different machine you
+need to change this.<br>
+`/etc/default/samba_exporter` includes some examples.
 
 
 ## EXAMPLES

@@ -28,7 +28,8 @@ You might want to use one of the following optional parameters.
   * `-verbose`:
         With this flag the program will print verbose output
 
-To change the startup behavior of the service edit the `/etc/default/samba_statusd` configuration file.<br>
+To change the behavior of the samba_statusd service update the `/etc/default/samba_statusd` according to your needs. 
+You can add any option shown in the help output of `samba_statusd` to the `ARGS` variable.<br>
 You may not want to start the service with arguments that will exit before listening starts like `-help` or `-print-version`. 
 
 
