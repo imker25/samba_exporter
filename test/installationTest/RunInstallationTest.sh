@@ -234,9 +234,9 @@ assert "echo $samba_statusd_log_lines" "16"
 
 echo "# ###################################################################"
 echo "Check man pages"
-assert "man samba_exporter >> /dev/null" 0
-assert "man samba_statusd >> /dev/null" 0
-assert "man start_samba_statusd >> /dev/null" 0
+assert_raises "man samba_exporter >> /dev/null" 0
+assert_raises "man samba_statusd >> /dev/null" 0
+assert_raises "man start_samba_statusd >> /dev/null" 0
 
 echo "# ###################################################################"
 echo "# Purge package test"
