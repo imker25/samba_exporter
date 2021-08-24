@@ -85,14 +85,18 @@ fi
 
 # Generate new files
 $RONN "$SRC_DIR/samba_exporter.1.ronn"
+gzip "$SRC_DIR/samba_exporter.1"
 $RONN "$SRC_DIR/samba_statusd.1.ronn"
+gzip "$SRC_DIR/samba_statusd.1"
 $RONN "$SRC_DIR/start_samba_statusd.1.ronn"
+gzip "$SRC_DIR/start_samba_statusd.1"
 
 
 # Install the man page into the package
 echo "Install to tmp package $PACKAGE_ROOT"
-cp "$SRC_DIR/samba_statusd.1" "$PACKAGE_ROOT/DEBIAN"
-cp "$SRC_DIR/start_samba_statusd.1" "$PACKAGE_ROOT/DEBIAN"
-cp "$SRC_DIR/samba_exporter.1" "$PACKAGE_ROOT/DEBIAN"
+mkdir -p "$PACKAGE_ROOT/usr/man/man1"
+cp "$SRC_DIR/samba_statusd.1.gz" "$PACKAGE_ROOT/usr/man/man1"
+cp "$SRC_DIR/start_samba_statusd.1.gz" "$PACKAGE_ROOT/usr/man/man1"
+cp "$SRC_DIR/samba_exporter.1.gz" "$PACKAGE_ROOT/usr/man/man1"
 
 popd
