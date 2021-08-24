@@ -27,6 +27,7 @@ LOG_DIR="$BRANCH_ROOT/logs"
 RELEASE_BASE_BRANCH="main"
 RELEASE_BRANCH_NAME_PREFIX="release/V"
 VERSION_MASTER_PATH="VersionMaster.txt"
+CHANGE_LOG_PATH="changelog"
 
 # ################################################################################################################
 # functional code
@@ -92,6 +93,12 @@ echo "Next version is: Major ${versionNumbersArray[0]}, Minor $nextMinorNumber,"
 nextVersionInfo="${versionNumbersArray[0]}.$nextMinorNumber"
 echo "Set new version $nextVersionInfo"
 echo -n "$nextVersionInfo" > $VERSION_MASTER_PATH
+
+sed -i "1s/^/\n/" $CHANGE_LOG_PATH
+sed -i "1s/^/ -- Tobias Zellner <tobi@backfrak.de> $(date -R)\n/" $CHANGE_LOG_PATH
+sed -i "1s/^/\n/" $CHANGE_LOG_PATH
+sed -i "1s/^/samba-exporter (${nextVersionInfo}) focal; urgency=low\n/" $CHANGE_LOG_PATH
+
 
 echo "Commit the changed version master"
 git commit -a -m "Update version number master to $nextVersionInfo"
