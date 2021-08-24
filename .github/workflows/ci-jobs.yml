@@ -36,14 +36,7 @@ jobs:
       with:
         files: logs/TestsResult.xml
     - name: 'Get Package name and version from logs/ to GITHUB_ENVIRONMENT'
-      run: |
-            echo " GITHUB_REF= $GITHUB_REF"
-            packageName=$(cat logs/PackageName.txt)
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName"
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV   
-            packageVersion=$(cat logs/Version.txt)  
-            echo "SAMBA_EXPORTER_VERSION=$packageVersion" 
-            echo "SAMBA_EXPORTER_VERSION=$packageVersion"  >> $GITHUB_ENV           
+      run: ./build/GithubEnv.sh           
     - name: 'Upload Artifact samba_exporter'
       uses: actions/upload-artifact@v2
       with:
@@ -67,17 +60,22 @@ jobs:
       with:
         name: ShortVersion-${{ matrix.os }}.txt
         path: logs/ShortVersion.txt
-        retention-days: 1     
+        retention-days: 1 
+    - name: 'Create man pages'
+      run:  |
+              sudo apt-get install -y ronn
+              build/CreateManPage.sh  
+    - name: 'Fix file ownership'
+      run: sudo chown root:root -R tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}                 
     - uses: jiro4989/build-deb-action@v2
       name: "Pack deb package"
       with:
-        package: samba-exporter
+        package: ${{ env.SAMBA_EXPORTER_PACKAGE }}
         package_root: tmp/${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
-        maintainer: tobi@backfrak.de
+        maintainer: ${{ env.SAMBA_EXPORTER_PACKAGE_MAINTAINER }}
         version: ${{ env.SAMBA_EXPORTER_VERSION }}
-        arch: 'amd64'
-        depends: 'libc6 (>= 2.3.2), systemd'
-        desc: 'Prometheus exporter to get metrics of a samba server'       
+        depends: ${{ env.SAMBA_EXPORTER_PACKAGE_DEPENDS }}
+        desc: ${{ env.SAMBA_EXPORTER_PACKAGE_DESCRIPTION }} 
     - name: "Upload Artifact samba_exporter*.deb"
       uses: actions/upload-artifact@v2
       with:
@@ -129,10 +127,7 @@ jobs:
         name: samba_exporter-${{ matrix.os }}.deb  
         path: .           
     - name: 'Get Package name from logs/PackageName.txt'
-      run: |
-            packageName=$(cat logs/PackageName.txt)
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName"
-            echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV      
+      run: ./build/GithubEnv.sh        
     - name: "Run installation tests"
       env:
         SAMBA_EXPORTER_PACKAGE_NAME:  ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}

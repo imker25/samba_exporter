@@ -24,7 +24,7 @@ case "$1" in
   configure)
     # Add samba-exporter user if needed
     if ! getent passwd samba-exporter > /dev/null; then
-        adduser --quiet --system --no-create-home --group --gecos "samba-exporter daemon" samba-exporter || true
+        adduser --quiet --system --no-create-home --home /nonexistent --group --gecos "samba-exporter daemon" samba-exporter || true
     fi
     # Ensure the daemons are known
     systemctl daemon-reload

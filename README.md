@@ -1,8 +1,11 @@
 # samba_exporter
 
-A prometheus exporter for statistic data of the samba file server
+A prometheus exporter for statistic data of the samba file server.
 
-**Exports basic metics, tested only on Ubuntu 20.04**
+It uses smbstatus to collect the data and converts the result into prometheus style data.
+The prometheus style data can be requested manually on port 9922 using a http client. Or a prometheus database sever can be configured to collect the data by scraping port 9922 on the samba server.
+
+**Tested only on Ubuntu 20.04**
 
 ## Concept
 
@@ -15,12 +18,14 @@ Both services can communicate using a named pipe owned by a common group.
 
 ## Installation
 
-Install the latest [Release](https://github.com/imker25/samba_exporter/releases) by downloading the debian package and installing it. For example (Link and Version needs to be adapted to the latest release):
+Install the [latest Release](https://github.com/imker25/samba_exporter/releases/latest) by downloading the debian package and installing it. For example:
 
 ```sh
 wget https://github.com/imker25/samba_exporter/releases/download/0.1.192-pre/samba-exporter_0.1.192-f6b01a7+ubuntu-20.04_amd64.deb
 sudo dpkg --install ./samba-exporter_0.1.192-f6b01a7+ubuntu-20.04_amd64.deb
 ```
+
+**Hint:** Link and file name needs to be adapted to the latest release.
 
 By default the prometheus exporter endpoint only listen on localhost. To change this behavior update `/etc/default/samba_exporter` according to your needs and restart the `samba_exporter` service. See [samba_statusd service](#samba_statusd-service) for details.
 
@@ -77,7 +82,7 @@ Options:
   -print-version
         With this flag the program will only print it's version and exit
   -request-timeout int
-        The timeout for a request to samba_statusd (default 5)        
+        The timeout for a request to samba_statusd in seconds (default 5)        
   -test-mode
         Run the program in test mode. In this mode the program will always return the same test data. To work with samba_statusd both programs needs to run in test mode or not.
   -test-pipe
@@ -129,11 +134,11 @@ To build the software change to the repositories directory and run:
 For manual install on the `target` machine do the following copies:
 
 ```sh
-scp ./bin/samba_exporter <target>:/usr/local/bin/samba_exporter
-scp ./bin/samba_statusd <target>:/usr/local/bin/samba_statusd 
-scp ./install/usr/local/bin/start_samba_statusd.sh <target>:/usr/local/bin/start_samba_statusd.sh
-scp ./install/etc/systemd/system/samba_statusd.service <target>:/etc/systemd/system/samba_statusd.service
-scp ./install/etc/systemd/system/samba_exporter.service <target>:/etc/systemd/system/samba_exporter.service
+scp ./bin/samba_exporter <target>:/usr/bin/samba_exporter
+scp ./bin/samba_statusd <target>:/usr/bin/samba_statusd 
+scp ./install/usr/bin/start_samba_statusd <target>:/usr/bin/start_samba_statusd
+scp ./install/lib/systemd/system/samba_statusd.service <target>:/lib/systemd/system/samba_statusd.service
+scp ./install/lib/systemd/system/samba_exporter.service <target>:/lib/systemd/system/samba_exporter.service
 scp install/etc/default/samba_exporter <target>:/etc/default/samba_exporter
 scp install/etc/default/samba_statusd <target>:/etc/default/samba_statusd
 ```

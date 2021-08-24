@@ -1,5 +1,12 @@
 // Build script for this project. May used in IDE or CI environment
+
+// Copyright 2021 by tobi@backfrak.de. All
+// rights reserved. Use of this source code is governed
+// by a BSD-style license that can be found in the
+// LICENSE file.
+
 defaultTasks 'build'
+ext.goExe = project.hasProperty('goExe') ? project.getProperty('goExe') : 'go'
 def programVersion=''
 def programVersionShort=''
 def programVersionNumber=''
@@ -15,6 +22,7 @@ String binDir
 String pkgDir
 String logDir
 String tmpDir
+ext.packageRoot = project.hasProperty('packageRoot') ? project.getProperty('packageRoot') : 'tmp'
 String versionFile
 String packagesToBuild = ''
 String packagesToTest = ''
@@ -111,7 +119,7 @@ task getEnvironment {
         }
         debPackageName = "samba-exporter_${debPackageVersion}"
 
-        debPackageTmpDir = "$tmpDir" + "${debPackageName}" + File.separator
+        debPackageTmpDir = "$scriptDirectory" + File.separator + "${packageRoot}" + File.separator + "${debPackageName}" + File.separator
         println "Program version: ${programVersion}"
         println "Package Name: ${debPackageName}"
        
@@ -172,10 +180,10 @@ task installTestConvert(dependsOn: 'getEnvironment') {
     }
     doLast {
         // Install go get github.com/tebeka/go2xunit so it can be used after test execution
-        println "go install -v github.com/tebeka/go2xunit@v1.4.10"
+        println "${goExe} install -v github.com/tebeka/go2xunit@v1.4.10"
         exec {
             workingDir "${scriptDirectory}${File.separator}build"
-            commandLine 'go', 'install', '-v' ,'github.com/tebeka/go2xunit@v1.4.10'
+            commandLine "${goExe}", 'install', '-v' ,'github.com/tebeka/go2xunit@v1.4.10'
         }
     }
 }
@@ -229,10 +237,10 @@ task test(dependsOn: 'getEnvironment') {
         def outtext = ""
         packageArray.each { packageDir ->
             def outputStream = new ByteArrayOutputStream()
-            println "cd $packageDir && go test -v $raceParameter  >> ${logDir}TestsRun.log "
+            println "cd $packageDir && ${goExe} test -v $raceParameter  >> ${logDir}TestsRun.log "
             exec {
                 workingDir "${scriptDirectory}${File.separator}${packageDir}"
-                executable "go"
+                executable "${goExe}"
                 args callArgsTestRun
 
                 standardOutput outputStream
@@ -260,10 +268,10 @@ task cover(dependsOn: 'getEnvironment') {
         def outtext = ""
         packageArray.each { packageDir ->
             def outputStream = new ByteArrayOutputStream()
-            println "cd $packageDir && go test -v -cover  >> ${logDir}TestsCoverRun.log "
+            println "cd $packageDir && ${goExe} test -v -cover  >> ${logDir}TestsCoverRun.log "
             exec {
                 workingDir "${scriptDirectory}${File.separator}${packageDir}"
-                executable "go"
+                executable "${goExe}"
                 args callArgsTestRun
 
                 standardOutput outputStream
@@ -286,10 +294,10 @@ task convertTestResults(dependsOn: 'installTestConvert') {
         def logTextFile = logDir + 'TestsRun.log'
         def logXMLFile = logDir + 'TestsResult.xml'
         def convertExe = binDir + 'go2xunit'
-        println "go run github.com/tebeka/go2xunit -input ${logTextFile} -output ${logXMLFile}"
+        println "${goExe} run github.com/tebeka/go2xunit -input ${logTextFile} -output ${logXMLFile}"
         exec {
             workingDir "${scriptDirectory}${File.separator}build"
-            commandLine 'go', 'run', 'github.com/tebeka/go2xunit', '-input', logTextFile, '-output', logXMLFile
+            commandLine "${goExe}", 'run', 'github.com/tebeka/go2xunit', '-input', logTextFile, '-output', logXMLFile
         }
     }
 }
@@ -313,10 +321,10 @@ task build(dependsOn: 'clean') {
         callArgs[4] = '-o'
         callArgs[5] = "$binDir"
         packageArray.each { packageDir ->
-            println "cd $packageDir && go build -o $binDir -v -ldflags=\"-X main.version=${programVersion}\""
+            println "cd $packageDir && ${goExe} build -o $binDir -v -ldflags=\"-X main.version=${programVersion}\""
             exec {
                 workingDir "${scriptDirectory}${File.separator}${packageDir}"
-                executable "go"
+                executable "${goExe}"
                 args callArgs
             }
 
@@ -343,12 +351,24 @@ task preparePack(dependsOn: 'build') {
         }
 
         copy {
-            // Copy binaries to the package tmp dir
-            from('bin') {
-                include 'samba_exporter'
-                include 'samba_statusd'
+            // Copy docs to the package tmp dir
+            from('.') {
+                include 'changelog'
             }
-            into "${debPackageTmpDir}usr/local/bin/"
+            into "${debPackageTmpDir}/debian"
+        }
+
+        file("${debPackageTmpDir}/debian").renameTo(file("${debPackageTmpDir}/DEBIAN"))
+
+        // Copy and strip bin files
+        exec {
+            commandLine 'install', '-d', '-m', '755', "${debPackageTmpDir}usr/bin/"
+        }
+        exec {
+            commandLine 'install', '-s', '-m', '755', "${scriptDirectory}/bin/samba_exporter", "${debPackageTmpDir}usr/bin/samba_exporter"
+        }
+        exec {
+            commandLine 'install', '-s', '-m', '755', "${scriptDirectory}/bin/samba_statusd", "${debPackageTmpDir}usr/bin/samba_statusd"
         }
 
         copy {
@@ -356,7 +376,15 @@ task preparePack(dependsOn: 'build') {
             from('.') {
                 include 'README.md'
                 include 'LICENSE'
-                include 'CHANGELOG'
+                include 'changelog'
+            }
+            into "${debPackageTmpDir}/usr/share/doc/samba_exporter-V${programVersionShort}/"
+        }
+
+        copy {
+            // Copy docs to the package tmp dir
+            from('install/debian') {
+                include 'copyright'
             }
             into "${debPackageTmpDir}/usr/share/doc/samba_exporter-V${programVersionShort}/"
         }
