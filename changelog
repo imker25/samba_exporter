@@ -1,10 +1,11 @@
 samba-exporter (0.6) focal; urgency=low
 
   [ Tobias Zellner ] 
-  * Closes: Bug#18: Fix problems in the debian package found with lintian, see https://github.com/imker25/samba_exporter/issues/18 
+  * Closes: Bug#18 - Fix problems in the debian package found with lintian, see https://github.com/imker25/samba_exporter/issues/18 
+  * Closes: Bug#19 - Add man pages for the executables, see https://github.com/imker25/samba_exporter/issues/19
   * Internal Enhancement: Add debian style build
 
- -- Tobias Zellner <tobi@backfrak.de>  Mon, 09 Aug 2021 13:45:55 +0200
+ -- Tobias Zellner <tobi@backfrak.de>  Mon, 24 Aug 2021 15:04:55 +0200
 
 samba-exporter (0.5) focal; urgency=high
 
