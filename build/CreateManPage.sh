@@ -85,11 +85,11 @@ fi
 
 # Generate new files
 $RONN "$SRC_DIR/samba_exporter.1.ronn"
-gzip "$SRC_DIR/samba_exporter.1"
+gzip --keep "$SRC_DIR/samba_exporter.1"
 $RONN "$SRC_DIR/samba_statusd.1.ronn"
-gzip "$SRC_DIR/samba_statusd.1"
+gzip --keep "$SRC_DIR/samba_statusd.1"
 $RONN "$SRC_DIR/start_samba_statusd.1.ronn"
-gzip "$SRC_DIR/start_samba_statusd.1"
+gzip --keep "$SRC_DIR/start_samba_statusd.1"
 
 
 # Install the man page into the package
