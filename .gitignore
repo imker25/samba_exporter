@@ -36,3 +36,9 @@ src/man/start_samba_statusd.1.gz
 src/man/samba_statusd.1.html
 src/man/samba_statusd.1
 src/man/samba_statusd.1.gz
+
+debian/start_samba_statusd.1
+debian/.debhelper/generated/samba-exporter/installed-by-dh_installman
+debian/.debhelper/generated/samba-exporter/installed-by-dh_installdocs
+debian/samba_statusd.1
+debian/samba_exporter.1
