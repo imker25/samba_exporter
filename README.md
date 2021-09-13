@@ -18,6 +18,18 @@ Both services can communicate using a named pipe owned by a common group.
 
 ## Installation
 
+### Launchpad
+
+The **samba exporter** package is published on [launchpad](https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa). To install from there do the following commands:
+
+```sh
+sudo add-apt-repository ppa:imker/samba-exporter-ppa
+sudo apt-get update
+sudo apt-get install samba-exporter
+```
+
+### GitHub
+
 Install the [latest Release](https://github.com/imker25/samba_exporter/releases/latest) by downloading the debian package and installing it. For example:
 
 ```sh
@@ -27,13 +39,16 @@ sudo dpkg --install ./samba-exporter_0.1.192-f6b01a7+ubuntu-20.04_amd64.deb
 
 **Hint:** Link and file name needs to be adapted to the latest release.
 
-By default the prometheus exporter endpoint only listen on localhost. To change this behavior update `/etc/default/samba_exporter` according to your needs and restart the `samba_exporter` service. See [samba_statusd service](#samba_statusd-service) for details.
+It's also possible to download and install pre-releases from the GitHub this way.
 
 For manual installation see [Build and manual install](#build-and-manual-install).
+
 
 ## Usage
 
 It's is assumed both services are installed as shown in the [installation](#Installation) section.
+
+By default the prometheus exporter endpoint only listen on localhost. To change this behavior update `/etc/default/samba_exporter` according to your needs and restart the `samba_exporter` service. See [samba_statusd service](#samba_statusd-service) for details.
 
 ### samba_statusd service
 

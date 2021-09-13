@@ -42,3 +42,4 @@ debian/.debhelper/generated/samba-exporter/installed-by-dh_installman
 debian/.debhelper/generated/samba-exporter/installed-by-dh_installdocs
 debian/samba_statusd.1
 debian/samba_exporter.1
+debian/debhelper-build-stamp

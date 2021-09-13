@@ -63,6 +63,7 @@ jobs:
         retention-days: 1 
     - name: 'Create man pages'
       run:  |
+              sudo apt-get update
               sudo apt-get install -y ronn
               build/CreateManPage.sh  
     - name: 'Fix file ownership'

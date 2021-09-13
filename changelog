@@ -1,6 +1,7 @@
 samba-exporter (0.7) focal; urgency=low
-
- -- Tobias Zellner <tobi@backfrak.de> Tue, 24 Aug 2021 20:12:38 +0200
+  [ Tobias Zellner ] 
+  * Fix issues with the deb build on launchpad  
+ -- Tobias Zellner <tobi@backfrak.de> Mon, 13 Sep 2021 19:22:45 +0200
 
 samba-exporter (0.6) focal; urgency=low
 

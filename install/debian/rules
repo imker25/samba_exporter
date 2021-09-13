@@ -1,43 +1,59 @@
 #!/usr/bin/make -f
 
+include /usr/share/dpkg/pkg-info.mk
+
 ROOT = $(CURDIR)/debian/samba-exporter
-PACKAGE_NAME = $(file < ${CURDIR}/logs/PackageName.txt)
 SHORT_VERSION = $(file < ${CURDIR}/VersionMaster.txt)
+GOCACHE := $(CURDIR)/../.go-build
+DH_GOLANG_BUILDPKG := tobi.backfrak.de/cmd/samba_exporter tobi.backfrak.de/cmd/samba_statusd tobi.backfrak.de/internal/commonbl tobi.backfrak.de/internal/smbexporterbl/smbstatusreader tobi.backfrak.de/internal/smbexporterbl/pipecomunication tobi.backfrak.de/internal/smbexporterbl/statisticsGenerator tobi.backfrak.de/internal/smbexporterbl/smbexporter 
+export DH_GOLANG_BUILDPKG 
+export GOCACHE
+
+BUILDFLAGS  = -ldflags="-X main.version=$(SHORT_VERSION)"
+export BUILDFLAGS
 
 override_dh_auto_clean:
-	$(CURDIR)/gradlew -PgoExe=/usr/lib/go-1.16/bin/go clean
+	rm -rf $(GOCACHE)/*
+	rm -rf $(CURDIR)/bin/*
+	rm -rf $(CURDIR)/logs/*
 	rm -rf $(CURDIR)/tmp/*
 	mv $(CURDIR)/debian/samba-exporter.manpages $(CURDIR)/debian/bak.samba-exporter.manpages 
 	rm -rf $(ROOT)*
 	mv $(CURDIR)/debian/bak.samba-exporter.manpages $(CURDIR)/debian/samba-exporter.manpages 
 
 
-override_dh_auto_build:
-	$(CURDIR)/gradlew -PgoExe=/usr/lib/go-1.16/bin/go getBuildName build preparePack
+execute_before_dh_auto_build:
+	mkdir -p $(GOCACHE)
+	mv $(CURDIR)/bin/src/src/* $(CURDIR)/bin/src/
+
+execute_after_dh_auto_build:
 	$(CURDIR)/build/CreateManPage.sh
 
+override_dh_auto_build:
+	dh_auto_build -- $(BUILDFLAGS)
 
 override_dh_auto_install:
 	rm -f $(CURDIR)/debian/conffiles
-	echo "Install tree from ${CURDIR}/tmp/${PACKAGE_NAME}"
-	install -d -m 755 ${ROOT}/usr/bin
-	install -s -m 755 ${CURDIR}/tmp/${PACKAGE_NAME}/usr/bin/samba_exporter ${ROOT}/usr/bin/samba_exporter
-	install -s -m 755 ${CURDIR}/tmp/${PACKAGE_NAME}/usr/bin/samba_statusd ${ROOT}/usr/bin/samba_statusd
-	install -m 755 ${CURDIR}/tmp/${PACKAGE_NAME}/usr/bin/start_samba_statusd ${ROOT}/usr/bin/start_samba_statusd
-	install -d -m 755 ${ROOT}/lib/systemd/system
-	install -m 755 ${CURDIR}/tmp/${PACKAGE_NAME}/lib/systemd/system/samba_exporter.service ${ROOT}/lib/systemd/system/samba_exporter.service
-	install -m 755 ${CURDIR}/tmp/${PACKAGE_NAME}/lib/systemd/system/samba_statusd.service ${ROOT}/lib/systemd/system/samba_statusd.service
-	install -d -m 755 ${ROOT}/etc/default
-	install -m 755 ${CURDIR}/tmp/${PACKAGE_NAME}/etc/default/samba_exporter ${ROOT}/etc/default/samba_exporter
-	install -m 755 ${CURDIR}/tmp/${PACKAGE_NAME}/etc/default/samba_statusd ${ROOT}/etc/default/samba_statusd
-	install -d -m 755 ${ROOT}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/grafana
-	install -m 755 ${CURDIR}/tmp/${PACKAGE_NAME}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/README.md ${ROOT}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/README.md
-	install -m 755 ${CURDIR}/tmp/${PACKAGE_NAME}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/grafana/SambaService.json ${ROOT}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/grafana/SambaService.json
+	echo "Install tree from ${CURDIR}/install"
+	install -d -m 775 ${ROOT}/usr/bin
+	install -s -m 775 ${CURDIR}/bin/bin/samba_exporter ${ROOT}/usr/bin/samba_exporter
+	install -s -m 775 ${CURDIR}/bin/bin/samba_statusd ${ROOT}/usr/bin/samba_statusd
+	install -m 775 ${CURDIR}/install/usr/bin/start_samba_statusd ${ROOT}/usr/bin/start_samba_statusd
+	install -d -m 775 ${ROOT}/lib/systemd/system
+	install -m 664 ${CURDIR}/install/lib/systemd/system/samba_exporter.service ${ROOT}/lib/systemd/system/samba_exporter.service
+	install -m 664 ${CURDIR}/install/lib/systemd/system/samba_statusd.service ${ROOT}/lib/systemd/system/samba_statusd.service
+	install -d -m 775 ${ROOT}/etc/default
+	install -m 664 ${CURDIR}/install/etc/default/samba_exporter ${ROOT}/etc/default/samba_exporter
+	install -m 664 ${CURDIR}/install/etc/default/samba_statusd ${ROOT}/etc/default/samba_statusd
+	install -d -m 775 ${ROOT}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/grafana
+	install -m 664 ${CURDIR}/README.md ${ROOT}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/README.md
+	install -m 664 ${CURDIR}/src/example/grafana/SambaService.json ${ROOT}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/grafana/SambaService.json
 	echo "Install man pages"
 	cp $(CURDIR)/src/man/samba_exporter.1 $(CURDIR)/debian/
 	cp $(CURDIR)/src/man/samba_statusd.1 $(CURDIR)/debian/
 	cp $(CURDIR)/src/man/start_samba_statusd.1 $(CURDIR)/debian/
 
-	
+
 %:
-	dh $@
+	dh $@ --buildsystem=golang --with=golang --builddirectory=$(CURDIR)/bin/
+
