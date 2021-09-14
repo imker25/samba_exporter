@@ -21,4 +21,4 @@ jobs:
         LAUNCHPAD_SSH_ID_PRV: ${{ secrets.LAUNCHPAD_SSH_ID_PRV }}
         LAUNCHPAD_GPG_KEY_PUB: ${{ secrets.LAUNCHPAD_GPG_KEY_PUB }}
         LAUNCHPAD_GPG_KEY_PRV: ${{ secrets.LAUNCHPAD_GPG_KEY_PRV }}
-      run: build/PublishLaunchpadInDocker.sh ${{ env.GITHUB_REF }}
+      run: build/PublishLaunchpadInDocker.sh $GITHUB_REF
