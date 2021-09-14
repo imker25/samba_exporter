@@ -48,7 +48,7 @@ For manual installation see [Build and manual install](#build-and-manual-install
 
 It's is assumed both services are installed as shown in the [installation](#Installation) section.
 
-By default the prometheus exporter endpoint only listen on localhost. To change this behavior update `/etc/default/samba_exporter` according to your needs and restart the `samba_exporter` service. See [samba_statusd service](#samba_statusd-service) for details.
+By default the prometheus exporter endpoint only listen on localhost. To change this behavior update `/etc/default/samba_exporter` according to your needs and restart the `samba_exporter` service. See [samba_exporter service](#samba_exporter-service) for details.
 
 ### samba_statusd service
 
