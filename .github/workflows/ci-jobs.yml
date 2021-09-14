@@ -1,5 +1,9 @@
 name: CI Jobs
-on: [push, pull_request]
+on: 
+  push:
+    tags-ignore:
+      - refs/tags/*
+  pull_request:
 jobs:
   build-unit_test:
     strategy:
