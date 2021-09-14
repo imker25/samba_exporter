@@ -1,4 +1,4 @@
-name: CI Job
+name: CI Jobs
 on: [push, pull_request]
 jobs:
   build-unit_test:
