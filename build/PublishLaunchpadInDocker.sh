@@ -89,15 +89,27 @@ echo "Build the needed container"
 docker build --file "$WORK_DIR/Dockerfile" --tag launchapd-publish-container .
 echo "# ###################################################################"
 echo "Run the container"
+dockerError="false"
 docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
     --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
     --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
     --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
     -i launchapd-publish-container \
     /bin/bash -c "/PublishLaunchpad.sh $tag"
+
+if [ "$?" != "0" ]; then 
+    echo "Error during docker run"
+    dockerError="true"
+fi
 echo "# ###################################################################"
 echo "Delete the container image when done"    
 docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
 
 popd
 
+if [ "$dockerError" == "true" ];then 
+    echo "Error detected"
+    exit 1
+fi
+
+exit 0

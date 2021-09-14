@@ -181,7 +181,7 @@ git commit -a -m "Deploy patches after $tag import"
 git status
 
 echo "# ###################################################################"
-echo "# Push git to launchpad"
+echo "# Build source package for upload"
 gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S" --git-tag
 if [ "$?" != "0" ]; then 
     echo "Error: Can not build the source package for upload"
@@ -195,7 +195,7 @@ if [ "$?" != "0" ]; then
 fi
 
 echo "# ###################################################################"
-echo "# Build source package for upload"
+echo "# Push git to launchpad"
 git push --all origin
 if [ "$?" != "0" ]; then 
     echo "Error: Can not push changes to lauchpad git"
