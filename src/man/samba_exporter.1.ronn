@@ -11,6 +11,13 @@ samba_exporter(1) -- part of the samba-exporter package
 The tool is usually stated as daemon by systemd as `samba_exporter.service`.<br>
 It communicates with the `samba_statusd.service` using the named pipes `/run/samba_exporter.request.pipe` and `/run/samba_exporter.response.pipe`.
 
+### samba-exporter package
+
+The `samba-exporter package` works as a prometheus exporter for statistic data of the samba file server.<br>
+
+It uses `smbstatus` to collect the data and converts the result into prometheus style data.
+The prometheus style data can be requested manually on port 9922 using a http client. Or a prometheus database sever can be configured to collect the data by scraping port 9922 on the samba server.
+
 ## OPTIONS
 
 You might want to use one of the following optional parameters.
@@ -44,6 +51,7 @@ You might want to use one of the following optional parameters.
 
 To change the behavior of the samba_exporter service update the `/etc/default/samba_exporter` according to your needs. 
 You can add any option shown in the help output of `samba_exporter` to the `ARGS` variable.<br>
+
 You may not want to start the service with arguments that will exit before listening starts like `-test-pipe`, `-help` or `-print-version`.<br>
 The service will start with `-web.listen-address=127.0.0.1:9922` by default, in case your prometheus server is running on a different machine you
 need to change this.<br>
@@ -52,10 +60,20 @@ need to change this.<br>
 
 ## EXAMPLES
 
-To stop, start or restart the service use `systemctl`, e. g.: `sudo systemctl stop samba_exporter`. 
-To read the log output use `journalctl`, e. g. `sudo journalctl -u samba_exporter`.<br>
+To stop, start or restart the service use `systemctl`, e. g.:<br> 
+`sudo systemctl stop samba_exporter`
+
+To read the log output use `journalctl`, e. g.:<br> 
+`sudo journalctl -u samba_exporter`.<br>
+
 **Remark:** Due to the services dependencies `samba_exporter` service stops whenever `samba_statusd` stops. 
 And `samba_statusd` always starts when `samba_exporter` is started if not already running.
+
+## Files
+
+  * `/etc/default/samba_exporter` The configuration file for the samba_exporter service
+  * `/run/samba_exporter.request.pipe` The pipe samba_exporter requests the status from samba_statusd
+  * `/run/samba_exporter.response.pipe` The pipe samba_statusd answers requests from samba_exporter
 
 ## BUGS
 
