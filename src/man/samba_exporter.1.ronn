@@ -8,7 +8,9 @@ samba_exporter(1) -- part of the samba-exporter package
 ## DESCRIPTION
 
 **samba_exporter** The prometheus exporter part of the samba-exporter package.<br>
+
 The tool is usually stated as daemon by systemd as `samba_exporter.service`.<br>
+
 It communicates with the `samba_statusd.service` using the named pipes `/run/samba_exporter.request.pipe` and `/run/samba_exporter.response.pipe`.
 
 ### samba-exporter package
