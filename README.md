@@ -100,7 +100,7 @@ Options:
   -test-mode
         Run the program in test mode. In this mode the program will always return the same test data. To work with samba_statusd both programs needs to run in test mode or not.
   -test-pipe
-        Requests status from samba_statusd and exits. May be combinde with -test-mode.
+        Requests status from samba_statusd and exits. May be combined with -test-mode.
   -verbose
         With this flag the program will print verbose output
   -web.listen-address string
@@ -134,7 +134,9 @@ For [grafana](https://grafana.com) an example dashboard is installed with the de
 
 When [importing](https://grafana.com/docs/grafana/latest/dashboards/export-import/#import-dashboard) this dashboard you need to change `server.local` to the network name of your samba server.
 
-## Build and manual install
+## Developer Documentation
+
+### Build and manual install
 
 To build the project you need [Go](https://golang.org/) Version 1.16.x and [Java](https://java.com/) Version 11 on your development machine. 
 On your target machine, the samba server you want to monitor, you need [samba](https://www.samba.org/) and [systemd](https://www.freedesktop.org/wiki/Software/systemd/) installed.
@@ -218,6 +220,39 @@ samba_server_up 1
 # TYPE samba_share_count gauge
 samba_share_count 0
 ```
+
+### Man page creation
+
+Man pages are written in [ronn](https://github.com/rtomayko/ronn). The `*.ronn`source files are converted by the script `build/CreateManPage.sh` into man pages.
+
+### CI/CD Pipeline
+
+For continuous integration and deployment this project uses [GitHub Actions](https://github.com/imker25/samba_exporter/actions). The main pipeline is defined in `.github/workflows/ci-jobs.yml`. This pipeline will do:
+
+- On push to any branch on github
+  - Build the project and the man pages
+  - Run unit tests defined in `*_test.go`
+  - Run integration tests from `test/integrationTest/scripts/RunIntegrationTests.sh`
+  - Run installation tests from `test/installationTest/RunInstallationTest.sh`
+  - Build a debian binary package (`*.deb`)
+- On push to main and release/* branch additionally
+  - Upload the binary package (`*.deb`) as [GitHub Release](https://github.com/imker25/samba_exporter/releases)
+  - In case it's the main branch the release will be a pre release
+  - On release/* branches it will be a full public release
+  
+### Release process
+
+The release process of this project is fully automated. To create a new release of the software use the script `build/PrepareRelease.sh`. Before running the script ensure you got the latest changes from github origin. This script then will:
+
+- Create a release branch from the current state at the main branch
+- Update the `VersionMaster.txt` with a new increment version on main branch
+- Update the `changelog` with a stub entry for the new version on main branch
+- Commit the changes on the main branch
+- Push all changes on main and the new release branch to github
+
+Once this changes are pushed to github the CI/CD pipeline will start to run for both, main and the new release/* branch.
+
+After a full public release is done from the the CI/CD run on the release/* branch `.github/workflows/release-jobs.yml` will be triggered. This job runs `build/PublishLaunchpadInDocker.sh` to transfer the just created github release to the [samba-exporter launchpad ppa](https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa) where it will be published as well. During this process a slightly modified version of the sources will be pushed into the corresponding [launchpad git repository](https://code.launchpad.net/~imker/samba-exporter/+git/samba-exporter).
 
 ### Developer Hints
 
