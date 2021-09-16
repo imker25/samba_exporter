@@ -19,9 +19,10 @@
 function print_usage()  {
     echo "Script to transfer a github tag to launchpad and publish the package in a ppa"
     echo ""
-    echo "Usage: $0 options <tag>"
+    echo "Usage: $0 tag <dry>"
     echo "-help     Print this help"
-    echo "tag       The tag on the github repo to import"
+    echo "tag       The tag on the github repo to import, e. g. 0.7.8"
+    echo "dry       Optional: Do not push the changes to launchpad git and not upload the sources to ppa"
     echo ""
     echo "The script expect the following environment variables to be set"
     echo "  LAUNCHPAD_SSH_ID_PUB        Public SSH key for the launchapd git repo"
@@ -95,7 +96,7 @@ docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
     --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
     --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
     -i launchapd-publish-container \
-    /bin/bash -c "/PublishLaunchpad.sh $tag"
+    /bin/bash -c "/PublishLaunchpad.sh $*"
 
 if [ "$?" != "0" ]; then 
     echo "Error during docker run"

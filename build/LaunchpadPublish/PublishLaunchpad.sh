@@ -19,9 +19,10 @@
 function print_usage()  {
     echo "Script to transfer a github tag to launchpad and publish the package in a ppa"
     echo ""
-    echo "Usage: $0 options <tag>"
+    echo "Usage: $0 tag <dry>"
     echo "-help     Print this help"
-    echo "tag       The tag on the github repo to import"
+    echo "tag       The tag on the github repo to import, e. g. 0.7.5"
+    echo "dry       Optional: Do not push the changes to launchpad git and not upload the sources to ppa"
     echo ""
     echo "The script expect the following environment variables to be set"
     echo "  LAUNCHPAD_SSH_ID_PUB        Public SSH key for the launchapd git repo"
@@ -58,6 +59,13 @@ if [ "$1" == "" ]; then
     exit 1
 else 
     tag=$1
+fi
+
+if [ "$2" == "dry" ]; then
+    dryRun="true"
+    echo "It's a dry run! No changes will be uploaded or pushed to launchpad"
+else
+    dryRun="false"
 fi
 
 if [ "$LAUNCHPAD_SSH_ID_PUB" == "" ]; then
@@ -182,29 +190,38 @@ git status
 
 echo "# ###################################################################"
 echo "# Build source package for upload"
+
 gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S" --git-tag
 if [ "$?" != "0" ]; then 
     echo "Error: Can not build the source package for upload"
     exit 1
 fi
 
-dput ppa:imker/samba-exporter-ppa ../samba-exporter_${tag}_source.changes 
-if [ "$?" != "0" ]; then 
-    echo "Error: Can not upload the source package to the launchpad ppa"
-    exit 1
+if [ "dryRun" == "false" ]; then
+    dput ppa:imker/samba-exporter-ppa ../samba-exporter_${tag}_source.changes 
+    if [ "$?" != "0" ]; then 
+        echo "Error: Can not upload the source package to the launchpad ppa"
+        exit 1
+    fi
+else
+    echo "Upload skiped due to dry run"
 fi
 
 echo "# ###################################################################"
 echo "# Push git to launchpad"
-git push --all origin
-if [ "$?" != "0" ]; then 
-    echo "Error: Can not push changes to lauchpad git"
-    exit 1
-fi
-git push --tag
-if [ "$?" != "0" ]; then 
-    echo "Error: Can not push tags to launchpad git"
-    exit 1
+if [ "dryRun" == "false" ]; then
+    git push --all origin
+    if [ "$?" != "0" ]; then 
+        echo "Error: Can not push changes to lauchpad git"
+        exit 1
+    fi
+    git push --tag
+    if [ "$?" != "0" ]; then 
+        echo "Error: Can not push tags to launchpad git"
+        exit 1
+    fi
+else 
+    echo "Push skiped due to dry run"
 fi
 
 exit 0
