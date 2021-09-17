@@ -1,4 +1,13 @@
 #!/bin/bash
+# ######################################################################################
+# Copyright 2021 by tobi@backfrak.de. All
+# rights reserved. Use of this source code is governed
+# by a BSD-style license that can be found in the
+# LICENSE file.
+# ###########################################################################################
+# Script to run installation tests for debian package created during the 
+# GitHub CI/CD workflow
+# ###########################################################################################
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 branch_dir="$script_dir/../.."
 tmp_dir="$branch_dir/tmp"

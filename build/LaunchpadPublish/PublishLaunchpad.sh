@@ -16,12 +16,16 @@
 # * push the launchpad git repo with tags
 # ######################################################################################
 
+# ################################################################################################################
+# function definition
+# ################################################################################################################
 function print_usage()  {
     echo "Script to transfer a github tag to launchpad and publish the package in a ppa"
     echo ""
-    echo "Usage: $0 options <tag>"
+    echo "Usage: $0 tag <dry>"
     echo "-help     Print this help"
-    echo "tag       The tag on the github repo to import"
+    echo "tag       The tag on the github repo to import, e. g. 0.7.5"
+    echo "dry       Optional: Do not push the changes to launchpad git and not upload the sources to ppa"
     echo ""
     echo "The script expect the following environment variables to be set"
     echo "  LAUNCHPAD_SSH_ID_PUB        Public SSH key for the launchapd git repo"
@@ -60,6 +64,13 @@ else
     tag=$1
 fi
 
+if [ "$2" == "dry" ]; then
+    dryRun="true"
+    echo "It's a dry run! No changes will be uploaded or pushed to launchpad"
+else
+    dryRun="false"
+fi
+
 if [ "$LAUNCHPAD_SSH_ID_PUB" == "" ]; then
     echo "Error: Environment variables LAUNCHPAD_SSH_ID_PUB not set"
     print_usage
@@ -93,11 +104,14 @@ else
     preRelease="false"
 fi
 
+ubuntuVersion=$(lsb_release -rs)
+packageVersion="${tag}~ppa1~ubuntu${ubuntuVersion}"
+
 # ################################################################################################################
 # functional code
 # ################################################################################################################
 
-echo "Publish github release $tag to launchpad"
+echo "Publish github release $tag to launchpad as version $packageVersion"
 echo "# ###################################################################"
 
 echo "Prepare for operation"
@@ -142,10 +156,11 @@ fi
 echo "# ###################################################################"
 echo "# Patch the files"
 given_version=$(cat "$WORK_DIR/VersionMaster.txt")
-echo "$tag" > "$WORK_DIR/VersionMaster.txt"
+echo "$packageVersion" > "$WORK_DIR/VersionMaster.txt"
 echo "Version Prefix: $given_version"
 
-sed -i "s/samba-exporter ($given_version)/samba-exporter ($tag)/g" $WORK_DIR/changelog
+sed -i "s/samba-exporter ($given_version)/samba-exporter ($packageVersion)/g" $WORK_DIR/changelog
+# cat $WORK_DIR/changelog
 rm -rf $WORK_DIR/debian/*
 cp -rv -L $WORK_DIR/install/debian/* $WORK_DIR/debian
 
@@ -158,7 +173,7 @@ if [ "$?" != "0" ]; then
     echo "Error: Can not build the packages with default paramters"
     exit 1
 fi
-rm -rfv ../samba-exporter_$tag*
+rm -rfv ../samba-exporter_$packageVersion*
 
 mkdir -p $WORK_DIR/debian/source
 echo "3.0 (native)" > $WORK_DIR/debian/source/format
@@ -172,39 +187,49 @@ if [ "$?" != "0" ]; then
     echo "Error: Can not build the source package"
     exit 1
 fi
-rm -rfv ../samba-exporter_$tag*
+rm -rfv ../samba-exporter_$packageVersion*
 
 echo "# ###################################################################"
 echo "# git commit"
 git status
-git commit -a -m "Deploy patches after $tag import"
+git commit -a -m "Deploy patches after GitHub V$tag import"
 git status
 
 echo "# ###################################################################"
 echo "# Build source package for upload"
+
 gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S" --git-tag
 if [ "$?" != "0" ]; then 
     echo "Error: Can not build the source package for upload"
     exit 1
 fi
 
-dput ppa:imker/samba-exporter-ppa ../samba-exporter_${tag}_source.changes 
-if [ "$?" != "0" ]; then 
-    echo "Error: Can not upload the source package to the launchpad ppa"
-    exit 1
+# echo "dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes "  
+if [ "dryRun" == "false" ]; then
+    dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes 
+    if [ "$?" != "0" ]; then 
+        echo "Error: Can not upload the source package to the launchpad ppa"
+        exit 1
+    fi
+else
+    echo "Upload skiped due to dry run"
 fi
 
 echo "# ###################################################################"
 echo "# Push git to launchpad"
-git push --all origin
-if [ "$?" != "0" ]; then 
-    echo "Error: Can not push changes to lauchpad git"
-    exit 1
-fi
-git push --tag
-if [ "$?" != "0" ]; then 
-    echo "Error: Can not push tags to launchpad git"
-    exit 1
+if [ "dryRun" == "false" ]; then
+    git push --all origin
+    if [ "$?" != "0" ]; then 
+        echo "Error: Can not push changes to lauchpad git"
+        exit 1
+    fi
+    git push --tag
+    if [ "$?" != "0" ]; then 
+        echo "Error: Can not push tags to launchpad git"
+        exit 1
+    fi
+else 
+    echo "Push skiped due to dry run"
 fi
 
 exit 0

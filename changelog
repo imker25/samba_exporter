@@ -1,6 +1,11 @@
-samba-exporter (0.8) focal; urgency=low
+samba-exporter (1.0) focal; urgency=low
 
- -- Tobias Zellner <tobi@backfrak.de> Tue, 14 Sep 2021 18:23:14 +0200
+  [ Tobias Zellner ] 
+    * Closes: Bug#23 - Cleanup docs and messages, see https://github.com/imker25/samba_exporter/issues/23
+    * Fix issues with the publish script
+    * Change to a 1.0 release  
+
+ -- Tobias Zellner <tobi@backfrak.de>  Fri, 17 Sep 2021 19:36:15 +0200
 
 samba-exporter (0.7) focal; urgency=low
 

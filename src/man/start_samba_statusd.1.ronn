@@ -8,6 +8,7 @@ start_samba_statusd(1) -- part of the samba-exporter package
 ## DESCRIPTION
 
 **start_samba_statusd** Script used by systemd to start the samba_statusd as service<br>
+
 The script ensures that the named pipes `/run/samba_exporter.request.pipe` and `/run/samba_exporter.response.pipe` 
 exists in the right state when the samba_statusd service starts.
 

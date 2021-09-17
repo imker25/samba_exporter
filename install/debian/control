@@ -18,7 +18,8 @@ Build-Depends:  libc6 (>= 2.3.2),
 
 Package: samba-exporter
 Architecture: amd64
-Depends: libc6 (>= 2.3.2), systemd
+Depends: libc6 (>= 2.3.2), samba, systemd
+Enhances: samba
 Description: Prometheus exporter to get metrics of a samba server
   This is a prometheus exporter to get metrics of a samba server. 
   It uses smbstatus to collect the data and converts the result into 

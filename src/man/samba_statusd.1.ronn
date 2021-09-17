@@ -7,8 +7,10 @@ samba_statusd(1) -- part of the samba-exporter package
 
 ## DESCRIPTION
 
-**samba_statusd** The `smbstatus` part samba-exporter package.<br>
+**samba_statusd** The `smbstatus` part samba-exporter package (see `man samba_exporter` for details).<br>
+
 The tool is usually stated as daemon by systemd as `samba_statusd.service` using the `start_samba_statusd` script.<br>
+
 It communicates with the `samba_exporter.service` using the named pipes `/run/samba_exporter.request.pipe` and `/run/samba_exporter.response.pipe`.
 
 ## OPTIONS
@@ -23,22 +25,33 @@ You might want to use one of the following optional parameters.
 
   * `-test-mode`:
         Run the program in test mode.<br>
-        In this mode the program will always return the same test data. To work with samba_statusd both programs needs to run in test mode or not.
+        In this mode the program will always return the same test data. To work with samba_exporter both programs needs to run in test mode or not.
 
   * `-verbose`:
         With this flag the program will print verbose output
 
 To change the behavior of the samba_statusd service update the `/etc/default/samba_statusd` according to your needs. 
 You can add any option shown in the help output of `samba_statusd` to the `ARGS` variable.<br>
+
 You may not want to start the service with arguments that will exit before listening starts like `-help` or `-print-version`. 
 
 
 ## EXAMPLES
 
-To stop, start or restart the service use `systemctl`, e. g.: `sudo systemctl stop samba_statusd`. 
-To read the log output use `journalctl`, e. g. `sudo journalctl -u samba_statusd`.<br>
+To stop, start or restart the service use `systemctl`, e. g.: <br>
+`sudo systemctl stop samba_statusd`
+
+To read the log output use `journalctl`, e. g. <br>
+`sudo journalctl -u samba_statusd`
+
 **Remark:** Due to the services dependencies `samba_exporter` service stops whenever `samba_statusd` stops. 
 And `samba_statusd` always starts when `samba_exporter` is started if not already running.
+
+## Files
+
+  * `/etc/default/samba_statusd` The configuration file for the samba_exporter service
+  * `/run/samba_exporter.request.pipe` The pipe samba_exporter requests the status from samba_statusd
+  * `/run/samba_exporter.response.pipe` The pipe samba_statusd answers requests from samba_exporter
 
 ## BUGS
 
