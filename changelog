@@ -1,3 +1,7 @@
+samba-exporter (1.1) focal; urgency=low
+
+ -- Tobias Zellner <tobi@backfrak.de> Fri, 17 Sep 2021 19:53:21 +0200
+
 samba-exporter (1.0) focal; urgency=low
 
   [ Tobias Zellner ] 
