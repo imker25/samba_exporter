@@ -104,11 +104,14 @@ else
     preRelease="false"
 fi
 
+ubuntuVersion=$(lsb_release -rs)
+packageVersion="${tag}~ppa1~ubuntu${ubuntuVersion}"
+
 # ################################################################################################################
 # functional code
 # ################################################################################################################
 
-echo "Publish github release $tag to launchpad"
+echo "Publish github release $tag to launchpad as version $packageVersion"
 echo "# ###################################################################"
 
 echo "Prepare for operation"
@@ -153,10 +156,11 @@ fi
 echo "# ###################################################################"
 echo "# Patch the files"
 given_version=$(cat "$WORK_DIR/VersionMaster.txt")
-echo "$tag" > "$WORK_DIR/VersionMaster.txt"
+echo "$packageVersion" > "$WORK_DIR/VersionMaster.txt"
 echo "Version Prefix: $given_version"
 
-sed -i "s/samba-exporter ($given_version)/samba-exporter ($tag)/g" $WORK_DIR/changelog
+sed -i "s/samba-exporter ($given_version)/samba-exporter ($packageVersion)/g" $WORK_DIR/changelog
+# cat $WORK_DIR/changelog
 rm -rf $WORK_DIR/debian/*
 cp -rv -L $WORK_DIR/install/debian/* $WORK_DIR/debian
 
@@ -169,7 +173,7 @@ if [ "$?" != "0" ]; then
     echo "Error: Can not build the packages with default paramters"
     exit 1
 fi
-rm -rfv ../samba-exporter_$tag*
+rm -rfv ../samba-exporter_$packageVersion*
 
 mkdir -p $WORK_DIR/debian/source
 echo "3.0 (native)" > $WORK_DIR/debian/source/format
@@ -183,12 +187,12 @@ if [ "$?" != "0" ]; then
     echo "Error: Can not build the source package"
     exit 1
 fi
-rm -rfv ../samba-exporter_$tag*
+rm -rfv ../samba-exporter_$packageVersion*
 
 echo "# ###################################################################"
 echo "# git commit"
 git status
-git commit -a -m "Deploy patches after $tag import"
+git commit -a -m "Deploy patches after GitHub V$tag import"
 git status
 
 echo "# ###################################################################"
@@ -200,8 +204,9 @@ if [ "$?" != "0" ]; then
     exit 1
 fi
 
+# echo "dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes "  
 if [ "dryRun" == "false" ]; then
-    dput ppa:imker/samba-exporter-ppa ../samba-exporter_${tag}_source.changes 
+    dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes 
     if [ "$?" != "0" ]; then 
         echo "Error: Can not upload the source package to the launchpad ppa"
         exit 1
