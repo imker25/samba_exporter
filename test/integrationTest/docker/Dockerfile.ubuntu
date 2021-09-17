@@ -1,9 +1,19 @@
-# Container image that runs your code
-FROM ubuntu:groovy
+# ######################################################################################
+# Copyright 2021 by tobi@backfrak.de. All
+# rights reserved. Use of this source code is governed
+# by a BSD-style license that can be found in the
+# LICENSE file.
+# ######################################################################################
+# Container image used by the github workflow to run integration tests
+# ######################################################################################
 
+# Use the same ubuntu version as for main development for this test
+FROM ubuntu:hirsute
+
+# Install needed packages
 RUN apt-get update && apt-get install -y wget curl coreutils mawk
 
-# Copies your code file from your action repository to the filesystem path `/` of the container
+# Copy test scripts
 COPY test/integrationTest/scripts/RunIntegrationTests.sh /RunIntegrationTests.sh
 RUN chmod 777 /RunIntegrationTests.sh
 COPY test/import/functions.sh /functions.sh

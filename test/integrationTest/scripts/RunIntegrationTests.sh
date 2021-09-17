@@ -1,7 +1,12 @@
 #!/bin/bash
-
+# ######################################################################################
+# Copyright 2021 by tobi@backfrak.de. All
+# rights reserved. Use of this source code is governed
+# by a BSD-style license that can be found in the
+# LICENSE file.
 # ###########################################################################################
-# Script to run integration tests
+# Script to run integration tests for the samba_exporter binaries
+# Used inside the ./../docker/Dockerfile.ubuntu container by the GitHub CI/CD workflow
 #
 # Usage: ./RunIntegrationTests.sh [container]
 #        container    optional, tell the sript it runs in the github workflow integration test container

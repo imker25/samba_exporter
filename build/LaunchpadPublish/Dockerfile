@@ -1,5 +1,17 @@
-# Container image that runs your code
+# ######################################################################################
+# Copyright 2021 by tobi@backfrak.de. All
+# rights reserved. Use of this source code is governed
+# by a BSD-style license that can be found in the
+# LICENSE file.
+# ######################################################################################
+# Container image used by ./../PublishLaunchpadInDocker.sh to transfer the sources to the launchpad-ppa
+# The actual transformation is done by ./PublishLaunchpad.sh when this container get started
+# ######################################################################################
+
+# Use the packages target version (focal = ubuntu 20.04) as base image
 FROM ubuntu:focal
+
+# Setup the system and install needed packages
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Europe/London"
 RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y wget \
@@ -23,8 +35,10 @@ RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y wget \
                                         openssh-client \
                                         gpg
 
-# Copies your code file from your action repository to the filesystem path `/` of the container
+# Copy the script
 COPY PublishLaunchpad.sh /PublishLaunchpad.sh
 RUN chmod 770 /PublishLaunchpad.sh
+
+# Configure git
 RUN git config --global user.name "Tobias Zellner"
 RUN git config --global user.email imker@bienekaefig.de
