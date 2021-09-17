@@ -204,8 +204,8 @@ if [ "$?" != "0" ]; then
     exit 1
 fi
 
-# echo "dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes "  
-if [ "dryRun" == "false" ]; then
+if [ "$dryRun" == "false" ]; then
+    echo "dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes "
     dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes 
     if [ "$?" != "0" ]; then 
         echo "Error: Can not upload the source package to the launchpad ppa"
@@ -217,12 +217,14 @@ fi
 
 echo "# ###################################################################"
 echo "# Push git to launchpad"
-if [ "dryRun" == "false" ]; then
+if [ "$dryRun" == "false" ]; then
+    echo "git push --all origin"
     git push --all origin
     if [ "$?" != "0" ]; then 
         echo "Error: Can not push changes to lauchpad git"
         exit 1
     fi
+    echo "git push --tag"
     git push --tag
     if [ "$?" != "0" ]; then 
         echo "Error: Can not push tags to launchpad git"
