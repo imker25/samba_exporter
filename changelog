@@ -1,13 +1,16 @@
 samba-exporter (1.1) focal; urgency=low
 
+  [ Tobias Zellner ] 
+  * Closes: Bug#26 - Cleanup docs and messages, see https://github.com/imker25/samba_exporter/issues/26
+
  -- Tobias Zellner <tobi@backfrak.de> Fri, 17 Sep 2021 19:53:21 +0200
 
 samba-exporter (1.0) focal; urgency=low
 
   [ Tobias Zellner ] 
-    * Closes: Bug#23 - Cleanup docs and messages, see https://github.com/imker25/samba_exporter/issues/23
-    * Fix issues with the publish script
-    * Change to a 1.0 release  
+  * Closes: Bug#23 - Cleanup docs and messages, see https://github.com/imker25/samba_exporter/issues/23
+  * Fix issues with the publish script
+  * Change to a 1.0 release  
 
  -- Tobias Zellner <tobi@backfrak.de>  Fri, 17 Sep 2021 19:36:15 +0200
 
@@ -22,91 +25,91 @@ samba-exporter (0.7) focal; urgency=low
 samba-exporter (0.6.13) focal; urgency=low
 
   [ Tobias Zellner ] 
-  Fix build, so version is set in to the executables correctly
+  * Fix build, so version is set in to the executables correctly
 
  -- Tobias Zellner <tobi@backfrak.de>  Sun, 12 Sep 2021 19:13:15 +0200
 
 samba-exporter (0.6.12) focal; urgency=low
 
   [ Tobias Zellner ] 
-  Fix dependencies for debian build system, try 2
+  * Fix dependencies for debian build system, try 2
 
  -- Tobias Zellner <tobi@backfrak.de>  Mon, 06 Sep 2021 20:04:26 +0200
 
 samba-exporter (0.6.11) focal; urgency=low
 
   [ Tobias Zellner ] 
-  Fix dependencies for debian build system, try 1
+  * Fix dependencies for debian build system, try 1
 
  -- Tobias Zellner <tobi@backfrak.de>  Sun, 05 Sep 2021 14:19:10 +0200
 
 samba-exporter (0.6.10) focal; urgency=low
 
   [ Tobias Zellner ] 
-  Use dh_golang
+  * Use dh_golang
 
  -- Tobias Zellner <tobi@backfrak.de>  Sat, 04 Sep 2021 13:32:00 +0200
 
 samba-exporter (0.6.9) focal; urgency=low
 
   [ Tobias Zellner ] 
-  Remove gradle build system
+  * Remove gradle build system
 
  -- Tobias Zellner <tobi@backfrak.de>  Sat, 04 Sep 2021 12:45:43 +0200
 
 samba-exporter (0.6.8) focal; urgency=low
 
   [ Tobias Zellner ] 
-  Fix build on launchpad, ensure build uses installed go modules (add GOCACHE)
+  * Fix build on launchpad, ensure build uses installed go modules (add GOCACHE)
 
  -- Tobias Zellner <tobi@backfrak.de>  Wed, 01 Sep 2021 20:40:01 +0200
 
 samba-exporter (0.6.7) focal; urgency=low
 
   [ Tobias Zellner ] 
-  Fix build on launchpad, ensure build uses installed go modules (add GOPATH)
+  * Fix build on launchpad, ensure build uses installed go modules (add GOPATH)
 
  -- Tobias Zellner <tobi@backfrak.de>  Wed, 01 Sep 2021 20:24:01 +0200
 
 samba-exporter (0.6.6) focal; urgency=low
 
   [ Tobias Zellner ] 
-  Fix build on launchpad, ensure build uses installed go modules (update go.sum)
+  * Fix build on launchpad, ensure build uses installed go modules (update go.sum)
 
  -- Tobias Zellner <tobi@backfrak.de>  Tue, 31 Aug 2021 21:33:05 +0200
 
 samba-exporter (0.6.5) focal; urgency=low
 
   [ Tobias Zellner ] 
-  Fix build on launchpad, ensure build uses installed go modules
+  * Fix build on launchpad, ensure build uses installed go modules
 
  -- Tobias Zellner <tobi@backfrak.de>  Mon, 30 Aug 2021 18:36:50 +0200
 
 samba-exporter (0.6.4) focal; urgency=low
 
   [ Tobias Zellner ] 
-  Fix build on launchpad, ensure build run outside git repository (try 2)
+  * Fix build on launchpad, ensure build run outside git repository (try 2)
 
  -- Tobias Zellner <tobi@backfrak.de>  Mon, 30 Aug 2021 18:11:40 +0200
 
 samba-exporter (0.6.3) focal; urgency=low
 
   [ Tobias Zellner ] 
-  Fix build on launchpad, ensure build run outside git repository
+  * Fix build on launchpad, ensure build run outside git repository
 
  -- Tobias Zellner <tobi@backfrak.de>  Mon, 30 Aug 2021 17:59:40 +0200
 
 samba-exporter (0.6.2) focal; urgency=low
 
   [ Tobias Zellner ] 
-  Fix build on launchpad Try 2
+  * Fix build on launchpad Try 2
 
  -- Tobias Zellner <tobi@backfrak.de>  Mon, 30 Aug 2021 16:58:40 +0200 
 
 samba-exporter (0.6.1) focal; urgency=low
 
   [ Tobias Zellner ] 
-  Fix build on launchpad
+  * Fix build on launchpad
 
  -- Tobias Zellner <tobi@backfrak.de>  Sun, 29 Aug 2021 16:45:40 +0200
 
