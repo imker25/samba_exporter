@@ -34,6 +34,40 @@ function print_usage()  {
     echo "  LAUNCHPAD_GPG_KEY_PRV       Private GPG Key for the launchpad ppa"
 }
 
+function buildAndRunDocker() {
+    ubuntuVersion="$1"
+    echo "Build the needed container from '$WORK_DIR/Dockerfile.${ubuntuVersion}'"
+    docker build --file "$WORK_DIR/Dockerfile.${ubuntuVersion}" --tag launchapd-publish-container-$ubuntuVersion .
+    if [ "$?" != "0" ]; then 
+        echo "Error during docker build"
+        return 1
+    fi
+    echo "# ###################################################################"
+    echo "Run the container"
+    
+    if [ "$dryRun" == "false" ]; then
+        docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
+            --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
+            --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
+            --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
+            -i launchapd-publish-container-$ubuntuVersion \
+            /bin/bash -c "/PublishLaunchpad.sh $tag"
+    else
+        docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
+            --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
+            --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
+            --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
+            -i launchapd-publish-container-$ubuntuVersion \
+            /bin/bash -c "/PublishLaunchpad.sh $tag dry"
+    fi
+
+    if [ "$?" != "0" ]; then 
+        echo "Error during docker run"
+        return 1
+    fi
+    return 0
+}
+
 # ################################################################################################################
 # variable asigenment
 # ################################################################################################################
@@ -104,23 +138,12 @@ fi
 pushd "$WORK_DIR"
 echo "Publish tag $tag on launchpad within a docker cotainer"
 echo "# ###################################################################"
-
-echo "Build the needed container"
-docker build --file "$WORK_DIR/Dockerfile.focal" --tag launchapd-publish-container-focal .
-echo "# ###################################################################"
-echo "Run the container"
 dockerError="false"
-docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
-    --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
-    --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
-    --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
-    -i launchapd-publish-container-focal \
-    /bin/bash -c "/PublishLaunchpad.sh $*"
-
-if [ "$?" != "0" ]; then 
-    echo "Error during docker run"
+buildAndRunDocker "focal"
+if [ "$?" != "0" ]; then
     dockerError="true"
 fi
+
 echo "# ###################################################################"
 echo "Delete the container image when done"    
 docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 

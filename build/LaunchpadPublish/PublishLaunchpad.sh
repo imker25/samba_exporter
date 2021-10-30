@@ -221,7 +221,7 @@ git status
 echo "# ###################################################################"
 echo "# Build source package for upload"
 
-gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S" --git-tag
+gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S" --git-tag --git-debian-branch="ubuntu-${ubuntuVersion}/v${tag}"
 if [ "$?" != "0" ]; then 
     echo "Error: Can not build the source package for upload"
     exit 1
