@@ -58,6 +58,13 @@ else
     tag=$1
 fi
 
+if [ "$2" == "dry" ]; then
+    dryRun="true"
+    echo "It's a dry run! No changes will be uploaded or pushed to launchpad"
+else
+    dryRun="false"
+fi
+
 if [ "$LAUNCHPAD_SSH_ID_PUB" == "" ]; then
     echo "Error: Environment variables LAUNCHPAD_SSH_ID_PUB not set"
     print_usage
@@ -69,6 +76,7 @@ if [ "$LAUNCHPAD_SSH_ID_PRV" == "" ]; then
     print_usage
     exit 1
 fi
+
 
 if [ "$LAUNCHPAD_GPG_KEY_PUB" == "" ]; then
     echo "Error: Environment variables LAUNCHPAD_GPG_KEY_PUB not set"
@@ -82,6 +90,14 @@ if [ "$LAUNCHPAD_GPG_KEY_PRV" == "" ]; then
     exit 1
 fi
 
+
+if [[ "$tag" =~ "-pre" ]]; then
+    if [ "$dryRun" == "false" ]; then
+        echo "Warinig: A pre release will be imported to launchpad!"
+    else
+        echo "Do a dry run with a pre release"
+    fi
+fi
 # ################################################################################################################
 # functional code
 # ################################################################################################################

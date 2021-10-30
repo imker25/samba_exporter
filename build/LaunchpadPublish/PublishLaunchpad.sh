@@ -95,8 +95,13 @@ if [ "$LAUNCHPAD_GPG_KEY_PRV" == "" ]; then
     exit 1
 fi
 
+
 if [[ "$tag" =~ "-pre" ]]; then
-    echo "Warinig: A pre release will be imported to launchpad!"
+    if [ "$dryRun" == "false" ]; then
+        echo "Warinig: A pre release will be imported to launchpad!"
+    else
+        echo "Do a dry run with a pre release"
+    fi
     gitTag="${tag/-pre/}"
     preRelease="true"
 else 
