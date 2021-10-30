@@ -106,7 +106,7 @@ echo "Publish tag $tag on launchpad within a docker cotainer"
 echo "# ###################################################################"
 
 echo "Build the needed container"
-docker build --file "$WORK_DIR/Dockerfile" --tag launchapd-publish-container .
+docker build --file "$WORK_DIR/Dockerfile.focal" --tag launchapd-publish-container-focal .
 echo "# ###################################################################"
 echo "Run the container"
 dockerError="false"
@@ -114,7 +114,7 @@ docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
     --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
     --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
     --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
-    -i launchapd-publish-container \
+    -i launchapd-publish-container-focal \
     /bin/bash -c "/PublishLaunchpad.sh $*"
 
 if [ "$?" != "0" ]; then 

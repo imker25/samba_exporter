@@ -147,16 +147,26 @@ git pull --all
 git checkout --track origin/upstream
 git checkout master
 git branch
-gbp import-orig --merge-mode=replace --upstream-version=$tag $GITHUB_RELEASE_URL/$tag.tar.gz
-if [ "$?" != "0" ]; then 
-    echo "Error: Can not import tag $tag from $GITHUB_RELEASE_URL"
-    exit 1
+git tag | grep "${tag}"
+if [ "$?" == "1" ]; then
+    echo "Import the source package from github"
+    gbp import-orig --merge-mode=replace --upstream-version=$tag $GITHUB_RELEASE_URL/$tag.tar.gz
+    if [ "$?" != "0" ]; then 
+        echo "Error: Can not import tag $tag from $GITHUB_RELEASE_URL"
+        exit 1
+    fi
+    git checkout master
+    if [ "$preRelease" == "true" ]; then
+        echo "Tag with $gitTag"
+        git tag upstream/$gitTag
+    fi
+else
+    echo "Use already imported sources"
 fi
-git checkout master
-if [ "$preRelease" == "true" ]; then
-    echo "Tag with $gitTag"
-    git tag upstream/$gitTag
-fi
+
+echo "Create the branch 'ubuntu-${ubuntuVersion}/v${tag}' to work on"
+git checkout -b "ubuntu-${ubuntuVersion}/v${tag}"
+git status
 
 echo "# ###################################################################"
 echo "# Patch the files"
@@ -169,7 +179,12 @@ sed -i "s/samba-exporter ($given_version)/samba-exporter ($packageVersion)/g" $W
 rm -rf $WORK_DIR/debian/*
 cp -rv -L $WORK_DIR/install/debian/* $WORK_DIR/debian
 
-find . -name "go.mod" -exec sed -i "s/require github.com\\/prometheus\\/client_golang $GITHUB_PROMETHEUS_VERSION/require github.com\\/prometheus\\/client_golang $LAUNCHPAD_PROMETHEUS_VERSION/g" {} \;
+echo "Patch package dependencies acording the ubuntu version"
+if [ "$ubuntuVersion" == "20.04"]; then
+    find . -name "go.mod" -exec sed -i "s/require github.com\\/prometheus\\/client_golang $GITHUB_PROMETHEUS_VERSION/require github.com\\/prometheus\\/client_golang $LAUNCHPAD_PROMETHEUS_VERSION/g" {} \;
+else 
+    echo "Not running on ubuntu 20.04"
+fi 
 
 echo "# ###################################################################"
 echo "# Build packages before git commit"
@@ -196,8 +211,11 @@ rm -rfv ../samba-exporter_$packageVersion*
 
 echo "# ###################################################################"
 echo "# git commit"
+git add .
 git status
 git commit -a -m "Deploy patches after GitHub V$tag import"
+echo "# ###################################################################"
+echo "git status"
 git status
 
 echo "# ###################################################################"
@@ -209,7 +227,9 @@ if [ "$?" != "0" ]; then
     exit 1
 fi
 
+echo "# ###################################################################"
 if [ "$dryRun" == "false" ]; then
+    echo "Upload source package"
     echo "dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes "
     dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes 
     if [ "$?" != "0" ]; then 
