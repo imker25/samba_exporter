@@ -173,18 +173,28 @@ echo "# Patch the files"
 given_version=$(cat "$WORK_DIR/VersionMaster.txt")
 echo "$packageVersion" > "$WORK_DIR/VersionMaster.txt"
 echo "Version Prefix: $given_version"
-
 sed -i "s/samba-exporter ($given_version)/samba-exporter ($packageVersion)/g" $WORK_DIR/changelog
-# cat $WORK_DIR/changelog
-rm -rf $WORK_DIR/debian/*
-cp -rv -L $WORK_DIR/install/debian/* $WORK_DIR/debian
 
 echo "Patch package dependencies acording the ubuntu version"
-if [ "$ubuntuVersion" == "20.04"]; then
+if [ "$ubuntuVersion" == "20.04" ]; then
     find . -name "go.mod" -exec sed -i "s/require github.com\\/prometheus\\/client_golang $GITHUB_PROMETHEUS_VERSION/require github.com\\/prometheus\\/client_golang $LAUNCHPAD_PROMETHEUS_VERSION/g" {} \;
 else 
     echo "Not running on ubuntu 20.04"
 fi 
+
+if [ "$ubuntuVersion" == "21.10" ]; then
+    sed -i "s/focal;/impish;/g" $WORK_DIR/changelog
+    sed -i "s/golang-1.16,/golang-1.17,/g" $WORK_DIR/install/debian/control
+else 
+    echo "Not running on ubuntu 21.10"
+fi
+
+rm -rf $WORK_DIR/debian/*
+cp -rv -L $WORK_DIR/install/debian/* $WORK_DIR/debian
+
+echo "# ###################################################################"
+echo "Changelog content after mofifications"
+cat $WORK_DIR/debian/changelog
 
 echo "# ###################################################################"
 echo "# Build packages before git commit"

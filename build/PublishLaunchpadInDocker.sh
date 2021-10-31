@@ -144,6 +144,13 @@ if [ "$?" != "0" ]; then
     dockerError="true"
 fi
 
+if [ "$dockerError" == "false" ];then 
+    buildAndRunDocker "impish"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+    fi
+fi
+
 echo "# ###################################################################"
 echo "Delete the container image when done"    
 docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
