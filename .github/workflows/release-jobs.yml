@@ -30,7 +30,7 @@ jobs:
               exit 1
             fi
             if [[ "$tag" =~ "-pre" ]]; then
-              echo "Do a publish dry run for $TAG"
+              echo "It's a pre release. Do a publish dry run for $TAG"
               build/PublishLaunchpadInDocker.sh $TAG dry
             else
               echo "Publish tag $TAG on launchpad"
