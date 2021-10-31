@@ -1,7 +1,7 @@
 name: Release Jobs
 on:
   release:
-    types: [released]
+    types: [published]
 jobs:
   publish-to-launchpad:
     strategy:
@@ -24,10 +24,15 @@ jobs:
       run: |
             echo "GITHUB_REF=$GITHUB_REF"
             if [[ "$GITHUB_REF" = refs/tags/* ]]; then
-                    TAG="${GITHUB_REF/refs\/tags\/}" 
+              TAG="${GITHUB_REF/refs\/tags\/}" 
             else 
-                    echo "Not a tag given as ref. Will exit"
-                    exit 1
+              echo "Not a tag given as ref. Will exit"
+              exit 1
             fi
-            echo "Publish tag $TAG"
-            build/PublishLaunchpadInDocker.sh $TAG
+            if [[ "$tag" =~ "-pre" ]]; then
+              echo "Do a publish dry run for $TAG"
+              build/PublishLaunchpadInDocker.sh $TAG dry
+            else
+              echo "Publish tag $TAG on launchpad"
+              build/PublishLaunchpadInDocker.sh $TAG
+            fi
