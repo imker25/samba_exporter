@@ -223,7 +223,7 @@ echo "# ###################################################################"
 echo "# git commit"
 git add .
 git status
-git commit -a -m "Deploy patches after GitHub V$tag import"
+git commit -a -m "Deploy patches after GitHub V$tag import for Ubuntu $ubuntuVersion"
 echo "# ###################################################################"
 echo "git status"
 git status
