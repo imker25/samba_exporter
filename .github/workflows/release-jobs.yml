@@ -1,7 +1,7 @@
 name: Release Jobs
 on:
   release:
-    types: [released]
+    types: [published]
 jobs:
   publish-to-launchpad:
     strategy:
