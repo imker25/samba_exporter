@@ -344,10 +344,10 @@ task preparePack(dependsOn: 'build') {
     doLast {
         copy {
             // Copy all data from the install directory to the package tmp dir
-            from ('install'){
+            from ('install/debian'){
                 include '**/**'
             }
-            into "${debPackageTmpDir}"
+            into "${debPackageTmpDir}/debian"
         }
 
         copy {
@@ -362,19 +362,12 @@ task preparePack(dependsOn: 'build') {
 
         // Copy and strip bin files
         exec {
-            commandLine 'install', '-d', '-m', '755', "${debPackageTmpDir}usr/bin/"
-        }
-        exec {
-            commandLine 'install', '-s', '-m', '755', "${scriptDirectory}/bin/samba_exporter", "${debPackageTmpDir}usr/bin/samba_exporter"
-        }
-        exec {
-            commandLine 'install', '-s', '-m', '755', "${scriptDirectory}/bin/samba_statusd", "${debPackageTmpDir}usr/bin/samba_statusd"
+            commandLine "${scriptDirectory}/build/InstallProgram.sh", "${scriptDirectory}", "${scriptDirectory}/bin/", "${debPackageTmpDir}", "${programVersionShort}"
         }
 
         copy {
             // Copy docs to the package tmp dir
             from('.') {
-                include 'README.md'
                 include 'LICENSE'
                 include 'changelog'
             }
@@ -385,14 +378,6 @@ task preparePack(dependsOn: 'build') {
             // Copy docs to the package tmp dir
             from('install/debian') {
                 include 'copyright'
-            }
-            into "${debPackageTmpDir}/usr/share/doc/samba_exporter-V${programVersionShort}/"
-        }
-        
-        copy {
-            // Copy examples to the package tmp dir
-            from('src/example') {
-                include '**/**'
             }
             into "${debPackageTmpDir}/usr/share/doc/samba_exporter-V${programVersionShort}/"
         }

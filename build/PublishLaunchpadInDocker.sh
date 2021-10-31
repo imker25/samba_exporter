@@ -34,6 +34,40 @@ function print_usage()  {
     echo "  LAUNCHPAD_GPG_KEY_PRV       Private GPG Key for the launchpad ppa"
 }
 
+function buildAndRunDocker() {
+    ubuntuVersion="$1"
+    echo "Build the needed container from '$WORK_DIR/Dockerfile.${ubuntuVersion}'"
+    docker build --file "$WORK_DIR/Dockerfile.${ubuntuVersion}" --tag launchapd-publish-container-$ubuntuVersion .
+    if [ "$?" != "0" ]; then 
+        echo "Error during docker build"
+        return 1
+    fi
+    echo "# ###################################################################"
+    echo "Run the container"
+    
+    if [ "$dryRun" == "false" ]; then
+        docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
+            --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
+            --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
+            --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
+            -i launchapd-publish-container-$ubuntuVersion \
+            /bin/bash -c "/PublishLaunchpad.sh $tag"
+    else
+        docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
+            --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
+            --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
+            --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
+            -i launchapd-publish-container-$ubuntuVersion \
+            /bin/bash -c "/PublishLaunchpad.sh $tag dry"
+    fi
+
+    if [ "$?" != "0" ]; then 
+        echo "Error during docker run"
+        return 1
+    fi
+    return 0
+}
+
 # ################################################################################################################
 # variable asigenment
 # ################################################################################################################
@@ -58,6 +92,13 @@ else
     tag=$1
 fi
 
+if [ "$2" == "dry" ]; then
+    dryRun="true"
+    echo "It's a dry run! No changes will be uploaded or pushed to launchpad"
+else
+    dryRun="false"
+fi
+
 if [ "$LAUNCHPAD_SSH_ID_PUB" == "" ]; then
     echo "Error: Environment variables LAUNCHPAD_SSH_ID_PUB not set"
     print_usage
@@ -69,6 +110,7 @@ if [ "$LAUNCHPAD_SSH_ID_PRV" == "" ]; then
     print_usage
     exit 1
 fi
+
 
 if [ "$LAUNCHPAD_GPG_KEY_PUB" == "" ]; then
     echo "Error: Environment variables LAUNCHPAD_GPG_KEY_PUB not set"
@@ -82,29 +124,33 @@ if [ "$LAUNCHPAD_GPG_KEY_PRV" == "" ]; then
     exit 1
 fi
 
+
+if [[ "$tag" =~ "-pre" ]]; then
+    if [ "$dryRun" == "false" ]; then
+        echo "Warinig: A pre release will be imported to launchpad!"
+    else
+        echo "Do a dry run with a pre release"
+    fi
+fi
 # ################################################################################################################
 # functional code
 # ################################################################################################################
 pushd "$WORK_DIR"
 echo "Publish tag $tag on launchpad within a docker cotainer"
 echo "# ###################################################################"
-
-echo "Build the needed container"
-docker build --file "$WORK_DIR/Dockerfile" --tag launchapd-publish-container .
-echo "# ###################################################################"
-echo "Run the container"
 dockerError="false"
-docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
-    --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
-    --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
-    --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
-    -i launchapd-publish-container \
-    /bin/bash -c "/PublishLaunchpad.sh $*"
-
-if [ "$?" != "0" ]; then 
-    echo "Error during docker run"
+buildAndRunDocker "focal"
+if [ "$?" != "0" ]; then
     dockerError="true"
 fi
+
+if [ "$dockerError" == "false" ];then 
+    buildAndRunDocker "impish"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+    fi
+fi
+
 echo "# ###################################################################"
 echo "Delete the container image when done"    
 docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 

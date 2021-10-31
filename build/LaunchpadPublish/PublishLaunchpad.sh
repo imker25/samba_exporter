@@ -95,8 +95,13 @@ if [ "$LAUNCHPAD_GPG_KEY_PRV" == "" ]; then
     exit 1
 fi
 
+
 if [[ "$tag" =~ "-pre" ]]; then
-    echo "Warinig: A pre release will be imported to launchpad!"
+    if [ "$dryRun" == "false" ]; then
+        echo "Warinig: A pre release will be imported to launchpad!"
+    else
+        echo "Do a dry run with a pre release"
+    fi
     gitTag="${tag/-pre/}"
     preRelease="true"
 else 
@@ -142,29 +147,54 @@ git pull --all
 git checkout --track origin/upstream
 git checkout master
 git branch
-gbp import-orig --merge-mode=replace --upstream-version=$tag $GITHUB_RELEASE_URL/$tag.tar.gz
-if [ "$?" != "0" ]; then 
-    echo "Error: Can not import tag $tag from $GITHUB_RELEASE_URL"
-    exit 1
+git tag | grep "${tag}"
+if [ "$?" == "1" ]; then
+    echo "Import the source package from github"
+    gbp import-orig --merge-mode=replace --upstream-version=$tag $GITHUB_RELEASE_URL/$tag.tar.gz
+    if [ "$?" != "0" ]; then 
+        echo "Error: Can not import tag $tag from $GITHUB_RELEASE_URL"
+        exit 1
+    fi
+    git checkout master
+    if [ "$preRelease" == "true" ]; then
+        echo "Tag with $gitTag"
+        git tag upstream/$gitTag
+    fi
+else
+    echo "Use already imported sources"
 fi
-git checkout master
-if [ "$preRelease" == "true" ]; then
-    echo "Tag with $gitTag"
-    git tag upstream/$gitTag
-fi
+
+echo "Create the branch 'ubuntu-${ubuntuVersion}/v${tag}' to work on"
+git checkout -b "ubuntu-${ubuntuVersion}/v${tag}"
+git status
 
 echo "# ###################################################################"
 echo "# Patch the files"
 given_version=$(cat "$WORK_DIR/VersionMaster.txt")
 echo "$packageVersion" > "$WORK_DIR/VersionMaster.txt"
 echo "Version Prefix: $given_version"
-
 sed -i "s/samba-exporter ($given_version)/samba-exporter ($packageVersion)/g" $WORK_DIR/changelog
-# cat $WORK_DIR/changelog
+
+echo "Patch package dependencies acording the ubuntu version"
+if [ "$ubuntuVersion" == "20.04" ]; then
+    find . -name "go.mod" -exec sed -i "s/require github.com\\/prometheus\\/client_golang $GITHUB_PROMETHEUS_VERSION/require github.com\\/prometheus\\/client_golang $LAUNCHPAD_PROMETHEUS_VERSION/g" {} \;
+else 
+    echo "Not running on ubuntu 20.04"
+fi 
+
+if [ "$ubuntuVersion" == "21.10" ]; then
+    sed -i "s/focal;/impish;/g" $WORK_DIR/changelog
+    sed -i "s/golang-1.16,/golang-1.17,/g" $WORK_DIR/install/debian/control
+else 
+    echo "Not running on ubuntu 21.10"
+fi
+
 rm -rf $WORK_DIR/debian/*
 cp -rv -L $WORK_DIR/install/debian/* $WORK_DIR/debian
 
-find . -name "go.mod" -exec sed -i "s/require github.com\\/prometheus\\/client_golang $GITHUB_PROMETHEUS_VERSION/require github.com\\/prometheus\\/client_golang $LAUNCHPAD_PROMETHEUS_VERSION/g" {} \;
+echo "# ###################################################################"
+echo "Changelog content after mofifications"
+cat $WORK_DIR/debian/changelog
 
 echo "# ###################################################################"
 echo "# Build packages before git commit"
@@ -191,20 +221,25 @@ rm -rfv ../samba-exporter_$packageVersion*
 
 echo "# ###################################################################"
 echo "# git commit"
+git add .
 git status
 git commit -a -m "Deploy patches after GitHub V$tag import"
+echo "# ###################################################################"
+echo "git status"
 git status
 
 echo "# ###################################################################"
 echo "# Build source package for upload"
 
-gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S" --git-tag
+gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S" --git-tag --git-debian-branch="ubuntu-${ubuntuVersion}/v${tag}"
 if [ "$?" != "0" ]; then 
     echo "Error: Can not build the source package for upload"
     exit 1
 fi
 
+echo "# ###################################################################"
 if [ "$dryRun" == "false" ]; then
+    echo "Upload source package"
     echo "dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes "
     dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes 
     if [ "$?" != "0" ]; then 
