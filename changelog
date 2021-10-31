@@ -4,7 +4,8 @@ samba-exporter (1.1) focal; urgency=low
   * Closes: Bug#26 - Use latest versions of golang ang gradle for github builds, see https://github.com/imker25/samba_exporter/issues/26
   * Closes: Bug#28 - Support multible ubuntu versions, see https://github.com/imker25/samba_exporter/issues/28
   * Closes: Bug#29 - Run PublishLaunchpadInDocker.sh with pre releases, see https://github.com/imker25/samba_exporter/issues/29
-  
+  * Closes: Bug#30 - Ensure all packages include the same files, see https://github.com/imker25/samba_exporter/issues/30
+
  -- Tobias Zellner <tobi@backfrak.de> Fri, 17 Sep 2021 19:53:21 +0200
 
 samba-exporter (1.0) focal; urgency=low
