@@ -34,20 +34,7 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	rm -f $(CURDIR)/debian/conffiles
-	echo "Install tree from ${CURDIR}/install"
-	install -d -m 775 ${ROOT}/usr/bin
-	install -s -m 775 ${CURDIR}/bin/bin/samba_exporter ${ROOT}/usr/bin/samba_exporter
-	install -s -m 775 ${CURDIR}/bin/bin/samba_statusd ${ROOT}/usr/bin/samba_statusd
-	install -m 775 ${CURDIR}/install/usr/bin/start_samba_statusd ${ROOT}/usr/bin/start_samba_statusd
-	install -d -m 775 ${ROOT}/lib/systemd/system
-	install -m 664 ${CURDIR}/install/lib/systemd/system/samba_exporter.service ${ROOT}/lib/systemd/system/samba_exporter.service
-	install -m 664 ${CURDIR}/install/lib/systemd/system/samba_statusd.service ${ROOT}/lib/systemd/system/samba_statusd.service
-	install -d -m 775 ${ROOT}/etc/default
-	install -m 664 ${CURDIR}/install/etc/default/samba_exporter ${ROOT}/etc/default/samba_exporter
-	install -m 664 ${CURDIR}/install/etc/default/samba_statusd ${ROOT}/etc/default/samba_statusd
-	install -d -m 775 ${ROOT}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/grafana
-	install -m 664 ${CURDIR}/README.md ${ROOT}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/README.md
-	install -m 664 ${CURDIR}/src/example/grafana/SambaService.json ${ROOT}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/grafana/SambaService.json
+	build/InstallProgram.sh ${CURDIR} ${CURDIR}/bin/bin/ ${ROOT} ${SHORT_VERSION}
 	echo "Install man pages"
 	cp $(CURDIR)/src/man/samba_exporter.1 $(CURDIR)/debian/
 	cp $(CURDIR)/src/man/samba_statusd.1 $(CURDIR)/debian/
