@@ -5,8 +5,6 @@ A prometheus exporter for statistic data of the samba file server.
 It uses smbstatus to collect the data and converts the result into prometheus style data.
 The prometheus style data can be requested manually on port 9922 using a http client. Or a prometheus database sever can be configured to collect the data by scraping port 9922 on the samba server.
 
-**Attention:** Tested and packed only for Ubuntu 20.04.
-
 ## Concept
 
 Since the tool [smbstatus](https://www.samba.org/samba/docs/current/man-html/smbstatus.1.html) provided by the [samba](https://www.samba.org/) project can only run with elevated rights, and a [prometheus exporter](https://prometheus.io/docs/instrumenting/writing_exporters/) always exposes a public network endpoint, the samba_exporter package contains two services.
@@ -18,9 +16,19 @@ Both services can communicate using a named pipe owned by a common group.
 
 ## Installation
 
+### Supported Versions
+
+**Ubuntu:**
+
+| Version | Code Name | Supported |
+|---------|-----------|-----------|
+| Ubnutu 20.04   | Focal Fossa | yes |
+| Ubnutu 21.04   | Hirsute Hippo | no |
+| Ubnutu 21.10   | Impish Indri | yes |
+
 ### Launchpad
 
-The **samba exporter** package is published on [launchpad](https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa). To install from there do the following commands:
+The **samba exporter** package is published on [launchpad](https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa). To install from there do the following commands on any supported Ubuntu version:
 
 ```sh
 sudo add-apt-repository ppa:imker/samba-exporter-ppa
@@ -30,7 +38,7 @@ sudo apt-get install samba-exporter
 
 ### GitHub
 
-Install the [latest Release](https://github.com/imker25/samba_exporter/releases/latest) by downloading the debian package and installing it. For example:
+Install the [latest Release](https://github.com/imker25/samba_exporter/releases/latest) (only avalible for Ubuntu 20.04) by downloading the debian package and installing it. For example:
 
 ```sh
 wget https://github.com/imker25/samba_exporter/releases/download/0.1.192-pre/samba-exporter_0.1.192-f6b01a7+ubuntu-20.04_amd64.deb
