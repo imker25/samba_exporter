@@ -36,11 +36,13 @@ jobs:
               echo "Publish tag $TAG on launchpad"
               build/PublishLaunchpadInDocker.sh $TAG
             fi
+    - name: 'Upload debian packages artifact'            
       uses: actions/upload-artifact@v2
       with:
         name: samba-exporter_packages
         path: bin/*.deb
         retention-days: 1
+    - name: 'Upload docker build logs artifact'         
       uses: actions/upload-artifact@v2
       if: always() 
       with:
