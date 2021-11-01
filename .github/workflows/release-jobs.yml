@@ -42,8 +42,8 @@ jobs:
         path: bin/*.deb
         retention-days: 1
       uses: actions/upload-artifact@v2
+      if: always() 
       with:
         name: samba-exporter_docker-build-logs
         path: logs/*.log
-        retention-days: 1  
-        if: always()      
+        retention-days: 1       
