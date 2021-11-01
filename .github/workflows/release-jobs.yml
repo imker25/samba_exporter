@@ -48,4 +48,38 @@ jobs:
       with:
         name: samba-exporter_docker-build-logs
         path: logs/*.log
-        retention-days: 1       
+        retention-days: 1
+    - name: 'Prepare asset upload'  
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+            echo "GITHUB_REF=$GITHUB_REF"
+            if [[ "$GITHUB_REF" = refs/tags/* ]]; then
+                    TAG="${GITHUB_REF/refs\/tags\/}" 
+                    echo "SAMBA_EXPORTER_RELEASE_TAG=$TAG"
+                    echo "SAMBA_EXPORTER_RELEASE_TAG=$TAG"  >> $GITHUB_ENV
+            else 
+                    echo "Not a tag given as ref. Will exit"
+                    exit 1
+            fi      
+            SAMBA_EXPORTER_UPLOAD_URL=$(curl -H "Authorization: token $GITHUB_TOKEN" -X GET https://api.github.com/repos/imker25/samba_exporter/releases/tags/$TAG | jq -r ".upload_url")
+            echo "SAMBA_EXPORTER_UPLOAD_URL=$SAMBA_EXPORTER_UPLOAD_URL"
+            echo "SAMBA_EXPORTER_UPLOAD_URL=$SAMBA_EXPORTER_UPLOAD_URL" >> $GITHUB_ENV
+    - name: Upload Release Asset for 21.10
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
+        asset_path: ./bin/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu21.10.deb 
+        asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu21.10.deb
+        asset_content_type: application/zip    
+    - name: Upload Release Asset for 20.04
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
+        asset_path: ./bin/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu20.04.deb 
+        asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu20.04.deb
+        asset_content_type: application/zip                  
