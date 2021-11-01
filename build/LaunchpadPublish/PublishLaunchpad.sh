@@ -95,7 +95,6 @@ if [ "$LAUNCHPAD_GPG_KEY_PRV" == "" ]; then
     exit 1
 fi
 
-
 if [[ "$tag" =~ "-pre" ]]; then
     if [ "$dryRun" == "false" ]; then
         echo "Warinig: A pre release will be imported to launchpad!"
@@ -203,20 +202,31 @@ if [ "$?" != "0" ]; then
     echo "Error: Can not build the packages with default paramters"
     exit 1
 fi
+echo "# ###################################################################"
+if [ -d "/build_results" ]; then 
+    echo "Copy debian package to the docker host using mount dir '/build_results'"
+    cp -v ../*.deb "/build_results/"
+else 
+    echo "Waring: /build_results does not exist, no debian packages copied to the docker host"
+fi
+echo "Delete biniary packages before source package build"
 rm -rfv ../samba-exporter_$packageVersion*
 
+echo "# ###################################################################"
+echo "Prepeare for source package build"
 mkdir -p $WORK_DIR/debian/source
 echo "3.0 (native)" > $WORK_DIR/debian/source/format
-# echo "src/man/samba_exporter.1.gz" > debian/source/include-binaries
-# echo "src/man/samba_statusd.1.gz" >> debian/source/include-binaries
-# echo "src/man/start_samba_statusd.1.gz" >> debian/source/include-binaries
 git add debian/source/*
 
+echo "# ###################################################################"
+echo "Source package test build"
 gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S " --git-ignore-new
 if [ "$?" != "0" ]; then 
     echo "Error: Can not build the source package"
     exit 1
 fi
+echo "# ###################################################################"
+echo "Delete souce package test build build"
 rm -rfv ../samba-exporter_$packageVersion*
 
 echo "# ###################################################################"

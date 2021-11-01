@@ -36,20 +36,22 @@ function print_usage()  {
 
 function buildAndRunDocker() {
     ubuntuVersion="$1"
-    echo "Build the needed container from '$WORK_DIR/Dockerfile.${ubuntuVersion}'"
-    docker build --file "$WORK_DIR/Dockerfile.${ubuntuVersion}" --tag launchapd-publish-container-$ubuntuVersion .
+
+    echo "Build the needed container from '$WORK_DIR/Dockerfile.${ubuntuVersion}', logging to $BRANCH_ROOT/logs/docker-build-${ubuntuVersion}.log"
+    docker build --file "$WORK_DIR/Dockerfile.${ubuntuVersion}" --tag launchapd-publish-container-$ubuntuVersion . > $BRANCH_ROOT/logs/docker-build-${ubuntuVersion}.log 2>&1
     if [ "$?" != "0" ]; then 
         echo "Error during docker build"
         return 1
     fi
     echo "# ###################################################################"
     echo "Run the container"
-    
+
     if [ "$dryRun" == "false" ]; then
         docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
             --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
             --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
             --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
+            --mount type=bind,source="$BRANCH_ROOT/bin",target="/build_results" \
             -i launchapd-publish-container-$ubuntuVersion \
             /bin/bash -c "/PublishLaunchpad.sh $tag"
     else
@@ -57,6 +59,7 @@ function buildAndRunDocker() {
             --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
             --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
             --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
+            --mount type=bind,source="$BRANCH_ROOT/bin",target="/build_results" \
             -i launchapd-publish-container-$ubuntuVersion \
             /bin/bash -c "/PublishLaunchpad.sh $tag dry"
     fi
@@ -136,7 +139,32 @@ fi
 # functional code
 # ################################################################################################################
 pushd "$WORK_DIR"
-echo "Publish tag $tag on launchpad within a docker cotainer"
+
+if [ -d "$BRANCH_ROOT/bin" ]; then
+    echo "Use existing $BRANCH_ROOT/bin dir"
+    if ls $BRANCH_ROOT/bin/*.deb 1> /dev/null 2>&1; then
+        echo "Delete existing $BRANCH_ROOT/bin/*.deb"
+        rm -rf $BRANCH_ROOT/bin/*.deb
+    fi
+
+else 
+    echo "Create $BRANCH_ROOT/bin dir"
+    mkdir -p "$BRANCH_ROOT/bin"
+fi
+
+if [ -d "$BRANCH_ROOT/logs" ]; then
+    echo "Use existing $BRANCH_ROOT/logs dir"
+    if ls $BRANCH_ROOT/logs/docker-build*.log 1> /dev/null 2>&1; then
+        echo "Delete existing $BRANCH_ROOT/logs/docker-build*.log"
+        rm -rf $BRANCH_ROOT/logs/docker-build*.log 
+    fi
+
+else 
+    echo "Create $BRANCH_ROOT/logs dir"
+    mkdir -p "$BRANCH_ROOT/logs"
+fi
+
+echo "Publish tag $tag on launchpad within a docker cotainer for focal"
 echo "# ###################################################################"
 dockerError="false"
 buildAndRunDocker "focal"
@@ -144,6 +172,8 @@ if [ "$?" != "0" ]; then
     dockerError="true"
 fi
 
+echo "Publish tag $tag on launchpad within a docker cotainer for impish"
+echo "# ###################################################################"
 if [ "$dockerError" == "false" ];then 
     buildAndRunDocker "impish"
     if [ "$?" != "0" ]; then
