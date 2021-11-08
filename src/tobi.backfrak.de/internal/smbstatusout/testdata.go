@@ -41,7 +41,7 @@ Service      pid     Machine       Connected at                      Encryption 
 IPC$         1119    192.168.1.242  Sun May 16 11:55:36 AM 2021 CEST -            -           
 foto         1121    192.168.1.243  Mon May 17 10:56:56 AM 2021 CEST -            -           
 film         1117    192.168.1.244  Tue May 18 09:52:38 AM 2021 CEST -            -           
-musik        1117    192.168.1.245  Fri May 21 06:46:29 PM 2021 CEST -            -           `
+musik        1117    192.168.1.245  Fri Nov 5 11:07:13 PM 2021 CET   -            -           `
 
 const ShareDataDifferentTimeStampLines = `
 Service      pid     Machine       Connected at                     Encryption   Signing     

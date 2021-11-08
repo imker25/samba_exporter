@@ -227,8 +227,8 @@ func TestGetShareData4Line(t *testing.T) {
 		t.Errorf("The ConnectedAt %s is not the expected Tue May 18 09:52:38 2021", entries[2].ConnectedAt.Format(time.ANSIC))
 	}
 
-	if entries[3].ConnectedAt.Format(time.ANSIC) != "Fri May 21 18:46:29 2021" {
-		t.Errorf("The ConnectedAt %s is not the expected Fri May 21 18:46:29 2021", entries[3].ConnectedAt.Format(time.ANSIC))
+	if entries[3].ConnectedAt.Format(time.ANSIC) != "Fri Nov  5 23:07:13 2021" {
+		t.Errorf("The ConnectedAt %s is not the expected 'Fri Nov  5 23:07:13 2021'", entries[3].ConnectedAt.Format(time.ANSIC))
 	}
 }
 

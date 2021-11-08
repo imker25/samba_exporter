@@ -1,4 +1,6 @@
 samba-exporter (1.2) focal; urgency=low
+  [ Tobias Zellner ]
+  * Closes: Problem with timestamps in "Fri Nov 5 11:07:13 PM 2021 CET" instead of "Fri Nov  5 11:07:13 PM 2021 CET" format. 
 
  -- Tobias Zellner <tobi@backfrak.de> Sun, 31 Oct 2021 19:52:55 +0100
 
