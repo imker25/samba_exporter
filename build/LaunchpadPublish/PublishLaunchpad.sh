@@ -108,8 +108,9 @@ else
     preRelease="false"
 fi
 
-ubuntuVersion=$(lsb_release -rs)
-packageVersion="${tag}~ppa1~ubuntu${ubuntuVersion}"
+distribution=$(lsb_release -is)
+distVersionNumber=$(lsb_release -rs)
+packageVersion="${tag}~ppa1~${distribution,,}${distVersionNumber}"
 
 # ################################################################################################################
 # functional code
@@ -117,6 +118,7 @@ packageVersion="${tag}~ppa1~ubuntu${ubuntuVersion}"
 
 echo "Publish github release $tag to launchpad as version $packageVersion"
 echo "# ###################################################################"
+
 
 echo "Prepare for operation"
 mkdir -p /root/.ssh
@@ -163,8 +165,8 @@ else
     echo "Use already imported sources"
 fi
 
-echo "Create the branch 'ubuntu-${ubuntuVersion}/v${tag}' to work on"
-git checkout -b "ubuntu-${ubuntuVersion}/v${tag}"
+echo "Create the branch '${distribution,,}-${distVersionNumber}/v${tag}' to work on"
+git checkout -b "${distribution,,}-${distVersionNumber}/v${tag}"
 git status
 
 echo "# ###################################################################"
@@ -174,18 +176,25 @@ echo "$packageVersion" > "$WORK_DIR/VersionMaster.txt"
 echo "Version Prefix: $given_version"
 sed -i "s/samba-exporter ($given_version)/samba-exporter ($packageVersion)/g" $WORK_DIR/changelog
 
-echo "Patch package dependencies acording the ubuntu version"
-if [ "$ubuntuVersion" == "20.04" ]; then
+echo "Patch package dependencies acording the distribution and version"
+if [ "$distVersionNumber" == "20.04" ] && [ "$distribution" == "Ubuntu" ]; then
     find . -name "go.mod" -exec sed -i "s/require github.com\\/prometheus\\/client_golang $GITHUB_PROMETHEUS_VERSION/require github.com\\/prometheus\\/client_golang $LAUNCHPAD_PROMETHEUS_VERSION/g" {} \;
 else 
-    echo "Not running on ubuntu 20.04"
+    echo "Not running on ubuntu 20.04 (focal)"
 fi 
 
-if [ "$ubuntuVersion" == "21.10" ]; then
+if [ "$distVersionNumber" == "21.10" ] && [ "$distribution" == "Ubuntu" ]; then
     sed -i "s/focal;/impish;/g" $WORK_DIR/changelog
     sed -i "s/golang-1.16,/golang-1.17,/g" $WORK_DIR/install/debian/control
 else 
-    echo "Not running on ubuntu 21.10"
+    echo "Not running on ubuntu 21.10 (impish)"
+fi
+
+if [ "$distVersionNumber" == "11" ] && [ "$distribution" == "Debian" ]; then
+    sed -i "s/focal;/bullseye;/g" $WORK_DIR/changelog
+    sed -i "s/golang-1.16,/golang-1.15,/g" $WORK_DIR/install/debian/control
+else 
+    echo "Not running on debian 11 (bullseye)"
 fi
 
 rm -rf $WORK_DIR/debian/*
@@ -202,6 +211,7 @@ if [ "$?" != "0" ]; then
     echo "Error: Can not build the packages with default paramters"
     exit 1
 fi
+
 echo "# ###################################################################"
 if [ -d "/build_results" ]; then 
     echo "Copy debian package to the docker host using mount dir '/build_results'"
@@ -209,55 +219,69 @@ if [ -d "/build_results" ]; then
 else 
     echo "Waring: /build_results does not exist, no debian packages copied to the docker host"
 fi
-echo "Delete biniary packages before source package build"
-rm -rfv ../samba-exporter_$packageVersion*
 
-echo "# ###################################################################"
-echo "Prepeare for source package build"
-mkdir -p $WORK_DIR/debian/source
-echo "3.0 (native)" > $WORK_DIR/debian/source/format
-git add debian/source/*
+if [ "$distribution" == "Debian" ]; then
+    echo "# ###################################################################"
+    echo "Running on debian, no source packages build"
+    echo "# ###################################################################"
+    echo "# git commit"
+    git add .
+    git status
+    git commit -a -m "Deploy patches after GitHub V$tag import for $distribution $distVersionNumber"
+    echo "# ###################################################################"
+    echo "git status"
+    git status
+else 
+    echo "Delete biniary packages before source package build"
+    rm -rfv ../samba-exporter_$packageVersion*
 
-echo "# ###################################################################"
-echo "Source package test build"
-gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S " --git-ignore-new
-if [ "$?" != "0" ]; then 
-    echo "Error: Can not build the source package"
-    exit 1
-fi
-echo "# ###################################################################"
-echo "Delete souce package test build build"
-rm -rfv ../samba-exporter_$packageVersion*
+    echo "# ###################################################################"
+    echo "Prepeare for source package build"
+    mkdir -p $WORK_DIR/debian/source
+    echo "3.0 (native)" > $WORK_DIR/debian/source/format
+    git add debian/source/*
 
-echo "# ###################################################################"
-echo "# git commit"
-git add .
-git status
-git commit -a -m "Deploy patches after GitHub V$tag import for Ubuntu $ubuntuVersion"
-echo "# ###################################################################"
-echo "git status"
-git status
-
-echo "# ###################################################################"
-echo "# Build source package for upload"
-
-gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S" --git-tag --git-debian-branch="ubuntu-${ubuntuVersion}/v${tag}"
-if [ "$?" != "0" ]; then 
-    echo "Error: Can not build the source package for upload"
-    exit 1
-fi
-
-echo "# ###################################################################"
-if [ "$dryRun" == "false" ]; then
-    echo "Upload source package"
-    echo "dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes "
-    dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes 
+    echo "# ###################################################################"
+    echo "Source package test build"
+    gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S " --git-ignore-new
     if [ "$?" != "0" ]; then 
-        echo "Error: Can not upload the source package to the launchpad ppa"
+        echo "Error: Can not build the source package"
         exit 1
     fi
-else
-    echo "Upload skiped due to dry run"
+    echo "# ###################################################################"
+    echo "Delete souce package test build build"
+    rm -rfv ../samba-exporter_$packageVersion*
+
+    echo "# ###################################################################"
+    echo "# git commit"
+    git add .
+    git status
+    git commit -a -m "Deploy patches after GitHub V$tag import for $distribution $distVersionNumber"
+    echo "# ###################################################################"
+    echo "git status"
+    git status
+
+    echo "# ###################################################################"
+    echo "# Build source package for upload"
+
+    gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S" --git-tag --git-debian-branch="${distribution,,}-${distVersionNumber}/v${tag}"
+    if [ "$?" != "0" ]; then 
+        echo "Error: Can not build the source package for upload"
+        exit 1
+    fi
+
+    echo "# ###################################################################"
+    if [ "$dryRun" == "false" ]; then
+        echo "Upload source package"
+        echo "dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes "
+        dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes 
+        if [ "$?" != "0" ]; then 
+            echo "Error: Can not upload the source package to the launchpad ppa"
+            exit 1
+        fi
+    else
+        echo "Upload skiped due to dry run"
+    fi
 fi
 
 echo "# ###################################################################"

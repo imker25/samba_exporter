@@ -40,5 +40,5 @@ COPY PublishLaunchpad.sh /PublishLaunchpad.sh
 RUN chmod 770 /PublishLaunchpad.sh
 
 # Configure git
-RUN git config --global user.name "Tobias Zellner"
-RUN git config --global user.email imker@bienekaefig.de
+RUN git config --global user.name "Tobias Zellner" && \
+    git config --global user.email imker@bienekaefig.de
