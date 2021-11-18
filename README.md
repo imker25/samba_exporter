@@ -26,7 +26,15 @@ Both services can communicate using a named pipe owned by a common group.
 | Ubnutu 21.04   | Hirsute Hippo | no |
 | Ubnutu 21.10   | Impish Indri | yes |
 
-### Launchpad
+**Debian:**
+
+| Version | Code Name | Supported |
+|---------|-----------|-----------|
+| Debian 10  | Buster | yes |
+| Debian 11   | Bullseye | yes |
+| Debian testing  | Bookworm | no |
+
+### Ubuntu Launchpad
 
 The **samba exporter** package is published on [launchpad](https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa). To install from there do the following commands on any supported Ubuntu version:
 
@@ -36,9 +44,9 @@ sudo apt-get update
 sudo apt-get install samba-exporter
 ```
 
-### GitHub
+### GitHub - For all supported distributions
 
-Install the [latest Release](https://github.com/imker25/samba_exporter/releases/latest) (only avalible for Ubuntu 20.04) by downloading the debian package and installing it. For example:
+Install the [latest Release](https://github.com/imker25/samba_exporter/releases/latest) by downloading the debian package according to your distribution and version and installing it. For example:
 
 ```sh
 wget https://github.com/imker25/samba_exporter/releases/download/0.1.192-pre/samba-exporter_0.1.192-f6b01a7+ubuntu-20.04_amd64.deb
@@ -88,7 +96,7 @@ To stop, start or restart the service use `systemctl`, e. g.: `sudo systemctl st
 
 ### samba_exporter service
 
-To change the behavior of the samba_exporter service update the `/etc/default/samba_exporter` according to your needs. You can add any option shown in the help output of `samba_exporter` to the `ARGS` variable.
+To change the behavior of the samba_exporter service update the `/etc/default/samba_exporter` according to your needs. You can add any option shown in the help output of `samba_exporter` to the `ARGS` variable. The service will start with `ARGS=-web.listen-address=127.0.0.1:9922` by default, in case your prometheus server is running on a different machine you need to change this.
 
 Get help:
 
@@ -146,25 +154,26 @@ When [importing](https://grafana.com/docs/grafana/latest/dashboards/export-impor
 
 ### Build and manual install
 
-To build the project you need [Go](https://golang.org/) Version 1.16.x and [Java](https://java.com/) Version 11 on your development machine. 
+To build the project you need [Go](https://golang.org/) Version 1.16.x and [Java](https://java.com/) Version 11 on your development machine.
 On your target machine, the samba server you want to monitor, you need [samba](https://www.samba.org/) and [systemd](https://www.freedesktop.org/wiki/Software/systemd/) installed.
 
 To build the software change to the repositories directory and run:
 
 ```sh
-./gradlew build
+./gradlew getBuildName build preparePack
 ```
 
-For manual install on the `target` machine do the following copies:
+In case you want to work on the man pages you need to install [ronn](https://github.com/rtomayko/ronn) on your development machine.
+To create the man pages out of the `*.ronn` source files run:
 
 ```sh
-scp ./bin/samba_exporter <target>:/usr/bin/samba_exporter
-scp ./bin/samba_statusd <target>:/usr/bin/samba_statusd 
-scp ./install/usr/bin/start_samba_statusd <target>:/usr/bin/start_samba_statusd
-scp ./install/lib/systemd/system/samba_statusd.service <target>:/lib/systemd/system/samba_statusd.service
-scp ./install/lib/systemd/system/samba_exporter.service <target>:/lib/systemd/system/samba_exporter.service
-scp install/etc/default/samba_exporter <target>:/etc/default/samba_exporter
-scp install/etc/default/samba_statusd <target>:/etc/default/samba_statusd
+build/CreateManPage.sh 
+```
+
+For manual install on the `target` machine do the following copy:
+
+```sh
+scp ./tmp/samba-exporter_<version>/* root@<target>:/
 ```
 
 Now login to your target machine and run the commands below to enable the services and create the needed user and group:
@@ -176,6 +185,7 @@ systemctl enable samba_exporter.service
 addgroup --system samba-exporter
 adduser --system --no-create-home --disabled-login samba-exporter
 adduser samba-exporter samba-exporter
+updatedb                                                          # In case you created and copied the man pages as well
 ```
 
 Finally you are abel to start the services:
@@ -229,9 +239,19 @@ samba_server_up 1
 samba_share_count 0
 ```
 
-### Man page creation
+### Run Tests locally
 
-Man pages are written in [ronn](https://github.com/rtomayko/ronn). The `*.ronn`source files are converted by the script `build/CreateManPage.sh` into man pages.
+To execute the unit tests you can run:
+
+```sh
+./gradlew test
+```
+
+To execute the integration tests you can run:
+
+```sh
+./test/integrationTest/scripts/RunIntegrationTests.sh
+```
 
 ### CI/CD Pipeline
 
@@ -247,7 +267,34 @@ For continuous integration and deployment this project uses [GitHub Actions](htt
   - Upload the binary package (`*.deb`) as [GitHub Release](https://github.com/imker25/samba_exporter/releases)
   - In case it's the main branch the release will be a pre release
   - On release/* branches it will be a full public release
-  
+
+After a full public release is done from the the CI/CD run on the release/* branch `.github/workflows/release-jobs.yml` will be triggered. This job runs `build/PublishLaunchpadInDocker.sh` to:
+
+- Create a binary and source package for Ubuntu 20.04 out of the just created release
+  - Modifies the sources so a native debian build works
+  - Create the binary package
+  - Create the source package
+  - Pushes the sources modified to a ubuntu-20.04 branch on [launchpad git repository](https://code.launchpad.net/~imker/samba-exporter/+git/samba-exporter)
+  - Uploads the source package to [samba-exporter launchpad ppa](https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa)
+    - Launchpad will trigger a own release workflow now and release the binary package on the ppa as well
+- Create a binary and source package for Ubuntu 21.10 out of the just created release
+  - Modifies the sources so a native debian build works
+  - Create the binary package
+  - Create the source package
+  - Pushes the sources modified to a ubuntu-21.10 branch on [launchpad git repository](https://code.launchpad.net/~imker/samba-exporter/+git/samba-exporter)
+  - Uploads the source package to [samba-exporter launchpad ppa](https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa)
+    - Launchpad will trigger a own release workflow now and release the binary package on the ppa as well
+- Create a binary and source package for Debian 10 out of the just created release
+  - Modifies the sources so a native debian build works
+  - Create the binary package
+  - Pushes the sources modified to a debian-10 branch on [launchpad git repository](https://code.launchpad.net/~imker/samba-exporter/+git/samba-exporter)
+- Create a binary and source package for Debian 11 out of the just created release
+  - Modifies the sources so a native debian build works
+  - Create the binary package
+  - Pushes the sources modified to a debian-11 branch on [launchpad git repository](https://code.launchpad.net/~imker/samba-exporter/+git/samba-exporter)  
+
+All created binary debian packages will be added as asset to the just created release, so users can download them.
+
 ### Release process
 
 The release process of this project is fully automated. To create a new release of the software use the script `build/PrepareRelease.sh`. Before running the script ensure you got the latest changes from github origin. This script then will:
@@ -259,8 +306,6 @@ The release process of this project is fully automated. To create a new release 
 - Push all changes on main and the new release branch to github
 
 Once this changes are pushed to github the CI/CD pipeline will start to run for both, main and the new release/* branch.
-
-After a full public release is done from the the CI/CD run on the release/* branch `.github/workflows/release-jobs.yml` will be triggered. This job runs `build/PublishLaunchpadInDocker.sh` to transfer the just created github release to the [samba-exporter launchpad ppa](https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa) where it will be published as well. During this process a slightly modified version of the sources will be pushed into the corresponding [launchpad git repository](https://code.launchpad.net/~imker/samba-exporter/+git/samba-exporter).
 
 ### Developer Hints
 
