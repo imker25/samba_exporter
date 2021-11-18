@@ -9,31 +9,38 @@
 # ######################################################################################
 
 # Use the packages target version (focal = ubuntu 20.04) as base image
-FROM ubuntu:focal
+FROM debian:buster
 
 # Setup the system and install needed packages
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Europe/London"
+RUN echo 'deb http://deb.debian.org/debian buster-backports main' > /etc/apt/sources.list.d/backports.list
 RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y wget \
                                         curl  \
                                         libc6  \
-                                        golang-1.16 \
+                                        golang-1.15 \
+                                        golang-1.15-go \
+                                        golang-1.15-doc \
                                         gzip  \
                                         ronn\
                                         debhelper \
-                                        golang-any \
                                         golang-github-go-kit-kit-dev \
-                                        golang-github-prometheus-client-golang-dev \
-                                        golang-github-prometheus-common-dev \
-                                        golang-gopkg-alecthomas-kingpin.v2-dev \
-                                        dh-golang \
-                                        debhelper \ 
+                                        golang-github-prometheus-client-golang-dev/buster-backports \
+                                        golang-github-prometheus-common-dev/buster-backports \
+                                        golang-github-mwitkow-go-conntrack-dev/buster-backports \
+                                        golang-github-prometheus-client-model-dev/buster-backports \
+                                        golang-gopkg-alecthomas-kingpin.v2-dev\
+                                        dh-golang/buster-backports \
+                                        debhelper/buster-backports \ 
+                                        dwz/buster-backports \
                                         dh-make \
                                         lintian \
                                         git-buildpackage \
                                         git \
                                         openssh-client \
                                         gpg
+
+RUN ln -s /usr/lib/go-1.15/bin/go /usr/bin/go
 
 # Copy the script
 COPY PublishLaunchpad.sh /PublishLaunchpad.sh

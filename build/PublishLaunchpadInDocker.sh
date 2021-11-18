@@ -35,10 +35,10 @@ function print_usage()  {
 }
 
 function buildAndRunDocker() {
-    ubuntuVersion="$1"
+    distVersion="$1"
 
-    echo "Build the needed container from '$WORK_DIR/Dockerfile.${ubuntuVersion}', logging to $BRANCH_ROOT/logs/docker-build-${ubuntuVersion}.log"
-    docker build --file "$WORK_DIR/Dockerfile.${ubuntuVersion}" --tag launchapd-publish-container-$ubuntuVersion . > $BRANCH_ROOT/logs/docker-build-${ubuntuVersion}.log 2>&1
+    echo "Build the needed container from '$WORK_DIR/Dockerfile.${distVersion}', logging to $BRANCH_ROOT/logs/docker-build-${distVersion}.log"
+    docker build --file "$WORK_DIR/Dockerfile.${distVersion}" --tag launchapd-publish-container-$distVersion . > $BRANCH_ROOT/logs/docker-build-${distVersion}.log 2>&1
     if [ "$?" != "0" ]; then 
         echo "Error during docker build"
         return 1
@@ -51,16 +51,16 @@ function buildAndRunDocker() {
             --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
             --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
             --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
-            --mount type=bind,source="$BRANCH_ROOT/bin",target="/build_results" \
-            -i launchapd-publish-container-$ubuntuVersion \
+            --mount type=bind,source="$DEB_PACKAGE_DIR",target="/build_results" \
+            -i launchapd-publish-container-$distVersion \
             /bin/bash -c "/PublishLaunchpad.sh $tag"
     else
         docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
             --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
             --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
             --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
-            --mount type=bind,source="$BRANCH_ROOT/bin",target="/build_results" \
-            -i launchapd-publish-container-$ubuntuVersion \
+            --mount type=bind,source="$DEB_PACKAGE_DIR",target="/build_results" \
+            -i launchapd-publish-container-$distVersion \
             /bin/bash -c "/PublishLaunchpad.sh $tag dry"
     fi
 
@@ -77,6 +77,7 @@ function buildAndRunDocker() {
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 BRANCH_ROOT="$SCRIPT_DIR/.."
 WORK_DIR="$SCRIPT_DIR/LaunchpadPublish"
+DEB_PACKAGE_DIR="$BRANCH_ROOT/bin/deb-packages"
 
 # ################################################################################################################
 # parameter and environment check
@@ -140,16 +141,12 @@ fi
 # ################################################################################################################
 pushd "$WORK_DIR"
 
-if [ -d "$BRANCH_ROOT/bin" ]; then
-    echo "Use existing $BRANCH_ROOT/bin dir"
-    if ls $BRANCH_ROOT/bin/*.deb 1> /dev/null 2>&1; then
-        echo "Delete existing $BRANCH_ROOT/bin/*.deb"
-        rm -rf $BRANCH_ROOT/bin/*.deb
-    fi
-
+if [ -d "$DEB_PACKAGE_DIR" ]; then
+    echo "Use existing $DEB_PACKAGE_DIR dir after cleanup"
+    rm -rf $DEB_PACKAGE_DIR/*
 else 
-    echo "Create $BRANCH_ROOT/bin dir"
-    mkdir -p "$BRANCH_ROOT/bin"
+    echo "Create $DEB_PACKAGE_DIR dir"
+    mkdir -p "$DEB_PACKAGE_DIR"
 fi
 
 if [ -d "$BRANCH_ROOT/logs" ]; then
@@ -164,9 +161,9 @@ else
     mkdir -p "$BRANCH_ROOT/logs"
 fi
 
+dockerError="false"
 echo "Publish tag $tag on launchpad within a docker cotainer for focal"
 echo "# ###################################################################"
-dockerError="false"
 buildAndRunDocker "focal"
 if [ "$?" != "0" ]; then
     dockerError="true"
@@ -179,6 +176,20 @@ if [ "$dockerError" == "false" ];then
     if [ "$?" != "0" ]; then
         dockerError="true"
     fi
+fi
+
+echo "Publish tag $tag on launchpad within a docker cotainer for bullseye"
+echo "# ###################################################################"
+buildAndRunDocker "bullseye"
+if [ "$?" != "0" ]; then
+    dockerError="true"
+fi
+
+echo "Publish tag $tag on launchpad within a docker cotainer for bullseye"
+echo "# ###################################################################"
+buildAndRunDocker "buster"
+if [ "$?" != "0" ]; then
+    dockerError="true"
 fi
 
 echo "# ###################################################################"

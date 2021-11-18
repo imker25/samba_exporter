@@ -9,7 +9,7 @@
 # ######################################################################################
 
 # Use the packages target version (focal = ubuntu 20.04) as base image
-FROM ubuntu:focal
+FROM debian:bullseye
 
 # Setup the system and install needed packages
 ENV DEBIAN_FRONTEND="noninteractive"
@@ -17,7 +17,7 @@ ENV TZ="Europe/London"
 RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y wget \
                                         curl  \
                                         libc6  \
-                                        golang-1.16 \
+                                        golang-1.15 \
                                         gzip  \
                                         ronn\
                                         debhelper \
