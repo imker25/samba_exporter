@@ -197,6 +197,15 @@ else
     echo "Not running on debian 11 (bullseye)"
 fi
 
+if [ "$distVersionNumber" == "10" ] && [ "$distribution" == "Debian" ]; then
+    sed -i "s/focal;/buster;/g" $WORK_DIR/changelog
+    sed -i "s/golang-1.16,/golang-1.15,/g" $WORK_DIR/install/debian/control
+    sed -i "s/gzip (>=1.10)/gzip (>=1.9)/g" $WORK_DIR/install/debian/control
+    sed -i "s/golang-any/man-db/g" $WORK_DIR/install/debian/control
+else 
+    echo "Not running on debian 10 (buster)"
+fi
+
 rm -rf $WORK_DIR/debian/*
 cp -rv -L $WORK_DIR/install/debian/* $WORK_DIR/debian
 
@@ -208,14 +217,17 @@ echo "# ###################################################################"
 echo "# Build packages before git commit"
 gbp buildpackage -kimker@bienenkaefig.de --git-ignore-new 
 if [ "$?" != "0" ]; then 
+    ls -l /build_area/samba-exporter/bin/src/src
     echo "Error: Can not build the packages with default paramters"
     exit 1
 fi
 
 echo "# ###################################################################"
 if [ -d "/build_results" ]; then 
-    echo "Copy debian package to the docker host using mount dir '/build_results'"
-    cp -v ../*.deb "/build_results/"
+    mkdir -p /build_results/binary
+    echo "Copy binary debian package to the docker host using mount dir '/build_results/binary'"
+    cp -v ../*.deb "/build_results/binary/"
+    chmod -R 777 /build_results/*
 else 
     echo "Waring: /build_results does not exist, no debian packages copied to the docker host"
 fi
