@@ -185,7 +185,7 @@ if [ "$?" != "0" ]; then
     dockerError="true"
 fi
 
-echo "Publish tag $tag on launchpad within a docker cotainer for bullseye"
+echo "Publish tag $tag on launchpad within a docker cotainer for buster"
 echo "# ###################################################################"
 buildAndRunDocker "buster"
 if [ "$?" != "0" ]; then
