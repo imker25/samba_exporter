@@ -242,6 +242,4 @@ jobs:
         repo_token: "${{ secrets.WORKFLOW_TOKEN }}"
         automatic_release_tag: ${{ env.SAMBA_EXPORTER_SHORT_VERSION }}
         prerelease: ${{ env.SAMBA_EXPORTER_PRE_RELEASE }}
-        title: ${{ env.SAMBA_EXPORTER_RELEASE_TITLE}}
-        files: |
-          ${{ env.SAMBA_EXPORTER_UBUNTU_2004_PACKAGE_NAME }}_amd64.deb            
+        title: ${{ env.SAMBA_EXPORTER_RELEASE_TITLE}}           
