@@ -147,10 +147,10 @@ echo "samba_statusd running with PID $statusdPIDBefore"
 
 echo "sudo systemctl restart samba_statusd"
 sudo systemctl restart samba_statusd
-sleep 0.2
+sleep 1
 echo "sudo systemctl restart samba_exporter"
 sudo systemctl restart samba_exporter
-sleep 0.2
+sleep 1
 assert_raises "processWithNameIsRunning samba_statusd" 1
 assert_raises "processWithNameIsRunning samba_exporter" 1
 
@@ -181,6 +181,7 @@ echo "sudo cp \"$script_dir/test.smb.conf\" \"/etc/samba/smb.conf\""
 sudo cp "$script_dir/test.smb.conf" "/etc/samba/smb.conf"
 echo "sudo systemctl restart smbd.service"
 sudo systemctl restart smbd.service
+sleep 0.5
 echo "# ###################################################################"
 echo "sudo systemctl status smbd.service"
 sudo systemctl status smbd.service > "$tmp_dir/samba.service.status.1.log"
