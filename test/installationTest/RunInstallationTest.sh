@@ -115,7 +115,7 @@ assert_raises "processWithNameIsRunning samba_exporter" 0
 assert_raises "curl http://127.0.0.1:9922/metrics" 7
 echo "sudo systemctl start samba_exporter"
 sudo systemctl start samba_exporter
-sleep 0.1
+sleep 0.5
 assert_raises "processWithNameIsRunning samba_statusd" 1
 assert_raises "processWithNameIsRunning samba_exporter" 1
 
@@ -131,7 +131,7 @@ assert_raises "processWithNameIsRunning samba_exporter" 0
 
 echo "sudo systemctl start samba_exporter"
 sudo systemctl start samba_exporter
-sleep 0.1
+sleep 0.5
 assert_raises "processWithNameIsRunning samba_statusd" 1
 assert_raises "processWithNameIsRunning samba_exporter" 1
 
