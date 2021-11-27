@@ -371,7 +371,7 @@ task preparePack(dependsOn: 'build') {
                 include 'LICENSE'
                 include 'changelog'
             }
-            into "${debPackageTmpDir}/usr/share/doc/samba_exporter-V${programVersionShort}/"
+            into "${debPackageTmpDir}/usr/share/doc/samba_exporter/"
         }
 
         copy {
@@ -379,7 +379,7 @@ task preparePack(dependsOn: 'build') {
             from('install/debian') {
                 include 'copyright'
             }
-            into "${debPackageTmpDir}/usr/share/doc/samba_exporter-V${programVersionShort}/"
+            into "${debPackageTmpDir}/usr/share/doc/samba_exporter/"
         }
     }
 }

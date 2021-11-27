@@ -34,7 +34,7 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	rm -f $(CURDIR)/debian/conffiles
-	build/InstallProgram.sh ${CURDIR} ${CURDIR}/bin/bin/ ${ROOT} ${SHORT_VERSION}
+	build/InstallProgram.sh ${CURDIR} ${CURDIR}/bin/bin/ ${ROOT} 
 	echo "Install man pages"
 	cp $(CURDIR)/src/man/samba_exporter.1 $(CURDIR)/debian/
 	cp $(CURDIR)/src/man/samba_statusd.1 $(CURDIR)/debian/
