@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv='content-type' content='text/html;charset=utf8'>
+  <meta name='generator' content='Ronn-NG/v0.8.0 (http://github.com/apjanke/ronn-ng/tree/0.8.0)'>
+  <title>samba_exporter(1) - part of the samba-exporter package</title>
+  <style type='text/css' media='all'>
+  /* style: man */
+  body#manpage {margin:0}
+  .mp {max-width:100ex;padding:0 9ex 1ex 4ex}
+  .mp p,.mp pre,.mp ul,.mp ol,.mp dl {margin:0 0 20px 0}
+  .mp h2 {margin:10px 0 0 0}
+  .mp > p,.mp > pre,.mp > ul,.mp > ol,.mp > dl {margin-left:8ex}
+  .mp h3 {margin:0 0 0 4ex}
+  .mp dt {margin:0;clear:left}
+  .mp dt.flush {float:left;width:8ex}
+  .mp dd {margin:0 0 0 9ex}
+  .mp h1,.mp h2,.mp h3,.mp h4 {clear:left}
+  .mp pre {margin-bottom:20px}
+  .mp pre+h2,.mp pre+h3 {margin-top:22px}
+  .mp h2+pre,.mp h3+pre {margin-top:5px}
+  .mp img {display:block;margin:auto}
+  .mp h1.man-title {display:none}
+  .mp,.mp code,.mp pre,.mp tt,.mp kbd,.mp samp,.mp h3,.mp h4 {font-family:monospace;font-size:14px;line-height:1.42857142857143}
+  .mp h2 {font-size:16px;line-height:1.25}
+  .mp h1 {font-size:20px;line-height:2}
+  .mp {text-align:justify;background:#fff}
+  .mp,.mp code,.mp pre,.mp pre code,.mp tt,.mp kbd,.mp samp {color:#131211}
+  .mp h1,.mp h2,.mp h3,.mp h4 {color:#030201}
+  .mp u {text-decoration:underline}
+  .mp code,.mp strong,.mp b {font-weight:bold;color:#131211}
+  .mp em,.mp var {font-style:italic;color:#232221;text-decoration:none}
+  .mp a,.mp a:link,.mp a:hover,.mp a code,.mp a pre,.mp a tt,.mp a kbd,.mp a samp {color:#0000ff}
+  .mp b.man-ref {font-weight:normal;color:#434241}
+  .mp pre {padding:0 4ex}
+  .mp pre code {font-weight:normal;color:#434241}
+  .mp h2+pre,h3+pre {padding-left:0}
+  ol.man-decor,ol.man-decor li {margin:3px 0 10px 0;padding:0;float:left;width:33%;list-style-type:none;text-transform:uppercase;color:#999;letter-spacing:1px}
+  ol.man-decor {width:100%}
+  ol.man-decor li.tl {text-align:left}
+  ol.man-decor li.tc {text-align:center;letter-spacing:4px}
+  ol.man-decor li.tr {text-align:right;float:right}
+  </style>
+</head>
+<!--
+  The following styles are deprecated and will be removed at some point:
+  div#man, div#man ol.man, div#man ol.head, div#man ol.man.
+
+  The .man-page, .man-decor, .man-head, .man-foot, .man-title, and
+  .man-navigation should be used instead.
+-->
+<body id='manpage'>
+  <div class='mp' id='man'>
+
+  <div class='man-navigation' style='display:none'>
+    <a href="#NAME">NAME</a>
+    <a href="#SYNOPSIS">SYNOPSIS</a>
+    <a href="#DESCRIPTION">DESCRIPTION</a>
+    <a href="#OPTIONS">OPTIONS</a>
+    <a href="#EXAMPLES">EXAMPLES</a>
+    <a href="#FILES">Files</a>
+    <a href="#BUGS">BUGS</a>
+    <a href="#COPYRIGHT">COPYRIGHT</a>
+    <a href="#SEE-ALSO">SEE ALSO</a>
+  </div>
+
+  <ol class='man-decor man-head man head'>
+    <li class='tl'>samba_exporter(1)</li>
+    <li class='tc'></li>
+    <li class='tr'>samba_exporter(1)</li>
+  </ol>
+
+  
+
+<h2 id="NAME">NAME</h2>
+<p class="man-name">
+  <code>samba_exporter</code> - <span class="man-whatis">part of the samba-exporter package</span>
+</p>
+<h2 id="SYNOPSIS">SYNOPSIS</h2>
+
+<p><code>samba_exporter</code> <a href="#OPTIONS" title="OPTIONS" data-bare-link="true">options</a></p>
+
+<h2 id="DESCRIPTION">DESCRIPTION</h2>
+
+<p><strong>samba_exporter</strong> The prometheus exporter part of the samba-exporter package.<br></p>
+
+<p>The tool is usually stated as daemon by systemd as <code>samba_exporter.service</code>.<br></p>
+
+<p>It communicates with the <code>samba_statusd.service</code> using the named pipes <code>/run/samba_exporter.request.pipe</code> and <code>/run/samba_exporter.response.pipe</code>.</p>
+
+<h3 id="samba-exporter-package">samba-exporter package</h3>
+
+<p>The <code>samba-exporter package</code> works as a prometheus exporter for statistic data of the samba file server.<br></p>
+
+<p>It uses <code>smbstatus</code> to collect the data and converts the result into prometheus style data.
+The prometheus style data can be requested manually on port 9922 using a http client.
+Or a prometheus database sever can be configured to collect the data by scraping port 9922 on the samba server.</p>
+
+<h2 id="OPTIONS">OPTIONS</h2>
+
+<p>You might want to use one of the following optional parameters.</p>
+
+<dl>
+<dt><code>-help</code></dt>
+<dd>Print the programs help message and exit</dd>
+<dt><code>-print-version</code></dt>
+<dd>With this flag the program will only print it's version and exit</dd>
+<dt><code>-request-timeout</code></dt>
+<dd>The timeout for a request to samba_statusd in seconds (default 5)</dd>
+<dt><code>-test-mode</code></dt>
+<dd>    Run the program in test mode.<br>
+    In this mode the program will always return the same test data. To work with samba_statusd both programs needs to run in test mode or not.</dd>
+<dt><code>-test-pipe</code></dt>
+<dd>    Requests status from samba_statusd and exits. May be combined with -test-mode.</dd>
+<dt><code>-verbose</code></dt>
+<dd>    With this flag the program will print verbose output</dd>
+<dt><code>-web.listen-address</code></dt>
+<dd>    Address to listen on for web interface and telemetry. (default ":9922")<br>
+    You might want this to bind to a given ip address like 127.0.0.1 by setting this parameter as "127.0.0.1:9922".
+    To use 9123 as port use ":9123" here.</dd>
+<dt><code>-web.telemetry-path</code></dt>
+<dd>    Path under which to expose metrics. (default "/metrics")</dd>
+</dl>
+
+
+<p>To change the behavior of the samba_exporter service update the <code>/etc/default/samba_exporter</code> according to your needs.
+You can add any option shown in the help output of <code>samba_exporter</code> to the <code>ARGS</code> variable.<br></p>
+
+<p>You may not want to start the service with arguments that will exit before listening starts like <code>-test-pipe</code>, <code>-help</code> or <code>-print-version</code>.<br>
+The service will start with <code>-web.listen-address=127.0.0.1:9922</code> by default, in case your prometheus server is running on a different machine you
+need to change this.<br>
+<code>/etc/default/samba_exporter</code> includes some examples.</p>
+
+<h2 id="EXAMPLES">EXAMPLES</h2>
+
+<p>To stop, start or restart the service use <code>systemctl</code>, e. g.:<br>
+<code>sudo systemctl stop samba_exporter</code></p>
+
+<p>To read the log output use <code>journalctl</code>, e. g.:<br>
+<code>sudo journalctl -u samba_exporter</code>.<br></p>
+
+<p><strong>Remark:</strong> Due to the services dependencies <code>samba_exporter</code> service stops whenever <code>samba_statusd</code> stops.
+And <code>samba_statusd</code> always starts when <code>samba_exporter</code> is started if not already running.</p>
+
+<h2 id="Files">Files</h2>
+
+<ul>
+<li>
+<code>/etc/default/samba_exporter</code> The configuration file for the samba_exporter service</li>
+<li>
+<code>/run/samba_exporter.request.pipe</code> The pipe samba_exporter requests the status from samba_statusd</li>
+<li>
+<code>/run/samba_exporter.response.pipe</code> The pipe samba_statusd answers requests from samba_exporter</li>
+<li>
+<code>/usr/share/doc/samba_exporter/grafana/SambaService.json</code> A example dashboard for Grafana</li>
+</ul>
+
+
+<h2 id="BUGS">BUGS</h2>
+
+<p>See <a href="https://github.com/imker25/samba_exporter/issues" data-bare-link="true">https://github.com/imker25/samba_exporter/issues</a> <br>
+In case you found a new bug please also report as github issue on the projects page.</p>
+
+<h2 id="COPYRIGHT">COPYRIGHT</h2>
+
+<p>samba_exporter is Copyright (C) 2021 Tobias Zellner <a href="mailto:tobi@backfraki.de" data-bare-link="true">tobi@backfraki.de</a></p>
+
+<h2 id="SEE-ALSO">SEE ALSO</h2>
+
+<p><span class="man-ref">samba_statusd<span class="s">(1)</span></span>, <span class="man-ref">start_samba_statusd<span class="s">(1)</span></span></p>
+
+  <ol class='man-decor man-foot man foot'>
+    <li class='tl'></li>
+    <li class='tc'>November 2021</li>
+    <li class='tr'>samba_exporter(1)</li>
+  </ol>
+
+  </div>
+</body>
+</html>
