@@ -18,8 +18,17 @@ plugins:
 
 
 nav:
-  - Start Page: 'index.md'
+  - Start Page: 'Index.md'
   - Installation: 
     - Supported Versions: Installation/SupportedVersions.md
     - Installation Guide: Installation/InstallationGuide.md
+  - Users:
+    - User Guide: UserDocs/UserGuide.md
+    - Service Integration: UserDocs/ServiceIntegration.md
+    - Concept: UserDocs/Concept.md
+  - Developers:
+    - Developer Guide: DeveloperDocs/Compile.md
+    - Developer Hints: DeveloperDocs/Hints.md  
+    - Release Process: DeveloperDocs/ActionsAndReleases.md
   - Source: 'https://github.com/imker25/samba_exporter'
+  - Issues: https://github.com/imker25/samba_exporter/issues

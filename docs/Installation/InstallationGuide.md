@@ -25,4 +25,4 @@ sudo dpkg --install ./samba-exporter_1.3.5-pre.ppa1.debian10_amd64.deb
 
 It's also possible to download and install pre-releases from the GitHub this way.
 
-For manual installation see [Build and manual install](#build-and-manual-install).
+For manual installation see the [Developer Guide](../DeveloperDocs/Compile.md).
