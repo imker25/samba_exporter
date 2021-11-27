@@ -227,6 +227,11 @@ if [ -d "/build_results" ]; then
     mkdir -p /build_results/binary
     echo "Copy binary debian package to the docker host using mount dir '/build_results/binary'"
     cp -v ../*.deb "/build_results/binary/"
+    mkdir -p /build_results/man 
+    echo "Copy the html man pages to /build_results/man"
+    cp -v ./src/man/samba_exporter.1.html /build_results/man/
+    cp -v ./src/man/samba_statusd.1.html /build_results/man/
+    cp -v ./src/man/start_samba_statusd.1.html /build_results/man/
     chmod -R 777 /build_results/*
 else 
     echo "Waring: /build_results does not exist, no debian packages copied to the docker host"

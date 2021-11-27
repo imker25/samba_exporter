@@ -1,5 +1,8 @@
 samba-exporter (1.4) focal; urgency=low
 
+  [ Tobias Zellner ]
+  * Closes: Bug#34 - Create a project webpage with documentation, see https://github.com/imker25/samba_exporter/issues/34
+
  -- Tobias Zellner <tobi@backfrak.de> Fri, 19 Nov 2021 14:59:36 +0100
 
 samba-exporter (1.3) focal; urgency=low

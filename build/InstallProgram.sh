@@ -18,12 +18,11 @@ BRANCH_ROOT="$SCRIPT_DIR/.."
 # function definition
 # ################################################################################################################
 function print_usage()  {
-    echo "Usage: $0 source-root binary-root package-root short-version"
+    echo "Usage: $0 source-root binary-root package-root"
     echo "-help             Print this help"
     echo "source-root       The root folder from there all copy source pathes for sources are calculated"
     echo "binary-root       The root folder from there all copy source pathes for binaries are calculated"
     echo "package-root      The path to the package input root folder"
-    echo "short-version     The short version number of the package"
     echo ""
     echo "Script to install the program files. Used by debian/rules as well as gradle.build "
 }
@@ -58,13 +57,6 @@ else
     exit 1
 fi
 
-if [ "$4" != "" ]; then
-    SHORT_VERSION="$4"
-else
-    echo "Error: No short-version  parameter given"
-    exit 1
-fi
-
 echo "Install tree from ${COPY_SOURCE}"
 install -d -m 775 "${PACKAGE_ROOT}/usr/bin"
 install -s -m 775 "${BIN_COPY_SOURCE}/samba_exporter" "${PACKAGE_ROOT}/usr/bin/samba_exporter"
@@ -76,6 +68,6 @@ install -m 664 "${COPY_SOURCE}/install/lib/systemd/system/samba_statusd.service"
 install -d -m 775 "${PACKAGE_ROOT}/etc/default"
 install -m 664 "${COPY_SOURCE}/install/etc/default/samba_exporter" "${PACKAGE_ROOT}/etc/default/samba_exporter"
 install -m 664 "${COPY_SOURCE}/install/etc/default/samba_statusd" "${PACKAGE_ROOT}/etc/default/samba_statusd"
-install -d -m 775 "${PACKAGE_ROOT}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/grafana"
-install -m 664 "${COPY_SOURCE}/README.md" "${PACKAGE_ROOT}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/README.md"
-install -m 664 "${COPY_SOURCE}/src/example/grafana/SambaService.json" "${PACKAGE_ROOT}/usr/share/doc/samba_exporter-V${SHORT_VERSION}/grafana/SambaService.json"
+install -d -m 775 "${PACKAGE_ROOT}/usr/share/doc/samba_exporter/grafana"
+install -m 664 "${COPY_SOURCE}/README.md" "${PACKAGE_ROOT}/usr/share/doc/samba_exporter/README.md"
+install -m 664 "${COPY_SOURCE}/src/example/grafana/SambaService.json" "${PACKAGE_ROOT}/usr/share/doc/samba_exporter/grafana/SambaService.json"

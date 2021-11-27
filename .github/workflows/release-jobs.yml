@@ -30,9 +30,13 @@ jobs:
                     exit 1
             fi
             if [[ "$TAG" =~ "-pre" ]]; then
+              echo "SAMBA_EXPORTER_PRE_RELEASE=true"
+              echo "SAMBA_EXPORTER_PRE_RELEASE=true" >> $GITHUB_ENV
               echo "It's a pre release. Do a publish dry run for $TAG"
               build/PublishLaunchpadInDocker.sh $TAG dry
             else
+              echo "SAMBA_EXPORTER_PRE_RELEASE=false"
+              echo "SAMBA_EXPORTER_PRE_RELEASE=false" >> $GITHUB_ENV
               echo "Publish tag $TAG on launchpad"
               build/PublishLaunchpadInDocker.sh $TAG
             fi
@@ -65,6 +69,18 @@ jobs:
             SAMBA_EXPORTER_UPLOAD_URL=$(curl -H "Authorization: token $GITHUB_TOKEN" -X GET https://api.github.com/repos/imker25/samba_exporter/releases/tags/$TAG | jq -r ".upload_url")
             echo "SAMBA_EXPORTER_UPLOAD_URL=$SAMBA_EXPORTER_UPLOAD_URL"
             echo "SAMBA_EXPORTER_UPLOAD_URL=$SAMBA_EXPORTER_UPLOAD_URL" >> $GITHUB_ENV
+    - name: Create docs with MkDocs
+      uses: Tiryoh/actions-mkdocs@v0
+      with:
+        mkdocs_version: 'latest' 
+        requirements: 'build/pages/requirements.txt' 
+        configfile: 'build/pages/mkdocs.yml'  
+    - name: Add man pages to pages
+      run: |
+            siteRoot="./build/pages/site"    
+            sudo chmod -R 777 "$siteRoot"
+            mkdir -p "$siteRoot/manpages/"
+            cp -r ./bin/deb-packages/man/*.html "$siteRoot/manpages/"                   
     - name: Upload Release Asset for Ubuntu 21.10
       uses: actions/upload-release-asset@v1
       env:
@@ -101,3 +117,8 @@ jobs:
         asset_path: ./bin/deb-packages/binary/samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~debian10_amd64.deb
         asset_name: samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~debian10_amd64.deb
         asset_content_type: application/zip                                
+    - name: Deploy pages to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: build/pages/site
