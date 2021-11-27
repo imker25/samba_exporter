@@ -88,7 +88,25 @@ jobs:
       with:
         name: samba_exporter-${{ matrix.os }}.deb
         path: ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}_amd64.deb
-        retention-days: 1                          
+        retention-days: 1 
+  build-pages:   
+    name: Create docs for GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v2
+      - name: Create docs
+        uses: Tiryoh/actions-mkdocs@v0
+        with:
+          mkdocs_version: 'latest' 
+          requirements: 'build/pages/requirements.txt' 
+          configfile: 'build/pages/mkdocs.yml' 
+      - name: "Upload Artifact docs pages"
+        uses: actions/upload-artifact@v2
+        with:
+          name: docs-ppages
+          path: build/pages/site/**
+          retention-days: 1                                      
   integration-test-ubuntu:
     needs: build-unit_test
     strategy:

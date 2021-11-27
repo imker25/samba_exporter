@@ -1,0 +1,25 @@
+site_name: Samba exporter - A prometheus exporter for statistic data of the samba file server
+site_url: https://imker25.github.io/samba_exporter
+docs_dir: ./../../docs
+
+theme:
+    name: material
+    locale: en
+    highlightjs: true
+
+markdown_extensions:
+    toc:
+        permalink: true
+    admonition: {}
+
+plugins:
+  - search:
+  - mermaid2:
+
+
+nav:
+  - Start Page: 'index.md'
+  - Installation: 
+    - Supported Versions: Installation/SupportedVersions.md
+    - Installation Guide: Installation/InstallationGuide.md
+  - Source: 'https://github.com/imker25/samba_exporter'
