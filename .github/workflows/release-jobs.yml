@@ -3,7 +3,8 @@ on:
   release:
     types: [published]
 jobs:
-  publish-to-launchpad:
+  publish:
+    name: Publish to Launchpad and Github
     strategy:
       matrix:
         os: [ubuntu-20.04]
@@ -118,6 +119,7 @@ jobs:
         asset_name: samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~debian10_amd64.deb
         asset_content_type: application/zip                                
     - name: Deploy pages to GitHub Pages
+      if: env.SAMBA_EXPORTER_PRE_RELEASE == 'false'
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
