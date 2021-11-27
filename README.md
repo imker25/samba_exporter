@@ -9,4 +9,4 @@ There are packages for several [Ubuntu](https://ubuntu.com/download) and [Debian
 
 ## Documentation
 
-For detailed documentation please take a look at the [projects page](https://imker25.github.io/samba_exporter) or read in the [docs](./docs/Index.md) folder.
+For detailed documentation please take a look at the [projects page](https://imker25.github.io/samba_exporter/Index/) or read in the [docs](./docs/Index.md) folder.
