@@ -208,7 +208,7 @@ jobs:
         SAMBA_EXPORTER_PACKAGE_NAME:  ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
       run: test/installationTest/RunInstallationTest.sh
   release-to-github:
-    needs: [ integration-test-ubuntu, integration-test-buster, integration-test-bullseye, installation-test ]
+    needs: [ integration-test-ubuntu, integration-test-buster, integration-test-bullseye, installation-test, build-pages ]
     runs-on: "ubuntu-20.04"
     if: ((github.ref == 'refs/heads/main') || contains(github.ref, 'release'))
     timeout-minutes: 10
