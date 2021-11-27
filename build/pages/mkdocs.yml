@@ -1,4 +1,4 @@
-site_name: Samba exporter - A prometheus exporter for statistic data of the samba file server
+site_name: Samba Exporter - A prometheus exporter for statistic data of the samba file server
 site_url: https://imker25.github.io/samba_exporter
 docs_dir: ./../../docs
 

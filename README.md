@@ -1,4 +1,4 @@
-# samba_exporter
+# Samba Exporter
 
 A [prometheus exporter](https://prometheus.io/docs/instrumenting/exporters/) for statistic data of the [samba file server](https://www.samba.org/).
 
