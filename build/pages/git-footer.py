@@ -24,6 +24,6 @@ def on_post_page_macros(env):
     """
     gitInfo = mkdocs_macros.context.get_git_info()
     # This will add a (Markdown or HTML) footer
-    footer = "\n---\n<br><sub>Last change at %s by %s - commit: %s<sub>"  %(gitInfo['date'].strftime("%b %d, %Y %H:%M:%S"), gitInfo['author'], gitInfo['short_commit'])
+    footer = "\n<br>\n---\n<br><sub>Last change at %s by %s - commit: %s<sub>"  %(gitInfo['date'].strftime("%b %d, %Y %H:%M:%S"), gitInfo['author'], gitInfo['short_commit'])
     env.raw_markdown += footer
 
