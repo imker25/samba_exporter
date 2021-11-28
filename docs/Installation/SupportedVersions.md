@@ -15,3 +15,4 @@
 | Debian 10  | Buster | yes |
 | Debian 11   | Bullseye | yes |
 | Debian testing  | Bookworm | no |
+
