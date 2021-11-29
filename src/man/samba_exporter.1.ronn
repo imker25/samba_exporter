@@ -77,7 +77,7 @@ And `samba_statusd` always starts when `samba_exporter` is started if not alread
   * `/etc/default/samba_exporter` The configuration file for the samba_exporter service
   * `/run/samba_exporter.request.pipe` The pipe samba_exporter requests the status from samba_statusd
   * `/run/samba_exporter.response.pipe` The pipe samba_statusd answers requests from samba_exporter
-  * `/usr/share/doc/samba_exporter/grafana/SambaService.json` A example dashboard for Grafana 
+  * `/usr/share/doc/samba-exporter/grafana/SambaService.json` A example dashboard for Grafana 
 
 ## BUGS
 

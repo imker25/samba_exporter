@@ -46,3 +46,4 @@ debian/debhelper-build-stamp
 
 
 build/pages/site/**
+build/pages/__pycache__

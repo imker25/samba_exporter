@@ -1,5 +1,11 @@
 samba-exporter (1.5) focal; urgency=low
 
+  [ Tobias Zellner ]
+  * Closes: Bug#37 - Ensure all docs are installed into the same folder, see https://github.com/imker25/samba_exporter/issues/37
+  * Closes: Bug#42 - Add screenshots of the grafana dashboard, see https://github.com/imker25/samba_exporter/issues/42
+  * Closes: Bug#38 - Enhance doc creration, see https://github.com/imker25/samba_exporter/issues/38 
+  * Closes: Bug#41 - Create a Mermaid diagram for the internal workflow, see https://github.com/imker25/samba_exporter/issues/41
+
  -- Tobias Zellner <tobi@backfrak.de> Sat, 27 Nov 2021 18:30:22 +0100
 
 samba-exporter (1.4) focal; urgency=low
