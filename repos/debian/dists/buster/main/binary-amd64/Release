@@ -1,0 +1,5 @@
+Component: main
+Origin: imker25.github.io/samba_exporter/
+Label: imker25.github.io/samba_exporter/
+Architecture: amd64
+Description: Personal repository for samba-exporter packages

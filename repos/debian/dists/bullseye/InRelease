@@ -1,0 +1,33 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: imker25.github.io/samba_exporter/
+Label: imker25.github.io/samba_exporter/
+Codename: bullseye
+Date: Mon, 29 Nov 2021 20:41:57 UTC
+Architectures: amd64
+Components: main
+Description: Personal repository for samba-exporter packages
+MD5Sum:
+ 2bd5ad9cc6066615abe8852bc64a4563 980 main/binary-amd64/Packages
+ ef32ba38df6eec5f11d6dbdc9c52f0d1 586 main/binary-amd64/Packages.gz
+ de839c73b53c7e1faf2f9d3d248bc3cd 180 main/binary-amd64/Release
+SHA1:
+ 776b2e87c90d65f891c9f1d639984a8819a1fc38 980 main/binary-amd64/Packages
+ 1c87322773cb372e97c35e3c06bed64824392e0c 586 main/binary-amd64/Packages.gz
+ 64634860d65a043f07360b0de9a2dd2c60fe9d16 180 main/binary-amd64/Release
+SHA256:
+ e4eb8ab35d9adbd81250da298657f63aba5431554cdbaf2888f141521fba699e 980 main/binary-amd64/Packages
+ 8842757f40f72d9163b6069d092f5e5a36fb50f5f7f7eccca0ea6586d76b757d 586 main/binary-amd64/Packages.gz
+ d863fc2fbffb928988032b869897f10697f2d98909508b92fc74fafc7f334798 180 main/binary-amd64/Release
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEy26Q6ewyOFCxbBwUo4oQkcAYrmgFAmGlOxUACgkQo4oQkcAY
+rmh0jQf/RgWwmpHgeypf8ttZrGgZAdDoaow/PTBIa/RNoZVNUGCTlWni1q0FhUJ+
+0aC2TJUjXuZT56KlfdIYfSwcuwUjOfqULYDbptxuZNdmhCeNpqTmQTarU/XgJir5
+0Z9IvUEQ+Tubxm1Ne6qPXuntNQqa4vOIcLgzeMIiYuo5Qnl+W0wLCCYMfoVjZ5fs
+3zHReIxBNHG2nrGhaPJzOLyXt5d+bKsiMM3CMqshFdW8cKQrBqkG9vGdDx7NrpMW
+IE5XQE1+xWSaIxydL6CHYRKccXJLW7Ki19ys7nDmfUfGKk70ixOYLRmiPILq5HAE
+D7hp0Gn4R0ykqtglKMu9G31T7I0C5A==
+=oJXN
+-----END PGP SIGNATURE-----
