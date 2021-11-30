@@ -77,11 +77,19 @@ jobs:
         requirements: 'build/pages/requirements.txt' 
         configfile: 'build/pages/mkdocs.yml'  
     - name: Add man pages to pages
-      run: |
-            siteRoot="./build/pages/site"    
-            sudo chmod -R 777 "$siteRoot"
-            mkdir -p "$siteRoot/manpages/"
-            cp -r ./bin/deb-packages/man/*.html "$siteRoot/manpages/"                   
+      env:
+        LAUNCHPAD_GPG_KEY_PUB: ${{ secrets.LAUNCHPAD_GPG_KEY_PUB }}
+        LAUNCHPAD_GPG_KEY_PRV: ${{ secrets.LAUNCHPAD_GPG_KEY_PRV }}    
+      run: |   
+            sudo chmod -R 777 "./build/pages/site"
+            echo "GITHUB_REF=$GITHUB_REF"
+            if [[ "$GITHUB_REF" = refs/tags/* ]]; then
+                    TAG="${GITHUB_REF/refs\/tags\/}" 
+            else 
+                    echo "Not a tag given as ref. Will exit"
+                    exit 1
+            fi
+            ./build/PatchPagesContent.sh $TAG                 
     - name: Upload Release Asset for Ubuntu 21.10
       uses: actions/upload-release-asset@v1
       env:
