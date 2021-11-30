@@ -5,18 +5,20 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
+<meta content="Documentaion for Samba Exporter - A prometheus exporter for statistic data of the samba file server" name="description"/>
 <link href="https://imker25.github.io/samba_exporter/DeveloperDocs/ActionsAndReleases/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.2.3, mkdocs-material-7.3.6" name="generator"/>
-<title>Release Process - Samba Exporter - A prometheus exporter for statistic data of the samba file server</title>
-<link href="../../assets/stylesheets/main.a57b2b03.min.css" rel="stylesheet"/>
-<link href="../../assets/stylesheets/palette.3f5d1f46.min.css" rel="stylesheet"/>
+<meta content="mkdocs-1.2.3, mkdocs-material-8.0.1" name="generator"/>
+<title>Release Process - Samba Exporter - A prometheus exporter for the samba file server</title>
+<link href="../../assets/stylesheets/main.816931ca.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.9204c3b2.min.css" rel="stylesheet"/>
+<meta content="#757575" name="theme-color"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
-<style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+<style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?"../..":"../.."),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
 </head>
-<body data-md-color-accent="none" data-md-color-primary="none" data-md-color-scheme="" dir="ltr">
-<script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+<body data-md-color-accent="light-blue" data-md-color-primary="grey" data-md-color-scheme="slate" dir="ltr">
 <input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
@@ -29,8 +31,8 @@
 </div>
 <header class="md-header" data-md-component="header">
 <nav aria-label="Header" class="md-header__inner md-grid">
-<a aria-label="Samba Exporter - A prometheus exporter for statistic data of the samba file server" class="md-header__button md-logo" data-md-component="logo" href="../.." title="Samba Exporter - A prometheus exporter for statistic data of the samba file server">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"></path></svg>
+<a aria-label="Samba Exporter - A prometheus exporter for the samba file server" class="md-header__button md-logo" data-md-component="logo" href="https://imker25.github.io/samba_exporter/Index" title="Samba Exporter - A prometheus exporter for the samba file server">
+<img alt="logo" src="../../assets/samba-exporter.icon.svg"/>
 </a>
 <label class="md-header__button md-icon" for="__drawer">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"></path></svg>
@@ -39,7 +41,7 @@
 <div class="md-header__ellipsis">
 <div class="md-header__topic">
 <span class="md-ellipsis">
-            Samba Exporter - A prometheus exporter for statistic data of the samba file server
+            Samba Exporter - A prometheus exporter for the samba file server
           </span>
 </div>
 <div class="md-header__topic" data-md-component="header-topic">
@@ -81,6 +83,16 @@
 </div>
 </div>
 </div>
+<div class="md-header__source">
+<a class="md-source" data-md-component="source" href="https://github.com/imker25/samba_exporter/" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    samba_exporter
+  </div>
+</a>
+</div>
 </nav>
 </header>
 <div class="md-container" data-md-component="container">
@@ -89,13 +101,23 @@
 <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
 <div class="md-sidebar__scrollwrap">
 <div class="md-sidebar__inner">
-<nav aria-label="Navigation" class="md-nav md-nav--primary" data-md-level="0">
+<nav aria-label="Navigation" class="md-nav md-nav--primary md-nav--integrated" data-md-level="0">
 <label class="md-nav__title" for="__drawer">
-<a aria-label="Samba Exporter - A prometheus exporter for statistic data of the samba file server" class="md-nav__button md-logo" data-md-component="logo" href="../.." title="Samba Exporter - A prometheus exporter for statistic data of the samba file server">
-<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"></path></svg>
+<a aria-label="Samba Exporter - A prometheus exporter for the samba file server" class="md-nav__button md-logo" data-md-component="logo" href="https://imker25.github.io/samba_exporter/Index" title="Samba Exporter - A prometheus exporter for the samba file server">
+<img alt="logo" src="../../assets/samba-exporter.icon.svg"/>
 </a>
-    Samba Exporter - A prometheus exporter for statistic data of the samba file server
+    Samba Exporter - A prometheus exporter for the samba file server
   </label>
+<div class="md-nav__source">
+<a class="md-source" data-md-component="source" href="https://github.com/imker25/samba_exporter/" title="Go to repository">
+<div class="md-source__icon md-icon">
+<svg viewbox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"></path></svg>
+</div>
+<div class="md-source__repository">
+    samba_exporter
+  </div>
+</a>
+</div>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
 <a class="md-nav__link" href="../../Index/">
@@ -103,7 +125,7 @@
       </a>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" id="__nav_2" type="checkbox"/>
+<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_2" id="__nav_2" type="checkbox"/>
 <label class="md-nav__link" for="__nav_2">
           Installation
           <span class="md-nav__icon md-icon"></span>
@@ -128,7 +150,7 @@
 </nav>
 </li>
 <li class="md-nav__item md-nav__item--nested">
-<input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" id="__nav_3" type="checkbox"/>
+<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3" id="__nav_3" type="checkbox"/>
 <label class="md-nav__link" for="__nav_3">
           Users
           <span class="md-nav__icon md-icon"></span>
@@ -200,8 +222,13 @@
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#release-process">
-    Release process
+<a class="md-nav__link" href="#release-pipeline">
+    Release Pipeline
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#creation-of-release-branches">
+    Creation of release branches
   </a>
 </li>
 </ul>
@@ -225,91 +252,126 @@
 </div>
 </div>
 </div>
-<div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
-<div class="md-sidebar__scrollwrap">
-<div class="md-sidebar__inner">
-<nav aria-label="Table of contents" class="md-nav md-nav--secondary">
-<label class="md-nav__title" for="__toc">
-<span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-<ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
-<li class="md-nav__item">
-<a class="md-nav__link" href="#cicd-pipeline">
-    CI/CD Pipeline
-  </a>
-</li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="#release-process">
-    Release process
-  </a>
-</li>
-</ul>
-</nav>
-</div>
-</div>
-</div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
+<a class="md-content__button md-icon" href="https://github.com/imker25/samba_exporter/edit/main/docs/DeveloperDocs/ActionsAndReleases.md" title="Edit this page">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"></path></svg>
+</a>
 <h1 id="github-actions-and-release-process">GitHub Actions and Release Process<a class="headerlink" href="#github-actions-and-release-process" title="Permanent link">¶</a></h1>
 <p>This page give information on the GitHub Actions and Release Process used by the project.</p>
 <h2 id="cicd-pipeline">CI/CD Pipeline<a class="headerlink" href="#cicd-pipeline" title="Permanent link">¶</a></h2>
-<p>For continuous integration and deployment this project uses <a href="https://github.com/imker25/samba_exporter/actions">GitHub Actions</a>. The main pipeline is defined in <code>.github/workflows/ci-jobs.yml</code>. This pipeline will do:</p>
+<p>For continuous integration and deployment this project uses <a href="https://github.com/imker25/samba_exporter/actions">GitHub Actions</a>. The main pipeline is defined in <code>.github/workflows/ci-jobs.yml</code>. This pipeline will will start on every push to github and then run the steps shown below:</p>
+<div class="mermaid">%%{init: {'theme':'forest'}}%%
+graph TD;
+    push(Developer push to GitHub)
+    build[Build and unit tests]
+    docs[Test doc pages creation]
+    insTest[Installation tests]
+    intTest[Integration tests]
+    checkBranch{Check branch}
+    mainB((main))
+    releaseB((release/*))
+    otherB((other branch))
+    preRel[Create GitHub -pre release]
+    releaseP[Create GitHub release]
+    done(Pipeline end)
+
+    push--&gt;build;
+    push--&gt;docs;
+    build--&gt;insTest;
+    build--&gt;intTest;
+    docs--&gt;checkBranch;
+    insTest--&gt;checkBranch;
+    intTest--&gt;checkBranch;
+    checkBranch--&gt;mainB
+    checkBranch--&gt;releaseB
+    checkBranch--&gt;otherB
+    releaseB--&gt;releaseP
+    mainB--&gt;preRel
+    otherB--&gt;done
+    releaseP--&gt;done
+    preRel--&gt;done
+</div>
+<h2 id="release-pipeline">Release Pipeline<a class="headerlink" href="#release-pipeline" title="Permanent link">¶</a></h2>
+<p>After a GitHub release (also -pre) is done from the the CI/CD pipeline the <code>.github/workflows/release-jobs.yml</code> will be triggered. This job does the following workflow:</p>
+<div class="mermaid">%%{init: {'theme':'forest'}}%%
+graph TD;
+    release(GitHub release created)
+    buildFocal[Build focal *.deb package]
+    buildImpish[Build impish *.deb package]
+    buildBuster[Build buster *.deb package]
+    buildBullseye[Build bullseye *.deb package]
+    docs[Documentation pages creation]
+    repo[Debian repository creation]
+    releaseFocalLP[Push focal *.deb to Launchpad]
+    releaseImpishLP[Push impish *.deb to Launchpad]
+    releaseFocalGR[Add focal *.deb to GitHub release]
+    releaseImpishGR[Add impish *.deb to GitHub release]    
+    releaseBullseyeGR[Add bullseye *.deb to GitHub release]
+    releaseBusterGR[Add buster *.deb to GitHub release] 
+    pagesRelease[Documentation and repository release on Github pages]
+    done(Pipeline end)
+    checkRelease1{Check release}
+    preRelease1(( -pre release))
+    fullRelease1((release))
+    checkRelease2{Check release}
+    preRelease2(( -pre release))
+    fullRelease2((release))
+    checkRelease3{Check release}
+    preRelease3(( -pre release))
+    fullRelease3((release))
+
+    release--&gt;buildFocal
+    buildFocal--&gt;checkRelease1
+    checkRelease1--&gt;preRelease1
+    checkRelease1--&gt;fullRelease1
+    fullRelease1--&gt;releaseFocalLP
+    releaseFocalLP--&gt;buildImpish
+    preRelease1--&gt;buildImpish
+
+    buildImpish--&gt;checkRelease2
+    checkRelease2--&gt;preRelease2
+    checkRelease2--&gt;fullRelease2
+    fullRelease2--&gt;releaseImpishLP
+    releaseImpishLP--&gt;buildBullseye
+    preRelease2--&gt;buildBullseye
+
+    buildBullseye--&gt;buildBuster
+    buildBuster--&gt;docs
+    docs--&gt;repo
+    repo--&gt;releaseFocalGR
+    releaseFocalGR--&gt;releaseImpishGR
+    releaseImpishGR--&gt;releaseBullseyeGR
+    releaseBullseyeGR--&gt;releaseBusterGR
+    releaseBusterGR--&gt;checkRelease3
+
+    checkRelease3--&gt;preRelease3
+    checkRelease3--&gt;fullRelease3
+    fullRelease3--&gt;pagesRelease
+    pagesRelease--&gt;done
+    preRelease3--&gt;done
+</div>
+<p>Whenever a *.deb package is uploaded to the <a href="https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa">samba-exporter Launchpad PPA</a> launchpad will start a own release process. When this process is finished (usually takes about an hour), users can download and install the new package version from the PPA.</p>
+<h2 id="creation-of-release-branches">Creation of release branches<a class="headerlink" href="#creation-of-release-branches" title="Permanent link">¶</a></h2>
+<p>The release process of this project is fully automated. To create a new release (not -pre) of the software use the script <code>build/PrepareRelease.sh</code>. Before running the script ensure you are on <code>main</code> branch and got the latest changes from GitHub origin. This script will:</p>
 <ul>
-<li>On push to any branch on github</li>
-<li>Build the project and the man pages</li>
-<li>Run unit tests defined in <code>*_test.go</code></li>
-<li>Run integration tests from <code>test/integrationTest/scripts/RunIntegrationTests.sh</code></li>
-<li>Run installation tests from <code>test/installationTest/RunInstallationTest.sh</code></li>
-<li>Build a debian binary package (<code>*.deb</code>)</li>
-<li>On push to main and release/* branch additionally</li>
-<li>Upload the binary package (<code>*.deb</code>) as <a href="https://github.com/imker25/samba_exporter/releases">GitHub Release</a></li>
-<li>In case it's the main branch the release will be a pre release</li>
-<li>On release/* branches it will be a full public release</li>
-</ul>
-<p>After a full public release is done from the the CI/CD run on the release/* branch <code>.github/workflows/release-jobs.yml</code> will be triggered. This job runs <code>build/PublishLaunchpadInDocker.sh</code> to:</p>
-<ul>
-<li>Create a binary and source package for Ubuntu 20.04 out of the just created release</li>
-<li>Modifies the sources so a native debian build works</li>
-<li>Create the binary package</li>
-<li>Create the source package</li>
-<li>Pushes the sources modified to a ubuntu-20.04 branch on <a href="https://code.launchpad.net/~imker/samba-exporter/+git/samba-exporter">launchpad git repository</a></li>
-<li>Uploads the source package to <a href="https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa">samba-exporter launchpad ppa</a><ul>
-<li>Launchpad will trigger a own release workflow now and release the binary package on the ppa as well</li>
-</ul>
-</li>
-<li>Create a binary and source package for Ubuntu 21.10 out of the just created release</li>
-<li>Modifies the sources so a native debian build works</li>
-<li>Create the binary package</li>
-<li>Create the source package</li>
-<li>Pushes the sources modified to a ubuntu-21.10 branch on <a href="https://code.launchpad.net/~imker/samba-exporter/+git/samba-exporter">launchpad git repository</a></li>
-<li>Uploads the source package to <a href="https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa">samba-exporter launchpad ppa</a><ul>
-<li>Launchpad will trigger a own release workflow now and release the binary package on the ppa as well</li>
-</ul>
-</li>
-<li>Create a binary and source package for Debian 10 out of the just created release</li>
-<li>Modifies the sources so a native debian build works</li>
-<li>Create the binary package</li>
-<li>Pushes the sources modified to a debian-10 branch on <a href="https://code.launchpad.net/~imker/samba-exporter/+git/samba-exporter">launchpad git repository</a></li>
-<li>Create a binary and source package for Debian 11 out of the just created release</li>
-<li>Modifies the sources so a native debian build works</li>
-<li>Create the binary package</li>
-<li>Pushes the sources modified to a debian-11 branch on <a href="https://code.launchpad.net/~imker/samba-exporter/+git/samba-exporter">launchpad git repository</a> </li>
-</ul>
-<p>All created binary debian packages will be added as asset to the just created release, so users can download them.</p>
-<h2 id="release-process">Release process<a class="headerlink" href="#release-process" title="Permanent link">¶</a></h2>
-<p>The release process of this project is fully automated. To create a new release of the software use the script <code>build/PrepareRelease.sh</code>. Before running the script ensure you got the latest changes from github origin. This script then will:</p>
-<ul>
-<li>Create a release branch from the current state at the main branch</li>
-<li>Update the <code>VersionMaster.txt</code> with a new increment version on main branch</li>
-<li>Update the <code>changelog</code> with a stub entry for the new version on main branch</li>
+<li>Create a <strong>release</strong> branch from the current state at the main branch</li>
+<li>Update the <code>VersionMaster.txt</code> with a new increment version on <strong>main</strong> branch</li>
+<li>Update the <code>changelog</code> with a stub entry for the new version on <strong>main</strong> branch</li>
 <li>Commit the changes on the main branch</li>
-<li>Push all changes on main and the new release branch to github</li>
+<li>Push all changes on <strong>main</strong> and the <strong>new release</strong> branch to GitHub</li>
 </ul>
-<p>Once this changes are pushed to github the CI/CD pipeline will start to run for both, main and the new release/* branch.</p>
+<p>Once this changes are pushed to github the CI/CD pipeline will start to run for both, <code>main</code> and the new <code>release</code> branch and create a new <em>-pre Release</em> from main as well as a new <em>full Release</em> from the new release branch. 
+<br/></p>
+<hr/>
+<p><br/><sub>Last change at Nov 30, 2021 14:55:09 by imker - commit: 2d0cb49<sub></sub></sub></p>
 </article>
 </div>
 </div>
+<a class="md-top md-icon" data-md-component="top" data-md-state="hidden" href="#">
+<svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path></svg>
+            Back to top
+          </a>
 </main>
 <footer class="md-footer">
 <nav aria-label="Footer" class="md-footer__inner md-grid">
@@ -329,13 +391,16 @@
 </nav>
 <div class="md-footer-meta md-typeset">
 <div class="md-footer-meta__inner md-grid">
-<div class="md-footer-copyright">
-        
-        
-          Made with
-          <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
-            Material for MkDocs
-          </a>
+<div class="md-copyright">
+<div class="md-copyright__highlight">
+      Apache-2.0 License
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" rel="noopener" target="_blank">
+      Material for MkDocs
+    </a>
 </div>
 </div>
 </div>
@@ -344,7 +409,7 @@
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
-<script src="../../assets/javascripts/bundle.b1047164.min.js"></script>
-</body>
+<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.tracking", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.01824240.min.js"}</script>
+<script src="../../assets/javascripts/bundle.a87c2adc.min.js"></script>
+<script src="https://unpkg.com/mermaid@8.8.0/dist/mermaid.min.js"></script><script>mermaid.initialize({});</script></body>
 </html>
