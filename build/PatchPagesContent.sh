@@ -115,9 +115,15 @@ docker run --mount type=bind,source="$MOUNT_TO_DOCKER_DIR",target="/build_result
 if [ "$?" != "0" ]; then 
     echo "Error during docker run"
     popd
+    echo "# ###################################################################"
+    echo "Delete containers"
+    docker rmi -f $(docker images --filter=reference="page-publish*" -q) 
     exit 1
 fi
 
+echo "# ###################################################################"
+echo "Delete containers"
+docker rmi -f $(docker images --filter=reference="page-publish*" -q) 
 
 echo "# ###################################################################"
 echo "Copy files to '$PAGES_COPY_TARGET'"
@@ -133,7 +139,7 @@ if [ -d "$PAGES_COPY_TARGET/repos/debian" ]; then
 fi
 
 echo "Move the debian repository to pages dir"
-mv "$REPO_COPY_SOURCE/repos" "$PAGES_COPY_TARGET"
+mv -v "$REPO_COPY_SOURCE/repos" "$PAGES_COPY_TARGET"
 if [ ! -d "$PAGES_COPY_TARGET/repos/debian" ]; then 
     echo "Error: The debian repository dir target location '$PAGES_COPY_TARGET/repos/debian' was not found "
     popd
@@ -142,6 +148,12 @@ fi
 
 echo "Copy the html man pages"
 mkdir -p "$PAGES_COPY_TARGET/manpages/"
-cp -r "$MAN_PAGE_COPY_SOURCE"/*.html "$PAGES_COPY_TARGET/manpages/"
+cp -rv "$MAN_PAGE_COPY_SOURCE"/*.html "$PAGES_COPY_TARGET/manpages/"
+
+echo "Copy the index.html"
+cp -v "$BRANCH_ROOT/src/page/index.html" "$PAGES_COPY_TARGET"
 
 popd
+
+echo "# ###################################################################"
+echo "done"
