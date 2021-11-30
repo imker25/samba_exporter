@@ -52,13 +52,14 @@ graph TD;
     buildBuster[Build buster *.deb package]
     buildBullseye[Build bullseye *.deb package]
     docs[Documentation pages creation]
+    repo[Debian repository creation]
     releaseFocalLP[Push focal *.deb to Launchpad]
     releaseImpishLP[Push impish *.deb to Launchpad]
     releaseFocalGR[Add focal *.deb to GitHub release]
     releaseImpishGR[Add impish *.deb to GitHub release]    
     releaseBullseyeGR[Add bullseye *.deb to GitHub release]
     releaseBusterGR[Add buster *.deb to GitHub release] 
-    pagesRelease[Documentation release on Github pages]
+    pagesRelease[Documentation and repository release on Github pages]
     done(Pipeline end)
     checkRelease1{Check release}
     preRelease1(( -pre release))
@@ -87,7 +88,8 @@ graph TD;
 
     buildBullseye-->buildBuster
     buildBuster-->docs
-    docs-->releaseFocalGR
+    docs-->repo
+    repo-->releaseFocalGR
     releaseFocalGR-->releaseImpishGR
     releaseImpishGR-->releaseBullseyeGR
     releaseBullseyeGR-->releaseBusterGR

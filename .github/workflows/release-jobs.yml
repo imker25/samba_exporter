@@ -76,7 +76,7 @@ jobs:
         mkdocs_version: 'latest' 
         requirements: 'build/pages/requirements.txt' 
         configfile: 'build/pages/mkdocs.yml'  
-    - name: Add man pages to pages
+    - name: Add debian repository and man pages to pages
       env:
         LAUNCHPAD_GPG_KEY_PUB: ${{ secrets.LAUNCHPAD_GPG_KEY_PUB }}
         LAUNCHPAD_GPG_KEY_PRV: ${{ secrets.LAUNCHPAD_GPG_KEY_PRV }}    
