@@ -1,5 +1,9 @@
 samba-exporter (1.6) focal; urgency=low
 
+  [ Tobias Zellner ]
+  * Closes: Bug#46 - Ensure flow charts look good on project page as well as for local reading, see https://github.com/imker25/samba_exporter/issues/46
+  * Closes: Bug#47 - Add all docs/**.md to installation, see https://github.com/imker25/samba_exporter/issues/47 
+
  -- Tobias Zellner <tobi@backfrak.de> Tue, 30 Nov 2021 15:13:26 +0100
 
 samba-exporter (1.5) focal; urgency=low

@@ -8,7 +8,7 @@ Since the tool [smbstatus](https://www.samba.org/samba/docs/current/man-html/smb
 Both services can communicate using a named pipe owned by a common group, see diagram below.
 
 ```mermaid
-%%{init: {'theme':'forest'}}%%
+%%{init: {'theme':'dark'}}%%
 sequenceDiagram
     participant samba_exporter
     participant request.pipe

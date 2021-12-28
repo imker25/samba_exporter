@@ -7,7 +7,7 @@ This page give information on the GitHub Actions and Release Process used by the
 For continuous integration and deployment this project uses [GitHub Actions](https://github.com/imker25/samba_exporter/actions). The main pipeline is defined in `.github/workflows/ci-jobs.yml`. This pipeline will will start on every push to github and then run the steps shown below:
 
 ```mermaid
-%%{init: {'theme':'forest'}}%%
+%%{init: {'theme':'dark'}}%%
 graph TD;
     push(Developer push to GitHub)
     build[Build and unit tests]
@@ -44,7 +44,7 @@ graph TD;
 After a GitHub release (also -pre) is done from the the CI/CD pipeline the `.github/workflows/release-jobs.yml` will be triggered. This job does the following workflow:
 
 ```mermaid
-%%{init: {'theme':'forest'}}%%
+%%{init: {'theme':'dark'}}%%
 graph TD;
     release(GitHub release created)
     buildFocal[Build focal *.deb package]
