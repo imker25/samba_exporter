@@ -1,6 +1,8 @@
 samba-exporter (1.7) focal; urgency=low
 
- -- Tobias Zellner <tobi@backfrak.de> Wed, 29 Dec 2021 14:40:34 +0100
+  [ Tobias Zellner ]
+  Fix debian changelog format
+  -- Tobias Zellner <tobi@backfrak.de> Wed, 29 Dec 2021 14:40:34 +0100
 
 samba-exporter (1.6) focal; urgency=low
 
@@ -9,7 +11,7 @@ samba-exporter (1.6) focal; urgency=low
   * Closes: Bug#47 - Add all docs/**.md to installation, see https://github.com/imker25/samba_exporter/issues/47 
   * Closes: Bug#48 - Ensure src/example/grafana/SambaService.json is not installed as *.gz, see https://github.com/imker25/samba_exporter/issues/48 
 
--- Tobias Zellner <tobi@backfrak.de> Tue, 30 Nov 2021 15:13:26 +0100
+  -- Tobias Zellner <tobi@backfrak.de> Tue, 30 Nov 2021 15:13:26 +0100
 
 samba-exporter (1.5) focal; urgency=low
 
@@ -20,30 +22,26 @@ samba-exporter (1.5) focal; urgency=low
   * Closes: Bug#41 - Create a Mermaid diagram for the internal workflow, see https://github.com/imker25/samba_exporter/issues/41
   * Closes: Bug#39 - Create a debian repo in the GitHub Page, see https://github.com/imker25/samba_exporter/issues/39
   * Closes: Bug#40 - Automate the process of publishing *.deb to GitHub pages, see https://github.com/imker25/samba_exporter/issues/40
-
--- Tobias Zellner <tobi@backfrak.de> Sat, 27 Nov 2021 18:30:22 +0100
+  -- Tobias Zellner <tobi@backfrak.de> Sat, 27 Nov 2021 18:30:22 +0100
 
 samba-exporter (1.4) focal; urgency=low
 
   [ Tobias Zellner ]
   * Closes: Bug#34 - Create a project webpage with documentation, see https://github.com/imker25/samba_exporter/issues/34
-
--- Tobias Zellner <tobi@backfrak.de> Fri, 19 Nov 2021 14:59:36 +0100
+  -- Tobias Zellner <tobi@backfrak.de> Fri, 19 Nov 2021 14:59:36 +0100
 
 samba-exporter (1.3) focal; urgency=low
 
   [ Tobias Zellner ]
   * Closes: Bug#33 - Support Debian Versions, see https://github.com/imker25/samba_exporter/issues/32
   * Feature: All packages released on Github are build by the debian build system
-
--- Tobias Zellner <tobi@backfrak.de> Mon, 08 Nov 2021 20:01:35 +0100
+  -- Tobias Zellner <tobi@backfrak.de> Mon, 08 Nov 2021 20:01:35 +0100
 
 samba-exporter (1.2) focal; urgency=low
 
   [ Tobias Zellner ]
   * Closes: Problem with timestamps in "Fri Nov 5 11:07:13 PM 2021 CET" instead of "Fri Nov  5 11:07:13 PM 2021 CET" format. 
-
--- Tobias Zellner <tobi@backfrak.de> Sun, 31 Oct 2021 19:52:55 +0100
+  -- Tobias Zellner <tobi@backfrak.de> Sun, 31 Oct 2021 19:52:55 +0100
 
 samba-exporter (1.1) focal; urgency=low
 
@@ -52,8 +50,7 @@ samba-exporter (1.1) focal; urgency=low
   * Closes: Bug#28 - Support multible ubuntu versions, see https://github.com/imker25/samba_exporter/issues/28
   * Closes: Bug#29 - Run PublishLaunchpadInDocker.sh with pre releases, see https://github.com/imker25/samba_exporter/issues/29
   * Closes: Bug#30 - Ensure all packages include the same files, see https://github.com/imker25/samba_exporter/issues/30
-
--- Tobias Zellner <tobi@backfrak.de> Fri, 17 Sep 2021 19:53:21 +0200
+  -- Tobias Zellner <tobi@backfrak.de> Fri, 17 Sep 2021 19:53:21 +0200
 
 samba-exporter (1.0) focal; urgency=low
 
@@ -61,107 +58,92 @@ samba-exporter (1.0) focal; urgency=low
   * Closes: Bug#23 - Cleanup docs and messages, see https://github.com/imker25/samba_exporter/issues/23
   * Fix issues with the publish script
   * Change to a 1.0 release  
-
--- Tobias Zellner <tobi@backfrak.de>  Fri, 17 Sep 2021 19:36:15 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Fri, 17 Sep 2021 19:36:15 +0200
 
 samba-exporter (0.7) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Closes: Bug#21 - Automate the workflow to release on launchpad, see https://github.com/imker25/samba_exporter/issues/21
   * Fix issues with the deb build on launchpad  
-
--- Tobias Zellner <tobi@backfrak.de>  Tue, 24 Aug 2021 23:06:50 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Tue, 24 Aug 2021 23:06:50 +0200
 
 samba-exporter (0.6.13) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Fix build, so version is set in to the executables correctly
-
--- Tobias Zellner <tobi@backfrak.de>  Sun, 12 Sep 2021 19:13:15 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Sun, 12 Sep 2021 19:13:15 +0200
 
 samba-exporter (0.6.12) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Fix dependencies for debian build system, try 2
-
--- Tobias Zellner <tobi@backfrak.de>  Mon, 06 Sep 2021 20:04:26 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Mon, 06 Sep 2021 20:04:26 +0200
 
 samba-exporter (0.6.11) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Fix dependencies for debian build system, try 1
-
--- Tobias Zellner <tobi@backfrak.de>  Sun, 05 Sep 2021 14:19:10 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Sun, 05 Sep 2021 14:19:10 +0200
 
 samba-exporter (0.6.10) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Use dh_golang
-
--- Tobias Zellner <tobi@backfrak.de>  Sat, 04 Sep 2021 13:32:00 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Sat, 04 Sep 2021 13:32:00 +0200
 
 samba-exporter (0.6.9) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Remove gradle build system
-
--- Tobias Zellner <tobi@backfrak.de>  Sat, 04 Sep 2021 12:45:43 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Sat, 04 Sep 2021 12:45:43 +0200
 
 samba-exporter (0.6.8) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Fix build on launchpad, ensure build uses installed go modules (add GOCACHE)
-
--- Tobias Zellner <tobi@backfrak.de>  Wed, 01 Sep 2021 20:40:01 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Wed, 01 Sep 2021 20:40:01 +0200
 
 samba-exporter (0.6.7) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Fix build on launchpad, ensure build uses installed go modules (add GOPATH)
-
--- Tobias Zellner <tobi@backfrak.de>  Wed, 01 Sep 2021 20:24:01 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Wed, 01 Sep 2021 20:24:01 +0200
 
 samba-exporter (0.6.6) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Fix build on launchpad, ensure build uses installed go modules (update go.sum)
-
--- Tobias Zellner <tobi@backfrak.de>  Tue, 31 Aug 2021 21:33:05 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Tue, 31 Aug 2021 21:33:05 +0200
 
 samba-exporter (0.6.5) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Fix build on launchpad, ensure build uses installed go modules
-
--- Tobias Zellner <tobi@backfrak.de>  Mon, 30 Aug 2021 18:36:50 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Mon, 30 Aug 2021 18:36:50 +0200
 
 samba-exporter (0.6.4) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Fix build on launchpad, ensure build run outside git repository (try 2)
-
--- Tobias Zellner <tobi@backfrak.de>  Mon, 30 Aug 2021 18:11:40 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Mon, 30 Aug 2021 18:11:40 +0200
 
 samba-exporter (0.6.3) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Fix build on launchpad, ensure build run outside git repository
-
--- Tobias Zellner <tobi@backfrak.de>  Mon, 30 Aug 2021 17:59:40 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Mon, 30 Aug 2021 17:59:40 +0200
 
 samba-exporter (0.6.2) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Fix build on launchpad Try 2
-
--- Tobias Zellner <tobi@backfrak.de>  Mon, 30 Aug 2021 16:58:40 +0200 
+  -- Tobias Zellner <tobi@backfrak.de>  Mon, 30 Aug 2021 16:58:40 +0200 
 
 samba-exporter (0.6.1) focal; urgency=low
 
   [ Tobias Zellner ] 
   * Fix build on launchpad
-
--- Tobias Zellner <tobi@backfrak.de>  Sun, 29 Aug 2021 16:45:40 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Sun, 29 Aug 2021 16:45:40 +0200
 
 samba-exporter (0.6) focal; urgency=low
 
@@ -169,8 +151,7 @@ samba-exporter (0.6) focal; urgency=low
   * Closes: Bug#18 - Fix problems in the debian package found with lintian, see https://github.com/imker25/samba_exporter/issues/18 
   * Closes: Bug#19 - Add man pages for the executables, see https://github.com/imker25/samba_exporter/issues/19
   * Internal Enhancement: Add debian style build
-
--- Tobias Zellner <tobi@backfrak.de>  Mon, 24 Aug 2021 15:04:55 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Mon, 24 Aug 2021 15:04:55 +0200
 
 samba-exporter (0.5) focal; urgency=high
 
@@ -178,8 +159,7 @@ samba-exporter (0.5) focal; urgency=high
   * Closes: Bug#17 Stabilizes the pipe communication, see https://github.com/imker25/samba_exporter/issues/17 
   * Feature: Add `-request-timeout` option to samba_exporter
   * Feature: Add example configurations for grafana and prometheus
-
--- Tobias Zellner <tobi@backfrak.de>  Fri, 18 Jun 2021 16:12:55 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Fri, 18 Jun 2021 16:12:55 +0200
 
 samba-exporter (0.4) focal; urgency=low
 
@@ -187,5 +167,4 @@ samba-exporter (0.4) focal; urgency=low
   * Feature: Enhanced metrics
   * Enhanced: logging for type conversion errors
   * Internal Enhancement: Adapt folder structure for compatibility to go tools and VS Code plugins
-
--- Tobias Zellner <tobi@backfrak.de>  Tue, 15 Jun 2021 10:45:55 +0200
+  -- Tobias Zellner <tobi@backfrak.de>  Tue, 15 Jun 2021 10:45:55 +0200
