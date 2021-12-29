@@ -8,15 +8,15 @@
 <meta content="Documentaion for Samba Exporter - A prometheus exporter for statistic data of the samba file server" name="description"/>
 <link href="https://imker25.github.io/samba_exporter/DeveloperDocs/ActionsAndReleases/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.2.3, mkdocs-material-8.0.1" name="generator"/>
+<meta content="mkdocs-1.2.3, mkdocs-material-8.1.3" name="generator"/>
 <title>Release Process - Samba Exporter - A prometheus exporter for the samba file server</title>
-<link href="../../assets/stylesheets/main.816931ca.min.css" rel="stylesheet"/>
-<link href="../../assets/stylesheets/palette.9204c3b2.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.edf004c2.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/palette.e6a45f82.min.css" rel="stylesheet"/>
 <meta content="#757575" name="theme-color"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
 <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
-<script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?"../..":"../.."),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
+<script>__md_scope=new URL("../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
 </head>
 <body data-md-color-accent="light-blue" data-md-color-primary="grey" data-md-color-scheme="slate" dir="ltr">
 <input autocomplete="off" class="md-toggle" data-md-toggle="drawer" id="__drawer" type="checkbox"/>
@@ -261,7 +261,7 @@
 <p>This page give information on the GitHub Actions and Release Process used by the project.</p>
 <h2 id="cicd-pipeline">CI/CD Pipeline<a class="headerlink" href="#cicd-pipeline" title="Permanent link">¶</a></h2>
 <p>For continuous integration and deployment this project uses <a href="https://github.com/imker25/samba_exporter/actions">GitHub Actions</a>. The main pipeline is defined in <code>.github/workflows/ci-jobs.yml</code>. This pipeline will will start on every push to github and then run the steps shown below:</p>
-<div class="mermaid">%%{init: {'theme':'forest'}}%%
+<div class="mermaid">%%{init: {'theme':'dark'}}%%
 graph TD;
     push(Developer push to GitHub)
     build[Build and unit tests]
@@ -294,7 +294,7 @@ graph TD;
 </div>
 <h2 id="release-pipeline">Release Pipeline<a class="headerlink" href="#release-pipeline" title="Permanent link">¶</a></h2>
 <p>After a GitHub release (also -pre) is done from the the CI/CD pipeline the <code>.github/workflows/release-jobs.yml</code> will be triggered. This job does the following workflow:</p>
-<div class="mermaid">%%{init: {'theme':'forest'}}%%
+<div class="mermaid">%%{init: {'theme':'dark'}}%%
 graph TD;
     release(GitHub release created)
     buildFocal[Build focal *.deb package]
@@ -364,7 +364,7 @@ graph TD;
 <p>Once this changes are pushed to github the CI/CD pipeline will start to run for both, <code>main</code> and the new <code>release</code> branch and create a new <em>-pre Release</em> from main as well as a new <em>full Release</em> from the new release branch. 
 <br/></p>
 <hr/>
-<p><br/><sub>Last change at Nov 30, 2021 14:55:09 by imker - commit: 2d0cb49<sub></sub></sub></p>
+<p><br/><sub>Last change at Dec 29, 2021 14:18:50 by tobi - commit: 26e9aa6<sub></sub></sub></p>
 </article>
 </div>
 </div>
@@ -409,7 +409,7 @@ graph TD;
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.tracking", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.01824240.min.js"}</script>
-<script src="../../assets/javascripts/bundle.a87c2adc.min.js"></script>
+<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.tracking", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.0bbba5b5.min.js"}</script>
+<script src="../../assets/javascripts/bundle.e1a181d9.min.js"></script>
 <script src="https://unpkg.com/mermaid@8.8.0/dist/mermaid.min.js"></script><script>mermaid.initialize({});</script></body>
 </html>
