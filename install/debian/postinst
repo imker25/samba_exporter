@@ -23,9 +23,15 @@ set -e
 case "$1" in
   configure)
     # Unzipp zipped docs
+    if [ -f "/usr/share/doc/samba-exporter/grafana/SambaService.json" ]; then
+        rm -f "/usr/share/doc/samba-exporter/grafana/SambaService.json"
+    fi
     if [ -f "/usr/share/doc/samba-exporter/grafana/SambaService.json.gz" ]; then
         gzip -d "/usr/share/doc/samba-exporter/grafana/SambaService.json.gz"
     fi
+    if [ -f "/usr/share/doc/samba-exporter/docs/DeveloperDocs/ActionsAndReleases.md" ]; then
+        rm -f "/usr/share/doc/samba-exporter/docs/DeveloperDocs/ActionsAndReleases.md"
+    fi    
     if [ -f "/usr/share/doc/samba-exporter/docs/DeveloperDocs/ActionsAndReleases.md.gz" ]; then
         gzip -d "/usr/share/doc/samba-exporter/docs/DeveloperDocs/ActionsAndReleases.md.gz"
     fi

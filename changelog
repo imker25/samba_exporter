@@ -1,5 +1,8 @@
 samba-exporter (1.9) focal; urgency=low
 
+  [ Tobias Zellner ]
+  Fix installation of updates
+
  -- Tobias Zellner <tobi@backfrak.de> Wed, 29 Dec 2021 16:46:46 +0100
 
 samba-exporter (1.8) focal; urgency=low
