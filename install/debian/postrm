@@ -9,9 +9,15 @@ case "$1" in
           deluser --system samba-exporter
         fi
         systemctl daemon-reload
+        if [ -d "/usr/share/doc/samba-exporter" ]; then 
+          rm -rf "/usr/share/doc/samba-exporter"
+        fi
     ;;
   remove)
         # When the package got removed the service files got deleted. So systemd can now remove the services from its internal db
         systemctl daemon-reload
+        if [ -d "/usr/share/doc/samba-exporter" ]; then 
+          rm -rf "/usr/share/doc/samba-exporter"
+        fi
     ;;
 esac
