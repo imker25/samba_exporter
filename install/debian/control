@@ -18,7 +18,7 @@ Build-Depends:  libc6 (>= 2.3.2),
 
 Package: samba-exporter
 Architecture: amd64
-Depends: libc6 (>= 2.3.2), samba, systemd
+Depends: libc6 (>= 2.3.2), samba, systemd, gzip (>=1.10)
 Enhances: samba
 Description: Prometheus exporter to get metrics of a samba server
   This is a prometheus exporter to get metrics of a samba server. 
@@ -27,4 +27,4 @@ Description: Prometheus exporter to get metrics of a samba server
   The prometheus style data can be requested manually on port 9922 
   using a http client. Or a prometheus database sever can be configured
   to collect the data by scraping port 9922 on the samba server.
-HomePage: https://github.com/imker25/samba_exporter
+HomePage: https://imker25.github.io/samba_exporter/
