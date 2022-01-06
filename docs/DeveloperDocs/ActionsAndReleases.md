@@ -41,59 +41,40 @@ graph TD;
 
 ## Release Pipeline
 
-After a GitHub release (also -pre) is done from the the CI/CD pipeline the `.github/workflows/release-jobs.yml` will be triggered. This job does the following workflow:
+After a GitHub release (also -pre) is created by the the CI/CD pipeline the `.github/workflows/release-jobs.yml` will be triggered. This job does the following workflow:
 
 ```mermaid
 %%{init: {'theme':'dark'}}%%
 graph TD;
     release(GitHub release created)
-    buildFocal[Build focal *.deb package]
-    buildImpish[Build impish *.deb package]
-    buildBuster[Build buster *.deb package]
-    buildBullseye[Build bullseye *.deb package]
+    buildUbuntu[Build Ubuntu *.deb packages]
+    buildDebian[Build Debian *.deb packages]
     docs[Documentation pages creation]
     repo[Debian repository creation]
-    releaseFocalLP[Push focal *.deb to Launchpad]
-    releaseImpishLP[Push impish *.deb to Launchpad]
-    releaseFocalGR[Add focal *.deb to GitHub release]
-    releaseImpishGR[Add impish *.deb to GitHub release]    
-    releaseBullseyeGR[Add bullseye *.deb to GitHub release]
-    releaseBusterGR[Add buster *.deb to GitHub release] 
-    pagesRelease[Documentation and repository release on Github pages]
+    releaseUbuntuLP[Push Ubuntu *.deb to Launchpad]
+    releaseGR[Add all created *.deb packages to the GitHub release that triggered this pipeline]
+    pagesRelease[Release on Github pages - Documentation and Debian repository]
     done(Pipeline end)
     checkRelease1{Check release}
     preRelease1(( -pre release))
     fullRelease1((release))
-    checkRelease2{Check release}
-    preRelease2(( -pre release))
-    fullRelease2((release))
+
     checkRelease3{Check release}
     preRelease3(( -pre release))
     fullRelease3((release))
 
-    release-->buildFocal
-    buildFocal-->checkRelease1
+    release-->buildUbuntu
+    buildUbuntu-->checkRelease1
     checkRelease1-->preRelease1
     checkRelease1-->fullRelease1
-    fullRelease1-->releaseFocalLP
-    releaseFocalLP-->buildImpish
-    preRelease1-->buildImpish
+    fullRelease1-->releaseUbuntuLP
+    releaseUbuntuLP-->buildDebian
+    preRelease1 --> buildDebian
 
-    buildImpish-->checkRelease2
-    checkRelease2-->preRelease2
-    checkRelease2-->fullRelease2
-    fullRelease2-->releaseImpishLP
-    releaseImpishLP-->buildBullseye
-    preRelease2-->buildBullseye
-
-    buildBullseye-->buildBuster
-    buildBuster-->docs
+    buildDebian-->docs
     docs-->repo
-    repo-->releaseFocalGR
-    releaseFocalGR-->releaseImpishGR
-    releaseImpishGR-->releaseBullseyeGR
-    releaseBullseyeGR-->releaseBusterGR
-    releaseBusterGR-->checkRelease3
+    repo-->releaseGR
+    releaseGR-->checkRelease3
 
     checkRelease3-->preRelease3
     checkRelease3-->fullRelease3
@@ -102,7 +83,7 @@ graph TD;
     preRelease3-->done
 ```
 
-Whenever a *.deb package is uploaded to the [samba-exporter Launchpad PPA](https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa) launchpad will start a own release process. When this process is finished (usually takes about an hour), users can download and install the new package version from the PPA.
+Whenever a *.deb package is uploaded to the [samba-exporter PPA](https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa) launchpad will start a own release process. When this process is finished (usually takes about an hour), users can download and install the new package version from the PPA.
 
 ## Creation of release branches
 
@@ -114,4 +95,4 @@ The release process of this project is fully automated. To create a new release 
 - Commit the changes on the main branch
 - Push all changes on **main** and the **new release** branch to GitHub
 
-Once this changes are pushed to github the CI/CD pipeline will start to run for both, `main` and the new `release` branch and create a new *-pre Release* from main as well as a new *full Release* from the new release branch. 
+Once this changes are pushed to github the CI/CD pipeline will start to run for both, `main` and the new `release` branch. This will create a new **-pre Release** from `main` as well as a new **full Release**  from the new `release` branch. 
