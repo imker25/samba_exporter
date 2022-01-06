@@ -1,6 +1,9 @@
 samba-exporter (1.10) focal; urgency=low
 
- -- Tobias Zellner <tobi@backfrak.de> Wed, 29 Dec 2021 18:27:44 +0100
+  [ Tobias Zellner ]
+  * Closes: Bug#50 -  Remove the usage of time.Sleep, see https://github.com/imker25/samba_exporter/issues/50 
+
+ -- Tobias Zellner <tobi@backfrak.de> Do, 6 Jan 2022 18:27:44 +0100
 
 samba-exporter (1.9) focal; urgency=low
 
