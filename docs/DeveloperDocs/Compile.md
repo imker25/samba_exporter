@@ -36,7 +36,7 @@ To execute the integration tests you can run:
 
 ## Manual installation
 
-For manual install on the `target` machine do the following copy:
+For manual install on the `target` machine do the following copy after you build the project as shown above:
 
 ```sh
 scp ./tmp/samba-exporter_<version>/* root@<target>:/

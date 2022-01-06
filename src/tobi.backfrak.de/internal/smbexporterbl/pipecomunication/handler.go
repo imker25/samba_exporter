@@ -28,6 +28,9 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 	var processes []smbstatusreader.ProcessData
 	var shares []smbstatusreader.ShareData
 	var locks []smbstatusreader.LockData
+	sharesChan := make(chan []smbstatusreader.ShareData, 1)
+	processesChan := make(chan []smbstatusreader.ProcessData, 1)
+	locksChan := make(chan []smbstatusreader.LockData, 1)
 	collectMux.Lock()
 	defer collectMux.Unlock()
 
@@ -35,21 +38,24 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 	if errGet != nil {
 		return nil, nil, nil, errGet
 	}
-	processes = smbstatusreader.GetProcessData(res, logger)
-	time.Sleep(time.Millisecond)
+	go goGetProcessData(res, logger, processesChan)
 
 	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SHARE_REQUEST, logger, requestTimeOut)
 	if errGet != nil {
 		return nil, nil, nil, errGet
 	}
-	shares = smbstatusreader.GetShareData(res, logger)
-	time.Sleep(time.Millisecond)
+
+	go goGetShareData(res, logger, sharesChan)
 
 	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.LOCK_REQUEST, logger, requestTimeOut)
 	if errGet != nil {
 		return nil, nil, nil, errGet
 	}
-	locks = smbstatusreader.GetLockData(res, logger)
+	go goGetLockData(res, logger, locksChan)
+
+	processes = <-processesChan
+	shares = <-sharesChan
+	locks = <-locksChan
 
 	if len(shares) < 1 {
 		logger.WriteVerbose("Got an empty share table when requesting \"smbstatus -S -n\" from samba_statusd")
@@ -60,6 +66,24 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 	}
 
 	return locks, processes, shares, nil
+}
+
+func goGetProcessData(res string, logger commonbl.Logger, c chan []smbstatusreader.ProcessData) {
+	processes := smbstatusreader.GetProcessData(res, logger)
+
+	c <- processes
+}
+
+func goGetShareData(res string, logger commonbl.Logger, c chan []smbstatusreader.ShareData) {
+	shares := smbstatusreader.GetShareData(res, logger)
+
+	c <- shares
+}
+
+func goGetLockData(res string, logger commonbl.Logger, c chan []smbstatusreader.LockData) {
+	locks := smbstatusreader.GetLockData(res, logger)
+
+	c <- locks
 }
 
 func getSmbStatusDataTimeOut(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, request commonbl.RequestType, logger commonbl.Logger, requestTimeOut int) (string, error) {

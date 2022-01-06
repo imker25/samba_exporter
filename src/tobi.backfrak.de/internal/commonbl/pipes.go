@@ -11,6 +11,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"sync"
 	"syscall"
 )
 
@@ -32,6 +33,7 @@ const (
 type PipeHandler struct {
 	TestMode bool
 	PipeType PipeTypeT
+	mMutext  sync.Mutex
 }
 
 // NewPipeHandler - Get a new instance of the PipeHandler type
@@ -67,48 +69,13 @@ func (handler *PipeHandler) PipeExists() bool {
 	return FileExists(handler.GetPipeFilePath())
 }
 
-// GetReaderPipe - Get a new reader for the common pipe.
-// 	Remember: This is a blocking call and will return once data can be read from the pipe
-func (handler *PipeHandler) GetReaderPipe() (*bufio.Reader, error) {
-
-	if !handler.PipeExists() {
-		errCreate := handler.createPipe()
-		if errCreate != nil {
-			return nil, errCreate
-		}
-	}
-
-	file, errOpen := os.OpenFile(handler.GetPipeFilePath(), os.O_CREATE, os.ModeNamedPipe)
-	if errOpen != nil {
-		return nil, errOpen
-	}
-
-	return bufio.NewReader(file), nil
-
-}
-
-// GetWriterPipe - Get a new writer for the common pipe.
-func (handler *PipeHandler) GetWriterPipe() (*bufio.Writer, error) {
-
-	if !handler.PipeExists() {
-		errCreate := handler.createPipe()
-		if errCreate != nil {
-			return nil, errCreate
-		}
-	}
-
-	file, errOpen := os.OpenFile(handler.GetPipeFilePath(), os.O_RDWR|os.O_CREATE, pipePermission)
-	if errOpen != nil {
-		return nil, errOpen
-	}
-
-	return bufio.NewWriter(file), nil
-}
-
 // WaitForPipeInputBytes - Blocking! Wait for input in the pipe and return it as byte array
 // The array will be empty in case of errors
 func (handler *PipeHandler) WaitForPipeInputBytes() ([]byte, error) {
-	reader, errGet := handler.GetReaderPipe()
+	handler.mMutext.Lock()
+	defer handler.mMutext.Unlock()
+
+	reader, errGet := handler.getReaderPipe()
 	if errGet != nil {
 		return []byte{}, errGet
 	}
@@ -133,7 +100,10 @@ func (handler *PipeHandler) WaitForPipeInputString() (string, error) {
 
 // WritePipeBytes - Write byte data to the pipe
 func (handler *PipeHandler) WritePipeBytes(data []byte) error {
-	writer, errGet := handler.GetWriterPipe()
+	handler.mMutext.Lock()
+	defer handler.mMutext.Unlock()
+
+	writer, errGet := handler.getWriterPipe()
 	if errGet != nil {
 		return errGet
 	}
@@ -166,6 +136,44 @@ func FileExists(filename string) bool {
 		return false
 	}
 	return true
+}
+
+// GetReaderPipe - Get a new reader for the common pipe.
+// 	Remember: This is a blocking call and will return once data can be read from the pipe
+func (handler *PipeHandler) getReaderPipe() (*bufio.Reader, error) {
+
+	if !handler.PipeExists() {
+		errCreate := handler.createPipe()
+		if errCreate != nil {
+			return nil, errCreate
+		}
+	}
+
+	file, errOpen := os.OpenFile(handler.GetPipeFilePath(), os.O_CREATE, os.ModeNamedPipe)
+	if errOpen != nil {
+		return nil, errOpen
+	}
+
+	return bufio.NewReader(file), nil
+
+}
+
+// GetWriterPipe - Get a new writer for the common pipe.
+func (handler *PipeHandler) getWriterPipe() (*bufio.Writer, error) {
+
+	if !handler.PipeExists() {
+		errCreate := handler.createPipe()
+		if errCreate != nil {
+			return nil, errCreate
+		}
+	}
+
+	file, errOpen := os.OpenFile(handler.GetPipeFilePath(), os.O_RDWR|os.O_CREATE, pipePermission)
+	if errOpen != nil {
+		return nil, errOpen
+	}
+
+	return bufio.NewWriter(file), nil
 }
 
 func (handler *PipeHandler) createPipe() error {

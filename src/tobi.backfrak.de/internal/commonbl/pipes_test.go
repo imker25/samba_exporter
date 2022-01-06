@@ -61,7 +61,7 @@ func TestGetWriterPipe(t *testing.T) {
 	handler := NewPipeHandler(true, RequestPipe)
 	defer os.Remove(handler.GetPipeFilePath())
 
-	writer, err := handler.GetWriterPipe()
+	writer, err := handler.getWriterPipe()
 	if err != nil {
 		t.Fatalf("Got error \"%s\" but expected none", err)
 	}
@@ -76,7 +76,7 @@ func TestGetWriterPipeTwoTimes(t *testing.T) {
 	handler := NewPipeHandler(true, RequestPipe)
 	defer os.Remove(handler.GetPipeFilePath())
 
-	writer1, err1 := handler.GetWriterPipe()
+	writer1, err1 := handler.getWriterPipe()
 	if err1 != nil {
 		t.Fatalf("Got error \"%s\" but expected none", err1)
 	}
@@ -85,7 +85,7 @@ func TestGetWriterPipeTwoTimes(t *testing.T) {
 		t.Errorf("The writer is nil, but should but")
 	}
 
-	writer2, err2 := handler.GetWriterPipe()
+	writer2, err2 := handler.getWriterPipe()
 	if err2 != nil {
 		t.Fatalf("Got error \"%s\" but expected none", err2)
 	}

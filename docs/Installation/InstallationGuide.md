@@ -23,6 +23,8 @@ apt-get update
 apt-get install samba-exporter
 ```
 
+**Hint:** Change `bullseye` to `buster` in case you use Debian 10.
+
 ## GitHub Releases - For all supported distributions
 
 Install the [latest Release](https://github.com/imker25/samba_exporter/releases/latest) by downloading the debian package according to your distribution and version and installing it. For example:
