@@ -96,6 +96,18 @@
 The prometheus style data can be requested manually on port 9922 using a http client.
 Or a prometheus database sever can be configured to collect the data by scraping port 9922 on the samba server.</p>
 
+<p>The <code>samba-exporter package</code> has two main components running as daemons:</p>
+
+<ul>
+<li>
+<code>samba_exporter</code> as prometheus exporter frontend</li>
+<li>
+<code>samba_statusd</code> as tool collect the data from samba</li>
+</ul>
+
+
+<p>See <a href="https://imker25.github.io/samba_exporter/UserDocs/Concept/" data-bare-link="true">https://imker25.github.io/samba_exporter/UserDocs/Concept/</a> for more details.</p>
+
 <h2 id="OPTIONS">OPTIONS</h2>
 
 <p>You might want to use one of the following optional parameters.</p>
@@ -171,7 +183,7 @@ In case you found a new bug please also report as github issue on the projects p
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>December 2021</li>
+    <li class='tc'>January 2022</li>
     <li class='tr'>samba_exporter(1)</li>
   </ol>
 
