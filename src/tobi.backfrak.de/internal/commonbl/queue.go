@@ -48,6 +48,6 @@ func (queue *StringQueue) Pull() (string, error) {
 }
 
 // Tell if the StringQueue is empty
-func (queue StringQueue) IsEmpty() bool {
+func (queue *StringQueue) IsEmpty() bool {
 	return queue.mList.Len() <= 0
 }
