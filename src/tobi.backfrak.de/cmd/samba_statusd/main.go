@@ -14,7 +14,6 @@ import (
 	"os/user"
 	"strings"
 	"syscall"
-	"time"
 
 	"tobi.backfrak.de/internal/commonbl"
 )
@@ -108,8 +107,6 @@ func main() {
 		// Add request to the queue and process the request in own "thread"
 		requestQueue.Push(received)
 		go goHandleRequestQueue(responseHandler)
-
-		time.Sleep(time.Microsecond * 1)
 	}
 
 }
