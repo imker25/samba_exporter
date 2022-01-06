@@ -71,3 +71,17 @@ func (e *UnexpectedResponseFormatError) Error() string { // Implement the Error 
 func NewUnexpectedResponseFormatError(response string) *UnexpectedResponseFormatError {
 	return &UnexpectedResponseFormatError{fmt.Sprintf("The response \"%s\" was not expected or in wrong format", response), response}
 }
+
+// EmptyStringQueueError - Error when trying to pull an item from an empty StringQueue
+type EmptyStringQueueError struct {
+	err string
+}
+
+func (e *EmptyStringQueueError) Error() string { // Implement the Error Interface for the EmptyStringQueueError struct
+	return fmt.Sprintf("Error: %s", e.err)
+}
+
+// UnexpectedResponseFormatError- Get a new UnexpectedRequestFormatError struct
+func NewEmptyStringQueueError() *EmptyStringQueueError {
+	return &EmptyStringQueueError{"The StringQueue is empty, no elements to pull."}
+}

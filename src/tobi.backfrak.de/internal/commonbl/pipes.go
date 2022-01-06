@@ -11,6 +11,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"sync"
 	"syscall"
 )
 
@@ -32,6 +33,7 @@ const (
 type PipeHandler struct {
 	TestMode bool
 	PipeType PipeTypeT
+	mMutext  sync.Mutex
 }
 
 // NewPipeHandler - Get a new instance of the PipeHandler type
@@ -133,6 +135,9 @@ func (handler *PipeHandler) WaitForPipeInputString() (string, error) {
 
 // WritePipeBytes - Write byte data to the pipe
 func (handler *PipeHandler) WritePipeBytes(data []byte) error {
+	handler.mMutext.Lock()
+	defer handler.mMutext.Unlock()
+
 	writer, errGet := handler.GetWriterPipe()
 	if errGet != nil {
 		return errGet

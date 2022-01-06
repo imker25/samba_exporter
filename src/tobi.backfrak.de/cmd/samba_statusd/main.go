@@ -34,6 +34,8 @@ var logger commonbl.Logger
 // Path to the smbstatus executable
 var smbstatusPath string
 
+var requestQueue commonbl.StringQueue
+
 func main() {
 	handleComandlineOptions()
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
@@ -90,33 +92,51 @@ func main() {
 	go waitforKillSignalAndExit()
 	go waitforTermSignalAndExit()
 
+	// Init a queue, to store the requests
+	requestQueue = *commonbl.NewStringQueue()
+
 	// Wait for pipe input and process it in an infinite loop
 	logger.WriteInformation(fmt.Sprintf("Started %s, waiting for requests in pipe", os.Args[0]))
 	for {
 		logger.WriteVerbose(fmt.Sprintf("Wait for requests in: %s", requestHandler.GetPipeFilePath()))
 		received, errRecv := requestHandler.WaitForPipeInputString()
 		if errRecv != nil {
-			logger.WriteErrorMessage(fmt.Sprintf("Receive data from the pipe: %s", errRecv))
+			logger.WriteErrorMessage(fmt.Sprintf("Receive this unexpected data from the pipe: %s", errRecv))
 			os.Exit(-1)
 		}
 
-		var err error = nil
-		if strings.HasPrefix(received, string(commonbl.PROCESS_REQUEST)) {
-			err = handleRequest(responseHandler, received, commonbl.PROCESS_REQUEST, processResponse, testProcessResponse)
-		} else if strings.HasPrefix(received, string(commonbl.SHARE_REQUEST)) {
-			err = handleRequest(responseHandler, received, commonbl.SHARE_REQUEST, shareResponse, testShareResponse)
-		} else if strings.HasPrefix(received, string(commonbl.LOCK_REQUEST)) {
-			err = handleRequest(responseHandler, received, commonbl.LOCK_REQUEST, lockResponse, testLockResponse)
-		}
+		// Add request to the queue and process the request in own "thread"
+		requestQueue.Push(received)
+		go goHandleRequestQueue(responseHandler)
 
-		if err != nil {
-			logger.WriteErrorMessage(fmt.Sprintf("Handle request \"%s\"\n\n: %s", received, err))
-			os.Exit(-2)
-		}
-
-		time.Sleep(time.Microsecond * 500)
+		time.Sleep(time.Microsecond * 1)
 	}
 
+}
+
+// goHandleRequestQueue, is called as go routine and processes the "oldest" request in the request Queue
+func goHandleRequestQueue(responseHandler commonbl.PipeHandler) {
+	var err error = nil
+	var received string
+	received, err = requestQueue.Pull()
+
+	if err != nil {
+		logger.WriteErrorMessage(fmt.Sprintf("Got error while reading request from Queue: %s", err))
+		os.Exit(-8)
+	}
+
+	if strings.HasPrefix(received, string(commonbl.PROCESS_REQUEST)) {
+		err = handleRequest(responseHandler, received, commonbl.PROCESS_REQUEST, processResponse, testProcessResponse)
+	} else if strings.HasPrefix(received, string(commonbl.SHARE_REQUEST)) {
+		err = handleRequest(responseHandler, received, commonbl.SHARE_REQUEST, shareResponse, testShareResponse)
+	} else if strings.HasPrefix(received, string(commonbl.LOCK_REQUEST)) {
+		err = handleRequest(responseHandler, received, commonbl.LOCK_REQUEST, lockResponse, testLockResponse)
+	}
+
+	if err != nil {
+		logger.WriteErrorMessage(fmt.Sprintf("Handle request \"%s\"\n\n: %s", received, err))
+		os.Exit(-2)
+	}
 }
 
 func handleRequest(handler commonbl.PipeHandler, request string, requestType commonbl.RequestType, productiveFunc response, testFunc response) error {
