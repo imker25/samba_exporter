@@ -39,7 +39,7 @@ To execute the integration tests you can run:
 For manual install on the `target` machine do the following copy after you build the project as shown above:
 
 ```sh
-scp ./tmp/samba-exporter_<version>/* root@<target>:/
+rsync -avr --exclude 'DEBIAN' ./tmp/samba-exporter_<version>/* root@<target>:/  
 ```
 
 Now login to your target machine and run the commands below to enable the services and create the needed user and group:
