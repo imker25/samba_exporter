@@ -17,6 +17,7 @@ def scriptDirectory
 def scriptFile
 def osName
 def osVersion
+def osDistribution
 String srcDir
 String binDir
 String pkgDir
@@ -80,8 +81,15 @@ task getEnvironment {
         println '##################################################################################'
         osName = org.gradle.internal.os.OperatingSystem.current().getName()
         osVersion = org.gradle.internal.os.OperatingSystem.current().getVersion()
+        def stdout = new ByteArrayOutputStream()
+        exec {
+            commandLine 'lsb_release', '-is'
+            standardOutput = stdout
+        }
+        osDistribution = stdout.toString().trim() 
         println "$osName $osVersion was detected."
         println "Github Runner OS: ${System.env.GITHUB_RUNNER_OS}"
+        println "Distribution Name: ${osDistribution}"
 
         // Find the location in the file system
         scriptFile = buildscript.sourceFile
@@ -342,24 +350,25 @@ task preparePack(dependsOn: 'build') {
     }
     
     doLast {
-        copy {
-            // Copy all data from the install directory to the package tmp dir
-            from ('install/debian'){
-                include '**/**'
+        if (("${osDistribution}" == "Ubuntu") || ("${osDistribution}" == "Debian")) {
+            copy {
+                // Copy all data from the install directory to the package tmp dir
+                from ('install/debian'){
+                    include '**/**'
+                }
+                into "${debPackageTmpDir}/debian"
             }
-            into "${debPackageTmpDir}/debian"
-        }
 
-        copy {
-            // Copy docs to the package tmp dir
-            from('.') {
-                include 'changelog'
+            copy {
+                // Copy docs to the package tmp dir
+                from('.') {
+                    include 'changelog'
+                }
+                into "${debPackageTmpDir}/debian"
             }
-            into "${debPackageTmpDir}/debian"
+
+            file("${debPackageTmpDir}/debian").renameTo(file("${debPackageTmpDir}/DEBIAN"))
         }
-
-        file("${debPackageTmpDir}/debian").renameTo(file("${debPackageTmpDir}/DEBIAN"))
-
         // Copy and strip bin files
         exec {
             commandLine "${scriptDirectory}/build/InstallProgram.sh", "${scriptDirectory}", "${scriptDirectory}/bin/", "${debPackageTmpDir}", "${programVersionShort}"

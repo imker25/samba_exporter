@@ -1,11 +1,16 @@
 # Developer Guide
 
-This page shows you how to build, test and install the project.
+This page shows you how to build, test and install the project manually.
 
 ## Build
 
-To build the project you need [Go](https://golang.org/) Version 1.16.x and [Java](https://java.com/) Version 11 on your development machine.
-On your target machine, the samba server you want to monitor, you need [samba](https://www.samba.org/) and [systemd](https://www.freedesktop.org/wiki/Software/systemd/) installed.
+To build the project you need the following on your development machine.
+
+- [Go](https://golang.org/) Version 1.16.x
+- [Java](https://java.com/) Version 11
+- [Git](https://git-scm.com/) >= Version 2.30
+- [lsb_release](https://refspecs.linuxfoundation.org/LSB_3.0.0/LSB-PDA/LSB-PDA/lsbrelease.html)
+- [ronn](https://github.com/rtomayko/ronn) - Only in case you want to work on man pages
 
 To build the software change to the repositories directory and run:
 
@@ -13,8 +18,11 @@ To build the software change to the repositories directory and run:
 ./gradlew getBuildName build preparePack
 ```
 
-In case you want to work on the man pages you need to install [ronn](https://github.com/rtomayko/ronn) on your development machine.
-To create the man pages out of the `*.ronn` source files run:
+To figure out all the valid gradle tasks, read `build.gradle`
+
+## Create man pages
+
+To create the man pages out of the `*.ronn` source files in `src/man` run:
 
 ```sh
 build/CreateManPage.sh 
@@ -28,6 +36,8 @@ To execute the unit tests you can run:
 ./gradlew test
 ```
 
+**Hint:** As always it is possible to combine the gradle commands, e. g. `./gradlew build test`
+
 To execute the integration tests you can run:
 
 ```sh
@@ -35,6 +45,15 @@ To execute the integration tests you can run:
 ```
 
 ## Manual installation
+
+On your target machine, the samba server you want to monitor, you need [samba](https://www.samba.org/) and [systemd](https://www.freedesktop.org/wiki/Software/systemd/) installed.
+
+To build for manual installation run the following:
+
+```sh
+./gradlew getBuildName build preparePack
+build/CreateManPage.sh 
+```
 
 For manual install on the `target` machine do the following copy after you build the project as shown above:
 
@@ -60,6 +79,8 @@ Finally you are abel to start the services:
 systemctl start samba_statusd.service
 systemctl start samba_exporter.service
 ```
+
+### Test installation
 
 Test the `samba_exporter` by requesting metrics with `curl`:
 
