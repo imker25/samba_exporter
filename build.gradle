@@ -350,6 +350,8 @@ task preparePack(dependsOn: 'build') {
     }
     
     doLast {
+
+        // Copy debian specific package files
         if (("${osDistribution}" == "Ubuntu") || ("${osDistribution}" == "Debian")) {
             copy {
                 // Copy all data from the install directory to the package tmp dir
@@ -369,6 +371,18 @@ task preparePack(dependsOn: 'build') {
 
             file("${debPackageTmpDir}/debian").renameTo(file("${debPackageTmpDir}/DEBIAN"))
         }
+
+        // Copy Fedora specific package files
+        if ("${osDistribution}" == "Fedora") {
+            copy {
+                // Copy all data from the install directory to the package tmp dir
+                from ('install/fedora'){
+                    include '**/**'
+                }
+                into "${debPackageTmpDir}/"
+            }
+        }
+
         // Copy and strip bin files
         exec {
             commandLine "${scriptDirectory}/build/InstallProgram.sh", "${scriptDirectory}", "${scriptDirectory}/bin/", "${debPackageTmpDir}", "${programVersionShort}"
