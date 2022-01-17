@@ -2,18 +2,23 @@ Name: samba-exporter
 Version: 1
 Release: 10
 Summary: Prometheus exporter to get metrics of a samba server
-License: see /usr/share/doc/samba-exporter/copyright
+License: ASL 2.0
+URL: https://github.com/imker25/samba_exporter
 Distribution: Fedora
 Group: utils
+Requires: samba, systemd, gzip, filesystem, binutils, man-db 
 
 %define _rpmdir ../
 %define _rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm
-# %define _unpackaged_files_terminate_build 0
+%define _unpackaged_files_terminate_build 0
 
 %post
 # Add samba-exporter user if needed
+if ! getent group samba-exporter > /dev/null ; then
+    groupadd -r samba-exporter
+fi
 if ! getent passwd samba-exporter > /dev/null; then
-    adduser --quiet --system --no-create-home --home /nonexistent --group --gecos "samba-exporter daemon" samba-exporter || true
+    adduser --system --no-create-home --home-dir /nonexistent --gid samba-exporter --shell /bin/false --comment "samba-exporter daemon" samba-exporter || true
 fi
 # Ensure the daemons are known
 systemctl daemon-reload
@@ -23,7 +28,8 @@ systemctl enable samba_exporter.service
 # Ensure the daemons run the latest version
 systemctl restart samba_statusd.service
 systemctl restart samba_exporter.service
-
+# Ensure man-db is updated
+mandb > /dev/null
 
 
 %preun
@@ -58,18 +64,10 @@ fi
 
 
 %files
-%dir "/"
-%dir "/etc/"
-%dir "/etc/default/"
 %config "/etc/default/samba_exporter"
 %config "/etc/default/samba_statusd"
-%dir "/lib/"
-%dir "/lib/systemd/"
-%dir "/lib/systemd/system/"
 "/lib/systemd/system/samba_exporter.service"
 "/lib/systemd/system/samba_statusd.service"
-%dir "/usr/"
-%dir "/usr/bin/"
 "/usr/bin/samba_exporter"
 "/usr/bin/samba_statusd"
 "/usr/bin/start_samba_statusd"
@@ -98,8 +96,6 @@ fi
 "/usr/share/doc/samba-exporter/docs/assets/samba-exporter.icon.png"
 %dir "/usr/share/doc/samba-exporter/grafana/"
 "/usr/share/doc/samba-exporter/grafana/SambaService.json"
-%dir "/usr/share/man/"
-%dir "/usr/share/man/man1/"
 "/usr/share/man/man1/samba_exporter.1.gz"
 "/usr/share/man/man1/samba_statusd.1.gz"
 "/usr/share/man/man1/start_samba_statusd.1.gz"
