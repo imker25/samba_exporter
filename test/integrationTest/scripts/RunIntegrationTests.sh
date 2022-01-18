@@ -33,10 +33,10 @@ else
     samba_statusd_log="$branch_dir/logs/samba_statusd.log"
     samba_exporter_log="$branch_dir/logs/samba_exporter.log"
     if [ -d "$branch_dir/logs/" ]; then
-        if [ -f "$samba_statusd_log"]; then 
+        if [ -f "$samba_statusd_log" ]; then 
             rm "$samba_statusd_log"
         fi
-        if [ -f "$samba_exporter_log"]; then 
+        if [ -f "$samba_exporter_log" ]; then 
             rm "$samba_exporter_log"
         fi
     else 
