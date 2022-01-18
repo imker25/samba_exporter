@@ -1,6 +1,6 @@
 Name: samba-exporter
-Version: 1
-Release: 10
+Version: 1.11.3
+Release: 1
 Summary: Prometheus exporter to get metrics of a samba server
 License: ASL 2.0
 URL: https://github.com/imker25/samba_exporter
