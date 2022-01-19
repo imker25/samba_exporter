@@ -20,6 +20,7 @@ echo "Create output folders"
 echo "# ###################################################################"
 mkdir -vp "$BRANCH_ROOT/bin"
 mkdir -vp "$BRANCH_ROOT/logs"
+mkdir -vp "$BRANCH_ROOT/tmp"
 
 echo ""
 echo "# ###################################################################"
@@ -31,6 +32,8 @@ if [ "$?" != "0" ]; then
     echo "Error: Docker container build failed"
     exit 1
 fi
+# Move the docker build log to other folder, so it will not be deleted during the "gradle clean" when the container runs
+mv -v "$BRANCH_ROOT/logs/docker-build-fedora.log" "/tmp" 
 echo ""
 echo "# ###################################################################"
 buildFailed="false"
@@ -42,7 +45,10 @@ docker run --mount type=bind,source="$BRANCH_ROOT",target="/build_area" \
 if [ "$?" != "0" ]; then    
     buildFailed="true"
 fi
+# Move the docker build log back to log folder
+mv -v "/tmp/docker-build-fedora.log" "$BRANCH_ROOT/logs" 
 
+echo "Delete the container image used for this build"
 docker rmi -f $(docker images --filter=reference="rpm-build" -q) 
 
 if [ "$buildFailed" == "true" ]; then
