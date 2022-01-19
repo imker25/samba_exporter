@@ -16,6 +16,12 @@ BRANCH_ROOT="$SCRIPT_DIR/.."
 # ################################################################################################################
 # functional code
 # ################################################################################################################
+echo "Create output folders"
+echo "# ###################################################################"
+mkdir -vp "$BRANCH_ROOT/bin"
+mkdir -vp "$BRANCH_ROOT/logs"
+
+echo ""
 echo "# ###################################################################"
 echo "Build the container to run the package build"
 echo "docker build --file \"$SCRIPT_DIR/rpm-build/Dockerfile\" --tag rpm-build \"$SCRIPT_DIR/rpm-build/\""
