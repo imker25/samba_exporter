@@ -113,6 +113,8 @@ jobs:
     steps:
       - name: Checkout 
         uses: actions/checkout@v2   
+        with:
+          fetch-depth: 0        
       - name: 'Create rpm package'
         run:  |
                 ./build/CreateRpmPackage.sh
