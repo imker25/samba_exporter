@@ -58,7 +58,7 @@ build/CreateManPage.sh
 For manual install on the `target` machine do the following copy after you build the project as shown above:
 
 ```sh
-rsync -avr --exclude 'DEBIAN' ./tmp/samba-exporter_<version>/* root@<target>:/  
+rsync -avr --exclude 'DEBIAN' --exclude 'samba-exporter.spec' ./tmp/samba-exporter_<version>/* root@<target>:/  
 ```
 
 Now login to your target machine and run the commands below to enable the services and create the needed user and group:
@@ -70,7 +70,7 @@ systemctl enable samba_exporter.service
 addgroup --system samba-exporter
 adduser --system --no-create-home --disabled-login samba-exporter
 adduser samba-exporter samba-exporter
-updatedb                                                          # In case you created and copied the man pages as well
+mandb                                                               # In case you created and copied the man pages as well
 ```
 
 Finally you are abel to start the services:
