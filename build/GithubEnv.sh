@@ -42,3 +42,6 @@ echo "SAMBA_EXPORTER_PACKAGE_NAME=$packageName" >> $GITHUB_ENV
 packageVersion=$(cat logs/Version.txt)  
 echo "SAMBA_EXPORTER_VERSION=$packageVersion" 
 echo "SAMBA_EXPORTER_VERSION=$packageVersion"  >> $GITHUB_ENV
+rpmVersion=$(cat ./logs/ShortVersion.txt)
+echo "SAMBA_EXPORTER_RPM_VERSION=$rpmVersion"
+echo "SAMBA_EXPORTER_RPM_VERSION=$rpmVersion" >> $GITHUB_ENV

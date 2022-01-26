@@ -106,7 +106,37 @@ jobs:
         with:
           name: docs-pages
           path: build/pages/site/**
-          retention-days: 1                                      
+          retention-days: 1   
+  build-rpm-package:   
+    name: Create rpm package
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v2   
+        with:
+          fetch-depth: 0        
+      - name: 'Create rpm package'
+        run:  |
+                ./build/CreateRpmPackage.sh
+                build/GithubEnv.sh
+      - name: "Upload Artifact - RPM"
+        uses: actions/upload-artifact@v2
+        with:
+          name: samba_exporter-rpm
+          path: bin/samba-exporter-${{ env.SAMBA_EXPORTER_RPM_VERSION }}-1.x86_64.rpm 
+          retention-days: 1    
+      - name: "Upload Artifact - Docker build log"
+        uses: actions/upload-artifact@v2
+        with:
+          name: docker-build-fedora-log
+          path: logs/docker-build-fedora.log
+          retention-days: 1   
+      - name: "Upload Artifact - Unit Test log"
+        uses: actions/upload-artifact@v2
+        with:
+          name: unit-test-fedora-log
+          path: logs/TestsRun.log
+          retention-days: 1                                  
   integration-test-ubuntu:
     needs: build-unit_test
     strategy:
@@ -208,7 +238,7 @@ jobs:
         SAMBA_EXPORTER_PACKAGE_NAME:  ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
       run: test/installationTest/RunInstallationTest.sh
   release-to-github:
-    needs: [ integration-test-ubuntu, integration-test-buster, integration-test-bullseye, installation-test, build-pages ]
+    needs: [ integration-test-ubuntu, integration-test-buster, integration-test-bullseye, installation-test, build-pages, build-rpm-package ]
     runs-on: "ubuntu-20.04"
     if: ((github.ref == 'refs/heads/main') || contains(github.ref, 'release'))
     timeout-minutes: 10
