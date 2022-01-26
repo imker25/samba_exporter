@@ -377,9 +377,10 @@ task preparePack(dependsOn: 'build') {
             copy {
                 // Copy all data from the install directory to the package tmp dir
                 from ('install/fedora'){
-                    include '**/**'
+                    include 'samba-exporter.from_gradle.spec'
                 }
                 into "${debPackageTmpDir}/"
+                rename ('samba-exporter.from_gradle.spec','samba-exporter.spec')
             }
         }
 

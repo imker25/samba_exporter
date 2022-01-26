@@ -1,5 +1,13 @@
+# Spec file to build a samba_exporter RPM source or binary package 
+
+%global goipath    tobi.backfrak.de/cmd/samba_exporter
+
 Name: samba-exporter
-Version: x.x.x
+Version: 1.11.12
+
+	
+%gometa
+
 Release: 1
 Summary: Prometheus exporter to get metrics of a samba server
 License: ASL 2.0
@@ -8,9 +16,34 @@ Distribution: Fedora
 Group: utils
 Requires: samba, systemd, gzip, filesystem, binutils, man-db 
 
+BuildRequires:  systemd-rpm-macros
+BuildRequires:  go-rpm-macros
+BuildRequires:  golang(github.com/go-kit/log)
+BuildRequires:  golang(github.com/go-kit/log/level)	
+BuildRequires:  golang(github.com/prometheus/client_golang/prometheus)
+BuildRequires:  golang(github.com/prometheus/client_golang/prometheus/collectors)
+BuildRequires:  golang(github.com/prometheus/client_golang/prometheus/promhttp)
+BuildRequires:  golang(github.com/prometheus/client_model/go)
+BuildRequires:  golang(golang.org/x/sys/unix)
+BuildRequires:  golang(gopkg.in/alecthomas/kingpin.v2)
+
 %define _rpmdir ../
 %define _rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm
 %define _unpackaged_files_terminate_build 0
+
+
+	
+%build
+echo "%{gobuilddir}"
+export BUILDTAGS="netgo osusergo static_build"
+LDFLAGS="-X main.version=%{version}" \
+%gobuild -o %{gobuilddir}/bin/samba_exporter src/tobi.backfrak.de/cmd/samba_exporter
+LDFLAGS="-X main.version=%{version}" \
+%gobuild -o %{gobuilddir}/bin/samba_statusd src/tobi.backfrak.de/cmd/samba_statusd
+build/CreateManPage.sh
+
+%install
+build/InstallProgram.sh "." %{gobuilddir}/bin %{buildroot}%{_bindir}/
 
 %post
 # Add samba-exporter user if needed
