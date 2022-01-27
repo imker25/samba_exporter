@@ -174,7 +174,7 @@ echo "# Patch the files"
 given_version=$(cat "$WORK_DIR/VersionMaster.txt")
 echo "$packageVersion" > "$WORK_DIR/VersionMaster.txt"
 echo "Version Prefix: $given_version"
-sed -i "s/samba-exporter ($given_version)/samba-exporter ($packageVersion)/g" $WORK_DIR/debian/changelog
+sed -i "s/samba-exporter ($given_version)/samba-exporter ($packageVersion)/g" $WORK_DIR/install/debian/changelog
 
 echo "Patch package dependencies acording the distribution and version"
 if [ "$distVersionNumber" == "20.04" ] && [ "$distribution" == "Ubuntu" ]; then
@@ -184,21 +184,21 @@ else
 fi 
 
 if [ "$distVersionNumber" == "21.10" ] && [ "$distribution" == "Ubuntu" ]; then
-    sed -i "s/focal;/impish;/g" $WORK_DIR/debian/changelog
+    sed -i "s/focal;/impish;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.17,/g" $WORK_DIR/install/debian/control
 else 
     echo "Not running on ubuntu 21.10 (impish)"
 fi
 
 if [ "$distVersionNumber" == "11" ] && [ "$distribution" == "Debian" ]; then
-    sed -i "s/focal;/bullseye;/g" $WORK_DIR/debian/changelog
+    sed -i "s/focal;/bullseye;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.15,/g" $WORK_DIR/install/debian/control
 else 
     echo "Not running on debian 11 (bullseye)"
 fi
 
 if [ "$distVersionNumber" == "10" ] && [ "$distribution" == "Debian" ]; then
-    sed -i "s/focal;/buster;/g" $WORK_DIR/debian/changelog
+    sed -i "s/focal;/buster;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.15,/g" $WORK_DIR/install/debian/control
     sed -i "s/gzip (>=1.10)/gzip (>=1.9)/g" $WORK_DIR/install/debian/control
     sed -i "s/golang-any/man-db/g" $WORK_DIR/install/debian/control
@@ -211,7 +211,7 @@ cp -rv -L $WORK_DIR/install/debian/* $WORK_DIR/debian
 
 echo "# ###################################################################"
 echo "Changelog content after mofifications"
-cat $WORK_DIR/debian/changelog
+cat $WORK_DIR/install/debian/changelog
 
 echo "# ###################################################################"
 echo "# Build packages before git commit"

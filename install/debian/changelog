@@ -1,5 +1,8 @@
 samba-exporter (1.11) focal; urgency=low
 
+  [ Tobias Zellner ]
+  All furthers entries will be created from the git log
+
  -- Tobias Zellner <tobi@backfrak.de> Thu, 06 Jan 2022 22:38:19 +0100
 
 samba-exporter (1.10) focal; urgency=low
