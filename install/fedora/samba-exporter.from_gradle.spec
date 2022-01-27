@@ -77,8 +77,6 @@ fi
 %dir "/usr/share/doc/"
 %dir "/usr/share/doc/samba-exporter/"
 "/usr/share/doc/samba-exporter/README.md"
-"/usr/share/doc/samba-exporter/changelog"
-"/usr/share/doc/samba-exporter/copyright"
 "/usr/share/doc/samba-exporter/LICENSE"
 %dir "/usr/share/doc/samba-exporter/docs/"
 %dir "/usr/share/doc/samba-exporter/docs/DeveloperDocs/"

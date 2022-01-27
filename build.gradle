@@ -361,15 +361,15 @@ task preparePack(dependsOn: 'build') {
                 into "${debPackageTmpDir}/debian"
             }
 
-            copy {
-                // Copy docs to the package tmp dir
-                from('.') {
-                    include 'changelog'
-                }
-                into "${debPackageTmpDir}/debian"
-            }
-
             file("${debPackageTmpDir}/debian").renameTo(file("${debPackageTmpDir}/DEBIAN"))
+
+            copy {
+                // Copy copyright to the package 
+                from('install/debian') {
+                    include 'copyright'
+                }
+                into "${debPackageTmpDir}/usr/share/doc/samba-exporter/"
+            }
         }
 
         // Copy Fedora specific package files
@@ -393,15 +393,6 @@ task preparePack(dependsOn: 'build') {
             // Copy docs to the package tmp dir
             from('.') {
                 include 'LICENSE'
-                include 'changelog'
-            }
-            into "${debPackageTmpDir}/usr/share/doc/samba-exporter/"
-        }
-
-        copy {
-            // Copy docs to the package tmp dir
-            from('install/debian') {
-                include 'copyright'
             }
             into "${debPackageTmpDir}/usr/share/doc/samba-exporter/"
         }
