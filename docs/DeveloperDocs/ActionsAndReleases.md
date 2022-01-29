@@ -91,7 +91,6 @@ The release process of this project is fully automated. To create a new release 
 
 - Create a **release** branch from the current state at the main branch
 - Update the `VersionMaster.txt` with a new increment version on **main** branch
-- Update the `changelog` with a stub entry for the new version on **main** branch
 - Commit the changes on the main branch
 - Push all changes on **main** and the **new release** branch to GitHub
 
