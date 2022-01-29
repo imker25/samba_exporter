@@ -169,12 +169,54 @@ echo "Create the branch '${distribution,,}-${distVersionNumber}/v${tag}' to work
 git checkout -b "${distribution,,}-${distVersionNumber}/v${tag}"
 git status
 
+
+echo "Update changelog file"
+echo "# ###################################################################"
+dch --distribution "focal" -v $packageVersion "Work on Version $packageVersion" < /bin/true
+
+echo "Content to add to the changelog"
+echo "# ###################################################################"
+changes=$(cat /build_results/commit_logs)
+delimiter="--::"
+string=$changes$delimiter
+#Split the text changes on the delimiter
+changeEntries=()
+while [[ $string ]]; do
+  changeEntries+=( "${string%%"$delimiter"*}" )
+  string=${string#*"$delimiter"}
+done
+
+delimiter=";;;;"
+for entry in "${changeEntries[@]}"
+do
+    
+    string=$entry$delimiter
+    entryFileds=()
+    while [[ $string ]]; do
+        entryFileds+=( "${string%%"$delimiter"*}" )
+        string=${string#*"$delimiter"}
+    done
+
+    echo "Author: ${entryFileds[0]}"
+    echo "Mail: ${entryFileds[1]}"
+    echo "Message: ${entryFileds[2]}"
+    if [ "${entryFileds[2]}" != "" ]; then
+        dch -a "${entryFileds[2]} (by ${entryFileds[1]})" < /bin/true
+    fi
+done
+
+
+# echo "# ###################################################################"
+# cat "$WORK_DIR/debian/changelog"
+echo "# ###################################################################"
+cp -v "$WORK_DIR/debian/changelog" "$WORK_DIR/install/debian/changelog"
+
 echo "# ###################################################################"
 echo "# Patch the files"
-given_version=$(cat "$WORK_DIR/VersionMaster.txt")
+# given_version=$(cat "$WORK_DIR/VersionMaster.txt")
 echo "$packageVersion" > "$WORK_DIR/VersionMaster.txt"
-echo "Version Prefix: $given_version"
-sed -i "s/samba-exporter ($given_version)/samba-exporter ($packageVersion)/g" $WORK_DIR/install/debian/changelog
+# echo "Version Prefix: $given_version"
+# sed -i "s/samba-exporter ($given_version)/samba-exporter ($packageVersion)/g" $WORK_DIR/install/debian/changelog
 
 echo "Patch package dependencies acording the distribution and version"
 if [ "$distVersionNumber" == "20.04" ] && [ "$distribution" == "Ubuntu" ]; then
@@ -211,7 +253,10 @@ cp -rv -L $WORK_DIR/install/debian/* $WORK_DIR/debian
 
 echo "# ###################################################################"
 echo "Changelog content after mofifications"
-cat $WORK_DIR/install/debian/changelog
+cat $WORK_DIR/debian/changelog
+
+# debug exit 
+# exit 1
 
 echo "# ###################################################################"
 echo "# Build packages before git commit"

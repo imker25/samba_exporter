@@ -139,8 +139,17 @@ fi
 # ################################################################################################################
 # functional code
 # ################################################################################################################
-pushd "$WORK_DIR"
 
+pushd "$BRANCH_ROOT"
+echo "Get log messages for changelog update"
+lastVersionChangeCommit=$(git log --pretty=format:"%H" -n 1 --follow "$BRANCH_ROOT/VersionMaster.txt")
+echo "Get log messages since commit \"${lastVersionChangeCommit}\" "
+mkdir -pv $BRANCH_ROOT/tmp/
+git log "$lastVersionChangeCommit".. --pretty=format:"--::%an;;;;%ae;;;;%B" > "$BRANCH_ROOT/tmp/commit_logs"
+
+popd
+
+pushd "$WORK_DIR"
 if [ -d "$DEB_PACKAGE_DIR" ]; then
     echo "Use existing $DEB_PACKAGE_DIR dir after cleanup"
     rm -rf $DEB_PACKAGE_DIR/*
@@ -160,6 +169,9 @@ else
     echo "Create $BRANCH_ROOT/logs dir"
     mkdir -p "$BRANCH_ROOT/logs"
 fi
+
+
+cp -v "$BRANCH_ROOT/tmp/commit_logs" "$DEB_PACKAGE_DIR"
 
 dockerError="false"
 echo "Publish tag $tag on launchpad within a docker cotainer for focal"
