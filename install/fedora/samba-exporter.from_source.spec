@@ -3,10 +3,12 @@
 %global goipath    tobi.backfrak.de/cmd/samba_exporter
 
 Name: samba-exporter
-Version: 1.11.12
+Version: x.x.x
+Source0: https://github.com/imker25/samba_exporter/archive/refs/tags/X.X.X-pre.tar.gz
+%global tag x.x.x-pre
 
-	
 %gometa
+%global debug_package %{nil}
 
 Release: 1
 Summary: Prometheus exporter to get metrics of a samba server
@@ -31,19 +33,30 @@ BuildRequires:  golang(gopkg.in/alecthomas/kingpin.v2)
 %define _rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm
 %define _unpackaged_files_terminate_build 0
 
+%gopkg
 
+%prep
+%goprep
+mkdir -p "%{gobuilddir}/src"
+cp -rpv "%{gobuilddir}/src/tobi.backfrak.de/cmd/samba_exporter/samba_exporter-%{tag}/"* "%{gobuilddir}/src/"
 	
 %build
-echo "%{gobuilddir}"
+GOPATH="$GOPATH:%{gobuilddir}/src/"
 export BUILDTAGS="netgo osusergo static_build"
 LDFLAGS="-X main.version=%{version}" \
 %gobuild -o %{gobuilddir}/bin/samba_exporter src/tobi.backfrak.de/cmd/samba_exporter
 LDFLAGS="-X main.version=%{version}" \
 %gobuild -o %{gobuilddir}/bin/samba_statusd src/tobi.backfrak.de/cmd/samba_statusd
-build/CreateManPage.sh
+"%{gobuilddir}/src/build/CreateManPage.sh"
 
 %install
-build/InstallProgram.sh "." %{gobuilddir}/bin %{buildroot}%{_bindir}/
+"%{gobuilddir}/src/build/InstallProgram.sh" "%{gobuilddir}/src" %{gobuilddir}/bin %{buildroot}/
+install -m 664  "%{gobuilddir}/src/LICENSE" "%{buildroot}/usr/share/doc/samba-exporter/LICENSE"
+install -d -m 775 "%{buildroot}/usr/share/man/man1/"
+install -m 664  "%{gobuilddir}/src/src/man/samba_exporter.1.gz" "%{buildroot}/usr/share/man/man1/samba_exporter.1.gz" 
+install -m 664  "%{gobuilddir}/src/src/man/samba_statusd.1.gz" "%{buildroot}/usr/share/man/man1/samba_statusd.1.gz" 
+install -m 664  "%{gobuilddir}/src/src/man/start_samba_statusd.1.gz" "%{buildroot}/usr/share/man/man1/start_samba_statusd.1.gz" 
+
 
 %post
 # Add samba-exporter user if needed
@@ -130,3 +143,4 @@ fi
 "/usr/share/man/man1/samba_exporter.1.gz"
 "/usr/share/man/man1/samba_statusd.1.gz"
 "/usr/share/man/man1/start_samba_statusd.1.gz"
+
