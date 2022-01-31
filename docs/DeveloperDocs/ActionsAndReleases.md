@@ -52,7 +52,7 @@ graph TD;
     docs[Documentation pages creation]
     repo[Debian repository creation]
     releaseUbuntuLP[Push Ubuntu *.deb to Launchpad]
-    releaseGR[Add all created *.deb packages to the GitHub release that triggered this pipeline]
+    releaseGH-Deb[Add all created *.deb packages to the GitHub release that triggered this pipeline]
     pagesRelease[Release on Github pages - Documentation and Debian repository]
     done(Pipeline end)
     checkRelease1{Check release}
@@ -62,6 +62,9 @@ graph TD;
     checkRelease3{Check release}
     preRelease3(( -pre release))
     fullRelease3((release))
+
+    buildFedora[Build Fedora *.rpm packages]
+    releaseGH-Rpm[Add all created *.rpm packages to the GitHub release that triggered this pipeline]
 
     release-->buildUbuntu
     buildUbuntu-->checkRelease1
@@ -73,12 +76,17 @@ graph TD;
 
     buildDebian-->docs
     docs-->repo
-    repo-->releaseGR
-    releaseGR-->checkRelease3
+    repo-->releaseGH-Deb
+    releaseGH-Deb-->checkRelease3
 
     checkRelease3-->preRelease3
     checkRelease3-->fullRelease3
     fullRelease3-->pagesRelease
+
+    release-->buildFedora
+    buildFedora-->releaseGH-Rpm
+    releaseGH-Rpm-->done
+
     pagesRelease-->done
     preRelease3-->done
 ```
