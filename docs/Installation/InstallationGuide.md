@@ -25,13 +25,27 @@ apt-get install samba-exporter
 
 **Hint:** Change `bullseye` to `buster` in case you use Debian 10.
 
-## GitHub Releases - For all supported distributions
+## GitHub Releases - For debian based distributions
 
 Install the [latest Release](https://github.com/imker25/samba_exporter/releases/latest) by downloading the debian package according to your distribution and version and installing it. For example:
 
 ```sh
 wget https://github.com/imker25/samba_exporter/releases/download/1.3.5-pre/samba-exporter_1.3.5-pre.ppa1.debian10_amd64.deb
 sudo dpkg --install ./samba-exporter_1.3.5-pre.ppa1.debian10_amd64.deb
+```
+
+**Hint:** Link and file name needs to be adapted to the latest release.
+
+It's also possible to download and install pre-releases from the GitHub this way.
+
+
+## GitHub Releases - For RPM based distributions
+
+Install the [latest Release](https://github.com/imker25/samba_exporter/releases/latest) by downloading the rpm package according to your distribution and version and installing it. For example:
+
+```sh
+wget https://github.com/imker25/samba_exporter/releases/download/1.11.9-pre/samba-exporter-1.11.9-1.x86_64.fedora35.rpm
+sudo rpm -U samba-exporter-1.11.9-1.x86_64.fedora35.rpm 
 ```
 
 **Hint:** Link and file name needs to be adapted to the latest release.

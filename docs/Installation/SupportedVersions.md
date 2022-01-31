@@ -1,5 +1,7 @@
 # Supported Versions
 
+## Debian based
+
 **Ubuntu:**
 
 | Version | Code Name | Supported |
@@ -16,3 +18,12 @@
 | Debian 11   | Bullseye | yes |
 | Debian testing  | Bookworm | no |
 
+
+## RPM based
+
+**Fedora** 
+
+| Version | Release | Supported |
+|---------|-----------|-----------|
+| Fedora 35  | 2021-11-02 | yes |
+| Fedora 36   | 2022-04-19 | no |
