@@ -194,7 +194,8 @@ if [ ! -f ~/samba-exporter-${rpmVersion}-1.x86_64.rpm ];then
     echo "Error: Can not find the binary package '~/samba-exporter-${rpmVersion}-1.x86_64.rpm'"
 fi 
 
-cp -v ~/samba-exporter-${rpmVersion}-1.x86_64.rpm /build_results/
+mkdir -pv "/build_results/${distribution}-${distVersionNumber}"
+cp -v ~/samba-exporter-${rpmVersion}-1.x86_64.rpm "/build_results/${distribution}-${distVersionNumber}"
 chmod -R 777 /build_results/*
 
 exit 0
