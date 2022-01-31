@@ -3,7 +3,7 @@ on:
   release:
     types: [published]
 jobs:
-  publish:
+  publish-launchpad:
     name: Publish to Launchpad and Github
     strategy:
       matrix:
@@ -132,3 +132,84 @@ jobs:
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: build/pages/site
+  publish-copr:
+    name: Publish to copr and Github
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v2
+      name: Checkout
+      with:
+       fetch-depth: 0
+    - shell: bash
+      name: Run the publish in docker script
+      env:
+        COPR_SSH_ID_PUB: ${{ secrets.LAUNCHPAD_SSH_ID_PUB }}
+        COPR_SSH_ID_PRV: ${{ secrets.LAUNCHPAD_SSH_ID_PRV }}
+        COPR_GPG_KEY_PUB: ${{ secrets.LAUNCHPAD_GPG_KEY_PUB }}
+        COPR_GPG_KEY_PRV: ${{ secrets.LAUNCHPAD_GPG_KEY_PRV }}
+      run: |
+            echo "GITHUB_REF=$GITHUB_REF"
+            if [[ "$GITHUB_REF" = refs/tags/* ]]; then
+                    TAG="${GITHUB_REF/refs\/tags\/}" 
+            else 
+                    echo "Not a tag given as ref. Will exit"
+                    exit 1
+            fi
+            if [[ "$TAG" =~ "-pre" ]]; then
+              echo "SAMBA_EXPORTER_PRE_RELEASE=true"
+              echo "SAMBA_EXPORTER_PRE_RELEASE=true" >> $GITHUB_ENV
+              echo "It's a pre release. Do a publish dry run for $TAG"
+              build/PublishRpmInDocker.sh $TAG dry
+            else
+              echo "SAMBA_EXPORTER_PRE_RELEASE=false"
+              echo "SAMBA_EXPORTER_PRE_RELEASE=false" >> $GITHUB_ENV
+              echo "Publish tag $TAG on copr"
+              build/PublishRpmInDocker.sh $TAG
+            fi
+    - name: 'Upload rpm packages artifact'            
+      uses: actions/upload-artifact@v2
+      with:
+        name: samba-exporter_packages
+        path: bin/rpm-packages/*.rpm
+        retention-days: 1
+    - name: 'Upload docker build logs artifact'         
+      uses: actions/upload-artifact@v2
+      if: always() 
+      with:
+        name: samba-exporter_docker-build-logs
+        path: logs/*.log
+        retention-days: 1
+    - name: 'Prepare asset upload'  
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+            echo "GITHUB_REF=$GITHUB_REF"
+            if [[ "$GITHUB_REF" = refs/tags/* ]]; then
+                    TAG="${GITHUB_REF/refs\/tags\/}" 
+                    if [[ "$TAG" =~ "-pre" ]]; then
+                      echo "SAMBA_EXPORTER_RELEASE_TAG=${TAG/-pre/}"
+                      echo "SAMBA_EXPORTER_RELEASE_TAG=${TAG/-pre/}"  >> $GITHUB_ENV                    
+                    else
+                      echo "SAMBA_EXPORTER_RELEASE_TAG=$TAG"
+                      echo "SAMBA_EXPORTER_RELEASE_TAG=$TAG"  >> $GITHUB_ENV
+                    fi
+            else 
+                    echo "Not a tag given as ref. Will exit"
+                    exit 1
+            fi      
+            SAMBA_EXPORTER_UPLOAD_URL=$(curl -H "Authorization: token $GITHUB_TOKEN" -X GET https://api.github.com/repos/imker25/samba_exporter/releases/tags/$TAG | jq -r ".upload_url")
+            echo "SAMBA_EXPORTER_UPLOAD_URL=$SAMBA_EXPORTER_UPLOAD_URL"
+            echo "SAMBA_EXPORTER_UPLOAD_URL=$SAMBA_EXPORTER_UPLOAD_URL" >> $GITHUB_ENV
+    - name: Upload Release Asset for Fedora 35
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
+        asset_path: bin/rpm-packages/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.x86_64.rpm 
+        asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.x86_64.rpm 
+        asset_content_type: application/zip             
