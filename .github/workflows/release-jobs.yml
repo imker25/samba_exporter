@@ -174,7 +174,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: samba-exporter_packages
-        path: bin/rpm-packages/*.rpm
+        path: bin/rpm-packages/Fedora-35*.rpm
         retention-days: 1
     - name: 'Upload docker build logs artifact'         
       uses: actions/upload-artifact@v2
