@@ -8,9 +8,9 @@
 <meta content="Documentaion for Samba Exporter - A prometheus exporter for statistic data of the samba file server" name="description"/>
 <link href="https://imker25.github.io/samba_exporter/DeveloperDocs/Compile/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.2.3, mkdocs-material-8.1.4" name="generator"/>
+<meta content="mkdocs-1.2.3, mkdocs-material-8.1.9" name="generator"/>
 <title>Developer Guide - Samba Exporter - A prometheus exporter for the samba file server</title>
-<link href="../../assets/stylesheets/main.bb3983ee.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.2b4465f4.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.e6a45f82.min.css" rel="stylesheet"/>
 <meta content="#757575" name="theme-color"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -212,6 +212,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#create-man-pages">
+    Create man pages
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#run-tests-locally">
     Run Tests locally
   </a>
@@ -220,6 +225,15 @@
 <a class="md-nav__link" href="#manual-installation">
     Manual installation
   </a>
+<nav aria-label="Manual installation" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#test-installation">
+    Test installation
+  </a>
+</li>
+</ul>
+</nav>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#_1">
@@ -262,27 +276,40 @@
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"></path></svg>
 </a>
 <h1 id="developer-guide">Developer Guide<a class="headerlink" href="#developer-guide" title="Permanent link">¶</a></h1>
-<p>This page shows you how to build, test and install the project.</p>
+<p>This page shows you how to build, test and install the project manually.</p>
 <h2 id="build">Build<a class="headerlink" href="#build" title="Permanent link">¶</a></h2>
-<p>To build the project you need <a href="https://golang.org/">Go</a> Version 1.16.x and <a href="https://java.com/">Java</a> Version 11 on your development machine.
-On your target machine, the samba server you want to monitor, you need <a href="https://www.samba.org/">samba</a> and <a href="https://www.freedesktop.org/wiki/Software/systemd/">systemd</a> installed.</p>
+<p>To build the project you need the following on your development machine.</p>
+<ul>
+<li><a href="https://golang.org/">Go</a> Version 1.16.x</li>
+<li><a href="https://java.com/">Java</a> Version 11</li>
+<li><a href="https://git-scm.com/">Git</a> &gt;= Version 2.30</li>
+<li><a href="https://refspecs.linuxfoundation.org/LSB_3.0.0/LSB-PDA/LSB-PDA/lsbrelease.html">lsb_release</a></li>
+<li><a href="https://github.com/rtomayko/ronn">ronn</a> - Only in case you want to work on man pages</li>
+</ul>
 <p>To build the software change to the repositories directory and run:</p>
 <pre><code class="language-sh">./gradlew getBuildName build preparePack
 </code></pre>
-<p>In case you want to work on the man pages you need to install <a href="https://github.com/rtomayko/ronn">ronn</a> on your development machine.
-To create the man pages out of the <code>*.ronn</code> source files run:</p>
+<p>To figure out all the valid gradle tasks, read <code>build.gradle</code></p>
+<h2 id="create-man-pages">Create man pages<a class="headerlink" href="#create-man-pages" title="Permanent link">¶</a></h2>
+<p>To create the man pages out of the <code>*.ronn</code> source files in <code>src/man</code> run:</p>
 <pre><code class="language-sh">build/CreateManPage.sh 
 </code></pre>
 <h2 id="run-tests-locally">Run Tests locally<a class="headerlink" href="#run-tests-locally" title="Permanent link">¶</a></h2>
 <p>To execute the unit tests you can run:</p>
 <pre><code class="language-sh">./gradlew test
 </code></pre>
+<p><strong>Hint:</strong> As always it is possible to combine the gradle commands, e. g. <code>./gradlew build test</code></p>
 <p>To execute the integration tests you can run:</p>
 <pre><code class="language-sh">./test/integrationTest/scripts/RunIntegrationTests.sh
 </code></pre>
 <h2 id="manual-installation">Manual installation<a class="headerlink" href="#manual-installation" title="Permanent link">¶</a></h2>
+<p>On your target machine, the samba server you want to monitor, you need <a href="https://www.samba.org/">samba</a> and <a href="https://www.freedesktop.org/wiki/Software/systemd/">systemd</a> installed.</p>
+<p>To build for manual installation run the following:</p>
+<pre><code class="language-sh">./gradlew getBuildName build preparePack
+build/CreateManPage.sh 
+</code></pre>
 <p>For manual install on the <code>target</code> machine do the following copy after you build the project as shown above:</p>
-<pre><code class="language-sh">scp ./tmp/samba-exporter_&lt;version&gt;/* root@&lt;target&gt;:/
+<pre><code class="language-sh">rsync -avr --exclude 'DEBIAN' --exclude 'samba-exporter.spec' ./tmp/samba-exporter_&lt;version&gt;/* root@&lt;target&gt;:/  
 </code></pre>
 <p>Now login to your target machine and run the commands below to enable the services and create the needed user and group:</p>
 <pre><code class="language-sh">systemctl daemon-reload
@@ -291,12 +318,13 @@ systemctl enable samba_exporter.service
 addgroup --system samba-exporter
 adduser --system --no-create-home --disabled-login samba-exporter
 adduser samba-exporter samba-exporter
-updatedb                                                          # In case you created and copied the man pages as well
+mandb                                                               # In case you created and copied the man pages as well
 </code></pre>
 <p>Finally you are abel to start the services:</p>
 <pre><code class="language-sh">systemctl start samba_statusd.service
 systemctl start samba_exporter.service
 </code></pre>
+<h3 id="test-installation">Test installation<a class="headerlink" href="#test-installation" title="Permanent link">¶</a></h3>
 <p>Test the <code>samba_exporter</code> by requesting metrics with <code>curl</code>:</p>
 <pre><code class="language-sh">curl http://127.0.0.1:9922/metrics 
 </code></pre>
@@ -336,7 +364,7 @@ samba_server_up 1
 samba_share_count 0
 </code></pre>
 <h2 id="_1"><br/><a class="headerlink" href="#_1" title="Permanent link">¶</a></h2>
-<p><br/><sub>Last change at Jan 06, 2022 20:46:27 by imker - commit: 7ad5fff<sub></sub></sub></p>
+<p><br/><sub>Last change at Feb 03, 2022 21:57:03 by tobi - commit: a22100c<sub></sub></sub></p>
 </article>
 </div>
 </div>
@@ -394,7 +422,7 @@ samba_share_count 0
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.tracking", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
-<script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
+<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.tracking", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
+<script src="../../assets/javascripts/bundle.960e086b.min.js"></script>
 </body>
 </html>

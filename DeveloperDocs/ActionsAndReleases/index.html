@@ -8,9 +8,9 @@
 <meta content="Documentaion for Samba Exporter - A prometheus exporter for statistic data of the samba file server" name="description"/>
 <link href="https://imker25.github.io/samba_exporter/DeveloperDocs/ActionsAndReleases/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.2.3, mkdocs-material-8.1.4" name="generator"/>
+<meta content="mkdocs-1.2.3, mkdocs-material-8.1.9" name="generator"/>
 <title>Release Process - Samba Exporter - A prometheus exporter for the samba file server</title>
-<link href="../../assets/stylesheets/main.bb3983ee.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.2b4465f4.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.e6a45f82.min.css" rel="stylesheet"/>
 <meta content="#757575" name="theme-color"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -302,7 +302,7 @@ graph TD;
     docs[Documentation pages creation]
     repo[Debian repository creation]
     releaseUbuntuLP[Push Ubuntu *.deb to Launchpad]
-    releaseGR[Add all created *.deb packages to the GitHub release that triggered this pipeline]
+    releaseGH-Deb[Add all created *.deb packages to the GitHub release that triggered this pipeline]
     pagesRelease[Release on Github pages - Documentation and Debian repository]
     done(Pipeline end)
     checkRelease1{Check release}
@@ -312,6 +312,9 @@ graph TD;
     checkRelease3{Check release}
     preRelease3(( -pre release))
     fullRelease3((release))
+
+    buildFedora[Build Fedora *.rpm packages]
+    releaseGH-Rpm[Add all created *.rpm packages to the GitHub release that triggered this pipeline]
 
     release--&gt;buildUbuntu
     buildUbuntu--&gt;checkRelease1
@@ -323,12 +326,17 @@ graph TD;
 
     buildDebian--&gt;docs
     docs--&gt;repo
-    repo--&gt;releaseGR
-    releaseGR--&gt;checkRelease3
+    repo--&gt;releaseGH-Deb
+    releaseGH-Deb--&gt;checkRelease3
 
     checkRelease3--&gt;preRelease3
     checkRelease3--&gt;fullRelease3
     fullRelease3--&gt;pagesRelease
+
+    release--&gt;buildFedora
+    buildFedora--&gt;releaseGH-Rpm
+    releaseGH-Rpm--&gt;done
+
     pagesRelease--&gt;done
     preRelease3--&gt;done
 </div>
@@ -338,14 +346,13 @@ graph TD;
 <ul>
 <li>Create a <strong>release</strong> branch from the current state at the main branch</li>
 <li>Update the <code>VersionMaster.txt</code> with a new increment version on <strong>main</strong> branch</li>
-<li>Update the <code>changelog</code> with a stub entry for the new version on <strong>main</strong> branch</li>
 <li>Commit the changes on the main branch</li>
 <li>Push all changes on <strong>main</strong> and the <strong>new release</strong> branch to GitHub</li>
 </ul>
 <p>Once this changes are pushed to github the CI/CD pipeline will start to run for both, <code>main</code> and the new <code>release</code> branch. This will create a new <strong>-pre Release</strong> from <code>main</code> as well as a new <strong>full Release</strong>  from the new <code>release</code> branch. 
 <br/></p>
 <hr/>
-<p><br/><sub>Last change at Jan 06, 2022 20:46:27 by imker - commit: 7ad5fff<sub></sub></sub></p>
+<p><br/><sub>Last change at Feb 03, 2022 21:57:03 by tobi - commit: a22100c<sub></sub></sub></p>
 </article>
 </div>
 </div>
@@ -390,7 +397,7 @@ graph TD;
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.tracking", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
-<script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
+<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.tracking", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
+<script src="../../assets/javascripts/bundle.960e086b.min.js"></script>
 <script src="https://unpkg.com/mermaid@8.8.0/dist/mermaid.min.js"></script><script>mermaid.initialize({});</script></body>
 </html>

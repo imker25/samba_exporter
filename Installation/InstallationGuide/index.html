@@ -8,9 +8,9 @@
 <meta content="Documentaion for Samba Exporter - A prometheus exporter for statistic data of the samba file server" name="description"/>
 <link href="https://imker25.github.io/samba_exporter/Installation/InstallationGuide/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.2.3, mkdocs-material-8.1.4" name="generator"/>
+<meta content="mkdocs-1.2.3, mkdocs-material-8.1.9" name="generator"/>
 <title>Installation Guide - Samba Exporter - A prometheus exporter for the samba file server</title>
-<link href="../../assets/stylesheets/main.bb3983ee.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.2b4465f4.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.e6a45f82.min.css" rel="stylesheet"/>
 <meta content="#757575" name="theme-color"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -167,8 +167,13 @@
   </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#github-releases-for-all-supported-distributions">
-    GitHub Releases - For all supported distributions
+<a class="md-nav__link" href="#github-releases-for-debian-based-distributions">
+    GitHub Releases - For debian based distributions
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#github-releases-for-rpm-based-distributions">
+    GitHub Releases - For RPM based distributions
   </a>
 </li>
 </ul>
@@ -273,17 +278,24 @@ apt-get update
 apt-get install samba-exporter
 </code></pre>
 <p><strong>Hint:</strong> Change <code>bullseye</code> to <code>buster</code> in case you use Debian 10.</p>
-<h2 id="github-releases-for-all-supported-distributions">GitHub Releases - For all supported distributions<a class="headerlink" href="#github-releases-for-all-supported-distributions" title="Permanent link">¶</a></h2>
+<h2 id="github-releases-for-debian-based-distributions">GitHub Releases - For debian based distributions<a class="headerlink" href="#github-releases-for-debian-based-distributions" title="Permanent link">¶</a></h2>
 <p>Install the <a href="https://github.com/imker25/samba_exporter/releases/latest">latest Release</a> by downloading the debian package according to your distribution and version and installing it. For example:</p>
 <pre><code class="language-sh">wget https://github.com/imker25/samba_exporter/releases/download/1.3.5-pre/samba-exporter_1.3.5-pre.ppa1.debian10_amd64.deb
 sudo dpkg --install ./samba-exporter_1.3.5-pre.ppa1.debian10_amd64.deb
 </code></pre>
 <p><strong>Hint:</strong> Link and file name needs to be adapted to the latest release.</p>
 <p>It's also possible to download and install pre-releases from the GitHub this way.</p>
+<h2 id="github-releases-for-rpm-based-distributions">GitHub Releases - For RPM based distributions<a class="headerlink" href="#github-releases-for-rpm-based-distributions" title="Permanent link">¶</a></h2>
+<p>Install the <a href="https://github.com/imker25/samba_exporter/releases/latest">latest Release</a> by downloading the rpm package according to your distribution and version and installing it. For example:</p>
+<pre><code class="language-sh">wget https://github.com/imker25/samba_exporter/releases/download/1.11.9-pre/samba-exporter-1.11.9-1.x86_64.fedora35.rpm
+sudo rpm -U samba-exporter-1.11.9-1.x86_64.fedora35.rpm 
+</code></pre>
+<p><strong>Hint:</strong> Link and file name needs to be adapted to the latest release.</p>
+<p>It's also possible to download and install pre-releases from the GitHub this way.</p>
 <p>For manual installation see the <a href="../../DeveloperDocs/Compile/">Developer Guide</a>.
 <br/></p>
 <hr/>
-<p><br/><sub>Last change at Jan 06, 2022 20:46:27 by imker - commit: 7ad5fff<sub></sub></sub></p>
+<p><br/><sub>Last change at Feb 03, 2022 21:57:03 by tobi - commit: a22100c<sub></sub></sub></p>
 </article>
 </div>
 </div>
@@ -341,7 +353,7 @@ sudo dpkg --install ./samba-exporter_1.3.5-pre.ppa1.debian10_amd64.deb
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.tracking", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.361d90f1.min.js"}</script>
-<script src="../../assets/javascripts/bundle.289a2a4b.min.js"></script>
+<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.tracking", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
+<script src="../../assets/javascripts/bundle.960e086b.min.js"></script>
 </body>
 </html>
