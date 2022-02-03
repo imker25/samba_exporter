@@ -169,6 +169,45 @@ if [ ! -f ~/rpmbuild/SPECS/samba-exporter.from_source.spec ]; then
 fi 
 
 echo "# ###################################################################"
+echo "Add git log to the changelog"
+if [ ! -f /build_results/commit_logs ]; then
+    echo "Error: Can not find the git changes file '/build_results/commit_logs'"
+    exit 1
+fi 
+
+echo "%changelog" >> ~/rpmbuild/SPECS/samba-exporter.from_source.spec
+echo "* $(date +"%a %b %d %Y") Tobias Zellner <imker@bienenkaefig.de> - ${rpmVersion}" >> ~/rpmbuild/SPECS/samba-exporter.from_source.spec
+changes=$(cat /build_results/commit_logs)
+delimiter="--::"
+string=$changes$delimiter
+#Split the text changes on the delimiter
+changeEntries=()
+while [[ $string ]]; do
+changeEntries+=( "${string%%"$delimiter"*}" )
+string=${string#*"$delimiter"}
+done
+
+delimiter=";;;;"
+for entry in "${changeEntries[@]}"
+do
+    
+    string=$entry$delimiter
+    entryFileds=()
+    while [[ $string ]]; do
+        entryFileds+=( "${string%%"$delimiter"*}" )
+        string=${string#*"$delimiter"}
+    done
+
+    echo "Author: ${entryFileds[0]}"
+    echo "Mail: ${entryFileds[1]}"
+    echo "Message: ${entryFileds[2]}"
+    if [ "${entryFileds[2]}" != "" ]; then
+        echo "- ${entryFileds[2]}" >> ~/rpmbuild/SPECS/samba-exporter.from_source.spec
+    fi
+done
+
+
+echo "# ###################################################################"
 echo "Patch the spec file"
 sed -i "s/x.x.x-pre/${tag}/g" ~/rpmbuild/SPECS/samba-exporter.from_source.spec
 sed -i "s/X.X.X-pre/${tag}/g" ~/rpmbuild/SPECS/samba-exporter.from_source.spec
