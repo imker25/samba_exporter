@@ -39,13 +39,14 @@ BuildRequires:  golang(gopkg.in/alecthomas/kingpin.v2)
 %goprep
 mkdir -p "%{gobuilddir}/src"
 cp -rpv "%{gobuilddir}/src/tobi.backfrak.de/cmd/samba_exporter/samba_exporter-%{tag}/"* "%{gobuilddir}/src/"
+echo "%{tag}" > "%{gobuilddir}/src/VersionMaster.txt"
 	
 %build
 GOPATH="$GOPATH:%{gobuilddir}/src/"
 export BUILDTAGS="netgo osusergo static_build"
-LDFLAGS="-X main.version=%{version}" \
+LDFLAGS="-X main.version=%{tag}" \
 %gobuild -o %{gobuilddir}/bin/samba_exporter src/tobi.backfrak.de/cmd/samba_exporter
-LDFLAGS="-X main.version=%{version}" \
+LDFLAGS="-X main.version=%{tag}" \
 %gobuild -o %{gobuilddir}/bin/samba_statusd src/tobi.backfrak.de/cmd/samba_statusd
 "%{gobuilddir}/src/build/CreateManPage.sh"
 
