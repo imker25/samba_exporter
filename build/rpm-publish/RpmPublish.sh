@@ -125,7 +125,20 @@ gpg --import --batch --no-tty ~/.gnupg/imker-bienenkaefig.asc
 gpg --edit-key --batch --no-tty  CB6E90E9EC323850B16C1C14A38A1091C018AE68 trust quit
 gpg --list-keys --batch --no-tty 
 
+echo "%_signature gpg" >> ~/.rpmmacros
+echo "%_gpg_path /root/.gnupg" >> ~/.rpmmacros
+echo "%_gpg_name Tobias Zellner (Key used in autometed github workflows) <imker@bienenkaefig.de>" >> ~/.rpmmacros
+echo "%_gpgbin /usr/bin/gpg" >> ~/.rpmmacros
+
+export GPG_TTY=$(tty)
+
+rpm --import ~/.gnupg/imker-bienenkaefig.pub.asc
+echo "Show gpg keys usable by rpm"
+echo "# ###################################################################"
+rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\n'
+
 echo "Create rpm build folders"
+echo "# ###################################################################"
 mkdir -pv ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 cd ~/rpmbuild
 
@@ -135,12 +148,12 @@ echo "wget -O ~/rpmbuild/SOURCES/${tag}.tar.gz \"$GITHUB_RELEASE_URL/$tag.tar.gz
 wget -O ~/rpmbuild/SOURCES/${tag}.tar.gz "$GITHUB_RELEASE_URL/$tag.tar.gz"
 if [ "$?" != "0" ]; then 
     echo "Error during sources download"
-    return 1
+    exit 1
 fi
 
 if [ ! -f ~/rpmbuild/SOURCES/${tag}.tar.gz ]; then
     echo "Error: Can not find '~/rpmbuild/SOURCES/${tag}.tar.gz'"
-    return 1
+    exit 1
 fi 
 
 echo "# ###################################################################"
@@ -152,7 +165,7 @@ popd
 
 if [ ! -f ~/rpmbuild/SPECS/samba-exporter.from_source.spec ]; then
     echo "Error: Can not find '~/rpmbuild/SPECS/samba-exporter.from_source.spec'"
-    return 1
+    exit 1
 fi 
 
 echo "# ###################################################################"
@@ -173,13 +186,22 @@ echo "rpmbuild -bs ~/rpmbuild/SPECS/samba-exporter.from_source.spec"
 rpmbuild -bs ~/rpmbuild/SPECS/samba-exporter.from_source.spec
 if [ "$?" != "0" ]; then 
     echo "Error during sources package build"
-    return 1
+    exit 1
 fi
 
 if [ ! -f ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm ]; then
     echo "Error: Can not find the source package '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm'"
-    return 1
+    exit 1
 fi 
+
+echo "# ###################################################################"
+echo "Sign the source package"
+echo "rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm"
+rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm
+if [ "$?" != "0" ]; then 
+    echo "Error when signing source package"
+    exit 1
+fi
 
 echo "# ###################################################################"
 echo "Build the binary package"
@@ -187,15 +209,26 @@ echo "rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm
 rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm
 if [ "$?" != "0" ]; then 
     echo "Error during binary package build"
-    return 1
+    exit 1
 fi
 
 if [ ! -f ~/samba-exporter-${rpmVersion}-1.x86_64.rpm ];then 
     echo "Error: Can not find the binary package '~/samba-exporter-${rpmVersion}-1.x86_64.rpm'"
 fi 
 
+echo "# ###################################################################"
+echo "Sign the binary package"
+echo "rpm --addsign ~/samba-exporter-${rpmVersion}-1.x86_64.rpm"
+rpm --addsign ~/samba-exporter-${rpmVersion}-1.x86_64.rpm 
+if [ "$?" != "0" ]; then 
+    echo "Error when signing binary package"
+    exit 1
+fi
+echo "# ###################################################################"
+echo "Copy source and binary package to the host"
 mkdir -pv "/build_results/${distribution}-${distVersionNumber}"
-cp -v ~/samba-exporter-${rpmVersion}-1.x86_64.rpm "/build_results/${distribution}-${distVersionNumber}"
+cp -v ~/samba-exporter-${rpmVersion}-1.x86_64.rpm "/build_results/${distribution}-${distVersionNumber}/"
+cp -v ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm "/build_results/${distribution}-${distVersionNumber}/"
 chmod -R 777 /build_results/*
 
 exit 0

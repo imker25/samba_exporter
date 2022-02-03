@@ -7,6 +7,7 @@ RUN yum -y install redhat-lsb \
                 rpmdevtools \
                 rpmlint \
                 rpm-build \
+                rpm-sign \
                 gzip \
                 curl \
                 man-db \
