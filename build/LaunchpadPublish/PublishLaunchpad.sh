@@ -228,6 +228,7 @@ fi
 
 if [ "$distVersionNumber" == "21.10" ] && [ "$distribution" == "Ubuntu" ]; then
     sed -i "s/focal;/impish;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu20.04/ubuntu21.10/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.17,/g" $WORK_DIR/install/debian/control
 else 
     echo "Not running on ubuntu 21.10 (impish)"
@@ -235,6 +236,7 @@ fi
 
 if [ "$distVersionNumber" == "11" ] && [ "$distribution" == "Debian" ]; then
     sed -i "s/focal;/bullseye;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu20.04/debian11/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.15,/g" $WORK_DIR/install/debian/control
 else 
     echo "Not running on debian 11 (bullseye)"
@@ -242,6 +244,7 @@ fi
 
 if [ "$distVersionNumber" == "10" ] && [ "$distribution" == "Debian" ]; then
     sed -i "s/focal;/buster;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu20.04/debian10/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.15,/g" $WORK_DIR/install/debian/control
     sed -i "s/gzip (>=1.10)/gzip (>=1.9)/g" $WORK_DIR/install/debian/control
     sed -i "s/golang-any/man-db/g" $WORK_DIR/install/debian/control
