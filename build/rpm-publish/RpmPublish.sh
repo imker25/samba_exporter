@@ -115,9 +115,9 @@ mkdir -p ~/.ssh
 echo "$COPR_SSH_ID_PUB" > ~/.ssh/id_rsa.pub
 chmod 600 ~/.ssh/id_rsa.pub
 echo "$COPR_SSH_ID_PRV" > ~/.ssh/id_rsa
-chmod 600 ~/.ssh/id_rsa
+chmod 700 ~/.ssh/id_rsa
 mkdir -p ~/.gnupg
-chmod 600 ~/.gnupg
+chmod 700 ~/.gnupg
 echo "$COPR_GPG_KEY_PUB" > ~/.gnupg/imker-bienenkaefig.pub.asc
 echo "$COPR_GPG_KEY_PRV" > ~/.gnupg/imker-bienenkaefig.asc
 
@@ -126,9 +126,12 @@ gpg --edit-key --batch --no-tty  CB6E90E9EC323850B16C1C14A38A1091C018AE68 trust 
 gpg --list-keys --batch --no-tty 
 
 echo "%_signature gpg" >> ~/.rpmmacros
-echo "%_gpg_path /root/.gnupg" >> ~/.rpmmacros
+echo "%_gpg_path /home/${USER}/.gnupg" >> ~/.rpmmacros
 echo "%_gpg_name Tobias Zellner (Key used in autometed github workflows) <imker@bienenkaefig.de>" >> ~/.rpmmacros
 echo "%_gpgbin /usr/bin/gpg" >> ~/.rpmmacros
+
+git config --global user.name "Tobias Zellner"
+git config --global user.email imker@bienekaefig.de
 
 export GPG_TTY=$(tty)
 
@@ -197,15 +200,18 @@ do
         entryFileds+=( "${string%%"$delimiter"*}" )
         string=${string#*"$delimiter"}
     done
-
+    message=${entryFileds[2]}
     echo "Author: ${entryFileds[0]}"
     echo "Mail: ${entryFileds[1]}"
-    echo "Message: ${entryFileds[2]}"
-    if [ "${entryFileds[2]}" != "" ]; then
-        echo "- ${entryFileds[2]}" >> ~/rpmbuild/SPECS/samba-exporter.from_source.spec
+    echo "Message: $message"
+    if [ "$message" != "" ]; then
+        message=${message//\*/-}
+        echo "- ${message}" >> ~/rpmbuild/SPECS/new-changelog-section
     fi
 done
 
+sed -i '/^[[:space:]]*$/d' ~/rpmbuild/SPECS/new-changelog-section
+cat ~/rpmbuild/SPECS/new-changelog-section >> ~/rpmbuild/SPECS/samba-exporter.from_source.spec
 
 echo "# ###################################################################"
 echo "Patch the spec file"
@@ -241,6 +247,9 @@ if [ "$?" != "0" ]; then
     echo "Error when signing source package"
     exit 1
 fi
+
+# debug exit
+# exit 0
 
 echo "# ###################################################################"
 echo "Build the binary package"

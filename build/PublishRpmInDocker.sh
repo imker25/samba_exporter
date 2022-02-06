@@ -34,7 +34,8 @@ function buildAndRunDocker() {
     distVersion="$1"
 
     echo "Build the needed container from '$WORK_DIR/Dockerfile.${distVersion}', logging to $BRANCH_ROOT/logs/docker-build-${distVersion}.log"
-    docker build --file "$WORK_DIR/Dockerfile.${distVersion}" --tag rpm-publish-container-$distVersion . > $BRANCH_ROOT/logs/docker-build-${distVersion}.log 2>&1
+    echo "docker build --file \"$WORK_DIR/Dockerfile.${distVersion}\" --tag rpm-publish-container-$distVersion --build-arg USER=${USER}  --build-arg UID=$(id -u) --build-arg GID=$(id -g)"
+    docker build --file "$WORK_DIR/Dockerfile.${distVersion}" --tag rpm-publish-container-$distVersion --build-arg USER=${USER}  --build-arg UID=$(id -u) --build-arg GID=$(id -g) . > $BRANCH_ROOT/logs/docker-build-${distVersion}.log 2>&1
     if [ "$?" != "0" ]; then 
         echo "Error during docker build"
         return 1
@@ -47,7 +48,10 @@ function buildAndRunDocker() {
             --env COPR_SSH_ID_PRV="$COPR_SSH_ID_PRV"  \
             --env COPR_GPG_KEY_PUB="$COPR_GPG_KEY_PUB" \
             --env COPR_GPG_KEY_PRV="$COPR_GPG_KEY_PRV" \
+            --env HOME=/home/${USER} \
+            --env USER=${USER} \
             --mount type=bind,source="$RPM_PACKAGE_DIR",target="/build_results" \
+            --user $(id -u):$(id -g) \
             -i rpm-publish-container-$distVersion \
             /bin/bash -c "/RpmPublish.sh $tag"
     else
@@ -55,7 +59,10 @@ function buildAndRunDocker() {
             --env COPR_SSH_ID_PRV="$COPR_SSH_ID_PRV"  \
             --env COPR_GPG_KEY_PUB="$COPR_GPG_KEY_PUB" \
             --env COPR_GPG_KEY_PRV="$COPR_GPG_KEY_PRV" \
+            --env HOME=/home/${USER} \
+            --env USER=${USER} \
             --mount type=bind,source="$RPM_PACKAGE_DIR",target="/build_results" \
+            --user $(id -u):$(id -g) \
             -i rpm-publish-container-$distVersion \
             /bin/bash -c "/RpmPublish.sh $tag dry"
     fi

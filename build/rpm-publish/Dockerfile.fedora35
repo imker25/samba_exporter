@@ -1,5 +1,9 @@
 FROM fedora:35
 
+ARG USER
+ARG UID
+ARG GID
+
 RUN yum -y update && \
     yum clean all
 RUN yum -y install redhat-lsb \
@@ -19,6 +23,7 @@ RUN yum -y install redhat-lsb \
                 golang-github-prometheus-client-model-devel \
                 go-rpm-macros \                                        
                 openssh-clients \
+                copr-cli \
                 gnupg && \
     yum clean all
 
@@ -26,6 +31,8 @@ RUN yum -y install redhat-lsb \
 COPY RpmPublish.sh /RpmPublish.sh
 RUN chmod 777 /RpmPublish.sh
 
-# Configure git
-RUN git config --global user.name "Tobias Zellner" && \
-    git config --global user.email imker@bienekaefig.de
+RUN mkdir -p /home/${USER} &&\
+    chmod 770 /home/${USER} && \
+    chown ${UID}:${GID} /home/${USER} && \
+    chmod 777 /var/lib/rpm/
+
