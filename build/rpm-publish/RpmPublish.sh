@@ -108,6 +108,7 @@ if [ "$dryRun" == "false" ]; then
     echo "Release 'samba-exporter-${tag}' for $distribution $distVersionNumber as RPM Version $rpmVersion"
 else
     echo "Dry run: Release 'samba-exporter-${tag}' for $distribution $distVersionNumber as RPM Version $rpmVersion"
+    echo "Dry run: No changes are uploaded to copr"
 fi 
 
 echo "Prepare for operation"
@@ -219,6 +220,13 @@ sed -i "s/x.x.x-pre/${tag}/g" ~/rpmbuild/SPECS/samba-exporter.from_source.spec
 sed -i "s/X.X.X-pre/${tag}/g" ~/rpmbuild/SPECS/samba-exporter.from_source.spec
 sed -i "s/x.x.x/${rpmVersion}/g" ~/rpmbuild/SPECS/samba-exporter.from_source.spec
 
+if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "35" ]; then
+    echo "Do modifications for 'Fedora 35'"
+    sed -i "s/Release: 1/Release: 1.fc35/g" ~/rpmbuild/SPECS/samba-exporter.from_source.spec
+else
+    echo "Not running on Fedora 35"
+fi 
+
 
 echo "# ###################################################################"
 echo "~/rpmbuild/SPECS/samba-exporter.from_source.spec after modification"
@@ -235,15 +243,15 @@ if [ "$?" != "0" ]; then
     exit 1
 fi
 
-if [ ! -f ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm ]; then
-    echo "Error: Can not find the source package '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm'"
+if [ ! -f ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm ]; then
+    echo "Error: Can not find the source package '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm'"
     exit 1
 fi 
 
 echo "# ###################################################################"
 echo "Sign the source package"
-echo "rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm"
-rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm
+echo "rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm"
+rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm
 if [ "$?" != "0" ]; then 
     echo "Error when signing source package"
     exit 1
@@ -254,21 +262,21 @@ fi
 
 echo "# ###################################################################"
 echo "Build the binary package"
-echo "rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm"
-rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm
+echo "rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm"
+rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm
 if [ "$?" != "0" ]; then 
     echo "Error during binary package build"
     exit 1
 fi
 
-if [ ! -f ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.x86_64.rpm ];then 
-    echo "Error: Can not find the binary package '~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.x86_64.rpm'"
+if [ ! -f ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm ];then 
+    echo "Error: Can not find the binary package '~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm'"
 fi 
 
 echo "# ###################################################################"
 echo "Sign the binary package"
-echo "rpm --addsign ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.x86_64.rpm"
-rpm --addsign ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.x86_64.rpm 
+echo "rpm --addsign ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm"
+rpm --addsign ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm 
 if [ "$?" != "0" ]; then 
     echo "Error when signing binary package"
     exit 1
@@ -276,8 +284,8 @@ fi
 echo "# ###################################################################"
 echo "Copy source and binary package to the host"
 mkdir -pv "/build_results/${distribution}-${distVersionNumber}"
-cp -v ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.x86_64.rpm "/build_results/${distribution}-${distVersionNumber}/"
-cp -v ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.src.rpm "/build_results/${distribution}-${distVersionNumber}/"
+cp -v ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm "/build_results/${distribution}-${distVersionNumber}/"
+cp -v ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm "/build_results/${distribution}-${distVersionNumber}/"
 chmod -R 777 /build_results/*
 
 exit 0
