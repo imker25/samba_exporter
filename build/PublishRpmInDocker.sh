@@ -24,8 +24,7 @@ function print_usage()  {
     echo "dry       Optional: Do not publish the RPM"
     echo ""
     echo "The script expect the following environment variables to be set"
-    echo "  COPR_SSH_ID_PUB        Public SSH key for the launchapd git repo"
-    echo "  COPR_SSH_ID_PRV        Private SSH key for the launchapd git repo"
+    echo "  COPR_CONFIG            The copr config file containing the needed API keys"
     echo "  COPR_GPG_KEY_PUB       Public GPG Key for the copr ppa"
     echo "  COPR_GPG_KEY_PRV       Private GPG Key for the copr ppa"
 }
@@ -44,8 +43,7 @@ function buildAndRunDocker() {
     echo "Run the container"
 
     if [ "$dryRun" == "false" ]; then
-        docker run --env COPR_SSH_ID_PUB="$COPR_SSH_ID_PUB" \
-            --env COPR_SSH_ID_PRV="$COPR_SSH_ID_PRV"  \
+        docker run --env COPR_CONFIG="$COPR_CONFIG" \
             --env COPR_GPG_KEY_PUB="$COPR_GPG_KEY_PUB" \
             --env COPR_GPG_KEY_PRV="$COPR_GPG_KEY_PRV" \
             --env HOME=/home/${USER} \
@@ -55,8 +53,7 @@ function buildAndRunDocker() {
             -i rpm-publish-container-$distVersion \
             /bin/bash -c "/RpmPublish.sh $tag"
     else
-        docker run --env COPR_SSH_ID_PUB="$COPR_SSH_ID_PUB" \
-            --env COPR_SSH_ID_PRV="$COPR_SSH_ID_PRV"  \
+        docker run --env COPR_CONFIG="$COPR_CONFIG" \
             --env COPR_GPG_KEY_PUB="$COPR_GPG_KEY_PUB" \
             --env COPR_GPG_KEY_PRV="$COPR_GPG_KEY_PRV" \
             --env HOME=/home/${USER} \
@@ -106,14 +103,8 @@ else
     dryRun="false"
 fi
 
-if [ "$COPR_SSH_ID_PUB" == "" ]; then
-    echo "Error: Environment variables COPR_SSH_ID_PUB not set"
-    print_usage
-    exit 1
-fi
-
-if [ "$COPR_SSH_ID_PRV" == "" ]; then
-    echo "Error: Environment variables COPR_SSH_ID_PRV not set"
+if [ "$COPR_CONFIG" == "" ]; then
+    echo "Error: Environment variables COPR_CONFIG not set"
     print_usage
     exit 1
 fi

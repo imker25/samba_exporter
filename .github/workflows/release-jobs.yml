@@ -16,7 +16,7 @@ jobs:
       with:
        fetch-depth: 0
     - shell: bash
-      name: Run the publish in docker script
+      name: Run the publish in docker script for launchpad
       env:
         LAUNCHPAD_SSH_ID_PUB: ${{ secrets.LAUNCHPAD_SSH_ID_PUB }}
         LAUNCHPAD_SSH_ID_PRV: ${{ secrets.LAUNCHPAD_SSH_ID_PRV }}
@@ -145,10 +145,9 @@ jobs:
       with:
        fetch-depth: 0
     - shell: bash
-      name: Run the publish in docker script
+      name: Run the publish in docker script for Copr
       env:
-        COPR_SSH_ID_PUB: ${{ secrets.LAUNCHPAD_SSH_ID_PUB }}
-        COPR_SSH_ID_PRV: ${{ secrets.LAUNCHPAD_SSH_ID_PRV }}
+        COPR_CONFIG: ${{ secrets.COPR_CONFIG }}
         COPR_GPG_KEY_PUB: ${{ secrets.LAUNCHPAD_GPG_KEY_PUB }}
         COPR_GPG_KEY_PRV: ${{ secrets.LAUNCHPAD_GPG_KEY_PRV }}
       run: |

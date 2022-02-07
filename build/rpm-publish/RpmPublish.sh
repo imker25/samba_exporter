@@ -24,10 +24,9 @@ function print_usage()  {
     echo "dry       Optional: Do not publish the RPM"
     echo ""
     echo "The script expect the following environment variables to be set"
-    echo "  COPR_SSH_ID_PUB        Public SSH key for the launchapd git repo"
-    echo "  COPR_SSH_ID_PRV        Private SSH key for the launchapd git repo"
     echo "  COPR_GPG_KEY_PUB       Public GPG Key for the copr ppa"
     echo "  COPR_GPG_KEY_PRV       Private GPG Key for the copr ppa"
+    echo "  COPR_CONFIG            The copr config file containing the needed API keys"
 }
 
 # ################################################################################################################
@@ -60,14 +59,8 @@ else
     dryRun="false"
 fi
 
-if [ "$COPR_SSH_ID_PUB" == "" ]; then
-    echo "Error: Environment variables COPR_SSH_ID_PUB not set"
-    print_usage
-    exit 1
-fi
-
-if [ "$COPR_SSH_ID_PRV" == "" ]; then
-    echo "Error: Environment variables COPR_SSH_ID_PRV not set"
+if [ "$COPR_CONFIG" == "" ]; then
+    echo "Error: Environment variables COPR_CONFIG not set"
     print_usage
     exit 1
 fi
@@ -129,6 +122,12 @@ echo "%_gpgbin /usr/bin/gpg" >> ~/.rpmmacros
 git config --global user.name "Tobias Zellner"
 git config --global user.email imker@bienekaefig.de
 
+mkdir -pv ~/.config
+echo "$COPR_CONFIG" > ~/.config/copr
+echo "copr config last two lines"
+echo "# ###################################################################"
+tail -n 2 ~/.config/copr
+echo "# ###################################################################"
 export GPG_TTY=$(tty)
 
 echo "Create rpm build folders"
@@ -301,5 +300,14 @@ mkdir -pv "/build_results/${distribution}-${distVersionNumber}"
 cp -v ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm "/build_results/${distribution}-${distVersionNumber}/"
 cp -v ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm "/build_results/${distribution}-${distVersionNumber}/"
 chmod -R 777 /build_results/*
+
+
+if [ "$dryRun" == "false" ]; then
+    echo "Upload '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm' to copr"
+    echo "copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm"
+    copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm
+else
+    echo "Dry run: Upload to copr skipped"
+fi
 
 exit 0
