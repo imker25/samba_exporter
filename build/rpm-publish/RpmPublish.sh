@@ -96,14 +96,14 @@ distVersionNumber=$(lsb_release -rs)
 # ################################################################################################################
 # functional code
 # ################################################################################################################
-
+echo "# ###################################################################"
 if [ "$dryRun" == "false" ]; then
     echo "Release 'samba-exporter-${tag}' for $distribution $distVersionNumber as RPM Version $rpmVersion"
 else
     echo "Dry run: Release 'samba-exporter-${tag}' for $distribution $distVersionNumber as RPM Version $rpmVersion"
     echo "Dry run: No changes are uploaded to copr"
 fi 
-
+echo "# ###################################################################"
 echo "Prepare for operation"
 mkdir -p ~/.gnupg
 chmod 700 ~/.gnupg
@@ -124,12 +124,9 @@ git config --global user.email imker@bienekaefig.de
 
 mkdir -pv ~/.config
 echo "$COPR_CONFIG" > ~/.config/copr
-echo "copr config last two lines"
-echo "# ###################################################################"
-tail -n 2 ~/.config/copr
-echo "# ###################################################################"
-export GPG_TTY=$(tty)
 
+export GPG_TTY=$(tty)
+echo "# ###################################################################"
 echo "Create rpm build folders"
 echo "# ###################################################################"
 mkdir -pv ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}

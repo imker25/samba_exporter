@@ -4,7 +4,7 @@ This page give information on the GitHub Actions and Release Process used by the
 
 ## CI/CD Pipeline
 
-For continuous integration and deployment this project uses [GitHub Actions](https://github.com/imker25/samba_exporter/actions). The main pipeline is defined in `.github/workflows/ci-jobs.yml`. This pipeline will will start on every push to github and then run the steps shown below:
+For continuous integration and deployment this project uses [GitHub Actions](https://github.com/imker25/samba_exporter/actions). The main pipeline is defined in `.github/workflows/ci-jobs.yml`. This pipeline will will start on every commit pushed to GitHub and then run the steps shown below:
 
 ```mermaid
 %%{init: {'theme':'dark'}}%%
@@ -64,6 +64,12 @@ graph TD;
     fullRelease3((release))
 
     buildFedora[Build Fedora *.rpm packages]
+
+    checkRelease4{Check release}
+    preRelease4(( -pre release))
+    fullRelease4((release))
+    uploadCopr[Upload Fedora *.src.rpm to Copr]
+
     releaseGH-Rpm[Add all created *.rpm packages to the GitHub release that triggered this pipeline]
 
     release-->buildUbuntu
@@ -84,14 +90,29 @@ graph TD;
     fullRelease3-->pagesRelease
 
     release-->buildFedora
-    buildFedora-->releaseGH-Rpm
+    buildFedora-->checkRelease4
+    checkRelease4-->preRelease4
+    checkRelease4-->fullRelease4
+    fullRelease4-->uploadCopr
+    uploadCopr-->releaseGH-Rpm
+    preRelease4-->releaseGH-Rpm
     releaseGH-Rpm-->done
 
     pagesRelease-->done
     preRelease3-->done
 ```
 
+### Launchpad release
+
 Whenever a *.deb package is uploaded to the [samba-exporter PPA](https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa) launchpad will start a own release process. When this process is finished (usually takes about an hour), users can download and install the new package version from the PPA.
+
+This uploads are done by the Release Pipeline for each **full Release** (no `-pre` Tag), as shown by the workflow diagram.
+
+### Copr release
+
+Whenever a *.src.rpm package is uploaded to the [samba-exporter COPR](https://copr.fedorainfracloud.org/coprs/imker25/samba-exporter/) copr will start a own release process. When this process is finished (usually takes about 10 minutes), users can download and install the new package version from the copr reposioty.
+
+This uploads are done by the Release Pipeline for each **full Release**  (no `-pre` Tag), as shown by the workflow diagram.
 
 ## Creation of release branches
 
@@ -102,4 +123,6 @@ The release process of this project is fully automated. To create a new release 
 - Commit the changes on the main branch
 - Push all changes on **main** and the **new release** branch to GitHub
 
-Once this changes are pushed to github the CI/CD pipeline will start to run for both, `main` and the new `release` branch. This will create a new **-pre Release** from `main` as well as a new **full Release**  from the new `release` branch. 
+Once this changes are pushed to github the CI/CD pipeline will start to run for both, `main` and the new `release` branch. This will create a new **-pre Release** from `main` as well as a new **full Release**  from the new `release` branch.
+
+As shown by the CI/CD Pipeline workflow `-pre` releases will be created for every commit pushed to the `main` branch on GitHub.
