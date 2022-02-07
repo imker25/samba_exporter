@@ -8,9 +8,9 @@
 <meta content="Documentaion for Samba Exporter - A prometheus exporter for statistic data of the samba file server" name="description"/>
 <link href="https://imker25.github.io/samba_exporter/Installation/InstallationGuide/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.2.3, mkdocs-material-8.1.9" name="generator"/>
+<meta content="mkdocs-1.2.3, mkdocs-material-8.1.10" name="generator"/>
 <title>Installation Guide - Samba Exporter - A prometheus exporter for the samba file server</title>
-<link href="../../assets/stylesheets/main.2b4465f4.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.d6be258b.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.e6a45f82.min.css" rel="stylesheet"/>
 <meta content="#757575" name="theme-color"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -167,6 +167,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#fedora">
+    Fedora
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#github-releases-for-debian-based-distributions">
     GitHub Releases - For debian based distributions
   </a>
@@ -278,6 +283,12 @@ apt-get update
 apt-get install samba-exporter
 </code></pre>
 <p><strong>Hint:</strong> Change <code>bullseye</code> to <code>buster</code> in case you use Debian 10.</p>
+<h2 id="fedora">Fedora<a class="headerlink" href="#fedora" title="Permanent link">¶</a></h2>
+<p>The <strong>samba exporter</strong> package for Fedora is published on  <a href="https://copr.fedorainfracloud.org/coprs/imker25/samba-exporter/">copr</a>. To install from there do the following commands on any supported Fedora version:</p>
+<pre><code class="language-bash">sudo dnf copr enable imker25/samba-exporter
+sudo dnf update
+sudo dnf install samba-exporter
+</code></pre>
 <h2 id="github-releases-for-debian-based-distributions">GitHub Releases - For debian based distributions<a class="headerlink" href="#github-releases-for-debian-based-distributions" title="Permanent link">¶</a></h2>
 <p>Install the <a href="https://github.com/imker25/samba_exporter/releases/latest">latest Release</a> by downloading the debian package according to your distribution and version and installing it. For example:</p>
 <pre><code class="language-sh">wget https://github.com/imker25/samba_exporter/releases/download/1.3.5-pre/samba-exporter_1.3.5-pre.ppa1.debian10_amd64.deb
@@ -287,15 +298,15 @@ sudo dpkg --install ./samba-exporter_1.3.5-pre.ppa1.debian10_amd64.deb
 <p>It's also possible to download and install pre-releases from the GitHub this way.</p>
 <h2 id="github-releases-for-rpm-based-distributions">GitHub Releases - For RPM based distributions<a class="headerlink" href="#github-releases-for-rpm-based-distributions" title="Permanent link">¶</a></h2>
 <p>Install the <a href="https://github.com/imker25/samba_exporter/releases/latest">latest Release</a> by downloading the rpm package according to your distribution and version and installing it. For example:</p>
-<pre><code class="language-sh">wget https://github.com/imker25/samba_exporter/releases/download/1.11.9-pre/samba-exporter-1.11.9-1.x86_64.fedora35.rpm
-sudo rpm -U samba-exporter-1.11.9-1.x86_64.fedora35.rpm 
+<pre><code class="language-sh">wget https://github.com/imker25/samba_exporter/releases/download/1.12.5-pre/samba-exporter-1.12.5-1.fc35.x86_64.rpm
+sudo rpm -U samba-exporter-1.12.5-1.fc35.x86_64.rpm
 </code></pre>
 <p><strong>Hint:</strong> Link and file name needs to be adapted to the latest release.</p>
 <p>It's also possible to download and install pre-releases from the GitHub this way.</p>
 <p>For manual installation see the <a href="../../DeveloperDocs/Compile/">Developer Guide</a>.
 <br/></p>
 <hr/>
-<p><br/><sub>Last change at Feb 05, 2022 18:29:12 by Tobias Zellner - commit: 113322b<sub></sub></sub></p>
+<p><br/><sub>Last change at Feb 07, 2022 21:23:55 by Tobias Zellner - commit: 717f93c<sub></sub></sub></p>
 </article>
 </div>
 </div>
@@ -353,7 +364,7 @@ sudo rpm -U samba-exporter-1.11.9-1.x86_64.fedora35.rpm
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.tracking", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
-<script src="../../assets/javascripts/bundle.960e086b.min.js"></script>
+<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.tracking", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.092fa1f6.min.js"}</script>
+<script src="../../assets/javascripts/bundle.e3b2bf44.min.js"></script>
 </body>
 </html>

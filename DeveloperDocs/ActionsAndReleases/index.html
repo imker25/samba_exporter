@@ -8,9 +8,9 @@
 <meta content="Documentaion for Samba Exporter - A prometheus exporter for statistic data of the samba file server" name="description"/>
 <link href="https://imker25.github.io/samba_exporter/DeveloperDocs/ActionsAndReleases/" rel="canonical"/>
 <link href="../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.2.3, mkdocs-material-8.1.9" name="generator"/>
+<meta content="mkdocs-1.2.3, mkdocs-material-8.1.10" name="generator"/>
 <title>Release Process - Samba Exporter - A prometheus exporter for the samba file server</title>
-<link href="../../assets/stylesheets/main.2b4465f4.min.css" rel="stylesheet"/>
+<link href="../../assets/stylesheets/main.d6be258b.min.css" rel="stylesheet"/>
 <link href="../../assets/stylesheets/palette.e6a45f82.min.css" rel="stylesheet"/>
 <meta content="#757575" name="theme-color"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -225,6 +225,20 @@
 <a class="md-nav__link" href="#release-pipeline">
     Release Pipeline
   </a>
+<nav aria-label="Release Pipeline" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#launchpad-release">
+    Launchpad release
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#copr-release">
+    Copr release
+  </a>
+</li>
+</ul>
+</nav>
 </li>
 <li class="md-nav__item">
 <a class="md-nav__link" href="#creation-of-release-branches">
@@ -260,7 +274,7 @@
 <h1 id="github-actions-and-release-process">GitHub Actions and Release Process<a class="headerlink" href="#github-actions-and-release-process" title="Permanent link">¶</a></h1>
 <p>This page give information on the GitHub Actions and Release Process used by the project.</p>
 <h2 id="cicd-pipeline">CI/CD Pipeline<a class="headerlink" href="#cicd-pipeline" title="Permanent link">¶</a></h2>
-<p>For continuous integration and deployment this project uses <a href="https://github.com/imker25/samba_exporter/actions">GitHub Actions</a>. The main pipeline is defined in <code>.github/workflows/ci-jobs.yml</code>. This pipeline will will start on every push to github and then run the steps shown below:</p>
+<p>For continuous integration and deployment this project uses <a href="https://github.com/imker25/samba_exporter/actions">GitHub Actions</a>. The main pipeline is defined in <code>.github/workflows/ci-jobs.yml</code>. This pipeline will will start on every commit pushed to GitHub and then run the steps shown below:</p>
 <div class="mermaid">%%{init: {'theme':'dark'}}%%
 graph TD;
     push(Developer push to GitHub)
@@ -314,6 +328,12 @@ graph TD;
     fullRelease3((release))
 
     buildFedora[Build Fedora *.rpm packages]
+
+    checkRelease4{Check release}
+    preRelease4(( -pre release))
+    fullRelease4((release))
+    uploadCopr[Upload Fedora *.src.rpm to Copr]
+
     releaseGH-Rpm[Add all created *.rpm packages to the GitHub release that triggered this pipeline]
 
     release--&gt;buildUbuntu
@@ -334,13 +354,23 @@ graph TD;
     fullRelease3--&gt;pagesRelease
 
     release--&gt;buildFedora
-    buildFedora--&gt;releaseGH-Rpm
+    buildFedora--&gt;checkRelease4
+    checkRelease4--&gt;preRelease4
+    checkRelease4--&gt;fullRelease4
+    fullRelease4--&gt;uploadCopr
+    uploadCopr--&gt;releaseGH-Rpm
+    preRelease4--&gt;releaseGH-Rpm
     releaseGH-Rpm--&gt;done
 
     pagesRelease--&gt;done
     preRelease3--&gt;done
 </div>
+<h3 id="launchpad-release">Launchpad release<a class="headerlink" href="#launchpad-release" title="Permanent link">¶</a></h3>
 <p>Whenever a *.deb package is uploaded to the <a href="https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa">samba-exporter PPA</a> launchpad will start a own release process. When this process is finished (usually takes about an hour), users can download and install the new package version from the PPA.</p>
+<p>This uploads are done by the Release Pipeline for each <strong>full Release</strong> (no <code>-pre</code> Tag), as shown by the workflow diagram.</p>
+<h3 id="copr-release">Copr release<a class="headerlink" href="#copr-release" title="Permanent link">¶</a></h3>
+<p>Whenever a *.src.rpm package is uploaded to the <a href="https://copr.fedorainfracloud.org/coprs/imker25/samba-exporter/">samba-exporter COPR</a> copr will start a own release process. When this process is finished (usually takes about 10 minutes), users can download and install the new package version from the copr reposioty.</p>
+<p>This uploads are done by the Release Pipeline for each <strong>full Release</strong>  (no <code>-pre</code> Tag), as shown by the workflow diagram.</p>
 <h2 id="creation-of-release-branches">Creation of release branches<a class="headerlink" href="#creation-of-release-branches" title="Permanent link">¶</a></h2>
 <p>The release process of this project is fully automated. To create a new release (not -pre) of the software use the script <code>build/PrepareRelease.sh</code>. Before running the script ensure you are on <code>main</code> branch and got the latest changes from GitHub origin. This script will:</p>
 <ul>
@@ -349,10 +379,11 @@ graph TD;
 <li>Commit the changes on the main branch</li>
 <li>Push all changes on <strong>main</strong> and the <strong>new release</strong> branch to GitHub</li>
 </ul>
-<p>Once this changes are pushed to github the CI/CD pipeline will start to run for both, <code>main</code> and the new <code>release</code> branch. This will create a new <strong>-pre Release</strong> from <code>main</code> as well as a new <strong>full Release</strong>  from the new <code>release</code> branch. 
+<p>Once this changes are pushed to github the CI/CD pipeline will start to run for both, <code>main</code> and the new <code>release</code> branch. This will create a new <strong>-pre Release</strong> from <code>main</code> as well as a new <strong>full Release</strong>  from the new <code>release</code> branch.</p>
+<p>As shown by the CI/CD Pipeline workflow <code>-pre</code> releases will be created for every commit pushed to the <code>main</code> branch on GitHub.
 <br/></p>
 <hr/>
-<p><br/><sub>Last change at Feb 05, 2022 18:29:12 by Tobias Zellner - commit: 113322b<sub></sub></sub></p>
+<p><br/><sub>Last change at Feb 07, 2022 21:23:55 by Tobias Zellner - commit: 717f93c<sub></sub></sub></p>
 </article>
 </div>
 </div>
@@ -397,7 +428,7 @@ graph TD;
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.tracking", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
-<script src="../../assets/javascripts/bundle.960e086b.min.js"></script>
+<script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.tracking", "toc.integrate", "navigation.top"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.092fa1f6.min.js"}</script>
+<script src="../../assets/javascripts/bundle.e3b2bf44.min.js"></script>
 <script src="https://unpkg.com/mermaid@8.8.0/dist/mermaid.min.js"></script><script>mermaid.initialize({});</script></body>
 </html>
