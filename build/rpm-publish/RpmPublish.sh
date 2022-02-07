@@ -112,11 +112,6 @@ else
 fi 
 
 echo "Prepare for operation"
-mkdir -p ~/.ssh
-echo "$COPR_SSH_ID_PUB" > ~/.ssh/id_rsa.pub
-chmod 600 ~/.ssh/id_rsa.pub
-echo "$COPR_SSH_ID_PRV" > ~/.ssh/id_rsa
-chmod 700 ~/.ssh/id_rsa
 mkdir -p ~/.gnupg
 chmod 700 ~/.gnupg
 echo "$COPR_GPG_KEY_PUB" > ~/.gnupg/imker-bienenkaefig.pub.asc
@@ -135,11 +130,6 @@ git config --global user.name "Tobias Zellner"
 git config --global user.email imker@bienekaefig.de
 
 export GPG_TTY=$(tty)
-
-rpm --import ~/.gnupg/imker-bienenkaefig.pub.asc
-echo "Show gpg keys usable by rpm"
-echo "# ###################################################################"
-rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\n'
 
 echo "Create rpm build folders"
 echo "# ###################################################################"
@@ -161,14 +151,36 @@ if [ ! -f ~/rpmbuild/SOURCES/${tag}.tar.gz ]; then
 fi 
 
 echo "# ###################################################################"
+echo "Get the copr git repository"
+mkdir -pv ~/WS_Copr
+pushd ~/WS_Copr
+git clone http://copr-dist-git.fedorainfracloud.org/git/imker25/samba-exporter/samba-exporter.git
+if [ "$?" != "0" ]; then 
+    echo "Error during clone of the copr git repository"
+    exit 1
+fi
+if [ ! -d ~/WS_Copr/samba-exporter ]; then
+    echo "Error can not find '~/WS_Copr/samba-exporter ' after copr repo clone"
+    exit 1
+fi 
+pushd ~/WS_Copr/samba-exporter
+git checkout --track origin/f35
+git pull
+changeLogLine=$(grep -n "%changelog" samba-exporter.from_source.spec | cut -d: -f1 )
+oldEntrieStartLine=$((changeLogLine + 1))
+tail -n+${oldEntrieStartLine} samba-exporter.from_source.spec > ~/oldChanglog.txt
+popd
+popd
+
+echo "# ###################################################################"
 echo "Prepare for build"
 pushd ~/rpmbuild/SOURCES
 tar -zxvf ~/rpmbuild/SOURCES/${tag}.tar.gz samba_exporter-${tag}/install/fedora/samba-exporter.from_source.spec
-cp -v samba_exporter-${tag}/install/fedora/samba-exporter.from_source.spec ~/rpmbuild/SPECS/
+cp -v samba_exporter-${tag}/install/fedora/samba-exporter.from_source.spec ~/rpmbuild/SPECS/samba-exporter.spec
 popd
 
-if [ ! -f ~/rpmbuild/SPECS/samba-exporter.from_source.spec ]; then
-    echo "Error: Can not find '~/rpmbuild/SPECS/samba-exporter.from_source.spec'"
+if [ ! -f ~/rpmbuild/SPECS/samba-exporter.spec ]; then
+    echo "Error: Can not find '~/rpmbuild/SPECS/samba-exporter.spec'"
     exit 1
 fi 
 
@@ -179,8 +191,8 @@ if [ ! -f /build_results/commit_logs ]; then
     exit 1
 fi 
 
-echo "%changelog" >> ~/rpmbuild/SPECS/samba-exporter.from_source.spec
-echo "* $(date +"%a %b %d %Y") Tobias Zellner <imker@bienenkaefig.de> - ${rpmVersion}" >> ~/rpmbuild/SPECS/samba-exporter.from_source.spec
+echo "%changelog" >> ~/rpmbuild/SPECS/samba-exporter.spec
+echo "* $(date +"%a %b %d %Y") Tobias Zellner <imker@bienenkaefig.de> - ${rpmVersion}" >> ~/rpmbuild/SPECS/samba-exporter.spec
 changes=$(cat /build_results/commit_logs)
 delimiter="--::"
 string=$changes$delimiter
@@ -212,32 +224,34 @@ do
 done
 
 sed -i '/^[[:space:]]*$/d' ~/rpmbuild/SPECS/new-changelog-section
-cat ~/rpmbuild/SPECS/new-changelog-section >> ~/rpmbuild/SPECS/samba-exporter.from_source.spec
+cat ~/rpmbuild/SPECS/new-changelog-section >> ~/rpmbuild/SPECS/samba-exporter.spec
+echo "" >> ~/rpmbuild/SPECS/samba-exporter.spec
+cat ~/oldChanglog.txt >> ~/rpmbuild/SPECS/samba-exporter.spec
 
 echo "# ###################################################################"
 echo "Patch the spec file"
-sed -i "s/x.x.x-pre/${tag}/g" ~/rpmbuild/SPECS/samba-exporter.from_source.spec
-sed -i "s/X.X.X-pre/${tag}/g" ~/rpmbuild/SPECS/samba-exporter.from_source.spec
-sed -i "s/x.x.x/${rpmVersion}/g" ~/rpmbuild/SPECS/samba-exporter.from_source.spec
+sed -i "s/x.x.x-pre/${tag}/g" ~/rpmbuild/SPECS/samba-exporter.spec
+sed -i "s/X.X.X-pre/${tag}/g" ~/rpmbuild/SPECS/samba-exporter.spec
+sed -i "s/x.x.x/${rpmVersion}/g" ~/rpmbuild/SPECS/samba-exporter.spec
 
 if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "35" ]; then
     echo "Do modifications for 'Fedora 35'"
-    sed -i "s/Release: 1/Release: 1.fc35/g" ~/rpmbuild/SPECS/samba-exporter.from_source.spec
+    sed -i "s/Release: 1/Release: 1.fc35/g" ~/rpmbuild/SPECS/samba-exporter.spec
 else
     echo "Not running on Fedora 35"
 fi 
 
 
 echo "# ###################################################################"
-echo "~/rpmbuild/SPECS/samba-exporter.from_source.spec after modification"
+echo "~/rpmbuild/SPECS/samba-exporter.spec after modification"
 echo "# ###################################################################"
-cat ~/rpmbuild/SPECS/samba-exporter.from_source.spec
+cat ~/rpmbuild/SPECS/samba-exporter.spec
 echo "# ###################################################################"
 
 
 echo "Build the source package"
-echo "rpmbuild -bs ~/rpmbuild/SPECS/samba-exporter.from_source.spec"
-rpmbuild -bs ~/rpmbuild/SPECS/samba-exporter.from_source.spec
+echo "rpmbuild -bs ~/rpmbuild/SPECS/samba-exporter.spec"
+rpmbuild -bs ~/rpmbuild/SPECS/samba-exporter.spec
 if [ "$?" != "0" ]; then 
     echo "Error during sources package build"
     exit 1
