@@ -162,9 +162,9 @@ fi
 pushd ~/WS_Copr/samba-exporter
 git checkout --track origin/f35
 git pull
-changeLogLine=$(grep -n "%changelog" samba-exporter.from_source.spec | cut -d: -f1 )
+changeLogLine=$(grep -n "%changelog" samba-exporter.spec | cut -d: -f1 )
 oldEntrieStartLine=$((changeLogLine + 1))
-tail -n+${oldEntrieStartLine} samba-exporter.from_source.spec > ~/oldChanglog.txt
+tail -n+${oldEntrieStartLine} samba-exporter.spec > ~/oldChanglog.txt
 popd
 popd
 
@@ -303,6 +303,10 @@ if [ "$dryRun" == "false" ]; then
     echo "Upload '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm' to copr"
     echo "copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm"
     copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm
+    if [ "$?" != "0" ]; then 
+        echo "Error while upload to copr"
+        exit 1
+    fi
 else
     echo "Dry run: Upload to copr skipped"
 fi
