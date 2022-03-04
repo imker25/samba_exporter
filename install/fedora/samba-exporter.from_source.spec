@@ -73,8 +73,10 @@ systemctl daemon-reload
 systemctl enable samba_statusd.service
 systemctl enable samba_exporter.service
 # Ensure the daemons run the latest version
-systemctl restart samba_statusd.service
-systemctl restart samba_exporter.service
+systemctl stop samba_exporter.service
+systemctl stop samba_statusd.service
+systemctl start samba_statusd.service
+systemctl start samba_exporter.service
 # Ensure man-db is updated
 mandb > /dev/null
 
