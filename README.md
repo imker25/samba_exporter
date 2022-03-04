@@ -11,4 +11,4 @@ The prometheus style data can be requested manually on port 9922 using a http cl
 
 For detailed documentation please take a look at the [projects page](https://imker25.github.io/samba_exporter/Index/) or read in the [docs](./docs/Index.md) folder.
 
-There are packages for several [Ubuntu](https://ubuntu.com/download) and [Debian](https://www.debian.org/) Versions for you ready to install. You may want to take a look at the [Supported Distributions and Versions](./docs/Installation/SupportedVersions.md) and the [Installation Guide](./docs/Installation/InstallationGuide.md)
+There are **RPM** and **DEB** packages for several Linux distributions for you ready to install. You may want to take a look at the [Supported Distributions and Versions](./docs/Installation/SupportedVersions.md) and the [Installation Guide](./docs/Installation/InstallationGuide.md)
