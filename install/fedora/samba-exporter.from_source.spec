@@ -69,10 +69,10 @@ fi
 
 %post
 # Add samba-exporter user if needed
-if [ ! getent group samba-exporter > /dev/null ]; then
+if ! getent group samba-exporter > /dev/null ; then
     groupadd -r samba-exporter
 fi
-if [ ! getent passwd samba-exporter > /dev/null ]; then
+if ! getent passwd samba-exporter > /dev/null ; then
     adduser --system --no-create-home --home-dir /nonexistent --gid samba-exporter --shell /bin/false --comment "samba-exporter daemon" samba-exporter || true
 fi
 # Ensure the daemons are known
