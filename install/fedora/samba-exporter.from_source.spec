@@ -59,22 +59,30 @@ install -m 664  "%{gobuilddir}/src/src/man/samba_statusd.1.gz" "%{buildroot}/usr
 install -m 664  "%{gobuilddir}/src/src/man/start_samba_statusd.1.gz" "%{buildroot}/usr/share/man/man1/start_samba_statusd.1.gz" 
 
 
+%pre
+if [ $1 == 2 ];then
+    # Stop services before install in case of package upgrade
+    systemctl stop samba_exporter.service
+    systemctl stop samba_statusd.service
+fi
+
+
 %post
 # Add samba-exporter user if needed
-if ! getent group samba-exporter > /dev/null ; then
+if [ ! getent group samba-exporter > /dev/null ]; then
     groupadd -r samba-exporter
 fi
-if ! getent passwd samba-exporter > /dev/null; then
+if [ ! getent passwd samba-exporter > /dev/null ]; then
     adduser --system --no-create-home --home-dir /nonexistent --gid samba-exporter --shell /bin/false --comment "samba-exporter daemon" samba-exporter || true
 fi
 # Ensure the daemons are known
 systemctl daemon-reload
-# Ensure the daemons start automaticaly
-systemctl enable samba_statusd.service
-systemctl enable samba_exporter.service
+if [ $1 == 1 ];then
+    # Ensure the daemons start automaticaly in case of package installation
+    systemctl enable samba_statusd.service
+    systemctl enable samba_exporter.service
+fi
 # Ensure the daemons run the latest version
-systemctl stop samba_exporter.service
-systemctl stop samba_statusd.service
 systemctl start samba_statusd.service
 systemctl start samba_exporter.service
 # Ensure man-db is updated
@@ -82,24 +90,27 @@ mandb > /dev/null
 
 
 %preun
-request_pipe_file="/run/samba_exporter.request.pipe"
-response_pipe_file="/run/samba_exporter.response.pipe"
-# Stop the services before removing the package
-systemctl stop samba_statusd.service
-systemctl stop samba_exporter.service
-if [ -p "$request_pipe_file" ]; then
-    rm "$request_pipe_file"
+if [ $1 == 0 ];then
+    request_pipe_file="/run/samba_exporter.request.pipe"
+    response_pipe_file="/run/samba_exporter.response.pipe"
+    # Stop the services before removing the package
+    systemctl stop samba_statusd.service
+    systemctl stop samba_exporter.service
+    if [ -p "$request_pipe_file" ]; then
+        rm "$request_pipe_file"
+    fi
+    if [ -p "$response_pipe_file" ]; then
+        rm "$response_pipe_file"
+    fi
 fi
-if [ -p "$response_pipe_file" ]; then
-    rm "$response_pipe_file"
-fi
-
 
 %postun
-# When the package got removed the service files got deleted. So systemd can now remove the services from its internal db
-systemctl daemon-reload
-if [ -d "/usr/share/doc/samba-exporter" ]; then 
-  rm -rf "/usr/share/doc/samba-exporter"
+if [ $1 == 0 ];then
+    # When the package got removed the service files got deleted. So systemd can now remove the services from its internal db
+    systemctl daemon-reload
+    if [ -d "/usr/share/doc/samba-exporter" ]; then 
+        rm -rf "/usr/share/doc/samba-exporter"
+    fi
 fi
 
 
