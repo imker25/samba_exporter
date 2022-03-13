@@ -160,7 +160,7 @@ if [ ! -d ~/WS_Copr/samba-exporter ]; then
     exit 1
 fi 
 pushd ~/WS_Copr/samba-exporter
-git checkout --track origin/f35
+git checkout --track origin/fc${distVersionNumber}
 git pull
 changeLogLine=$(grep -n "%changelog" samba-exporter.spec | cut -d: -f1 )
 oldEntrieStartLine=$((changeLogLine + 1))
@@ -237,6 +237,16 @@ else
     echo "Not running on Fedora 35"
 fi 
 
+# A Fedora 36 pretends to be a V37, may this is a prerelease bug
+if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "37" ]; then
+    echo "Do modifications for 'Fedora 36'"
+    sed -i "s/Release: 1/Release: 1.fc36/g" ~/rpmbuild/SPECS/samba-exporter.spec
+
+    distVersionNumber=36
+else
+    echo "Not running on Fedora 36"
+fi 
+
 
 echo "# ###################################################################"
 echo "~/rpmbuild/SPECS/samba-exporter.spec after modification"
@@ -253,15 +263,15 @@ if [ "$?" != "0" ]; then
     exit 1
 fi
 
-if [ ! -f ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm ]; then
-    echo "Error: Can not find the source package '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm'"
+if [ ! -f ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm ]; then
+    echo "Error: Can not find the source package '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm'"
     exit 1
 fi 
 
 echo "# ###################################################################"
 echo "Sign the source package"
-echo "rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm"
-rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm
+echo "rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm"
+rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm
 if [ "$?" != "0" ]; then 
     echo "Error when signing source package"
     exit 1
@@ -272,21 +282,21 @@ fi
 
 echo "# ###################################################################"
 echo "Build the binary package"
-echo "rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm"
-rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm
+echo "rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm"
+rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm
 if [ "$?" != "0" ]; then 
     echo "Error during binary package build"
     exit 1
 fi
 
-if [ ! -f ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm ];then 
-    echo "Error: Can not find the binary package '~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm'"
+if [ ! -f ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.x86_64.rpm ];then 
+    echo "Error: Can not find the binary package '~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.x86_64.rpm'"
 fi 
 
 echo "# ###################################################################"
 echo "Sign the binary package"
-echo "rpm --addsign ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm"
-rpm --addsign ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm 
+echo "rpm --addsign ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.x86_64.rpm"
+rpm --addsign ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.x86_64.rpm 
 if [ "$?" != "0" ]; then 
     echo "Error when signing binary package"
     exit 1
@@ -294,15 +304,15 @@ fi
 echo "# ###################################################################"
 echo "Copy source and binary package to the host"
 mkdir -pv "/build_results/${distribution}-${distVersionNumber}"
-cp -v ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm "/build_results/${distribution}-${distVersionNumber}/"
-cp -v ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm "/build_results/${distribution}-${distVersionNumber}/"
+cp -v ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.x86_64.rpm "/build_results/${distribution}-${distVersionNumber}/"
+cp -v ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm "/build_results/${distribution}-${distVersionNumber}/"
 chmod -R 777 /build_results/*
 
 
 if [ "$dryRun" == "false" ]; then
-    echo "Upload '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm' to copr"
-    echo "copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm"
-    copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm
+    echo "Upload '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm' to copr"
+    echo "copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm"
+    copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm
     if [ "$?" != "0" ]; then 
         echo "Error while upload to copr"
         exit 1
