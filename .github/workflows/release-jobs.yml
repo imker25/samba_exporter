@@ -169,12 +169,24 @@ jobs:
               echo "Publish tag $TAG on copr"
               build/PublishRpmInDocker.sh $TAG
             fi
-    - name: 'Upload rpm packages artifact'            
+    - name: 'Upload rpm packages artifact fc35'            
       uses: actions/upload-artifact@v2
       with:
         name: samba-exporter_packages
         path: bin/rpm-packages/Fedora-35/*.rpm
         retention-days: 1
+    - name: 'Upload rpm packages artifact fc36'            
+      uses: actions/upload-artifact@v2
+      with:
+        name: samba-exporter_packages
+        path: bin/rpm-packages/Fedora-36/*.rpm
+        retention-days: 1  
+    - name: 'Upload rpm packages artifact fc28'            
+      uses: actions/upload-artifact@v2
+      with:
+        name: samba-exporter_packages
+        path: bin/rpm-packages/Fedora-28/*.rpm
+        retention-days: 1              
     - name: 'Upload docker build logs artifact'         
       uses: actions/upload-artifact@v2
       if: always() 
@@ -211,7 +223,16 @@ jobs:
         upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
         asset_path: bin/rpm-packages/Fedora-35/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc35.x86_64.rpm 
         asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc35.x86_64.rpm 
-        asset_content_type: application/zip        
+        asset_content_type: application/zip   
+    - name: Upload Release Asset for Fedora 28
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
+        asset_path: bin/rpm-packages/Fedora-28/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.x86_64.rpm 
+        asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc28.x86_64.rpm 
+        asset_content_type: application/zip               
     - name: Upload Release Asset for Fedora 36
       uses: actions/upload-release-asset@v1
       env:
