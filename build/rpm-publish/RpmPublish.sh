@@ -350,27 +350,38 @@ if [  "$buildSystem" == "gradle" ]; then
     git status
 
     echo "# ###################################################################"
-    echo "Build and test the binary files"
+    echo "Compile the binary files"
     echo "# ###################################################################"
-    ./gradlew getBuildName build test preparePack
+    echo "./gradlew getBuildName build preparePack"
+    ./gradlew getBuildName build preparePack
     if [ "$?" != "0" ]; then 
-        echo "Error: Compile and test run failed"
+        echo "Error: Compile failed"
         popd
         exit 1
     fi
 
+    echo "# ###################################################################"
+    echo "Create man pages"
+    echo "# ###################################################################"
+    echo "./build/CreateManPage.sh"
     ./build/CreateManPage.sh 
     if [ "$?" != "0" ]; then 
         echo "Error: Man page creation failed"
         popd
         exit 1
     fi
-    ./test/integrationTest/scripts/RunIntegrationTests.sh
-    if [ "$?" != "0" ]; then 
-        echo "Error: Integration tests failed"
-        popd
-        exit 1
-    fi
+
+    # Don't run integration tests here
+    # echo "# ###################################################################"
+    # echo "Run integration tests"
+    # echo "# ###################################################################"
+    # ./test/integrationTest/scripts/RunIntegrationTests.sh
+    # echo "./test/integrationTest/scripts/RunIntegrationTests.sh"
+    # if [ "$?" != "0" ]; then 
+    #     echo "Error: Integration tests failed"
+    #     popd
+    #     exit 1
+    # fi
 
     echo "# ###################################################################"
     echo "Pach the spec file content"
@@ -398,11 +409,26 @@ if [  "$buildSystem" == "gradle" ]; then
     mv -v "./tmp/${fullVersion}/"* "/home/${USER}/rpmbuild/BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/"
     popd
     pushd "/home/${USER}/rpmbuild/"
+    echo "rpmbuild -bb ./BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/samba-exporter.spec"
     rpmbuild -bb ./BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/samba-exporter.spec
     if [ "$?" != "0" ]; then 
         echo "Error: RPM creation failed"
         exit 1
     fi
+
+    echo "# ###################################################################"
+    echo "Sign the binary package"
+    echo "# ###################################################################"
+    echo "rpm --addsign ../samba-exporter-${rpmVersion}-1.x86_64.rpm "
+    rpm --addsign ../samba-exporter-${rpmVersion}-1.x86_64.rpm 
+    if [ "$?" != "0" ]; then 
+        echo "Error when signing binary package"
+        exit 1
+    fi
+
+    echo "# ###################################################################"
+    echo "Copy binary package to host"
+    echo "# ###################################################################"
     mkdir -pv /build_results/${distribution}-${distVersionNumber}/
     cp -v ../samba-exporter-${rpmVersion}-1.x86_64.rpm /build_results/${distribution}-${distVersionNumber}/
     popd
@@ -418,5 +444,7 @@ echo "# ###################################################################"
 echo "Allow access to build results on host"
 echo "# ###################################################################"
 chmod -R 777 /build_results/*
+
+echo "Docker run sucessefull"
 
 exit 0
