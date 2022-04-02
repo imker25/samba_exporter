@@ -248,7 +248,7 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: samba-exporter_deb-packages 
-        path: ./bin/deb-packages/    
+        path: ./bin/deb-packages/binary/    
     - name: Download samba_exporter rpm-package artifact
       uses: actions/download-artifact@v2
       with:
@@ -270,11 +270,6 @@ jobs:
         LAUNCHPAD_GPG_KEY_PUB: ${{ secrets.LAUNCHPAD_GPG_KEY_PUB }}
         LAUNCHPAD_GPG_KEY_PRV: ${{ secrets.LAUNCHPAD_GPG_KEY_PRV }}    
       run: |  
-            echo "Packages folders"
-            echo "# ###########################################"
-            ls -l ./bin/rpm-packages/Fedora-28/
-            ls -l ./bin/deb-packages/
-            echo "# ###########################################"
             mkdir -pv "./build/pages/site" 
             sudo chmod -R 777 "./build/pages/site"
             echo "GITHUB_REF=$GITHUB_REF"
