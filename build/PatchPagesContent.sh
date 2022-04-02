@@ -94,6 +94,11 @@ if [ -d "$REPO_COPY_SOURCE" ]; then
     rm -rf "$REPO_COPY_SOURCE"/*
 fi
 
+if [ -d "$PAGES_COPY_TARGET/repos/" ]; then
+    echo "Clean the repository folder to publish '$PAGES_COPY_TARGET/repos/'"
+    rm -rf "$PAGES_COPY_TARGET/repos"/*
+fi
+
 echo "# ###################################################################"
 echo "Update repository with binariy packages for version '$tag'"
 echo "# ###################################################################"
@@ -133,15 +138,16 @@ if [ ! -d "$REPO_COPY_SOURCE/repos/debian" ]; then
     exit 1
 fi
 
-if [ -d "$PAGES_COPY_TARGET/repos/debian" ]; then
-    echo "Clean the debian repository dir target location '$PAGES_COPY_TARGET/repos/debian'"
-    rm -rf "$PAGES_COPY_TARGET/repos/debian" 
-fi
-
-echo "Move the debian repository to pages dir"
+echo "Move the repositories to pages dir"
 mv -v "$REPO_COPY_SOURCE/repos" "$PAGES_COPY_TARGET"
 if [ ! -d "$PAGES_COPY_TARGET/repos/debian" ]; then 
     echo "Error: The debian repository dir target location '$PAGES_COPY_TARGET/repos/debian' was not found "
+    popd
+    exit 1
+fi
+
+if [ ! -d "$PAGES_COPY_TARGET/repos/rpm" ]; then 
+    echo "Error: The rpm repository dir target location '$PAGES_COPY_TARGET/repos/rpm' was not found "
     popd
     exit 1
 fi
