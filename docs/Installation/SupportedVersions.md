@@ -43,7 +43,7 @@
 
 | Version | Release | Supported |
 |---------|-----------|-----------|
-| CentOS Stream| 8 | planed |
+| CentOS Stream| 8 | yes |
 | CentOS Stream| 9 | planed |
 
 ---
@@ -52,4 +52,4 @@
 
 | Version | Release | Supported |
 |---------|-----------|-----------|
-| RHEL 8  | 2019-05-07 | planed |
+| RHEL 8  | 2019-05-07 | yes |

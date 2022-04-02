@@ -25,7 +25,7 @@ apt-get install samba-exporter
 
 **Hint:** Change `bullseye` to `buster` in case you use Debian 10.
 
-## Fedora
+## Fedora 35 and later
 
 The **samba exporter** package for Fedora is published on  [copr](https://copr.fedorainfracloud.org/coprs/imker25/samba-exporter/). To install from there do the following commands on any supported Fedora version:
 
@@ -35,6 +35,17 @@ sudo dnf update
 sudo dnf install samba-exporter
 ```
 
+## RHEL 8 / CentOS 8 / CentOS Stream 8 / Fedora 28
+
+For Redhat Enterprise Linux 8 and all compatible distributions the **samba exporter** package for Debian is published on the projects GitHub Page. To install execute the commands shown below as root:
+
+```bash
+wget -O /dev/shm/archive.key https://imker25.github.io/samba_exporter/repos/debian/archive.key
+rpm --import /dev/shm/archive.key
+dnf config-manager --add-repo https://imker25.github.io/samba_exporter/repos/rpm/fedora/releases/28/x86_64
+dnf update
+dnf install samba-exporter
+```
 
 ## GitHub Releases - For debian based distributions
 
