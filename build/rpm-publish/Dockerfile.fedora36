@@ -1,0 +1,38 @@
+FROM fedora:36
+
+ARG USER
+ARG UID
+ARG GID
+
+RUN yum -y update && \
+    yum clean all
+RUN yum -y install redhat-lsb \
+                rubygem-ronn-ng \
+                rpmdevtools \
+                rpmlint \
+                rpm-build \
+                rpm-sign \
+                gzip \
+                curl \
+                man-db \
+                binutils \
+                wget \
+                golang \
+                git \
+                golang-github-prometheus-common-promlog-devel \
+                golang-github-prometheus-client-model-devel \
+                go-rpm-macros \                                        
+                openssh-clients \
+                copr-cli \
+                gnupg && \
+    yum clean all
+
+# Add publish script
+COPY RpmPublish.sh /RpmPublish.sh
+RUN chmod 777 /RpmPublish.sh
+
+RUN mkdir -p /home/${USER} &&\
+    chmod 770 /home/${USER} && \
+    chown ${UID}:${GID} /home/${USER} && \
+    chmod 777 /var/lib/rpm/
+

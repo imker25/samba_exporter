@@ -4,7 +4,7 @@ on:
     types: [published]
 jobs:
   publish-launchpad:
-    name: Publish to Launchpad and Github
+    name: Publish to debian packages Launchpad and Github
     strategy:
       matrix:
         os: [ubuntu-20.04]
@@ -44,7 +44,7 @@ jobs:
     - name: 'Upload debian packages artifact'            
       uses: actions/upload-artifact@v2
       with:
-        name: samba-exporter_packages
+        name: samba-exporter_deb-packages
         path: bin/deb-packages/binary/*.deb
         retention-days: 1
     - name: 'Upload docker build logs artifact'         
@@ -69,27 +69,7 @@ jobs:
             fi      
             SAMBA_EXPORTER_UPLOAD_URL=$(curl -H "Authorization: token $GITHUB_TOKEN" -X GET https://api.github.com/repos/imker25/samba_exporter/releases/tags/$TAG | jq -r ".upload_url")
             echo "SAMBA_EXPORTER_UPLOAD_URL=$SAMBA_EXPORTER_UPLOAD_URL"
-            echo "SAMBA_EXPORTER_UPLOAD_URL=$SAMBA_EXPORTER_UPLOAD_URL" >> $GITHUB_ENV
-    - name: Create docs with MkDocs
-      uses: Tiryoh/actions-mkdocs@v0
-      with:
-        mkdocs_version: 'latest' 
-        requirements: 'build/pages/requirements.txt' 
-        configfile: 'build/pages/mkdocs.yml'  
-    - name: Add debian repository and man pages to pages
-      env:
-        LAUNCHPAD_GPG_KEY_PUB: ${{ secrets.LAUNCHPAD_GPG_KEY_PUB }}
-        LAUNCHPAD_GPG_KEY_PRV: ${{ secrets.LAUNCHPAD_GPG_KEY_PRV }}    
-      run: |   
-            sudo chmod -R 777 "./build/pages/site"
-            echo "GITHUB_REF=$GITHUB_REF"
-            if [[ "$GITHUB_REF" = refs/tags/* ]]; then
-                    TAG="${GITHUB_REF/refs\/tags\/}" 
-            else 
-                    echo "Not a tag given as ref. Will exit"
-                    exit 1
-            fi
-            ./build/PatchPagesContent.sh $TAG                 
+            echo "SAMBA_EXPORTER_UPLOAD_URL=$SAMBA_EXPORTER_UPLOAD_URL" >> $GITHUB_ENV          
     - name: Upload Release Asset for Ubuntu 21.10
       uses: actions/upload-release-asset@v1
       env:
@@ -126,14 +106,9 @@ jobs:
         asset_path: ./bin/deb-packages/binary/samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~debian10_amd64.deb
         asset_name: samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~debian10_amd64.deb
         asset_content_type: application/zip                                
-    - name: Deploy pages to GitHub Pages
-      if: env.SAMBA_EXPORTER_PRE_RELEASE == 'false'
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: build/pages/site
+
   publish-copr:
-    name: Publish to copr and Github
+    name: Publish to rpm packages Copr and Github
     strategy:
       matrix:
         os: [ubuntu-20.04]
@@ -172,9 +147,9 @@ jobs:
     - name: 'Upload rpm packages artifact'            
       uses: actions/upload-artifact@v2
       with:
-        name: samba-exporter_packages
-        path: bin/rpm-packages/Fedora-35/*.rpm
-        retention-days: 1
+        name: samba-exporter_rpm-packages
+        path: bin/rpm-packages/**/*.rpm
+        retention-days: 1              
     - name: 'Upload docker build logs artifact'         
       uses: actions/upload-artifact@v2
       if: always() 
@@ -211,4 +186,97 @@ jobs:
         upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
         asset_path: bin/rpm-packages/Fedora-35/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc35.x86_64.rpm 
         asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc35.x86_64.rpm 
-        asset_content_type: application/zip             
+        asset_content_type: application/zip   
+    - name: Upload Release Asset for Fedora 28
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
+        asset_path: bin/rpm-packages/Fedora-28/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.x86_64.rpm 
+        asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc28.x86_64.rpm 
+        asset_content_type: application/zip               
+    - name: Upload Release Asset for Fedora 36
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
+        asset_path: bin/rpm-packages/Fedora-36/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc36.x86_64.rpm 
+        asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc36.x86_64.rpm 
+        asset_content_type: application/zip    
+
+  publish-pages:
+    name: Publish docs and repositories on Github
+    needs: [ publish-launchpad,  publish-copr ]
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v2
+      name: Checkout
+      with:
+       fetch-depth: 0
+    - shell: bash
+      name: Set needed environment
+      run: |
+            echo "GITHUB_REF=$GITHUB_REF"
+            if [[ "$GITHUB_REF" = refs/tags/* ]]; then
+                    TAG="${GITHUB_REF/refs\/tags\/}" 
+            else 
+                    echo "Not a tag given as ref. Will exit"
+                    exit 1
+            fi
+            if [[ "$TAG" =~ "-pre" ]]; then
+              echo "SAMBA_EXPORTER_PRE_RELEASE=true"
+              echo "SAMBA_EXPORTER_PRE_RELEASE=true" >> $GITHUB_ENV
+              echo "It's a pre release. Just do a dry run"
+            else
+              echo "SAMBA_EXPORTER_PRE_RELEASE=false"
+              echo "SAMBA_EXPORTER_PRE_RELEASE=false" >> $GITHUB_ENV
+              echo "Publish pages"
+            fi  
+    - name: Download samba_exporter deb-package artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: samba-exporter_deb-packages 
+        path: .    
+    - name: Download samba_exporter rpm-package artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: samba-exporter_rpm-packages 
+        path: .                      
+    - name: Create docs with MkDocs
+      uses: Tiryoh/actions-mkdocs@v0
+      with:
+        mkdocs_version: 'latest' 
+        requirements: 'build/pages/requirements.txt' 
+        configfile: 'build/pages/mkdocs.yml'  
+    - name: Add debian repository and man pages to pages
+      env:
+        LAUNCHPAD_GPG_KEY_PUB: ${{ secrets.LAUNCHPAD_GPG_KEY_PUB }}
+        LAUNCHPAD_GPG_KEY_PRV: ${{ secrets.LAUNCHPAD_GPG_KEY_PRV }}    
+      run: |  
+            echo "Packages folders"
+            echo "# ###########################################"
+            ls -l ./bin/rpm-packages/Fedora-28/
+            ls -l ./bin/deb-packages/
+            echo "# ###########################################"
+            mkdir -pv "./build/pages/site" 
+            sudo chmod -R 777 "./build/pages/site"
+            echo "GITHUB_REF=$GITHUB_REF"
+            if [[ "$GITHUB_REF" = refs/tags/* ]]; then
+                    TAG="${GITHUB_REF/refs\/tags\/}" 
+            else 
+                    echo "Not a tag given as ref. Will exit"
+                    exit 1
+            fi
+            ./build/PatchPagesContent.sh $TAG  
+    - name: Deploy pages to GitHub Pages
+      if: env.SAMBA_EXPORTER_PRE_RELEASE == 'false'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: build/pages/site                 

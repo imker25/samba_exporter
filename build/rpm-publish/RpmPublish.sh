@@ -160,7 +160,7 @@ if [ ! -d ~/WS_Copr/samba-exporter ]; then
     exit 1
 fi 
 pushd ~/WS_Copr/samba-exporter
-git checkout --track origin/f35
+git checkout --track origin/fc${distVersionNumber}
 git pull
 changeLogLine=$(grep -n "%changelog" samba-exporter.spec | cut -d: -f1 )
 oldEntrieStartLine=$((changeLogLine + 1))
@@ -230,11 +230,31 @@ sed -i "s/x.x.x-pre/${tag}/g" ~/rpmbuild/SPECS/samba-exporter.spec
 sed -i "s/X.X.X-pre/${tag}/g" ~/rpmbuild/SPECS/samba-exporter.spec
 sed -i "s/x.x.x/${rpmVersion}/g" ~/rpmbuild/SPECS/samba-exporter.spec
 
+buildSystem="none"
+
+# A Fedora 36 pretends to be a V37, may this is a prerelease bug
+if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "28" ]; then
+    echo "Do modifications for 'Fedora 28'"
+    sed -i "s/Release: 1/Release: 1.fc28/g" ~/rpmbuild/SPECS/samba-exporter.spec
+    buildSystem="gradle"
+else
+    echo "Not running on Fedora 28"
+fi 
+
 if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "35" ]; then
     echo "Do modifications for 'Fedora 35'"
     sed -i "s/Release: 1/Release: 1.fc35/g" ~/rpmbuild/SPECS/samba-exporter.spec
+    buildSystem="rpm"
 else
     echo "Not running on Fedora 35"
+fi 
+
+if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "36" ]; then
+    echo "Do modifications for 'Fedora 36'"
+    sed -i "s/Release: 1/Release: 1.fc36/g" ~/rpmbuild/SPECS/samba-exporter.spec
+    buildSystem="rpm"
+else
+    echo "Not running on Fedora 36"
 fi 
 
 
@@ -244,71 +264,187 @@ echo "# ###################################################################"
 cat ~/rpmbuild/SPECS/samba-exporter.spec
 echo "# ###################################################################"
 
-
-echo "Build the source package"
-echo "rpmbuild -bs ~/rpmbuild/SPECS/samba-exporter.spec"
-rpmbuild -bs ~/rpmbuild/SPECS/samba-exporter.spec
-if [ "$?" != "0" ]; then 
-    echo "Error during sources package build"
-    exit 1
-fi
-
-if [ ! -f ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm ]; then
-    echo "Error: Can not find the source package '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm'"
-    exit 1
-fi 
-
-echo "# ###################################################################"
-echo "Sign the source package"
-echo "rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm"
-rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm
-if [ "$?" != "0" ]; then 
-    echo "Error when signing source package"
-    exit 1
-fi
-
-# debug exit
-# exit 0
-
-echo "# ###################################################################"
-echo "Build the binary package"
-echo "rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm"
-rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm
-if [ "$?" != "0" ]; then 
-    echo "Error during binary package build"
-    exit 1
-fi
-
-if [ ! -f ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm ];then 
-    echo "Error: Can not find the binary package '~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm'"
-fi 
-
-echo "# ###################################################################"
-echo "Sign the binary package"
-echo "rpm --addsign ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm"
-rpm --addsign ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm 
-if [ "$?" != "0" ]; then 
-    echo "Error when signing binary package"
-    exit 1
-fi
-echo "# ###################################################################"
-echo "Copy source and binary package to the host"
-mkdir -pv "/build_results/${distribution}-${distVersionNumber}"
-cp -v ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm "/build_results/${distribution}-${distVersionNumber}/"
-cp -v ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm "/build_results/${distribution}-${distVersionNumber}/"
-chmod -R 777 /build_results/*
-
-
-if [ "$dryRun" == "false" ]; then
-    echo "Upload '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm' to copr"
-    echo "copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm"
-    copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc35.src.rpm
+if [  "$buildSystem" == "rpm" ]; then
+    echo "Build the source package"
+    echo "# ###################################################################"
+    echo "rpmbuild -bs ~/rpmbuild/SPECS/samba-exporter.spec"
+    rpmbuild -bs ~/rpmbuild/SPECS/samba-exporter.spec
     if [ "$?" != "0" ]; then 
-        echo "Error while upload to copr"
+        echo "Error during sources package build"
         exit 1
     fi
-else
-    echo "Dry run: Upload to copr skipped"
+
+    if [ ! -f ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm ]; then
+        echo "Error: Can not find the source package '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm'"
+        exit 1
+    fi 
+
+    echo "# ###################################################################"
+    echo "Sign the source package"
+    echo "# ###################################################################"
+    echo "rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm"
+    rpm --addsign ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm
+    if [ "$?" != "0" ]; then 
+        echo "Error when signing source package"
+        exit 1
+    fi
+
+    # debug exit
+    # exit 0
+
+    echo "# ###################################################################"
+    echo "Build the binary package"
+    echo "# ###################################################################"
+    echo "rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm"
+    rpmbuild --rebuild ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm
+    if [ "$?" != "0" ]; then 
+        echo "Error during binary package build"
+        exit 1
+    fi
+
+    if [ ! -f ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.x86_64.rpm ];then 
+        echo "Error: Can not find the binary package '~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.x86_64.rpm'"
+    fi 
+
+    echo "# ###################################################################"
+    echo "Sign the binary package"
+    echo "# ###################################################################"
+    echo "rpm --addsign ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.x86_64.rpm"
+    rpm --addsign ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.x86_64.rpm 
+    if [ "$?" != "0" ]; then 
+        echo "Error when signing binary package"
+        exit 1
+    fi
+
+    if [ "$dryRun" == "false" ]; then
+        echo "Upload '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm' to copr"
+        echo "copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm"
+        copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm
+        if [ "$?" != "0" ]; then 
+            echo "Error while upload to copr"
+            exit 1
+        fi
+    else
+        echo "Dry run: Upload to copr skipped"
+    fi
+
+    echo "# ###################################################################"
+    echo "Copy source and binary package to the host"
+    echo "# ###################################################################"
+    mkdir -pv "/build_results/${distribution}-${distVersionNumber}"
+    cp -v ~/rpmbuild/RPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.x86_64.rpm "/build_results/${distribution}-${distVersionNumber}/"
+    cp -v ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm "/build_results/${distribution}-${distVersionNumber}/"
 fi
+
+if [  "$buildSystem" == "gradle" ]; then
+
+    echo "Prepare sources"
+    echo "# ###################################################################"
+    mkdir -p ~/build_area
+    
+    pushd ~/build_area
+    git clone https://github.com/imker25/samba_exporter.git
+    pushd ~/build_area/samba_exporter
+    git fetch --all --tags
+    git checkout tags/${tag} -b V${tag}-rpm-gradle
+    git status
+
+    echo "# ###################################################################"
+    echo "Compile the binary files"
+    echo "# ###################################################################"
+    echo "./gradlew getBuildName build preparePack"
+    ./gradlew getBuildName build preparePack
+    if [ "$?" != "0" ]; then 
+        echo "Error: Compile failed"
+        popd
+        exit 1
+    fi
+
+    echo "# ###################################################################"
+    echo "Create man pages"
+    echo "# ###################################################################"
+    echo "./build/CreateManPage.sh"
+    ./build/CreateManPage.sh 
+    if [ "$?" != "0" ]; then 
+        echo "Error: Man page creation failed"
+        popd
+        exit 1
+    fi
+
+    # Don't run integration tests here
+    # echo "# ###################################################################"
+    # echo "Run integration tests"
+    # echo "# ###################################################################"
+    # ./test/integrationTest/scripts/RunIntegrationTests.sh
+    # echo "./test/integrationTest/scripts/RunIntegrationTests.sh"
+    # if [ "$?" != "0" ]; then 
+    #     echo "Error: Integration tests failed"
+    #     popd
+    #     exit 1
+    # fi
+
+    echo "# ###################################################################"
+    echo "Pach the spec file content"
+    echo "# ###################################################################"
+    fullVersion=$(cat ./logs/PackageName.txt)
+    if [ "$fullVersion" == "" ]; then
+        echo "Error: Can not read the full version from './logs/PackageName.txt'"
+    fi
+    sed -i "s/x.x.x/${rpmVersion}/g" ./tmp/${fullVersion}/samba-exporter.spec
+    echo "%changelog" >> ./tmp/${fullVersion}/samba-exporter.spec
+    echo "* $(date +"%a %b %d %Y") Tobias Zellner <imker@bienenkaefig.de> - ${rpmVersion}" >> ./tmp/${fullVersion}/samba-exporter.spec
+    cat ~/rpmbuild/SPECS/new-changelog-section >> ./tmp/${fullVersion}/samba-exporter.spec
+    echo "" >> ./tmp/${fullVersion}/samba-exporter.spec
+    cat ~/oldChanglog.txt >> ./tmp/${fullVersion}/samba-exporter.spec
+
+    echo "# ###################################################################"
+    echo "Pached spec file content"
+    echo "# ###################################################################"
+    cat ./tmp/${fullVersion}/samba-exporter.spec
+
+    echo "# ###################################################################"
+    echo "Build the binary package"
+    echo "# ###################################################################"
+    mkdir -pv "/home/${USER}/rpmbuild/BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/"
+    mv -v "./tmp/${fullVersion}/"* "/home/${USER}/rpmbuild/BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/"
+    popd
+    pushd "/home/${USER}/rpmbuild/"
+    echo "rpmbuild -bb ./BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/samba-exporter.spec"
+    rpmbuild -bb ./BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/samba-exporter.spec
+    if [ "$?" != "0" ]; then 
+        echo "Error: RPM creation failed"
+        exit 1
+    fi
+
+    echo "# ###################################################################"
+    echo "Sign the binary package"
+    echo "# ###################################################################"
+    echo "rpm --addsign ../samba-exporter-${rpmVersion}-1.x86_64.rpm "
+    rpm --addsign ../samba-exporter-${rpmVersion}-1.x86_64.rpm 
+    if [ "$?" != "0" ]; then 
+        echo "Error when signing binary package"
+        exit 1
+    fi
+
+    echo "# ###################################################################"
+    echo "Copy binary package to host"
+    echo "# ###################################################################"
+    mkdir -pv /build_results/${distribution}-${distVersionNumber}/
+    cp -v ../samba-exporter-${rpmVersion}-1.x86_64.rpm /build_results/${distribution}-${distVersionNumber}/
+    popd
+    popd
+fi
+
+if [  "$buildSystem" == "none" ]; then
+    echo "Running on unkown distribution or version"
+    exit 1
+fi
+
+echo "# ###################################################################"
+echo "Allow access to build results on host"
+echo "# ###################################################################"
+chmod -R 777 /build_results/*
+
+echo "Docker run sucessefull"
 
 exit 0

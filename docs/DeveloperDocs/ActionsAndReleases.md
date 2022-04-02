@@ -50,7 +50,7 @@ graph TD;
     buildUbuntu[Build Ubuntu *.deb packages]
     buildDebian[Build Debian *.deb packages]
     docs[Documentation pages creation]
-    repo[Debian repository creation]
+    repoDeb[Debian repository creation]
     releaseUbuntuLP[Push Ubuntu *.deb to Launchpad]
     releaseGH-Deb[Add all created *.deb packages to the GitHub release that triggered this pipeline]
     pagesRelease[Release on Github pages - Documentation and Debian repository]
@@ -69,8 +69,10 @@ graph TD;
     preRelease4(( -pre release))
     fullRelease4((release))
     uploadCopr[Upload Fedora *.src.rpm to Copr]
+    buildRHEL[Build RHEL 8 *.rpm]
 
     releaseGH-Rpm[Add all created *.rpm packages to the GitHub release that triggered this pipeline]
+    repoRpm[RPM repository creation]
 
     release-->buildUbuntu
     buildUbuntu-->checkRelease1
@@ -80,23 +82,27 @@ graph TD;
     releaseUbuntuLP-->buildDebian
     preRelease1 --> buildDebian
 
-    buildDebian-->docs
-    docs-->repo
-    repo-->releaseGH-Deb
-    releaseGH-Deb-->checkRelease3
-
-    checkRelease3-->preRelease3
-    checkRelease3-->fullRelease3
-    fullRelease3-->pagesRelease
+    buildDebian-->releaseGH-Deb
+    releaseGH-Deb-->docs
+ 
 
     release-->buildFedora
     buildFedora-->checkRelease4
     checkRelease4-->preRelease4
     checkRelease4-->fullRelease4
     fullRelease4-->uploadCopr
-    uploadCopr-->releaseGH-Rpm
-    preRelease4-->releaseGH-Rpm
-    releaseGH-Rpm-->done
+    uploadCopr-->buildRHEL
+    preRelease4-->buildRHEL
+    buildRHEL-->releaseGH-Rpm
+    releaseGH-Rpm-->docs
+    
+    docs-->repoDeb
+    repoDeb-->repoRpm
+    repoRpm-->checkRelease3
+
+    checkRelease3-->preRelease3
+    checkRelease3-->fullRelease3
+    fullRelease3-->pagesRelease
 
     pagesRelease-->done
     preRelease3-->done

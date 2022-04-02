@@ -1,0 +1,49 @@
+FROM fedora:28
+
+ARG USER
+ARG UID
+ARG GID
+
+RUN yum -y update && \
+    yum clean all
+RUN yum -y install redhat-lsb \
+                ruby \
+                ruby-devel \
+                rubygems \
+                rpmdevtools \
+                rpmlint \
+                rpm-build \
+                rpm-sign \
+                gzip \
+                curl \
+                man-db \
+                binutils \
+                wget \
+                java-11-openjdk-headless  \
+                gnupg \
+                git && \
+    yum clean all
+
+# Install golang
+RUN mkdir -p /root && \
+    cd /root && \
+    wget https://go.dev/dl/go1.17.8.linux-amd64.tar.gz && \
+    rm -rf /usr/local/go && \
+    tar -C /usr/local -xzf go1.17.8.linux-amd64.tar.gz &&\
+    ln -s /usr/local/go/bin/go /usr/bin/go && \
+    go version
+
+# Install ronn
+RUN gem install --no-user-install ronn && \
+    ln -s /usr/local/share/gems/gems/ronn-0.7.3/bin/ronn /usr/bin/ronn
+
+# Add publish script
+COPY RpmPublish.sh /RpmPublish.sh
+RUN chmod 777 /RpmPublish.sh
+
+# Add the user that will run the build
+RUN mkdir -p /home/${USER} &&\
+    chmod 770 /home/${USER} && \
+    chown ${UID}:${GID} /home/${USER} && \
+    chmod 777 /var/lib/rpm/
+

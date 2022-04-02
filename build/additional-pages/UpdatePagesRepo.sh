@@ -39,6 +39,13 @@ if [ "$LAUNCHPAD_GPG_KEY_PRV" == "" ]; then
     print_usage
     exit 1
 fi
+
+if [[ "$tag" =~ "-pre" ]]; then
+    rpmVersion=${tag:0:-4}
+else 
+    rpmVersion="$tag"
+fi
+
 # ################################################################################################################
 # functional code
 # ################################################################################################################
@@ -90,14 +97,14 @@ echo "git status"
 git status
 
 echo "# ###################################################################"
-echo "Update the repo with bullseye package"
+echo "Update the debian repo with bullseye package"
 reprepro --basedir "./repos/debian/" includedeb bullseye "$HOST_FOLDER/deb-packages/binary/samba-exporter_$tag~ppa1~debian11_amd64.deb"
 if [ "$?" != "0" ]; then 
     echo "Error during reprepro for bullseye"
     exit 1
 fi
 echo "# ###################################################################"
-echo "Update the repo with buster package"
+echo "Update the debian repo with buster package"
 reprepro --basedir "./repos/debian/" includedeb buster "$HOST_FOLDER/deb-packages/binary/samba-exporter_$tag~ppa1~debian10_amd64.deb"
 if [ "$?" != "0" ]; then 
     echo "Error during reprepro for buster"
@@ -105,13 +112,29 @@ if [ "$?" != "0" ]; then
 fi
 
 echo "# ###################################################################"
+echo "Update the rpm repo with fc28 package"
+if [ ! -f "$HOST_FOLDER/rpm-packages/Fedora-28/samba-exporter-${rpmVersion}-1.x86_64.rpm" ]; then
+    echo "Error: Can not find the rpm package to publish"
+    exit 1
+fi 
+mkdir -pv "./repos/rpm/fedora/releases/28/x86_64"
+cp -v "$HOST_FOLDER/rpm-packages/Fedora-28/samba-exporter-${rpmVersion}-1.x86_64.rpm" "./repos/rpm/fedora/releases/28/x86_64/"
+createrepo_c "./repos/rpm/fedora/releases/28/x86_64/"
+if [ "$?" != "0" ]; then 
+    echo "Error during createrepo for fc28"
+    exit 1
+fi
+
+
+echo "# ###################################################################"
 echo "git status"
 git status
 
 echo "# ###################################################################"
-echo "Copy the update debian repo out of the container"
+echo "Copy the updated repos out of the container"
 mkdir -p "$HOST_FOLDER/pages/repos"
-mv "./repos/debian" "$HOST_FOLDER/pages/repos"
+mv -v "./repos/debian" "$HOST_FOLDER/pages/repos"
+mv -v "./repos/rpm" "$HOST_FOLDER/pages/repos"
 chmod -R 777 "$HOST_FOLDER/pages"
 
 exit 0

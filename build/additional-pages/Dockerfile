@@ -9,7 +9,7 @@
 # ######################################################################################
 
 # Use the packages target version (focal = ubuntu 20.04) as base image
-FROM ubuntu:focal
+FROM debian:bullseye
 
 # Setup the system and install needed packages
 ENV DEBIAN_FRONTEND="noninteractive"
@@ -18,6 +18,7 @@ RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y wget \
                                         curl  \
                                         git \
                                         reprepro \
+                                        createrepo-c \
                                         gpg
 
 # Copy the script

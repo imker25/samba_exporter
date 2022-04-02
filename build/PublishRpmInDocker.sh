@@ -175,6 +175,19 @@ if [ "$?" != "0" ]; then
     dockerError="true"
 fi
 
+echo "Publish tag $tag on corp within a docker cotainer for fedora 28"
+echo "# ###################################################################"
+buildAndRunDocker "fedora28"
+if [ "$?" != "0" ]; then
+    dockerError="true"
+fi
+
+echo "Publish tag $tag on corp within a docker cotainer for fedora 36"
+echo "# ###################################################################"
+buildAndRunDocker "fedora36"
+if [ "$?" != "0" ]; then
+    dockerError="true"
+fi
 
 popd
 
