@@ -251,6 +251,7 @@ if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "35" ]; then
     echo "Do modifications for 'Fedora 35'"
     sed -i "s/Release: 1/Release: 1.fc35/g" ~/rpmbuild/SPECS/samba-exporter.spec
     buildSystem="rpm"
+    changeroots="--chroot fedora-${distVersionNumber}-x86_64"
 else
     echo "Not running on Fedora 35"
 fi 
@@ -259,6 +260,7 @@ if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "36" ]; then
     echo "Do modifications for 'Fedora 36'"
     sed -i "s/Release: 1/Release: 1.fc36/g" ~/rpmbuild/SPECS/samba-exporter.spec
     buildSystem="rpm"
+    changeroots="--chroot fedora-${distVersionNumber}-x86_64"
 else
     echo "Not running on Fedora 36"
 fi 
@@ -324,8 +326,8 @@ if [  "$buildSystem" == "rpm" ]; then
 
     if [ "$dryRun" == "false" ]; then
         echo "Upload '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm' to copr"
-        echo "copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm"
-        copr-cli build --chroot fedora-${distVersionNumber}-x86_64 --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm
+        echo "copr-cli build $changeroots --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm"
+        copr-cli build $changeroots --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm
         if [ "$?" != "0" ]; then 
             echo "Error while upload to copr"
             exit 1
