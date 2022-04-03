@@ -319,7 +319,7 @@ if [  "$buildSystem" == "rpm" ]; then
     if [ "$dryRun" == "false" ]; then
         echo "Upload '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm' to copr"
         echo "copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm"
-        copr-cli build --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm
+        copr-cli build --chroot fedora-${distVersionNumber}-x86_64 --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm
         if [ "$?" != "0" ]; then 
             echo "Error while upload to copr"
             exit 1
