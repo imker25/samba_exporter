@@ -199,6 +199,7 @@ changeEntries+=( "${string%%"$delimiter"*}" )
 string=${string#*"$delimiter"}
 done
 
+messagesAdded="false"
 delimiter=";;;;"
 for entry in "${changeEntries[@]}"
 do
@@ -216,8 +217,13 @@ do
     if [ "$message" != "" ]; then
         message=${message//\*/-}
         echo "- ${message}" >> ~/rpmbuild/SPECS/new-changelog-section
+        messagesAdded="true"
     fi
 done
+
+if [ "$messagesAdded" == "false" ]; then
+echo "- First pre release" >> ~/rpmbuild/SPECS/new-changelog-section
+fi
 
 sed -i '/^[[:space:]]*$/d' ~/rpmbuild/SPECS/new-changelog-section
 cat ~/rpmbuild/SPECS/new-changelog-section >> ~/rpmbuild/SPECS/samba-exporter.spec
