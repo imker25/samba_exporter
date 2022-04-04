@@ -159,8 +159,17 @@ if [ ! -d ~/WS_Copr/samba-exporter ]; then
     echo "Error can not find '~/WS_Copr/samba-exporter ' after copr repo clone"
     exit 1
 fi 
+
+# Since the fedora 28 is not uploaded to copr, there will be no f28 branch
+# We use the history from fedora 35 in this case
+if [ "${distVersionNumber}" == "28" ]; then
+    branchName="35"
+else
+    branchName=${distVersionNumber}
+fi
+
 pushd ~/WS_Copr/samba-exporter
-git checkout --track origin/fc${distVersionNumber}
+git checkout --track origin/f${branchName}
 git pull
 changeLogLine=$(grep -n "%changelog" samba-exporter.spec | cut -d: -f1 )
 oldEntrieStartLine=$((changeLogLine + 1))
