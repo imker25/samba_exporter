@@ -9,7 +9,7 @@
 | Ubnutu 20.04   | Focal Fossa | yes |
 | Ubnutu 21.04   | Hirsute Hippo | no |
 | Ubnutu 21.10   | Impish Indri | EOL Mai 2022 |
-| Ubnutu 22.04   | Jammy Jellyfish | planed |
+| Ubnutu 22.04   | Jammy Jellyfish | yes |
 
 ---
 

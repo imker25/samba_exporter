@@ -234,6 +234,14 @@ else
     echo "Not running on ubuntu 21.10 (impish)"
 fi
 
+if [ "$distVersionNumber" == "22.04" ] && [ "$distribution" == "Ubuntu" ]; then
+    sed -i "s/focal;/jammy;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu20.04/ubuntu22.04/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/golang-1.16,/golang-1.18,/g" $WORK_DIR/install/debian/control
+else 
+    echo "Not running on ubuntu 22.04 (jammy)"
+fi
+
 if [ "$distVersionNumber" == "11" ] && [ "$distribution" == "Debian" ]; then
     sed -i "s/focal;/bullseye;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/debian11/g" $WORK_DIR/install/debian/changelog
