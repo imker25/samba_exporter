@@ -10,8 +10,8 @@ jobs:
   build-unit_test:
     strategy:
       matrix:
-        go-version: [1.17.x]
-        os: [ubuntu-20.04]
+        go-version: [1.18.x]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -109,7 +109,7 @@ jobs:
           retention-days: 1   
   build-rpm-package:   
     name: Create rpm package
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout 
         uses: actions/checkout@v2   
@@ -141,7 +141,7 @@ jobs:
     needs: build-unit_test
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -162,36 +162,11 @@ jobs:
         run: docker build --file test/integrationTest/docker/Dockerfile.ubuntu --tag integration-test-container .
       - name: Run integration tests
         run: docker run -i integration-test-container /bin/bash -c "/RunIntegrationTests.sh container"
-  integration-test-buster:
-    needs: build-unit_test
-    strategy:
-      matrix:
-        os: [ubuntu-20.04]
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v2
-      - name: Download samba_exporter artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: samba_exporter-${{ matrix.os }}
-          path: bin/samba_exporter  
-      - name: Download samba_statusd artifact
-        uses: actions/download-artifact@v2  
-        with:
-          name: samba_statusd-${{ matrix.os }}
-          path: bin/samba_statusd
-      - name: Check artifacts
-        run: ls -l bin/
-      - name: Build test environment container
-        run: docker build --file test/integrationTest/docker/Dockerfile.buster --tag integration-test-container .
-      - name: Run integration tests
-        run: docker run -i integration-test-container /bin/bash -c "/RunIntegrationTests.sh container"
   integration-test-bullseye:
     needs: build-unit_test
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -216,7 +191,7 @@ jobs:
     needs: build-unit_test
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps: 
@@ -238,8 +213,8 @@ jobs:
         SAMBA_EXPORTER_PACKAGE_NAME:  ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
       run: test/installationTest/RunInstallationTest.sh
   release-to-github:
-    needs: [ integration-test-ubuntu, integration-test-buster, integration-test-bullseye, installation-test, build-pages, build-rpm-package ]
-    runs-on: "ubuntu-20.04"
+    needs: [ integration-test-ubuntu, integration-test-bullseye, installation-test, build-pages, build-rpm-package ]
+    runs-on: "ubuntu-22.04"
     if: ((github.ref == 'refs/heads/main') || contains(github.ref, 'release'))
     timeout-minutes: 10
     steps: 

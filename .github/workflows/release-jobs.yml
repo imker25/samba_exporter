@@ -7,7 +7,7 @@ jobs:
     name: Publish to debian packages Launchpad and Github
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
@@ -126,7 +126,7 @@ jobs:
     name: Publish to rpm packages Copr and Github
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
@@ -226,7 +226,7 @@ jobs:
     needs: [ publish-launchpad,  publish-copr ]
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:

@@ -120,14 +120,14 @@ fi
 echo "# ###################################################################"
 echo "Start as daemon: $samba_statusd -test-mode -verbose"
 $samba_statusd -test-mode -verbose &
-sleep 0.1
-statusdPID=$(pidof $samba_statusd)
+sleep 0.2
+statusdPID=$(pidof samba_statusd)
 
 # Wait a bit to ensure the process is running
 sleep 0.1
 echo "# ###################################################################"
 echo "$samba_statusd running with PID $statusdPID"
-assert_raises "processWithNameIsRunning $samba_statusd" 1
+assert_raises "processWithNameIsRunning samba_statusd" 1
 
 echo "# ###################################################################"
 echo "Test IPC"
@@ -151,13 +151,13 @@ echo "# ###################################################################"
 echo "Start as daemon: $samba_exporter -test-mode -verbose"
 $samba_exporter -test-mode -verbose &
 sleep 0.1
-exporterPID=$(pidof $samba_exporter)
+exporterPID=$(pidof samba_exporter)
 
 # Wait a bit to ensure the process is running
 sleep 0.1
 echo "# ###################################################################"
 echo "$samba_exporter running with PID $exporterPID"
-assert_raises "processWithNameIsRunning $samba_exporter" 1
+assert_raises "processWithNameIsRunning samba_exporter" 1
 
 echo "# ###################################################################"
 echo "Test samba_exporter webinterface"
@@ -197,8 +197,8 @@ kill $statusdPID
 echo "End $samba_exporter with PID $exporterPID"
 kill $exporterPID
 
-assert_raises "processWithNameIsRunning $samba_exporter" 0
-assert_raises "processWithNameIsRunning $samba_statusd" 0
+assert_raises "processWithNameIsRunning samba_exporter" 0
+assert_raises "processWithNameIsRunning samba_statusd" 0
 
 
 echo "# ###################################################################"
@@ -207,19 +207,19 @@ echo "# ###################################################################"
 echo "$samba_statusd -test-mode > $samba_statusd_log 2>&1 &"
 $samba_statusd -test-mode > $samba_statusd_log 2>&1 &
 sleep 0.1
-statusdPID=$(pidof $samba_statusd)
+statusdPID=$(pidof samba_statusd)
 sleep 0.1
 echo "$samba_exporter -test-mode > $samba_exporter_log 2>&1 &"
 $samba_exporter -test-mode > $samba_exporter_log 2>&1 &
 sleep 0.1
-exporterPID=$(pidof $samba_exporter)
+exporterPID=$(pidof samba_exporter)
 sleep 0.1
 echo "$samba_statusd running with PID $statusdPID"
 echo "$samba_exporter running with PID $exporterPID"
 echo "# ###################################################################"
 
-assert_raises "processWithNameIsRunning $samba_exporter" 1
-assert_raises "processWithNameIsRunning $samba_statusd" 1
+assert_raises "processWithNameIsRunning samba_exporter" 1
+assert_raises "processWithNameIsRunning samba_statusd" 1
 
 echo "Test Web Interface"
 echo "# ###################################################################"
@@ -246,8 +246,8 @@ echo "End $samba_exporter with PID $exporterPID"
 kill $exporterPID
 echo "# ###################################################################"
 
-assert_raises "processWithNameIsRunning $samba_exporter" 0
-assert_raises "processWithNameIsRunning $samba_statusd" 0
+assert_raises "processWithNameIsRunning samba_exporter" 0
+assert_raises "processWithNameIsRunning samba_statusd" 0
 
 echo "Print Log files"
 echo "cat $samba_exporter_log"

@@ -91,8 +91,8 @@ samba_statusd_log_lines=$(wc -l $tmp_dir/samba_statusd.service.1.log | awk '{pri
 echo "$tmp_dir/samba_exporter.service.1.log has $samba_exporter_log_lines lines"
 echo "$tmp_dir/samba_exporter.service.1.log has $samba_statusd_log_lines lines"
 
-assert "echo $samba_exporter_log_lines" "4"
-assert "echo $samba_statusd_log_lines" "4"
+assert "echo $samba_exporter_log_lines" "3"
+assert "echo $samba_statusd_log_lines" "3"
 assert_raises "cat $tmp_dir/samba_exporter.service.1.log | grep \"get metrics on http://127.0.0.1:9922/metrics\"" 0
 
 exporterPID=$(pidof samba_exporter)
@@ -240,8 +240,8 @@ samba_exporter_log_lines=$(wc -l $tmp_dir/samba_exporter.service.2.log| awk '{pr
 samba_statusd_log_lines=$(wc -l $tmp_dir/samba_statusd.service.2.log | awk '{print $1}' )
 echo "$tmp_dir/samba_exporter.service.2.log has $samba_exporter_log_lines lines"
 echo "$tmp_dir/samba_exporter.service.2.log has $samba_statusd_log_lines lines"
-assert "echo $samba_exporter_log_lines" "28"
-assert "echo $samba_statusd_log_lines" "16"
+assert "echo $samba_exporter_log_lines" "27"
+assert "echo $samba_statusd_log_lines" "15"
 
 echo "# ###################################################################"
 echo "Check man pages"
