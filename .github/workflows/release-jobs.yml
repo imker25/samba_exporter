@@ -75,16 +75,7 @@ jobs:
             fi      
             SAMBA_EXPORTER_UPLOAD_URL=$(curl -H "Authorization: token $GITHUB_TOKEN" -X GET https://api.github.com/repos/imker25/samba_exporter/releases/tags/$TAG | jq -r ".upload_url")
             echo "SAMBA_EXPORTER_UPLOAD_URL=$SAMBA_EXPORTER_UPLOAD_URL"
-            echo "SAMBA_EXPORTER_UPLOAD_URL=$SAMBA_EXPORTER_UPLOAD_URL" >> $GITHUB_ENV          
-    - name: Upload Release Asset for Ubuntu 21.10
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
-        asset_path: ./bin/deb-packages/binary/samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu21.10_amd64.deb 
-        asset_name: samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu21.10_amd64.deb
-        asset_content_type: application/zip    
+            echo "SAMBA_EXPORTER_UPLOAD_URL=$SAMBA_EXPORTER_UPLOAD_URL" >> $GITHUB_ENV           
     - name: Upload Release Asset for Ubuntu 22.04
       uses: actions/upload-release-asset@v1
       env:
