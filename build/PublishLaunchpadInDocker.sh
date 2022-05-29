@@ -181,15 +181,6 @@ if [ "$?" != "0" ]; then
     dockerError="true"
 fi
 
-echo "Publish tag $tag on launchpad within a docker cotainer for impish"
-echo "# ###################################################################"
-if [ "$dockerError" == "false" ];then 
-    buildAndRunDocker "impish"
-    if [ "$?" != "0" ]; then
-        dockerError="true"
-    fi
-fi
-
 echo "Publish tag $tag on launchpad within a docker cotainer for jammy"
 echo "# ###################################################################"
 if [ "$dockerError" == "false" ];then 
