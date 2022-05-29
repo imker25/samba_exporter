@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         go-version: [1.18.x]
-        os: [ubuntu-20.04]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -141,7 +141,7 @@ jobs:
     needs: build-unit_test
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -166,7 +166,7 @@ jobs:
     needs: build-unit_test
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -191,7 +191,7 @@ jobs:
     needs: build-unit_test
     strategy:
       matrix:
-        os: [ubuntu-20.04]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps: 
@@ -214,7 +214,7 @@ jobs:
       run: test/installationTest/RunInstallationTest.sh
   release-to-github:
     needs: [ integration-test-ubuntu, integration-test-bullseye, installation-test, build-pages, build-rpm-package ]
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     if: ((github.ref == 'refs/heads/main') || contains(github.ref, 'release'))
     timeout-minutes: 10
     steps: 
