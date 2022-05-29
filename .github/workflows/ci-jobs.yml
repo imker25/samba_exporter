@@ -109,7 +109,7 @@ jobs:
           retention-days: 1   
   build-rpm-package:   
     name: Create rpm package
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout 
         uses: actions/checkout@v2   
