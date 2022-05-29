@@ -222,21 +222,21 @@ jobs:
     - name: Download samba_exporter package artifact
       uses: actions/download-artifact@v2
       with:
-        name: samba_exporter-ubuntu-20.04.deb  
+        name: samba_exporter-ubuntu-22.04.deb  
         path: . 
     - name: Download PackageName.txt artifact
       uses: actions/download-artifact@v2
       with:
-        name: PackageName-ubuntu-20.04.txt   
-        path: logs/ubuntu-20.04/         
+        name: PackageName-ubuntu-22.04.txt   
+        path: logs/ubuntu-22.04/         
     - name: Download ShortVersion.txt artifact
       uses: actions/download-artifact@v2
       with:
-        name: ShortVersion-ubuntu-20.04.txt   
+        name: ShortVersion-ubuntu-22.04.txt   
         path: logs/  
     - name: 'Get needed environment from artifacts'
       run: |
-            packageubuntu2004Name=$(cat logs/ubuntu-20.04/PackageName.txt)
+            packageubuntu2004Name=$(cat logs/ubuntu-22.04/PackageName.txt)
             echo "SAMBA_EXPORTER_UBUNTU_2004_PACKAGE_NAME=$packageubuntu2004Name"
             echo "SAMBA_EXPORTER_UBUNTU_2004_PACKAGE_NAME=$packageubuntu2004Name" >> $GITHUB_ENV       
             shortVersion=$(cat logs/ShortVersion.txt)
