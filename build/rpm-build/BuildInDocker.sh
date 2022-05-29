@@ -24,6 +24,10 @@ if [ ! -d "$projcetRoot" ]; then
     exit 1
 fi
 
+echo "Ensure gradle can use the sources"
+echo "git config --global --add safe.directory /build_area"
+git config --global --add safe.directory /build_area
+
 pushd "$projcetRoot"
 
 echo ""
