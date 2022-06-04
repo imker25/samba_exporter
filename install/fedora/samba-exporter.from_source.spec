@@ -39,14 +39,14 @@ BuildRequires:  rubygem-ronn-ng
 %goprep
 mkdir -p "%{gobuilddir}/src"
 cp -rpv "%{gobuilddir}/src/tobi.backfrak.de/cmd/samba_exporter/samba_exporter-%{tag}/"* "%{gobuilddir}/src/"
-echo "%{tag}" > "%{gobuilddir}/src/VersionMaster.txt"
+echo "%{tag}-fedora" > "%{gobuilddir}/src/VersionMaster.txt"
 	
 %build
 GOPATH="$GOPATH:%{gobuilddir}/src/"
 export BUILDTAGS="netgo osusergo static_build"
 LDFLAGS="-X main.version=%{tag}" \
 %gobuild -o %{gobuilddir}/bin/samba_exporter src/tobi.backfrak.de/cmd/samba_exporter
-LDFLAGS="-X main.version=%{tag}" \
+LDFLAGS="-X main.version=%{tag}-fedora" \
 %gobuild -o %{gobuilddir}/bin/samba_statusd src/tobi.backfrak.de/cmd/samba_statusd
 "%{gobuilddir}/src/build/CreateManPage.sh"
 
@@ -61,7 +61,8 @@ install -m 664  "%{gobuilddir}/src/src/man/start_samba_statusd.1.gz" "%{buildroo
 
 
 %check
-echo "Testing .........................................................................................."
+export GOPATH="$GOPATH:%{gobuilddir}/src/:/usr/share/gocode/"
+%gotest tobi.backfrak.de/cmd/samba_exporter tobi.backfrak.de/cmd/samba_statusd tobi.backfrak.de/internal/smbexporterbl/pipecomunication tobi.backfrak.de/internal/smbexporterbl/smbexporter tobi.backfrak.de/internal/smbexporterbl/smbstatusreader tobi.backfrak.de/internal/smbexporterbl/statisticsGenerator tobi.backfrak.de/internal/commonbl
 
 %pre
 if [ $1 == 2 ];then
