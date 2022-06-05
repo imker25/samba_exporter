@@ -41,7 +41,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 BRANCH_ROOT="$SCRIPT_DIR/../.."
 LAUNCHPAD_GIT_REPO="ssh://imker@git.launchpad.net/samba-exporter"
 GITHUB_RELEASE_URL="https://github.com/imker25/samba_exporter/archive/refs/tags"
-BUILD_DIR="/build_area"
+BUILD_DIR="$HOME/build_area"
 WORK_DIR="$BUILD_DIR/samba-exporter"
 GITHUB_PROMETHEUS_VERSION="v1.11.0"
 LAUNCHPAD_PROMETHEUS_VERSION="v1.9.0"
@@ -118,21 +118,26 @@ packageVersion="${tag}~ppa1~${distribution,,}${distVersionNumber}"
 # functional code
 # ################################################################################################################
 
+echo "Setup git"
+echo "# ###################################################################"
+git config --global user.name "Tobias Zellner"
+git config --global user.email imker@bienekaefig.de
+
 echo "Publish github release $tag to launchpad as version $packageVersion"
 echo "# ###################################################################"
 
 
 echo "Prepare for operation"
-mkdir -p /root/.ssh
-echo "$LAUNCHPAD_SSH_ID_PUB" > /root/.ssh/id_rsa.pub
-chmod 600 /root/.ssh/id_rsa.pub
-echo "$LAUNCHPAD_SSH_ID_PRV" > /root/.ssh/id_rsa
-chmod 600 /root/.ssh/id_rsa
-mkdir -p /root/.gpg 
-echo "$LAUNCHPAD_GPG_KEY_PUB" > /root/.gpg/imker-bienenkaefig.pub.asc
-echo "$LAUNCHPAD_GPG_KEY_PRV" > /root/.gpg/imker-bienenkaefig.asc
+mkdir -p $HOME/.ssh
+echo "$LAUNCHPAD_SSH_ID_PUB" > $HOME/.ssh/id_rsa.pub
+chmod 600 $HOME/.ssh/id_rsa.pub
+echo "$LAUNCHPAD_SSH_ID_PRV" > $HOME/.ssh/id_rsa
+chmod 600 $HOME/.ssh/id_rsa
+mkdir -p $HOME/.gpg 
+echo "$LAUNCHPAD_GPG_KEY_PUB" > $HOME/.gpg/imker-bienenkaefig.pub.asc
+echo "$LAUNCHPAD_GPG_KEY_PRV" > $HOME/.gpg/imker-bienenkaefig.asc
 
-gpg --import --batch --no-tty /root/.gpg/imker-bienenkaefig.asc
+gpg --import --batch --no-tty $HOME/.gpg/imker-bienenkaefig.asc
 gpg --edit-key --batch --no-tty  CB6E90E9EC323850B16C1C14A38A1091C018AE68 trust quit
 gpg --list-keys --batch --no-tty 
 

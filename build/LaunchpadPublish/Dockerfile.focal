@@ -11,6 +11,10 @@
 # Use the packages target version (focal = ubuntu 20.04) as base image
 FROM ubuntu:focal
 
+ARG USER
+ARG UID
+ARG GID
+
 # Setup the system and install needed packages
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Europe/London"
@@ -37,8 +41,12 @@ RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y wget \
 
 # Copy the script
 COPY PublishLaunchpad.sh /PublishLaunchpad.sh
-RUN chmod 770 /PublishLaunchpad.sh
+RUN chmod 777 /PublishLaunchpad.sh
 
 # Configure git
-RUN git config --global user.name "Tobias Zellner" && \
-    git config --global user.email imker@bienekaefig.de
+RUN mkdir -p /home/${USER} &&\
+    chmod 770 /home/${USER} && \
+    chown ${UID}:${GID} /home/${USER} 
+
+RUN addgroup --gid ${GID} ${USER} &&\ 
+    adduser --system --quiet --home /home/${USER} --gid ${GID} --uid ${UID} --gecos "builder" ${USER}  || true
