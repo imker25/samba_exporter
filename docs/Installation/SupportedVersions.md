@@ -8,7 +8,7 @@
 |---------|-----------|-----------|
 | Ubnutu 20.04   | Focal Fossa | yes |
 | Ubnutu 21.04   | Hirsute Hippo | no |
-| Ubnutu 21.10   | Impish Indri | EOL Mai 2022 |
+| Ubnutu 21.10   | Impish Indri | no |
 | Ubnutu 22.04   | Jammy Jellyfish | yes |
 
 ---
@@ -27,7 +27,7 @@
 
 | Version | Release | Supported |
 |---------|-----------|-----------|
-| Fedora 28  | 2018-05-01 | planed |
+| Fedora 28  | 2018-05-01 | yes |
 | Fedora 29  | 2018-10-30 | no |
 | Fedora 30  | 2019-04-29 | no |
 | Fedora 31  | 2019-10-29 | no |
@@ -35,7 +35,7 @@
 | Fedora 33  | 2020-10-28 | no |
 | Fedora 34  | 2021-04-27 | no |
 | Fedora 35  | 2021-11-02 | yes |
-| Fedora 36   | 2022-04-19 | planed |
+| Fedora 36   | 2022-04-19 | yes |
 
 ---
 
