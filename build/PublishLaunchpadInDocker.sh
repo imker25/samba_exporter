@@ -212,7 +212,7 @@ fi
 
 echo "# ###################################################################"
 echo "Delete the container image when done"    
-# docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
 
 popd
 
