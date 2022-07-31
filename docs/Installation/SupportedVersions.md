@@ -35,7 +35,9 @@
 | Fedora 33  | 2020-10-28 | no |
 | Fedora 34  | 2021-04-27 | no |
 | Fedora 35  | 2021-11-02 | yes |
-| Fedora 36   | 2022-04-19 | yes |
+| Fedora 36   | 2022-04-19 | no (1) |
+
+**(1):** Fedora 36 will be supported again as soon as upstream bug <https://bugzilla.redhat.com/show_bug.cgi?id=2109630> is fixed.
 
 ---
 
