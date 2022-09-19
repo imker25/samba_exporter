@@ -170,8 +170,11 @@ func GetShareData(data string, logger commonbl.Logger) []ShareData {
 				timeStr := fmt.Sprintf("%s %s %s %s %s %s", fields[3], fields[4], fields[5], fields[6], fields[7], fields[8])
 				entry.ConnectedAt, err = time.Parse("Mon Jan _2 15:04:05 2006 MST", timeStr)
 				if err != nil {
-					logger.WriteError(err)
-					continue
+					entry.ConnectedAt, err = time.Parse("Mo Jan _2 15:04:05 2006 MST", timeStr)
+					if err != nil {
+						logger.WriteError(err)
+						continue
+					}
 				}
 				entry.Encryption = fields[9]
 				entry.Signing = fields[10]

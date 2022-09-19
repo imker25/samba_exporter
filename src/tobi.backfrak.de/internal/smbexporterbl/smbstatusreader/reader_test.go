@@ -165,12 +165,16 @@ func TestGetShareDataDifferentTimeStampLines(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	entryList := GetShareData(smbstatusout.ShareDataDifferentTimeStampLines, *logger)
 
-	if len(entryList) != 2 {
+	if len(entryList) != 3 {
 		t.Errorf("Got wrong amount of entries %d", len(entryList))
 	}
 
 	if entryList[1].ConnectedAt.Format(time.ANSIC) != "Wed Jun  2 21:32:31 2021" {
 		t.Errorf("The time %s is not expected", entryList[1].ConnectedAt.Format(time.ANSIC))
+	}
+
+	if entryList[2].ConnectedAt.Format(time.ANSIC) != "Mon Sep 19 18:34:17 2022" {
+		t.Errorf("The time %s is not expected", entryList[2].ConnectedAt.Format(time.ANSIC))
 	}
 }
 
