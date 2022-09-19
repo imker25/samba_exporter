@@ -166,6 +166,7 @@ fi
 
 
 cp -v "$BRANCH_ROOT/tmp/commit_logs" "$RPM_PACKAGE_DIR"
+cp -v "$BRANCH_ROOT/install/fedora/samba-exporter.from_source.spec" "$WORK_DIR/samba-exporter.from_source.spec"
 
 dockerError="false"
 echo "Publish tag $tag on corp within a docker cotainer for fedora 35"
