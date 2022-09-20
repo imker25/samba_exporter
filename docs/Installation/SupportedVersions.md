@@ -10,6 +10,7 @@
 | Ubnutu 21.04   | Hirsute Hippo | no |
 | Ubnutu 21.10   | Impish Indri | no |
 | Ubnutu 22.04   | Jammy Jellyfish | yes |
+| Ubnutu 22.10  | Kinetic Kudu | planned |
 
 ---
 
@@ -36,6 +37,7 @@
 | Fedora 34  | 2021-04-27 | no |
 | Fedora 35  | 2021-11-02 | yes |
 | Fedora 36   | 2022-04-19 | yes |
+| Fedora 36   | --- | planned |
 
 ---
 
@@ -53,5 +55,6 @@
 | Version | Release | Supported |
 |---------|-----------|-----------|
 | RHEL 8  | 2019-05-07 | yes |
+| RHEL 9  | --- | planned |
 
 ---
