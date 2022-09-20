@@ -4,6 +4,7 @@ Requires=network-online.target
 After=network-online.target
 
 [Service]
+Environment=LANG=C
 Type=forking
 EnvironmentFile=/etc/default/samba_statusd
 ExecStart=/usr/bin/start_samba_statusd $ARGS
