@@ -12,6 +12,7 @@ graph TD;
     push(Developer push to GitHub)
     build[Build and unit tests]
     docs[Test doc pages creation]
+    rpm[Test rpm package creation]
     insTest[Installation tests]
     intTest[Integration tests]
     checkBranch{Check branch}
@@ -24,8 +25,11 @@ graph TD;
 
     push-->build;
     push-->docs;
+    push-->rpm;
     build-->insTest;
     build-->intTest;
+    
+    rpm-->checkBranch;
     docs-->checkBranch;
     insTest-->checkBranch;
     intTest-->checkBranch;
@@ -129,6 +133,8 @@ The release process of this project is fully automated. To create a new release 
 - Commit the changes on the main branch
 - Push all changes on **main** and the **new release** branch to GitHub
 
-Once this changes are pushed to github the CI/CD pipeline will start to run for both, `main` and the new `release` branch. This will create a new **-pre Release** from `main` as well as a new **full Release**  from the new `release` branch.
+Once this changes are pushed to github the CI/CD pipeline will start to run for both, `main` and the new `release` branch. This will create a new **-pre Release** from `main` as well as a new **full Release**  from the new `release` branch. This new releases will then trigger two release pipeline jobs. One for the -pre and one for the full release. As shown above the full release will be published on [Launchpad](https://launchpad.net/~imker/+archive/ubuntu/samba-exporter-ppa) and [copr](https://copr.fedorainfracloud.org/coprs/imker25/samba-exporter/) by the release pipeline if all is fine.
 
-As shown by the CI/CD Pipeline workflow `-pre` releases will be created for every commit pushed to the `main` branch on GitHub.
+As shown by the CI/CD Pipeline workflow GtiHub `-pre` releases will be created for every commit pushed to the `main` branch on GitHub.
+
+**GtiHub full releases** will be created by **every commit** to a `release/*` branch and will be **published** for package manager (`dnf`/`yum` or `apt`) installation by the end user at the corresponding repositories. GtiHub full releases also publish a new version of the [docs page](https://imker25.github.io/samba_exporter/Index/) automatically.
