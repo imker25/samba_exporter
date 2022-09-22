@@ -268,6 +268,7 @@ assert "echo $samba_statusd_log_lines" "1"
 
 echo "End Tests"
 echo "# ###################################################################"
+rm -v /dev/shm/samba_exporter.re*
 # Finish test run
 assert_end samba-exporter_IntegrationTests
 
