@@ -21,7 +21,7 @@ func TestGetSmbStatisticsNoLockData(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 11 {
+	if len(ret) != 13 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -38,7 +38,7 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 11 {
+	if len(ret) != 13 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -69,6 +69,15 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 		t.Errorf("The SambaVersion \"%s\" is not expected", value)
 	}
 
+	value, found = ret[12].Labels["client"]
+	if !found {
+		t.Errorf("No label with key \"client\" found")
+	}
+
+	if value != "" {
+		t.Errorf("The client \"%s\" is not expected", value)
+	}
+
 }
 
 func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
@@ -78,7 +87,7 @@ func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines, logger)
 
 	ret := GetSmbStatistics(locks, processes, shares)
-	if len(ret) != 11 {
+	if len(ret) != 13 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -99,7 +108,7 @@ func TestGetSmbStatistics(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares)
 
-	if len(ret) != 17 {
+	if len(ret) != 25 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
@@ -201,6 +210,19 @@ func TestGetSmbStatistics(t *testing.T) {
 
 	if ret[14].Value != 4 {
 		t.Errorf("The value %f is not expected", ret[14].Value)
+	}
+
+	if ret[23].Name != "client_connected_at" {
+		t.Errorf("The name %s is not expected", ret[23].Name)
+	}
+
+	value, found = ret[23].Labels["client"]
+	if !found {
+		t.Errorf("No label with key \"client\" found")
+	}
+
+	if value != "192.168.1.245" {
+		t.Errorf("The value %s is not expected", value)
 	}
 
 }

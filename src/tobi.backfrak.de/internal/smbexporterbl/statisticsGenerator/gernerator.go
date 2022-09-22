@@ -6,6 +6,8 @@ package statisticsGenerator
 // LICENSE file.
 
 import (
+	"time"
+
 	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 )
 
@@ -31,6 +33,7 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 	protocolVersionCount := make(map[string]int, 0)
 	signingMethodCount := make(map[string]int, 0)
 	encryptionMethodCount := make(map[string]int, 0)
+	clientConnectionTime := make(map[string]int64, 0)
 
 	for _, lock := range lockData {
 		if !intArrContains(users, lock.UserID) {
@@ -100,6 +103,11 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 		if !strArrContains(clients, share.Machine) {
 			clients = append(clients, share.Machine)
 		}
+
+		_, foundC := clientConnectionTime[share.Machine]
+		if !foundC {
+			clientConnectionTime[share.Machine] = share.ConnectedAt.Unix()
+		}
 	}
 	// TODO: Generate more metrics
 	ret = append(ret, SmbStatisticsNumeric{"individual_user_count", float64(len(users)), "The number of users connected to this samba server", nil})
@@ -149,6 +157,19 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 		}
 	} else {
 		ret = append(ret, SmbStatisticsNumeric{"encryption_method_count", float64(0), "Number of processes on the server using the encryption", map[string]string{"encryption": ""}})
+	}
+
+	if len(clientConnectionTime) > 0 {
+		for client, connectTime := range clientConnectionTime {
+			ret = append(ret, SmbStatisticsNumeric{"client_connected_at", float64(connectTime), "Unix time stamp a client connected", map[string]string{"client": client}})
+			now := time.Now()
+			connected_since := now.Sub(time.Unix(connectTime, 0))
+			ret = append(ret, SmbStatisticsNumeric{"client_connected_since_seconds", connected_since.Seconds(), "Seconds since a client connected", map[string]string{"client": client}})
+		}
+	} else {
+		// Add this values even if no locks found, so prometheus description will be created
+		ret = append(ret, SmbStatisticsNumeric{"client_connected_at", float64(0), "Unix time stamp a client connected", map[string]string{"client": ""}})
+		ret = append(ret, SmbStatisticsNumeric{"client_connected_since_seconds", float64(0), "Seconds since a client connected", map[string]string{"client": ""}})
 	}
 
 	return ret

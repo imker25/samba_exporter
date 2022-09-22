@@ -44,7 +44,7 @@ func TestNewSambaExporter(t *testing.T) {
 }
 
 func TestSetDescriptionsFromResponse(t *testing.T) {
-	expectedChanels := 15
+	expectedChanels := 17
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
@@ -61,8 +61,8 @@ func TestSetDescriptionsFromResponse(t *testing.T) {
 }
 
 func TestSetMetricsFromResponse(t *testing.T) {
-	expectedDescChanels := 21
-	expectedMetChanels := 21
+	expectedDescChanels := 29
+	expectedMetChanels := 29
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
@@ -76,13 +76,13 @@ func TestSetMetricsFromResponse(t *testing.T) {
 	exporter.setMetricsFromResponse(locks, processes, shares, 1, 1, 31, chMet)
 
 	if len(chMet) != expectedMetChanels {
-		t.Errorf("Got %d metric chanels, but expected %d", len(chMet), expectedMetChanels)
+		t.Errorf("Got %d metric channels, but expected %d", len(chMet), expectedMetChanels)
 	}
 
 }
 
 func TestSetMetricsFromEmptyResponse(t *testing.T) {
-	expectedDescChanels := 15
+	expectedDescChanels := 17
 	expectedMetChanels := 9
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
