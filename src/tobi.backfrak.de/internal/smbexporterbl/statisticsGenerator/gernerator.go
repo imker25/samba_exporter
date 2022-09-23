@@ -19,6 +19,12 @@ type SmbStatisticsNumeric struct {
 	Labels map[string]string
 }
 
+type StatisticsGeneratorSettings struct {
+	DoNotExportClient     bool
+	DoNotExportUser       bool
+	DoNotExportEncryption bool
+}
+
 // GetSmbStatistics - Get the statistic data for prometheus out of the response data arrays
 func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstatusreader.ProcessData, shareData []smbstatusreader.ShareData) []SmbStatisticsNumeric {
 	var ret []SmbStatisticsNumeric

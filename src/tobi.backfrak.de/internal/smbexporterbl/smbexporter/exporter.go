@@ -21,16 +21,17 @@ const EXPORTER_LABEL_PREFIX = "samba"
 
 // SambaExporter - The class that implements the Prometheus Exporter Interface
 type SambaExporter struct {
-	RequestHandler commonbl.PipeHandler
-	ResponseHander commonbl.PipeHandler
-	Descriptions   map[string]prometheus.Desc
-	Logger         commonbl.Logger
-	Version        string
-	RequestTimeOut int
+	RequestHandler              commonbl.PipeHandler
+	ResponseHander              commonbl.PipeHandler
+	Descriptions                map[string]prometheus.Desc
+	Logger                      commonbl.Logger
+	Version                     string
+	RequestTimeOut              int
+	StatisticsGeneratorSettings statisticsGenerator.StatisticsGeneratorSettings
 }
 
 // Get a new instance of the SambaExporter
-func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander commonbl.PipeHandler, logger commonbl.Logger, version string, requestTimeOut int) *SambaExporter {
+func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander commonbl.PipeHandler, logger commonbl.Logger, version string, requestTimeOut int, statisticsGeneratorSettings statisticsGenerator.StatisticsGeneratorSettings) *SambaExporter {
 	var ret SambaExporter
 	ret.RequestHandler = requestHandler
 	ret.ResponseHander = responseHander
@@ -38,6 +39,7 @@ func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander common
 	ret.Version = version
 	ret.RequestTimeOut = requestTimeOut
 	ret.Descriptions = make(map[string]prometheus.Desc)
+	ret.StatisticsGeneratorSettings = statisticsGeneratorSettings
 
 	return &ret
 }

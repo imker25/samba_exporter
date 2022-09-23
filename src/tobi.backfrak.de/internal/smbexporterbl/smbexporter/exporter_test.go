@@ -13,14 +13,19 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"tobi.backfrak.de/internal/commonbl"
 	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
+	"tobi.backfrak.de/internal/smbexporterbl/statisticsGenerator"
 	"tobi.backfrak.de/internal/smbstatusout"
 )
+
+func getNewStatisticGenSettings() statisticsGenerator.StatisticsGeneratorSettings {
+	return statisticsGenerator.StatisticsGeneratorSettings{}
+}
 
 func TestNewSambaExporter(t *testing.T) {
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
-	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5)
+	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 
 	if exporter.RequestHandler.PipeType != commonbl.RequestPipe {
 		t.Errorf("The exporter.RequestHandler is not of the expected type")
@@ -52,7 +57,7 @@ func TestSetDescriptionsFromResponse(t *testing.T) {
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataOneLine, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataOneLine, logger)
 	ch := make(chan *prometheus.Desc, expectedChanels)
-	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5)
+	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 	exporter.setDescriptionsFromResponse(locks, processes, shares, ch)
 
 	if len(ch) != expectedChanels {
@@ -70,7 +75,7 @@ func TestSetMetricsFromResponse(t *testing.T) {
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
 	chDesc := make(chan *prometheus.Desc, expectedDescChanels)
-	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5)
+	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 	exporter.setDescriptionsFromResponse(locks, processes, shares, chDesc)
 	chMet := make(chan prometheus.Metric, expectedMetChanels)
 	exporter.setMetricsFromResponse(locks, processes, shares, 1, 1, 31, chMet)
@@ -91,7 +96,7 @@ func TestSetMetricsFromEmptyResponse(t *testing.T) {
 	shares := smbstatusreader.GetShareData(smbstatusout.LockData0Line, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.LockData0Line, logger)
 	chDesc := make(chan *prometheus.Desc, expectedDescChanels)
-	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5)
+	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 	exporter.setDescriptionsFromResponse(locks, processes, shares, chDesc)
 	chMet := make(chan prometheus.Metric, expectedMetChanels)
 	exporter.setMetricsFromResponse(locks, processes, shares, 1, 1, 32, chMet)
@@ -109,7 +114,7 @@ func TestSetGaugeDescriptionNoLabel(t *testing.T) {
 	help := "My help"
 	name := "my_name"
 	ch := make(chan *prometheus.Desc, 1)
-	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5)
+	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 
 	exporter.setGaugeDescriptionNoLabel(name, help, ch)
 
@@ -138,7 +143,7 @@ func TestSetGaugeDescriptionWithLabel(t *testing.T) {
 	name := "my_name"
 	labels := map[string]string{"key1": "value1", "key2": "value2"}
 	ch := make(chan *prometheus.Desc, 1)
-	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5)
+	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 
 	exporter.setGaugeDescriptionWithLabel(name, help, labels, ch)
 
@@ -172,7 +177,7 @@ func TestSetGaugeIntMetricNoLabel(t *testing.T) {
 	help := "My help"
 	name := "my_name"
 	chDesc := make(chan *prometheus.Desc, 1)
-	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5)
+	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 	exporter.setGaugeDescriptionNoLabel(name, help, chDesc)
 	desc := <-chDesc
 	if desc == nil {
@@ -196,7 +201,7 @@ func TestSetGaugeIntMetricNoDescription(t *testing.T) {
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
-	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5)
+	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 	name := "my_name"
 	chMet := make(chan prometheus.Metric, 1)
 	exporter.setGaugeIntMetricNoLabel(name, 42.0, chMet)
@@ -215,7 +220,7 @@ func TestSetGaugeIntMetricWithLabel(t *testing.T) {
 	name := "my_name"
 	labels := map[string]string{"key1": "value1", "key2": "value2"}
 	chDesc := make(chan *prometheus.Desc, 1)
-	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5)
+	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 	exporter.setGaugeDescriptionWithLabel(name, help, labels, chDesc)
 	desc := <-chDesc
 	if desc == nil {
@@ -240,7 +245,7 @@ func TestSetGaugeIntMetricWithLabelNoDescription(t *testing.T) {
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
 	labels := map[string]string{"key1": "value1", "key2": "value2"}
-	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5)
+	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 	name := "my_name"
 	chMet := make(chan prometheus.Metric, 1)
 	exporter.setGaugeIntMetricWithLabel(name, 42.0, labels, chMet)

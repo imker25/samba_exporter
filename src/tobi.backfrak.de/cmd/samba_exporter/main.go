@@ -81,7 +81,7 @@ func main() {
 
 	logger.WriteVerbose("Setup prometheus exporter")
 
-	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler, logger, version, params.RequestTimeOut)
+	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler, logger, version, params.RequestTimeOut, params.StatisticsGeneratorSettings)
 	prometheus.MustRegister(exporter)
 
 	logger.WriteInformation(fmt.Sprintf("Started %s, get metrics on http://%s%s", os.Args[0], params.ListenAddress, params.MetricsPath))
