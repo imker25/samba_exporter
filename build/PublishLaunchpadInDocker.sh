@@ -185,29 +185,37 @@ echo "# ###################################################################"
 buildAndRunDocker "focal"
 if [ "$?" != "0" ]; then
     dockerError="true"
+    echo "Error while publish package for focal"
 fi
 
+if [ "$dockerError" == "false" ];then 
 echo "Publish tag $tag on launchpad within a docker cotainer for jammy"
 echo "# ###################################################################"
-if [ "$dockerError" == "false" ];then 
     buildAndRunDocker "jammy"
     if [ "$?" != "0" ]; then
         dockerError="true"
+        echo "Error while publish package for jammy"
     fi
 fi
 
-echo "Publish tag $tag on launchpad within a docker cotainer for bullseye"
-echo "# ###################################################################"
-buildAndRunDocker "bullseye"
-if [ "$?" != "0" ]; then
-    dockerError="true"
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on launchpad within a docker cotainer for bullseye"
+    echo "# ###################################################################"
+    buildAndRunDocker "bullseye"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+        echo "Error while publish package for bullseye"
+    fi
 fi
 
-echo "Publish tag $tag on launchpad within a docker cotainer for buster"
-echo "# ###################################################################"
-buildAndRunDocker "buster"
-if [ "$?" != "0" ]; then
-    dockerError="true"
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on launchpad within a docker cotainer for buster"
+    echo "# ###################################################################"
+    buildAndRunDocker "buster"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+        echo "Error while publish package for buster"
+    fi
 fi
 
 echo "# ###################################################################"
