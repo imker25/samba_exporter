@@ -91,7 +91,7 @@ func (smbExporter *SambaExporter) setMetricsFromResponse(locks []smbstatusreader
 	smbExporter.setGaugeIntMetricNoLabel("satutsd_up", float64(smbStatusUp), ch)
 	smbExporter.setGaugeIntMetricWithLabel("exporter_information", 1, map[string]string{"version": smbExporter.Version}, ch)
 
-	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares)
+	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares, smbExporter.StatisticsGeneratorSettings)
 	if stats == nil {
 		smbExporter.Logger.WriteError(pipecomunication.NewSmbStatusUnexpectedResponseError("Empty response from samba_statusd"))
 		return
@@ -109,7 +109,7 @@ func (smbExporter *SambaExporter) setMetricsFromResponse(locks []smbstatusreader
 
 func (smbExporter *SambaExporter) setDescriptionsFromResponse(locks []smbstatusreader.LockData, processes []smbstatusreader.ProcessData, shares []smbstatusreader.ShareData, ch chan<- *prometheus.Desc) {
 	smbExporter.Logger.WriteVerbose("Handle samba_statusd response and set prometheus descriptions")
-	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares)
+	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares, smbExporter.StatisticsGeneratorSettings)
 	if stats == nil {
 		err := pipecomunication.NewSmbStatusUnexpectedResponseError("Empty response from samba_statusd")
 		smbExporter.Logger.WriteError(err)

@@ -129,7 +129,7 @@ func testPipeMode(requestHandler commonbl.PipeHandler, responseHandler commonbl.
 		fmt.Fprintln(os.Stdout, lock.String())
 	}
 
-	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares)
+	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares, params.StatisticsGeneratorSettings)
 	for _, stat := range stats {
 		fmt.Fprintln(os.Stdout, fmt.Sprintf("%s_%s: %f", smbexporter.EXPORTER_LABEL_PREFIX, stat.Name, stat.Value))
 	}
