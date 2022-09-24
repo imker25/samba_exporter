@@ -66,6 +66,18 @@ func main() {
 		os.Exit(0)
 	}
 
+	if params.DoNotExportUser {
+		logger.WriteVerbose("-not-expose-user-data set, will not export user data")
+	}
+
+	if params.DoNotExportClient {
+		logger.WriteVerbose("-not-expose-client-data set, will not export client data")
+	}
+
+	if params.DoNotExportEncryption {
+		logger.WriteVerbose("-not-expose-encryption-data set, will not export encryption data")
+	}
+
 	if params.TestPipeMode {
 		errTest := testPipeMode(requestHandler, responseHandler)
 		if errTest != nil {
