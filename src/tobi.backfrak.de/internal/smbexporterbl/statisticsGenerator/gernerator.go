@@ -6,6 +6,7 @@ package statisticsGenerator
 // LICENSE file.
 
 import (
+	"strconv"
 	"time"
 
 	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
@@ -25,6 +26,12 @@ type StatisticsGeneratorSettings struct {
 	DoNotExportEncryption bool
 }
 
+type lockCreationEntry struct {
+	UserID       int
+	CreationTime time.Time
+	Share        string
+}
+
 // GetSmbStatistics - Get the statistic data for prometheus out of the response data arrays
 func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstatusreader.ProcessData, shareData []smbstatusreader.ShareData, settings StatisticsGeneratorSettings) []SmbStatisticsNumeric {
 	var ret []SmbStatisticsNumeric
@@ -34,6 +41,7 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 	var shares []string
 	var clients []string
 	var sambaVersion string
+	var lockCreationEntries []lockCreationEntry
 	locksPerShare := make(map[string]int, 0)
 	processPerClient := make(map[string]int, 0)
 	protocolVersionCount := make(map[string]int, 0)
@@ -55,6 +63,11 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 			locksPerShare[lock.SharePath] = 1
 		} else {
 			locksPerShare[lock.SharePath] = locksOfShare + 1
+		}
+
+		newEntry := lockCreationEntry{lock.UserID, lock.Time, lock.SharePath}
+		if !lockArrContainsEntry(lockCreationEntries, newEntry) {
+			lockCreationEntries = append(lockCreationEntries, newEntry)
 		}
 	}
 
@@ -182,12 +195,39 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 		}
 	}
 
+	if !settings.DoNotExportUser {
+		if len(lockCreationEntries) > 0 {
+			for _, lockEntry := range lockCreationEntries {
+				ret = append(ret, SmbStatisticsNumeric{"lock_created_at", float64(lockEntry.CreationTime.Unix()),
+					"Unix time stamp a lock was created",
+					map[string]string{"user": strconv.Itoa(lockEntry.UserID), "share": lockEntry.Share}})
+
+				ret = append(ret, SmbStatisticsNumeric{"lock_created_since_seconds", float64(time.Since(lockEntry.CreationTime).Seconds()),
+					"Seconds since a lock was created",
+					map[string]string{"user": strconv.Itoa(lockEntry.UserID), "share": lockEntry.Share}})
+			}
+		} else {
+			ret = append(ret, SmbStatisticsNumeric{"lock_created_at", float64(0), "Unix time stamp a lock was created", map[string]string{"user": "", "share": ""}})
+			ret = append(ret, SmbStatisticsNumeric{"lock_created_since_seconds", float64(0), "Seconds since a lock was created", map[string]string{"user": "", "share": ""}})
+		}
+	}
+
 	return ret
 }
 
 func intArrContains(arr []int, value int) bool {
 	for _, field := range arr {
 		if field == value {
+			return true
+		}
+	}
+
+	return false
+}
+
+func lockArrContainsEntry(arr []lockCreationEntry, value lockCreationEntry) bool {
+	for _, field := range arr {
+		if field.Share == value.Share && field.UserID == value.UserID {
 			return true
 		}
 	}
