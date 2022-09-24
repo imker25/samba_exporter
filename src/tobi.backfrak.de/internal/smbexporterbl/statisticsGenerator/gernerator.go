@@ -6,6 +6,7 @@ package statisticsGenerator
 // LICENSE file.
 
 import (
+	"strconv"
 	"time"
 
 	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
@@ -19,8 +20,20 @@ type SmbStatisticsNumeric struct {
 	Labels map[string]string
 }
 
+type StatisticsGeneratorSettings struct {
+	DoNotExportClient     bool
+	DoNotExportUser       bool
+	DoNotExportEncryption bool
+}
+
+type lockCreationEntry struct {
+	UserID       int
+	CreationTime time.Time
+	Share        string
+}
+
 // GetSmbStatistics - Get the statistic data for prometheus out of the response data arrays
-func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstatusreader.ProcessData, shareData []smbstatusreader.ShareData) []SmbStatisticsNumeric {
+func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstatusreader.ProcessData, shareData []smbstatusreader.ShareData, settings StatisticsGeneratorSettings) []SmbStatisticsNumeric {
 	var ret []SmbStatisticsNumeric
 
 	var users []int
@@ -28,6 +41,7 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 	var shares []string
 	var clients []string
 	var sambaVersion string
+	var lockCreationEntries []lockCreationEntry
 	locksPerShare := make(map[string]int, 0)
 	processPerClient := make(map[string]int, 0)
 	protocolVersionCount := make(map[string]int, 0)
@@ -49,6 +63,11 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 			locksPerShare[lock.SharePath] = 1
 		} else {
 			locksPerShare[lock.SharePath] = locksOfShare + 1
+		}
+
+		newEntry := lockCreationEntry{lock.UserID, lock.Time, lock.SharePath}
+		if !lockArrContainsEntry(lockCreationEntries, newEntry) {
+			lockCreationEntries = append(lockCreationEntries, newEntry)
 		}
 	}
 
@@ -127,49 +146,70 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 
 	ret = append(ret, SmbStatisticsNumeric{"server_information", 1, "Version of the samba server", map[string]string{"version": sambaVersion}})
 
-	if len(processPerClient) > 0 {
-		for client, count := range processPerClient {
-			ret = append(ret, SmbStatisticsNumeric{"process_per_client_count", float64(count), "Number of processes on the server used by one client", map[string]string{"client": client}})
+	if !settings.DoNotExportEncryption {
+		if len(protocolVersionCount) > 0 {
+			for version, count := range protocolVersionCount {
+				ret = append(ret, SmbStatisticsNumeric{"protocol_version_count", float64(count), "Number of processes on the server using the protocol", map[string]string{"protocol_version": version}})
+			}
+		} else {
+			ret = append(ret, SmbStatisticsNumeric{"protocol_version_count", float64(0), "Number of processes on the server using the protocol", map[string]string{"protocol_version": ""}})
 		}
-	} else {
-		ret = append(ret, SmbStatisticsNumeric{"process_per_client_count", float64(0), "Number of processes on the server used by one client", map[string]string{"client": ""}})
+
+		if len(signingMethodCount) > 0 {
+			for method, count := range signingMethodCount {
+				ret = append(ret, SmbStatisticsNumeric{"signing_method_count", float64(count), "Number of processes on the server using the signing", map[string]string{"signing": method}})
+			}
+		} else {
+			ret = append(ret, SmbStatisticsNumeric{"signing_method_count", float64(0), "Number of processes on the server using the signing", map[string]string{"signing": ""}})
+		}
+
+		if len(encryptionMethodCount) > 0 {
+			for method, count := range encryptionMethodCount {
+				ret = append(ret, SmbStatisticsNumeric{"encryption_method_count", float64(count), "Number of processes on the server using the encryption", map[string]string{"encryption": method}})
+			}
+		} else {
+			ret = append(ret, SmbStatisticsNumeric{"encryption_method_count", float64(0), "Number of processes on the server using the encryption", map[string]string{"encryption": ""}})
+		}
 	}
 
-	if len(protocolVersionCount) > 0 {
-		for version, count := range protocolVersionCount {
-			ret = append(ret, SmbStatisticsNumeric{"protocol_version_count", float64(count), "Number of processes on the server using the protocol", map[string]string{"protocol_version": version}})
+	if !settings.DoNotExportClient {
+		if len(processPerClient) > 0 {
+			for client, count := range processPerClient {
+				ret = append(ret, SmbStatisticsNumeric{"process_per_client_count", float64(count), "Number of processes on the server used by one client", map[string]string{"client": client}})
+			}
+		} else {
+			ret = append(ret, SmbStatisticsNumeric{"process_per_client_count", float64(0), "Number of processes on the server used by one client", map[string]string{"client": ""}})
 		}
-	} else {
-		ret = append(ret, SmbStatisticsNumeric{"protocol_version_count", float64(0), "Number of processes on the server using the protocol", map[string]string{"protocol_version": ""}})
+
+		if len(clientConnectionTime) > 0 {
+			for client, connectTime := range clientConnectionTime {
+				ret = append(ret, SmbStatisticsNumeric{"client_connected_at", float64(connectTime), "Unix time stamp a client connected", map[string]string{"client": client}})
+				now := time.Now()
+				connected_since := now.Sub(time.Unix(connectTime, 0))
+				ret = append(ret, SmbStatisticsNumeric{"client_connected_since_seconds", connected_since.Seconds(), "Seconds since a client connected", map[string]string{"client": client}})
+			}
+		} else {
+			// Add this values even if no locks found, so prometheus description will be created
+			ret = append(ret, SmbStatisticsNumeric{"client_connected_at", float64(0), "Unix time stamp a client connected", map[string]string{"client": ""}})
+			ret = append(ret, SmbStatisticsNumeric{"client_connected_since_seconds", float64(0), "Seconds since a client connected", map[string]string{"client": ""}})
+		}
 	}
 
-	if len(signingMethodCount) > 0 {
-		for method, count := range signingMethodCount {
-			ret = append(ret, SmbStatisticsNumeric{"signing_method_count", float64(count), "Number of processes on the server using the signing", map[string]string{"signing": method}})
-		}
-	} else {
-		ret = append(ret, SmbStatisticsNumeric{"signing_method_count", float64(0), "Number of processes on the server using the signing", map[string]string{"signing": ""}})
-	}
+	if !settings.DoNotExportUser {
+		if len(lockCreationEntries) > 0 {
+			for _, lockEntry := range lockCreationEntries {
+				ret = append(ret, SmbStatisticsNumeric{"lock_created_at", float64(lockEntry.CreationTime.Unix()),
+					"Unix time stamp a lock was created",
+					map[string]string{"user": strconv.Itoa(lockEntry.UserID), "share": lockEntry.Share}})
 
-	if len(encryptionMethodCount) > 0 {
-		for method, count := range encryptionMethodCount {
-			ret = append(ret, SmbStatisticsNumeric{"encryption_method_count", float64(count), "Number of processes on the server using the encryption", map[string]string{"encryption": method}})
+				ret = append(ret, SmbStatisticsNumeric{"lock_created_since_seconds", float64(time.Since(lockEntry.CreationTime).Seconds()),
+					"Seconds since a lock was created",
+					map[string]string{"user": strconv.Itoa(lockEntry.UserID), "share": lockEntry.Share}})
+			}
+		} else {
+			ret = append(ret, SmbStatisticsNumeric{"lock_created_at", float64(0), "Unix time stamp a lock was created", map[string]string{"user": "", "share": ""}})
+			ret = append(ret, SmbStatisticsNumeric{"lock_created_since_seconds", float64(0), "Seconds since a lock was created", map[string]string{"user": "", "share": ""}})
 		}
-	} else {
-		ret = append(ret, SmbStatisticsNumeric{"encryption_method_count", float64(0), "Number of processes on the server using the encryption", map[string]string{"encryption": ""}})
-	}
-
-	if len(clientConnectionTime) > 0 {
-		for client, connectTime := range clientConnectionTime {
-			ret = append(ret, SmbStatisticsNumeric{"client_connected_at", float64(connectTime), "Unix time stamp a client connected", map[string]string{"client": client}})
-			now := time.Now()
-			connected_since := now.Sub(time.Unix(connectTime, 0))
-			ret = append(ret, SmbStatisticsNumeric{"client_connected_since_seconds", connected_since.Seconds(), "Seconds since a client connected", map[string]string{"client": client}})
-		}
-	} else {
-		// Add this values even if no locks found, so prometheus description will be created
-		ret = append(ret, SmbStatisticsNumeric{"client_connected_at", float64(0), "Unix time stamp a client connected", map[string]string{"client": ""}})
-		ret = append(ret, SmbStatisticsNumeric{"client_connected_since_seconds", float64(0), "Seconds since a client connected", map[string]string{"client": ""}})
 	}
 
 	return ret
@@ -178,6 +218,16 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 func intArrContains(arr []int, value int) bool {
 	for _, field := range arr {
 		if field == value {
+			return true
+		}
+	}
+
+	return false
+}
+
+func lockArrContainsEntry(arr []lockCreationEntry, value lockCreationEntry) bool {
+	for _, field := range arr {
+		if field.Share == value.Share && field.UserID == value.UserID {
 			return true
 		}
 	}

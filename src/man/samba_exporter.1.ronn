@@ -35,6 +35,15 @@ You might want to use one of the following optional parameters.
   * `-help`: 
     Print the programs help message and exit
 
+  * `-not-expose-client-data`
+    Set to `true`, no details about the connected clients will be exported
+
+  * `-not-expose-encryption-data`
+    Set to `true`, no details about the used encryption or signing will be exported
+
+  * `-not-expose-user-data`
+    Set to `true`, no details about the connected users will be exported
+
   * `-print-version`:
     With this flag the program will only print it's version and exit
 

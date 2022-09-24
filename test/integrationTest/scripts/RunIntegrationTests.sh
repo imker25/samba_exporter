@@ -147,6 +147,23 @@ assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"PID: 1120
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_individual_user_count: 1\"" 0
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_pid_count: 3\"" 0
 
+# Test the -not-expose-* options
+normalOutPutLineCount=$( $samba_exporter -test-mode -test-pipe | wc -l )
+noEncryptionOutPutLineCount=$( $samba_exporter -test-mode -test-pipe -not-expose-encryption-data | wc -l )
+noClientOutPutLineCount=$( $samba_exporter -test-mode -test-pipe -not-expose-client-data | wc -l )
+noUserOutPutLineCount=$( $samba_exporter -test-mode -test-pipe -not-expose-user-data | wc -l )
+assert_raises " [ $normalOutPutLineCount == $noEncryptionOutPutLineCount ] " 1
+assert_raises " [ $normalOutPutLineCount == $noClientOutPutLineCount ] " 1
+assert_raises " [ $normalOutPutLineCount == $noUserOutPutLineCount ] " 1
+echo "normalOutPutLineCount: $normalOutPutLineCount"
+echo "noClientOutPutLineCount: $noClientOutPutLineCount"
+echo "noEncryptionOutPutLineCount: $noEncryptionOutPutLineCount"
+echo "noUserOutPutLineCount: $noUserOutPutLineCount"
+
+echo "# ###################################################################"
+echo "Normal test-mode output"
+$samba_exporter -test-mode -test-pipe 
+
 echo "# ###################################################################"
 echo "Start as daemon: $samba_exporter -test-mode -verbose"
 $samba_exporter -test-mode -verbose &

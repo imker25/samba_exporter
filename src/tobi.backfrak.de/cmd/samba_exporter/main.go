@@ -66,6 +66,18 @@ func main() {
 		os.Exit(0)
 	}
 
+	if params.DoNotExportUser {
+		logger.WriteVerbose("-not-expose-user-data set, will not export user data")
+	}
+
+	if params.DoNotExportClient {
+		logger.WriteVerbose("-not-expose-client-data set, will not export client data")
+	}
+
+	if params.DoNotExportEncryption {
+		logger.WriteVerbose("-not-expose-encryption-data set, will not export encryption data")
+	}
+
 	if params.TestPipeMode {
 		errTest := testPipeMode(requestHandler, responseHandler)
 		if errTest != nil {
@@ -81,7 +93,7 @@ func main() {
 
 	logger.WriteVerbose("Setup prometheus exporter")
 
-	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler, logger, version, params.RequestTimeOut)
+	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler, logger, version, params.RequestTimeOut, params.StatisticsGeneratorSettings)
 	prometheus.MustRegister(exporter)
 
 	logger.WriteInformation(fmt.Sprintf("Started %s, get metrics on http://%s%s", os.Args[0], params.ListenAddress, params.MetricsPath))
@@ -129,7 +141,7 @@ func testPipeMode(requestHandler commonbl.PipeHandler, responseHandler commonbl.
 		fmt.Fprintln(os.Stdout, lock.String())
 	}
 
-	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares)
+	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares, params.StatisticsGeneratorSettings)
 	for _, stat := range stats {
 		fmt.Fprintln(os.Stdout, fmt.Sprintf("%s_%s: %f", smbexporter.EXPORTER_LABEL_PREFIX, stat.Name, stat.Value))
 	}
