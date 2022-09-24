@@ -9,6 +9,9 @@ ARGS='-web.listen-address=127.0.0.1:9922'
 # The prometheus exporter endpoint only listen on 192.168.0.1 and gives verbose log output
 # ARGS='-web.listen-address=192.168.0.1:9922 -verbose'
 
+# The prometheus exporter endpoint only listen on 192.168.0.1 and does not export data about encryption details 
+# ARGS='-web.listen-address=192.168.0.1:9922 -not-expose-encryption-data'
+
 # Usage of samba_exporter
 #  -help
 #        Print this help message
