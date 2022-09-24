@@ -8,6 +8,7 @@ package statisticsGenerator
 import (
 	"testing"
 
+	"strings"
 	"tobi.backfrak.de/internal/commonbl"
 	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 	"tobi.backfrak.de/internal/smbstatusout"
@@ -221,7 +222,7 @@ func TestGetSmbStatistics(t *testing.T) {
 		t.Errorf("No label with key \"client\" found")
 	}
 
-	if value != "192.168.1.245" {
+	if !strings.HasPrefix(value, "192.168.1.") {
 		t.Errorf("The value %s is not expected", value)
 	}
 

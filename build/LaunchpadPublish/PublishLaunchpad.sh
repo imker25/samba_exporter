@@ -112,6 +112,7 @@ fi
 
 distribution=$(lsb_release -is)
 distVersionNumber=$(lsb_release -rs)
+distCodeName=$(lsb_release -cs)
 packageVersion="${tag}~ppa1~${distribution,,}${distVersionNumber}"
 
 # ################################################################################################################
@@ -349,11 +350,17 @@ else
         exit 1
     fi
 
+    if [ ! -f "$BUILD_DIR/samba-exporter_${packageVersion}_source.changes" ]; then
+        echo "Can to find the source package at '$BUILD_DIR/samba-exporter_${packageVersion}_source.changes' as expected"
+        echo "ls -l $BUILD_DIR/"
+        ls -l $BUILD_DIR/
+        exit 1
+    fi
     echo "# ###################################################################"
     if [ "$dryRun" == "false" ]; then
         echo "Upload source package"
-        echo "dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes "
-        dput ppa:imker/samba-exporter-ppa ../samba-exporter_${packageVersion}_source.changes 
+        echo "dput ppa:imker/samba-exporter-ppa \"$BUILD_DIR/samba-exporter_${packageVersion}_source.changes\" "
+        dput ppa:imker/samba-exporter-ppa "$BUILD_DIR/samba-exporter_${packageVersion}_source.changes" 
         if [ "$?" != "0" ]; then 
             echo "Error: Can not upload the source package to the launchpad ppa"
             exit 1
