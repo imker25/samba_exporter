@@ -260,6 +260,9 @@ sudo rm -v /etc/default/samba_exporter
 sudo  sh -c  "echo \"ARGS='-web.listen-address=127.0.0.1:9922 -not-expose-encryption-data'\" > /etc/default/samba_exporter"
 echo "sudo systemctl start samba_exporter"
 sudo systemctl start samba_exporter
+sleep 0.5
+echo "sudo systemctl status samba_exporter"
+sudo systemctl status samba_exporter
 curl http://127.0.0.1:9922/metrics > "$tmp_dir/samba_exporter.curl.metrics.2.log"
 samba_exporter_no_encryption_curl_lines=$(wc -l $tmp_dir/samba_exporter.curl.metrics.2.log| awk '{print $1}' )
 echo "$tmp_dir/samba_exporter.curl.metrics.1.log has $samba_exporter_normal_curl_lines lines"
