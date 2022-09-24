@@ -255,6 +255,10 @@ echo "# ###################################################################"
 echo "Test the -not-expose-* options"
 curl http://127.0.0.1:9922/metrics > "$tmp_dir/samba_exporter.curl.metrics.1.log"
 samba_exporter_normal_curl_lines=$(wc -l $tmp_dir/samba_exporter.curl.metrics.1.log| awk '{print $1}' )
+mkdir -pv /etc/systemd/system/samba_exporter.service.d/
+sudo  sh -c  "echo \"[Service]\" > /etc/systemd/system/samba_exporter.service.d/override.conf"
+sudo  sh -c  "echo \"StartLimitBurst=0\" > /etc/systemd/system/samba_exporter.service.d/override.conf"
+sudo systemctl daemon-reload
 
 sudo rm -v /etc/default/samba_exporter
 sudo  sh -c  "echo \"ARGS='-web.listen-address=127.0.0.1:9922' -not-expose-encryption-data\" > /etc/default/samba_exporter"
