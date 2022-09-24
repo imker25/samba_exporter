@@ -258,6 +258,8 @@ echo "sudo systemctl stop samba_exporter"
 sudo systemctl stop samba_exporter
 sudo rm -v /etc/default/samba_exporter
 sudo  sh -c  "echo \"ARGS='-web.listen-address=127.0.0.1:9922 -not-expose-encryption-data'\" > /etc/default/samba_exporter"
+echo "cat /etc/default/samba_exporter"
+cat /etc/default/samba_exporter
 echo "sudo systemctl start samba_exporter"
 sudo systemctl start samba_exporter
 sleep 0.5
