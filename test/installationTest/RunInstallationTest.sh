@@ -261,7 +261,7 @@ sudo  sh -c  "echo \"StartLimitBurst=0\" > /etc/systemd/system/samba_exporter.se
 sudo systemctl daemon-reload
 
 sudo rm -v /etc/default/samba_exporter
-sudo  sh -c  "echo \"ARGS='-web.listen-address=127.0.0.1:9922' -not-expose-encryption-data\" > /etc/default/samba_exporter"
+sudo  sh -c  "echo \"ARGS='-web.listen-address=127.0.0.1:9922 -not-expose-encryption-data'\" > /etc/default/samba_exporter"
 echo "cat /etc/default/samba_exporter"
 cat /etc/default/samba_exporter
 echo "sudo systemctl restart samba_exporter"
