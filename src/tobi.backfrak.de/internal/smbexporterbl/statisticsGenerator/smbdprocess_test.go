@@ -19,8 +19,8 @@ func TestGetSmbdMetricsNotRunningProcess(t *testing.T) {
 		t.Errorf("Got the unexpected error: %s", err.Error())
 	}
 
-	if len(metrics) != 1 {
-		t.Errorf("Got %d lines but expected %d", len(metrics), 1)
+	if len(metrics) != 5 {
+		t.Errorf("Got %d lines but expected %d", len(metrics), 3)
 	}
 
 	if metrics[0].Name != "smbd_unique_process_id_count" {
@@ -46,8 +46,8 @@ func TestGetSmbdMetricsGoProcess(t *testing.T) {
 		t.Errorf("Got the unexpected error: %s", err.Error())
 	}
 
-	if len(metrics) != 1 {
-		t.Errorf("Got %d lines but expected %d", len(metrics), 1)
+	if len(metrics) < 1 {
+		t.Errorf("Got less then one metric")
 	}
 
 	if metrics[0].Name != "smbd_unique_process_id_count" {
@@ -58,5 +58,11 @@ func TestGetSmbdMetricsGoProcess(t *testing.T) {
 		t.Errorf("Found '0' processes, but at least one expected")
 	}
 
+	numUnqueMetrics := 2
+	numSumMetrics := numUnqueMetrics
+	expectedMetricCount := 1 + (int(metrics[0].Value) * numUnqueMetrics) + numSumMetrics
+	if len(metrics) != expectedMetricCount {
+		t.Errorf("Got '%d' metrics but expected '%d'", len(metrics), expectedMetricCount)
+	}
 	smbd_image_name = "smbd"
 }
