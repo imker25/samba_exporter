@@ -7,6 +7,7 @@ package statisticsGenerator
 
 import (
 	"testing"
+	"time"
 
 	"strings"
 
@@ -351,5 +352,26 @@ func TestIntArrContains(t *testing.T) {
 
 	if intArrContains(arr, 100) == true {
 		t.Errorf("strArrContains returns true but should false")
+	}
+}
+
+func TestLockArrContains(t *testing.T) {
+
+	entry1 := lockCreationEntry{1, time.Now(), "/media/data"}
+	entry2 := lockCreationEntry{1, time.Now(), "/media/projects"}
+	entry3 := lockCreationEntry{2, time.Now(), "/media/projects"}
+	entry4 := lockCreationEntry{2, time.Now(), "/home/user"}
+	arr := []lockCreationEntry{
+		entry1,
+		entry2,
+		entry3,
+	}
+
+	if lockArrContainsEntry(arr, entry2) == false {
+		t.Errorf("lockArrContainsEntry returns false but should true")
+	}
+
+	if lockArrContainsEntry(arr, entry4) == true {
+		t.Errorf("lockArrContainsEntry returns true but should false")
 	}
 }
