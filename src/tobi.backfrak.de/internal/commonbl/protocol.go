@@ -22,6 +22,23 @@ const SHARE_REQUEST RequestType = "SHARE_REQUEST:"
 // Request the smbd table of locked files
 const LOCK_REQUEST RequestType = "LOCK_REQUEST:"
 
+// Request the ps data of the smbd PIDs
+const PS_REQUEST RequestType = "PS_REQUEST:"
+
+// Data struct for a smbd psutil response
+type SmdPidData struct {
+	PID                       int64
+	CpuUsagePercent           float64
+	VirtualMemoryUsageBytes   uint64
+	VirtualMemoryUsagePercent float64
+	IoCounterReadCount        uint64
+	IoCounterReadBytes        uint64
+	IoCounterWriteCount       uint64
+	IoCounterWriteBytes       uint64
+	OpenFilesCount            uint64
+	ThreadCount               uint64
+}
+
 // GetIdFromRequest - Get the ID from a request telegram
 func GetIdFromRequest(request string) (int, error) {
 	splitted := strings.Split(request, ":")
