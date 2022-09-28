@@ -62,7 +62,7 @@ install -m 664  "%{gobuilddir}/src/src/man/start_samba_statusd.1.gz" "%{buildroo
 
 %check
 export GOPATH="$GOPATH:%{gobuilddir}/src/:/usr/share/gocode/"
-%gotest tobi.backfrak.de/cmd/samba_exporter tobi.backfrak.de/cmd/samba_statusd tobi.backfrak.de/internal/smbexporterbl/pipecomunication tobi.backfrak.de/internal/smbexporterbl/smbexporter tobi.backfrak.de/internal/smbexporterbl/smbstatusreader tobi.backfrak.de/internal/smbexporterbl/statisticsGenerator tobi.backfrak.de/internal/commonbl
+%gotest tobi.backfrak.de/cmd/samba_exporter tobi.backfrak.de/cmd/samba_statusd tobi.backfrak.de/internal/smbexporterbl/pipecomunication tobi.backfrak.de/internal/smbexporterbl/smbexporter tobi.backfrak.de/internal/smbexporterbl/smbstatusreader tobi.backfrak.de/internal/smbexporterbl/statisticsGenerator tobi.backfrak.de/internal/commonbl tobi.backfrak.de/internal/smbstatusdbl
 
 %pre
 if [ $1 == 2 ];then

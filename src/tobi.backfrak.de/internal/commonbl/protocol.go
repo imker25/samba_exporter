@@ -25,8 +25,8 @@ const LOCK_REQUEST RequestType = "LOCK_REQUEST:"
 // Request the ps data of the smbd PIDs
 const PS_REQUEST RequestType = "PS_REQUEST:"
 
-// Data struct for a smbd psutil response
-type SmdPidData struct {
+// Data struct for a psutil response
+type PsUtilPidData struct {
 	PID                       int64
 	CpuUsagePercent           float64
 	VirtualMemoryUsageBytes   uint64

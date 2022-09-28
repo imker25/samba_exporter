@@ -5,7 +5,7 @@ include /usr/share/dpkg/pkg-info.mk
 ROOT = $(CURDIR)/debian/samba-exporter
 SHORT_VERSION = $(file < ${CURDIR}/VersionMaster.txt)
 GOCACHE := $(CURDIR)/../.go-build
-DH_GOLANG_BUILDPKG := tobi.backfrak.de/cmd/samba_exporter tobi.backfrak.de/cmd/samba_statusd tobi.backfrak.de/internal/commonbl tobi.backfrak.de/internal/smbexporterbl/smbstatusreader tobi.backfrak.de/internal/smbexporterbl/pipecomunication tobi.backfrak.de/internal/smbexporterbl/statisticsGenerator tobi.backfrak.de/internal/smbexporterbl/smbexporter 
+DH_GOLANG_BUILDPKG := tobi.backfrak.de/cmd/samba_exporter tobi.backfrak.de/cmd/samba_statusd tobi.backfrak.de/internal/commonbl tobi.backfrak.de/internal/smbexporterbl/smbstatusreader tobi.backfrak.de/internal/smbexporterbl/pipecomunication tobi.backfrak.de/internal/smbexporterbl/statisticsGenerator tobi.backfrak.de/internal/smbexporterbl/smbexporter tobi.backfrak.de/internal/smbstatusdbl
 export DH_GOLANG_BUILDPKG 
 export GOCACHE
 
