@@ -34,23 +34,6 @@ var logger commonbl.Logger
 
 func main() {
 	handleComandlineOptions()
-
-	// Use this to test the GetSmbdMetrics feature during development
-	// smbdMetrics, errSmbdMetric := statisticsGenerator.GetSmbdMetrics()
-	// if errSmbdMetric != nil {
-	// 	logger.WriteError(errSmbdMetric)
-	// 	return
-	// }
-
-	// for _, metric := range smbdMetrics {
-	// 	logger.WriteInformation(fmt.Sprintf("%s: %f", metric.Name, metric.Value))
-
-	// }
-
-	// if len(smbdMetrics) > 0 {
-	// 	return
-	// }
-
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
 	logger = *commonbl.NewLogger(params.Verbose)

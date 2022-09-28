@@ -6,6 +6,7 @@ package main
 // LICENSE file.
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -16,10 +17,12 @@ import (
 	"syscall"
 
 	"tobi.backfrak.de/internal/commonbl"
+	"tobi.backfrak.de/internal/smbstatusdbl"
 )
 
 // Authors - Information about the authors of the program. You might want to add your name here when contributing to this software
 const Authors = "tobi@backfrak.de"
+const PROCESS_TO_MONITOR = "smbd"
 
 // The version of this program, will be set at compile time by the gradle build script
 var version = "undefined"
@@ -35,8 +38,27 @@ var smbstatusPath string
 
 var requestQueue commonbl.StringQueue
 
+var psDataGenerator *smbstatusdbl.PsDataGenerator
+
 func main() {
 	handleComandlineOptions()
+
+	// pidDataGen, errPid := smbstatusdbl.NewPsDataGenerator(PROCESS_TO_MONITOR)
+	// if errPid != nil {
+	// 	logger.WriteError(errPid)
+	// }
+	// pidData, errGen := pidDataGen.GetPsUtilPidData()
+	// if errGen != nil {
+	// 	logger.WriteError(errGen)
+	// }
+	// for _, data := range pidData {
+	// 	logger.WriteInformation(fmt.Sprintf("PID: %d", data.PID))
+	// 	logger.WriteInformation(fmt.Sprintf("Memory usage in percent: %f", data.VirtualMemoryUsagePercent))
+	// }
+	// if len(pidData) != 0 {
+	// 	return
+	// }
+
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
 	logger = *commonbl.NewLogger(params.Verbose)
@@ -62,6 +84,13 @@ func main() {
 		flag.Usage()
 		os.Exit(0)
 	}
+
+	psDataGeneratorTmp, errNewGen := smbstatusdbl.NewPsDataGenerator(PROCESS_TO_MONITOR)
+	if errNewGen != nil {
+		logger.WriteError(errNewGen)
+		os.Exit(-7)
+	}
+	psDataGenerator = psDataGeneratorTmp
 
 	if !params.Test {
 
@@ -128,6 +157,8 @@ func goHandleRequestQueue(responseHandler commonbl.PipeHandler) {
 		err = handleRequest(responseHandler, received, commonbl.SHARE_REQUEST, shareResponse, testShareResponse)
 	} else if strings.HasPrefix(received, string(commonbl.LOCK_REQUEST)) {
 		err = handleRequest(responseHandler, received, commonbl.LOCK_REQUEST, lockResponse, testLockResponse)
+	} else if strings.HasPrefix(received, string(commonbl.PS_REQUEST)) {
+		err = handleRequest(responseHandler, received, commonbl.PS_REQUEST, psResponse, testPsResponse)
 	}
 
 	if err != nil {
@@ -192,6 +223,34 @@ func processResponse(handler commonbl.PipeHandler, id int) error {
 	return handler.WritePipeString(response)
 }
 
+func psResponse(handler commonbl.PipeHandler, id int) error {
+	header := commonbl.GetResponseHeader(commonbl.PS_REQUEST, id)
+	pidData, err := psDataGenerator.GetPsUtilPidData()
+	if err != nil {
+		logger.WriteErrorMessage(fmt.Sprintf("\"%s -p -n\"  returned the following error: %s", smbstatusPath, err))
+		os.Exit(-4)
+	}
+	jsonData, errConv := json.MarshalIndent(pidData, "", " ")
+	if errConv != nil {
+		return errConv
+	}
+	response := commonbl.GetResponse(header, string(jsonData))
+
+	return handler.WritePipeString(response)
+}
+
+func testPsResponse(handler commonbl.PipeHandler, id int) error {
+	header := commonbl.GetResponseHeader(commonbl.PS_REQUEST, id)
+	pidData := getTestPsUtilPidData()
+	jsonData, errConv := json.MarshalIndent(pidData, "", " ")
+	if errConv != nil {
+		return errConv
+	}
+	response := commonbl.GetResponse(header, string(jsonData))
+
+	return handler.WritePipeString(response)
+}
+
 func testProcessResponse(handler commonbl.PipeHandler, id int) error {
 	header := commonbl.GetTestResponseHeader(commonbl.PROCESS_REQUEST, id)
 	response := commonbl.GetResponse(header, commonbl.TestProcessResponse)
@@ -241,4 +300,35 @@ func printVersion() {
 // Get the version string
 func getVersion() string {
 	return fmt.Sprintf("Version: %s", version)
+}
+
+func getTestPsUtilPidData() []commonbl.PsUtilPidData {
+	pidData := []commonbl.PsUtilPidData{}
+	pidData = append(pidData, commonbl.PsUtilPidData{
+		1234,
+		0.023,
+		456789,
+		0.0034,
+		123456,
+		789123,
+		2345,
+		6789,
+		1467,
+		8765,
+	})
+
+	pidData = append(pidData, commonbl.PsUtilPidData{
+		4234,
+		0.123,
+		8789,
+		0.5034,
+		23456,
+		912378,
+		34576,
+		789543,
+		467123,
+		765853,
+	})
+
+	return pidData
 }
