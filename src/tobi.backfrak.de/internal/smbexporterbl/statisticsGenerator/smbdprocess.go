@@ -7,51 +7,21 @@ package statisticsGenerator
 
 import (
 	"fmt"
-	"os/exec"
 	"strconv"
-	"strings"
 
-	"github.com/shirou/gopsutil/v3/process"
+	"tobi.backfrak.de/internal/commonbl"
 )
 
-var smbd_image_name = "smbd"
+const smbd_image_name = "smbd"
 
-func GetSmbdMetrics() ([]SmbStatisticsNumeric, error) {
+// Get the SmbStatisticsNumeric metrics out of a list of []commonbl.PsUtilPidData)
+func GetSmbdMetrics(pidDataList []commonbl.PsUtilPidData) []SmbStatisticsNumeric {
 
-	var pidList []int32
-
-	pgrepPath, errLookPath := exec.LookPath("pgrep")
-	if errLookPath != nil {
-		return nil, errLookPath
-	}
-	pidListInByte, errGetPids := exec.Command(pgrepPath, smbd_image_name).Output()
-	if errGetPids != nil {
-		return getMetricsFromPidList([]int32{})
-	}
-
-	pidListLines := strings.Split(string(pidListInByte), "\n")
-	for _, line := range pidListLines {
-		line = strings.TrimSpace(line)
-		if line == "" {
-			continue
-		}
-		pid, errConv := strconv.Atoi(line)
-		if errConv != nil {
-			return nil, errConv
-		} else {
-			pidList = append(pidList, int32(pid))
-		}
-	}
-
-	return getMetricsFromPidList(pidList)
-}
-
-func getMetricsFromPidList(pidList []int32) ([]SmbStatisticsNumeric, error) {
 	var ret []SmbStatisticsNumeric
 
-	ret = append(ret, SmbStatisticsNumeric{"smbd_unique_process_id_count", float64(len(pidList)), fmt.Sprintf("Count of unique process IDs for '%s'", smbd_image_name), nil})
+	ret = append(ret, SmbStatisticsNumeric{"smbd_unique_process_id_count", float64(len(pidDataList)), fmt.Sprintf("Count of unique process IDs for '%s'", smbd_image_name), nil})
 
-	if len(pidList) > 0 {
+	if len(pidDataList) > 0 {
 		cpuPercentageSum := float64(0)
 		vmBytesSum := uint64(0)
 		vmPercentSum := float64(0)
@@ -59,81 +29,54 @@ func getMetricsFromPidList(pidList []int32) ([]SmbStatisticsNumeric, error) {
 		writeCountSum := uint64(0)
 		readBytesSum := uint64(0)
 		writeBytesSum := uint64(0)
-		openFilesCountSum := 0
-		threadCountSum := 0
-		for _, pid := range pidList {
-			proc, errProc := process.NewProcess(pid)
-			if errProc != nil {
-				return nil, errProc
-			}
+		openFilesCountSum := uint64(0)
+		threadCountSum := uint64(0)
+		for _, pidData := range pidDataList {
 
-			cpuPercent, errPer := proc.CPUPercent()
-			if errPer != nil {
-				return nil, errPer
-			}
 			ret = append(ret, SmbStatisticsNumeric{"smbd_cpu_usage_percentage",
-				cpuPercent, fmt.Sprintf("CPU usage of the '%s' process with pid in percent", smbd_image_name),
-				map[string]string{"pid": strconv.Itoa(int(pid))}})
-			cpuPercentageSum += cpuPercent
+				pidData.CpuUsagePercent, fmt.Sprintf("CPU usage of the '%s' process with pid in percent", smbd_image_name),
+				map[string]string{"pid": strconv.Itoa(int(pidData.PID))}})
+			cpuPercentageSum += pidData.CpuUsagePercent
 
-			vmBytes, errVmBytes := proc.MemoryInfo()
-			if errVmBytes != nil {
-				return nil, errVmBytes
-			}
 			ret = append(ret, SmbStatisticsNumeric{"smbd_virtual_memory_usage_bytes",
-				float64(vmBytes.VMS), fmt.Sprintf("Virtual memory usage of the '%s' process with pid in bytes", smbd_image_name),
-				map[string]string{"pid": strconv.Itoa(int(pid))}})
-			vmBytesSum += vmBytes.VMS
+				float64(pidData.VirtualMemoryUsageBytes), fmt.Sprintf("Virtual memory usage of the '%s' process with pid in bytes", smbd_image_name),
+				map[string]string{"pid": strconv.Itoa(int(pidData.PID))}})
+			vmBytesSum += pidData.VirtualMemoryUsageBytes
 
-			vmPercent, errVmPercent := proc.MemoryPercent()
-			if errVmPercent != nil {
-				return nil, errVmPercent
-			}
 			ret = append(ret, SmbStatisticsNumeric{"smbd_virtual_memory_usage_percent",
-				float64(vmPercent), fmt.Sprintf("Virtual memory usage of the '%s' process with pid in percent", smbd_image_name),
-				map[string]string{"pid": strconv.Itoa(int(pid))}})
-			vmPercentSum += float64(vmPercent)
+				pidData.VirtualMemoryUsagePercent, fmt.Sprintf("Virtual memory usage of the '%s' process with pid in percent", smbd_image_name),
+				map[string]string{"pid": strconv.Itoa(int(pidData.PID))}})
+			vmPercentSum += pidData.VirtualMemoryUsagePercent
 
-			ioCounters, errIoCounters := proc.IOCounters()
-			if errIoCounters != nil {
-				return nil, errIoCounters
-			}
 			ret = append(ret, SmbStatisticsNumeric{"smbd_io_counter_read_count",
-				float64(ioCounters.ReadCount), fmt.Sprintf("IO counter read count of the process '%s'", smbd_image_name),
-				map[string]string{"pid": strconv.Itoa(int(pid))}})
-			readCountSum += ioCounters.ReadCount
+				float64(pidData.IoCounterReadCount), fmt.Sprintf("IO counter read count of the process '%s'", smbd_image_name),
+				map[string]string{"pid": strconv.Itoa(int(pidData.PID))}})
+			readCountSum += pidData.IoCounterReadCount
+
 			ret = append(ret, SmbStatisticsNumeric{"smbd_io_counter_write_count",
-				float64(ioCounters.WriteCount), fmt.Sprintf("IO counter write count of the process '%s'", smbd_image_name),
-				map[string]string{"pid": strconv.Itoa(int(pid))}})
-			writeCountSum += ioCounters.WriteCount
+				float64(pidData.IoCounterWriteCount), fmt.Sprintf("IO counter write count of the process '%s'", smbd_image_name),
+				map[string]string{"pid": strconv.Itoa(int(pidData.PID))}})
+			writeCountSum += pidData.IoCounterWriteCount
+
 			ret = append(ret, SmbStatisticsNumeric{"smbd_io_counter_read_bytes",
-				float64(ioCounters.ReadBytes), fmt.Sprintf("IO counter reads of the process '%s' in byte", smbd_image_name),
-				map[string]string{"pid": strconv.Itoa(int(pid))}})
-			readBytesSum += ioCounters.ReadBytes
+				float64(pidData.IoCounterReadBytes), fmt.Sprintf("IO counter reads of the process '%s' in byte", smbd_image_name),
+				map[string]string{"pid": strconv.Itoa(int(pidData.PID))}})
+			readBytesSum += pidData.IoCounterReadBytes
+
 			ret = append(ret, SmbStatisticsNumeric{"smbd_io_counter_write_bytes",
-				float64(ioCounters.WriteBytes), fmt.Sprintf("IO counter writes of the process '%s' in byte", smbd_image_name),
-				map[string]string{"pid": strconv.Itoa(int(pid))}})
-			writeBytesSum += ioCounters.WriteBytes
+				float64(pidData.IoCounterWriteBytes), fmt.Sprintf("IO counter writes of the process '%s' in byte", smbd_image_name),
+				map[string]string{"pid": strconv.Itoa(int(pidData.PID))}})
+			writeBytesSum += pidData.IoCounterWriteBytes
 
-			openFileStats, errOpenFileStats := proc.OpenFiles()
-			if errOpenFileStats != nil {
-				return nil, errOpenFileStats
-			}
-			openFilesCount := len(openFileStats)
 			ret = append(ret, SmbStatisticsNumeric{"smbd_open_file_count",
-				float64(openFilesCount), fmt.Sprintf("Open file handles by process '%s'", smbd_image_name),
-				map[string]string{"pid": strconv.Itoa(int(pid))}})
-			openFilesCountSum += openFilesCount
+				float64(pidData.OpenFilesCount), fmt.Sprintf("Open file handles by process '%s'", smbd_image_name),
+				map[string]string{"pid": strconv.Itoa(int(pidData.PID))}})
+			openFilesCountSum += pidData.OpenFilesCount
 
-			threadStats, errThreadStats := proc.Threads()
-			if errThreadStats != nil {
-				return nil, errThreadStats
-			}
-			threadCount := len(threadStats)
 			ret = append(ret, SmbStatisticsNumeric{"smbd_thread_count",
-				float64(threadCount), fmt.Sprintf("Threads used by process '%s'", smbd_image_name),
-				map[string]string{"pid": strconv.Itoa(int(pid))}})
-			threadCountSum += threadCount
+				float64(pidData.ThreadCount), fmt.Sprintf("Threads used by process '%s'", smbd_image_name),
+				map[string]string{"pid": strconv.Itoa(int(pidData.PID))}})
+			threadCountSum += pidData.ThreadCount
 		}
 
 		// Add sum metrics (without label)
@@ -209,5 +152,5 @@ func getMetricsFromPidList(pidList []int32) ([]SmbStatisticsNumeric, error) {
 			0, fmt.Sprintf("Threads used by all '%s' processes", smbd_image_name), nil})
 	}
 
-	return ret, nil
+	return ret
 }

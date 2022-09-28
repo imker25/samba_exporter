@@ -7,19 +7,13 @@ package statisticsGenerator
 
 import (
 	"testing"
+
+	"tobi.backfrak.de/internal/commonbl"
 )
 
 func TestGetSmbdMetricsNotRunningProcess(t *testing.T) {
 
-	if smbd_image_name != "smbd" {
-		t.Errorf("The variable 'smbd_image_name' has the value '%s' but 'smbd' is expected", smbd_image_name)
-	}
-
-	smbd_image_name = "not_existing_process"
-	metrics, err := GetSmbdMetrics()
-	if err != nil {
-		t.Errorf("Got the unexpected error: %s", err.Error())
-	}
+	metrics := GetSmbdMetrics([]commonbl.PsUtilPidData{})
 
 	if len(metrics) != 19 {
 		t.Errorf("Got %d lines but expected %d", len(metrics), 7)
@@ -104,21 +98,38 @@ func TestGetSmbdMetricsNotRunningProcess(t *testing.T) {
 	if metricArrContainsItemWithName(metrics, "smbd_sum_thread_count") == false {
 		t.Errorf("Can not find a metric named 'smbd_sum_thread_count'")
 	}
-
-	smbd_image_name = "smbd"
 }
 
-func TestGetSmbdMetricsGoProcess(t *testing.T) {
+func TestGetSmbdMetricsRunningProcess(t *testing.T) {
 
-	if smbd_image_name != "smbd" {
-		t.Errorf("The variable 'smbd_image_name' has the value '%s' but 'smbd' is expected", smbd_image_name)
-	}
+	pidData := []commonbl.PsUtilPidData{}
+	pidData = append(pidData, commonbl.PsUtilPidData{
+		1234,
+		0.023,
+		456789,
+		0.0034,
+		123456,
+		789123,
+		2345,
+		6789,
+		1467,
+		8765,
+	})
 
-	smbd_image_name = "go"
-	metrics, err := GetSmbdMetrics()
-	if err != nil {
-		t.Errorf("Got the unexpected error: %s", err.Error())
-	}
+	pidData = append(pidData, commonbl.PsUtilPidData{
+		4234,
+		0.123,
+		8789,
+		0.5034,
+		23456,
+		912378,
+		34576,
+		789543,
+		467123,
+		765853,
+	})
+
+	metrics := GetSmbdMetrics(pidData)
 
 	if len(metrics) < 1 {
 		t.Errorf("Got less then one metric")
@@ -128,8 +139,8 @@ func TestGetSmbdMetricsGoProcess(t *testing.T) {
 		t.Errorf("The metric at index '0' name '%s' is not expected", metrics[0].Name)
 	}
 
-	if metrics[0].Value < 1 {
-		t.Errorf("Found '0' processes, but at least one expected")
+	if metrics[0].Value != 2 {
+		t.Errorf("Found '0' processes, but at two expected")
 	}
 
 	numUnqueMetrics := 9
@@ -313,7 +324,6 @@ func TestGetSmbdMetricsGoProcess(t *testing.T) {
 			metricArrGetValueithName(metrics, "smbd_sum_thread_count"))
 	}
 
-	smbd_image_name = "smbd"
 }
 
 func metricArrContainsItemWithName(arr []SmbStatisticsNumeric, name string) bool {
