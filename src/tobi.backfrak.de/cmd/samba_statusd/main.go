@@ -85,13 +85,6 @@ func main() {
 		os.Exit(0)
 	}
 
-	psDataGeneratorTmp, errNewGen := smbstatusdbl.NewPsDataGenerator(PROCESS_TO_MONITOR)
-	if errNewGen != nil {
-		logger.WriteError(errNewGen)
-		os.Exit(-7)
-	}
-	psDataGenerator = psDataGeneratorTmp
-
 	if !params.Test {
 
 		currentUser, errUserGet := user.Current()
@@ -114,6 +107,12 @@ func main() {
 			logger.WriteVerbose(fmt.Sprintf("Use %s to get samba status.", smbstatusPath))
 		}
 
+		psDataGeneratorTmp, errNewGen := smbstatusdbl.NewPsDataGenerator(PROCESS_TO_MONITOR)
+		if errNewGen != nil {
+			logger.WriteError(errNewGen)
+			os.Exit(-7)
+		}
+		psDataGenerator = psDataGeneratorTmp
 	}
 
 	// Ensure we exit clean on term and kill signals
