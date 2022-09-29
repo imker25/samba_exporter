@@ -150,6 +150,13 @@ assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_smb
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_smbd_sum_virtual_memory_usage_percent\"" 0
 
 # Test the -not-expose-* options
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_lock_created_since_seconds\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe -not-expose-user-data | grep \"samba_lock_created_since_seconds\"" 1
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_client_connected_since_seconds\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe -not-expose-client-data | grep \"samba_client_connected_since_seconds\"" 1
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_protocol_version_count\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe -not-expose-encryption-data | grep \"samba_protocol_version_count\"" 1
+
 normalOutPutLineCount=$( $samba_exporter -test-mode -test-pipe | wc -l )
 noEncryptionOutPutLineCount=$( $samba_exporter -test-mode -test-pipe -not-expose-encryption-data | wc -l )
 noClientOutPutLineCount=$( $samba_exporter -test-mode -test-pipe -not-expose-client-data | wc -l )
