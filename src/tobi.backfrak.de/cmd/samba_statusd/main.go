@@ -240,12 +240,7 @@ func psResponse(handler commonbl.PipeHandler, id int) error {
 
 func testPsResponse(handler commonbl.PipeHandler, id int) error {
 	header := commonbl.GetResponseHeader(commonbl.PS_REQUEST, id)
-	pidData := getTestPsUtilPidData()
-	jsonData, errConv := json.MarshalIndent(pidData, "", " ")
-	if errConv != nil {
-		return errConv
-	}
-	response := commonbl.GetResponse(header, string(jsonData))
+	response := commonbl.GetResponse(header, commonbl.TestPsResponse())
 
 	return handler.WritePipeString(response)
 }
@@ -299,35 +294,4 @@ func printVersion() {
 // Get the version string
 func getVersion() string {
 	return fmt.Sprintf("Version: %s", version)
-}
-
-func getTestPsUtilPidData() []commonbl.PsUtilPidData {
-	pidData := []commonbl.PsUtilPidData{}
-	pidData = append(pidData, commonbl.PsUtilPidData{
-		1234,
-		0.023,
-		456789,
-		0.0034,
-		123456,
-		789123,
-		2345,
-		6789,
-		1467,
-		8765,
-	})
-
-	pidData = append(pidData, commonbl.PsUtilPidData{
-		4234,
-		0.123,
-		8789,
-		0.5034,
-		23456,
-		912378,
-		34576,
-		789543,
-		467123,
-		765853,
-	})
-
-	return pidData
 }

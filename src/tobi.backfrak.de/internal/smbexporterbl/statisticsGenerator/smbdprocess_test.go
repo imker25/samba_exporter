@@ -102,33 +102,7 @@ func TestGetSmbdMetricsNotRunningProcess(t *testing.T) {
 
 func TestGetSmbdMetricsRunningProcess(t *testing.T) {
 
-	pidData := []commonbl.PsUtilPidData{}
-	pidData = append(pidData, commonbl.PsUtilPidData{
-		1234,
-		0.023,
-		456789,
-		0.0034,
-		123456,
-		789123,
-		2345,
-		6789,
-		1467,
-		8765,
-	})
-
-	pidData = append(pidData, commonbl.PsUtilPidData{
-		4234,
-		0.123,
-		8789,
-		0.5034,
-		23456,
-		912378,
-		34576,
-		789543,
-		467123,
-		765853,
-	})
-
+	pidData := commonbl.GetTestPsUtilPidData()
 	metrics := GetSmbdMetrics(pidData)
 
 	if len(metrics) < 1 {
