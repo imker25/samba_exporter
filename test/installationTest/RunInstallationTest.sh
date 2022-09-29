@@ -294,24 +294,7 @@ echo "$tmp_dir/samba_exporter.curl.metrics.3.log has $samba_exporter_no_client_c
 assert_raises "cat $tmp_dir/samba_exporter.curl.metrics.1.log | grep \"samba_client_connected_since_seconds\"" 0
 assert_raises "cat $tmp_dir/samba_exporter.curl.metrics.3.log | grep \"samba_client_connected_since_seconds\"" 1
 
-sleep 0.5
-sudo rm -v /etc/default/samba_exporter
-sudo  sh -c  "echo \"ARGS='-web.listen-address=127.0.0.1:9922 -not-expose-user-data'\" > /etc/default/samba_exporter"
-echo "cat /etc/default/samba_exporter"
-cat /etc/default/samba_exporter
-echo "sudo systemctl restart samba_exporter"
-sudo systemctl restart samba_exporter
-sleep 0.5
-echo "sudo systemctl status samba_exporter"
-sudo systemctl status samba_exporter
-curl http://127.0.0.1:9922/metrics > "$tmp_dir/samba_exporter.curl.metrics.4.log"
-samba_exporter_no_user_curl_lines=$(wc -l $tmp_dir/samba_exporter.curl.metrics.4.log| awk '{print $1}' )
-echo "$tmp_dir/samba_exporter.curl.metrics.1.log has $samba_exporter_normal_curl_lines lines"
-echo "$tmp_dir/samba_exporter.curl.metrics.4.log has $samba_exporter_no_client_curl_lines lines"
-assert_raises "cat $tmp_dir/samba_exporter.curl.metrics.1.log | grep \"samba_lock_created_since_seconds\"" 0
-assert_raises "cat $tmp_dir/samba_exporter.curl.metrics.4.log | grep \"samba_lock_created_since_seconds\"" 1
 
-assert_raises " [ $samba_exporter_normal_curl_lines == $samba_exporter_no_user_curl_lines ] " 1
 assert_raises " [ $samba_exporter_normal_curl_lines == $samba_exporter_no_client_curl_lines ] " 1
 assert_raises " [ $samba_exporter_normal_curl_lines == $samba_exporter_no_encryption_curl_lines ] " 1
 
