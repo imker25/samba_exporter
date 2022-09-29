@@ -39,6 +39,14 @@ type PsUtilPidData struct {
 	ThreadCount               uint64
 }
 
+// Implement Stringer Interface for LockData
+func (pidData PsUtilPidData) String() string {
+	return fmt.Sprintf("PID: %d; CPU Usage Percent: %f; VM Usage Bytes: %d; VM Usage Percent: %f; IO Read Count: %d; IO Read Bytes: %d; IO Write Count: %d; IO Write Bytes: %d; Open File Count: %d; Thread Count: %d",
+		pidData.PID, pidData.CpuUsagePercent, pidData.VirtualMemoryUsageBytes, pidData.VirtualMemoryUsagePercent,
+		pidData.IoCounterReadCount, pidData.IoCounterReadBytes, pidData.IoCounterWriteCount, pidData.IoCounterWriteBytes,
+		pidData.OpenFilesCount, pidData.ThreadCount)
+}
+
 // GetIdFromRequest - Get the ID from a request telegram
 func GetIdFromRequest(request string) (int, error) {
 	splitted := strings.Split(request, ":")

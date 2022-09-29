@@ -36,6 +36,13 @@ func TestPsResponse() string {
 	return string(jsonData)
 }
 
+func TestPsResponseEmpty() string {
+
+	jsonData, _ := json.MarshalIndent([]PsUtilPidData{}, "", " ")
+
+	return string(jsonData)
+}
+
 // Always returns the same PsUtilPidData for test propose
 func GetTestPsUtilPidData() []PsUtilPidData {
 	pidData := []PsUtilPidData{}
