@@ -13,7 +13,7 @@ import (
 
 func TestGetSmbdMetricsNotRunningProcess(t *testing.T) {
 
-	metrics := GetSmbdMetrics([]commonbl.PsUtilPidData{})
+	metrics := GetSmbdMetrics([]commonbl.PsUtilPidData{}, false)
 
 	if len(metrics) != 19 {
 		t.Errorf("Got %d lines but expected %d", len(metrics), 7)
@@ -100,10 +100,10 @@ func TestGetSmbdMetricsNotRunningProcess(t *testing.T) {
 	}
 }
 
-func TestGetSmbdMetricsRunningProcess(t *testing.T) {
+func TestGetSmbdMetricsRunningProcessNoPids(t *testing.T) {
 
 	pidData := commonbl.GetTestPsUtilPidData()
-	metrics := GetSmbdMetrics(pidData)
+	metrics := GetSmbdMetrics(pidData, true)
 
 	if len(metrics) < 1 {
 		t.Errorf("Got less then one metric")
@@ -114,7 +114,46 @@ func TestGetSmbdMetricsRunningProcess(t *testing.T) {
 	}
 
 	if metrics[0].Value != 2 {
-		t.Errorf("Found '0' processes, but at two expected")
+		t.Errorf("Found '%f' processes, but at two expected", metrics[0].Value)
+	}
+
+	expectedMetricCount := 10
+	if len(metrics) != expectedMetricCount {
+		t.Errorf("Got '%d' metrics but expected '%d'", len(metrics), expectedMetricCount)
+	}
+
+	if metricArrContainsItemWithName(metrics, "smbd_cpu_usage_percentage") == true {
+		t.Errorf("Can find a metric named 'smbd_cpu_usage_percentage' but should not")
+	}
+
+	if metricArrContainsItemWithName(metrics, "smbd_sum_cpu_usage_percentage") == false {
+		t.Errorf("Can not find a metric named 'smbd_sum_cpu_usage_percentage'")
+	}
+
+	if metricArrContainsItemWithName(metrics, "smbd_thread_count") == true {
+		t.Errorf("Can find a metric named 'smbd_thread_count' but should not")
+	}
+
+	if metricArrContainsItemWithName(metrics, "smbd_sum_thread_count") == false {
+		t.Errorf("Can not find a metric named 'smbd_sum_thread_count'")
+	}
+}
+
+func TestGetSmbdMetricsRunningProcess(t *testing.T) {
+
+	pidData := commonbl.GetTestPsUtilPidData()
+	metrics := GetSmbdMetrics(pidData, false)
+
+	if len(metrics) < 1 {
+		t.Errorf("Got less then one metric")
+	}
+
+	if metrics[0].Name != "smbd_unique_process_id_count" {
+		t.Errorf("The metric at index '0' name '%s' is not expected", metrics[0].Name)
+	}
+
+	if metrics[0].Value != 2 {
+		t.Errorf("Found '%f' processes, but at two expected", metrics[0].Value)
 	}
 
 	numUnqueMetrics := 9

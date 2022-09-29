@@ -248,7 +248,7 @@ func TestGetSmbStatisticsNotExportEncryption(t *testing.T) {
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
-	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{false, false, true})
+	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{false, false, true, false})
 
 	if len(ret) != 30 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
@@ -274,7 +274,7 @@ func TestGetSmbStatisticsNotExportClient(t *testing.T) {
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
-	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{true, false, false})
+	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{true, false, false, false})
 
 	if len(ret) != 21 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
@@ -292,7 +292,7 @@ func TestGetSmbStatisticsNotExportUser(t *testing.T) {
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
-	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{false, true, false})
+	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{false, true, false, false})
 
 	if len(ret) != 25 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
@@ -319,7 +319,7 @@ func TestGetSmbStatisticsAllNotExportFlags(t *testing.T) {
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
-	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{true, true, true})
+	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{true, true, true, true})
 
 	if len(ret) != 10 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))

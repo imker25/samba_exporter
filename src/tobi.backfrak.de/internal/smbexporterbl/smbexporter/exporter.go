@@ -96,7 +96,7 @@ func (smbExporter *SambaExporter) setMetricsFromResponse(locks []smbstatusreader
 		smbExporter.Logger.WriteError(pipecomunication.NewSmbStatusUnexpectedResponseError("Empty response from samba_statusd"))
 		return
 	}
-	stats = append(stats, statisticsGenerator.GetSmbdMetrics(psData)...)
+	stats = append(stats, statisticsGenerator.GetSmbdMetrics(psData, smbExporter.StatisticsGeneratorSettings.DoNotExportPid)...)
 
 	for _, stat := range stats {
 		if stat.Labels == nil {
@@ -118,7 +118,7 @@ func (smbExporter *SambaExporter) setDescriptionsFromResponse(locks []smbstatusr
 		// Exit with panic, since this means there are no descriptions setup for further operation
 		panic(err)
 	}
-	stats = append(stats, statisticsGenerator.GetSmbdMetrics(psData)...)
+	stats = append(stats, statisticsGenerator.GetSmbdMetrics(psData, smbExporter.StatisticsGeneratorSettings.DoNotExportPid)...)
 
 	smbExporter.setGaugeDescriptionNoLabel("server_up", "1 if the samba server seems to be running", ch)
 	smbExporter.setGaugeDescriptionNoLabel("satutsd_up", "1 if the samba_statusd seems to be running", ch)
