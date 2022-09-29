@@ -24,38 +24,46 @@ type smbResponse struct {
 }
 
 // GetSambaStatus - Get the output of all data tables from samba_statusd
-func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, logger commonbl.Logger, requestTimeOut int) ([]smbstatusreader.LockData, []smbstatusreader.ProcessData, []smbstatusreader.ShareData, error) {
+func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler, logger commonbl.Logger, requestTimeOut int) ([]smbstatusreader.LockData, []smbstatusreader.ProcessData, []smbstatusreader.ShareData, []commonbl.PsUtilPidData, error) {
 	var processes []smbstatusreader.ProcessData
 	var shares []smbstatusreader.ShareData
 	var locks []smbstatusreader.LockData
+	var psdata []commonbl.PsUtilPidData
 	sharesChan := make(chan []smbstatusreader.ShareData, 1)
 	processesChan := make(chan []smbstatusreader.ProcessData, 1)
 	locksChan := make(chan []smbstatusreader.LockData, 1)
+	psdataChan := make(chan []commonbl.PsUtilPidData, 1)
 	collectMux.Lock()
 	defer collectMux.Unlock()
 
 	res, errGet := getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.PROCESS_REQUEST, logger, requestTimeOut)
 	if errGet != nil {
-		return nil, nil, nil, errGet
+		return nil, nil, nil, nil, errGet
 	}
 	go goGetProcessData(res, logger, processesChan)
 
 	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.SHARE_REQUEST, logger, requestTimeOut)
 	if errGet != nil {
-		return nil, nil, nil, errGet
+		return nil, nil, nil, nil, errGet
 	}
-
 	go goGetShareData(res, logger, sharesChan)
 
 	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.LOCK_REQUEST, logger, requestTimeOut)
 	if errGet != nil {
-		return nil, nil, nil, errGet
+		return nil, nil, nil, nil, errGet
 	}
 	go goGetLockData(res, logger, locksChan)
+
+	res, errGet = getSmbStatusDataTimeOut(requestHandler, responseHandler, commonbl.PS_REQUEST, logger, requestTimeOut)
+	if errGet != nil {
+		return nil, nil, nil, nil, errGet
+	}
+	go goGetPsData(res, logger, psdataChan)
 
 	processes = <-processesChan
 	shares = <-sharesChan
 	locks = <-locksChan
+	psdata = <-psdataChan
 
 	if len(shares) < 1 {
 		logger.WriteVerbose("Got an empty share table when requesting \"smbstatus -S -n\" from samba_statusd")
@@ -65,7 +73,7 @@ func GetSambaStatus(requestHandler commonbl.PipeHandler, responseHandler commonb
 		logger.WriteVerbose("Got an empty process table when requesting \"smbstatus -p -n\" from samba_statusd")
 	}
 
-	return locks, processes, shares, nil
+	return locks, processes, shares, psdata, nil
 }
 
 func goGetProcessData(res string, logger commonbl.Logger, c chan []smbstatusreader.ProcessData) {
@@ -82,6 +90,12 @@ func goGetShareData(res string, logger commonbl.Logger, c chan []smbstatusreader
 
 func goGetLockData(res string, logger commonbl.Logger, c chan []smbstatusreader.LockData) {
 	locks := smbstatusreader.GetLockData(res, logger)
+
+	c <- locks
+}
+
+func goGetPsData(res string, logger commonbl.Logger, c chan []commonbl.PsUtilPidData) {
+	locks := smbstatusreader.GetPsData(res, logger)
 
 	c <- locks
 }

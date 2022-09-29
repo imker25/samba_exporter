@@ -47,14 +47,14 @@ func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander common
 // Describe function for the Prometheus Exporter Interface
 func (smbExporter *SambaExporter) Describe(ch chan<- *prometheus.Desc) {
 	smbExporter.Logger.WriteVerbose("Request samba_statusd to get prometheus descriptions")
-	locks, processes, shares, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander, smbExporter.Logger, smbExporter.RequestTimeOut)
+	locks, processes, shares, psData, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander, smbExporter.Logger, smbExporter.RequestTimeOut)
 	if errGet != nil {
 		smbExporter.Logger.WriteError(errGet)
 
 		// Exit with panic, since this means there are no descriptions setup for further operation
 		panic(errGet)
 	}
-	smbExporter.setDescriptionsFromResponse(locks, processes, shares, ch)
+	smbExporter.setDescriptionsFromResponse(locks, processes, shares, psData, ch)
 
 	return
 }
@@ -65,7 +65,7 @@ func (smbExporter *SambaExporter) Collect(ch chan<- prometheus.Metric) {
 	smbStatusUp := 1
 	smbServerUp := 1
 	start := time.Now()
-	locks, processes, shares, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander, smbExporter.Logger, smbExporter.RequestTimeOut)
+	locks, processes, shares, psData, errGet := pipecomunication.GetSambaStatus(smbExporter.RequestHandler, smbExporter.ResponseHander, smbExporter.Logger, smbExporter.RequestTimeOut)
 	if errGet != nil {
 		smbExporter.Logger.WriteError(errGet)
 		switch errGet.(type) {
@@ -80,12 +80,12 @@ func (smbExporter *SambaExporter) Collect(ch chan<- prometheus.Metric) {
 	}
 	elapsed := time.Since(start)
 	elapsedFloat := float64(elapsed.Milliseconds())
-	smbExporter.setMetricsFromResponse(locks, processes, shares, smbStatusUp, smbServerUp, elapsedFloat, ch)
+	smbExporter.setMetricsFromResponse(locks, processes, shares, psData, smbStatusUp, smbServerUp, elapsedFloat, ch)
 
 	return
 }
 
-func (smbExporter *SambaExporter) setMetricsFromResponse(locks []smbstatusreader.LockData, processes []smbstatusreader.ProcessData, shares []smbstatusreader.ShareData, smbStatusUp int, smbServerUp int, requestTime float64, ch chan<- prometheus.Metric) {
+func (smbExporter *SambaExporter) setMetricsFromResponse(locks []smbstatusreader.LockData, processes []smbstatusreader.ProcessData, shares []smbstatusreader.ShareData, psData []commonbl.PsUtilPidData, smbStatusUp int, smbServerUp int, requestTime float64, ch chan<- prometheus.Metric) {
 	smbExporter.Logger.WriteVerbose("Handle samba_statusd response and set prometheus metrics")
 	smbExporter.setGaugeIntMetricNoLabel("server_up", float64(smbServerUp), ch)
 	smbExporter.setGaugeIntMetricNoLabel("satutsd_up", float64(smbStatusUp), ch)
@@ -96,6 +96,7 @@ func (smbExporter *SambaExporter) setMetricsFromResponse(locks []smbstatusreader
 		smbExporter.Logger.WriteError(pipecomunication.NewSmbStatusUnexpectedResponseError("Empty response from samba_statusd"))
 		return
 	}
+	stats = append(stats, statisticsGenerator.GetSmbdMetrics(psData)...)
 
 	for _, stat := range stats {
 		if stat.Labels == nil {
@@ -107,7 +108,7 @@ func (smbExporter *SambaExporter) setMetricsFromResponse(locks []smbstatusreader
 	smbExporter.setGaugeIntMetricNoLabel("request_time", requestTime, ch)
 }
 
-func (smbExporter *SambaExporter) setDescriptionsFromResponse(locks []smbstatusreader.LockData, processes []smbstatusreader.ProcessData, shares []smbstatusreader.ShareData, ch chan<- *prometheus.Desc) {
+func (smbExporter *SambaExporter) setDescriptionsFromResponse(locks []smbstatusreader.LockData, processes []smbstatusreader.ProcessData, shares []smbstatusreader.ShareData, psData []commonbl.PsUtilPidData, ch chan<- *prometheus.Desc) {
 	smbExporter.Logger.WriteVerbose("Handle samba_statusd response and set prometheus descriptions")
 	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares, smbExporter.StatisticsGeneratorSettings)
 	if stats == nil {
@@ -117,6 +118,8 @@ func (smbExporter *SambaExporter) setDescriptionsFromResponse(locks []smbstatusr
 		// Exit with panic, since this means there are no descriptions setup for further operation
 		panic(err)
 	}
+	stats = append(stats, statisticsGenerator.GetSmbdMetrics(psData)...)
+
 	smbExporter.setGaugeDescriptionNoLabel("server_up", "1 if the samba server seems to be running", ch)
 	smbExporter.setGaugeDescriptionNoLabel("satutsd_up", "1 if the samba_statusd seems to be running", ch)
 	smbExporter.setGaugeDescriptionWithLabel("exporter_information", "Information of the samba_exporter", map[string]string{"version": smbExporter.Version}, ch)
@@ -172,7 +175,8 @@ func (smbExporter *SambaExporter) setGaugeDescriptionNoLabel(name string, help s
 func (smbExporter *SambaExporter) setGaugeDescriptionWithLabel(name string, help string, labels map[string]string, ch chan<- *prometheus.Desc) {
 	// Since the a the same label can have multiple values, we need only one description
 	_, found := smbExporter.Descriptions[name]
-	if found == false {
+
+	if !found {
 		var labelKeys []string
 		for key, _ := range labels {
 			labelKeys = append(labelKeys, key)
