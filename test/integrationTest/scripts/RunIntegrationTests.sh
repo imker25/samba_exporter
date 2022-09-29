@@ -146,6 +146,8 @@ assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"Service: 
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"PID: 1120; UserID: 1080; DenyMode: DENY_NONE; Access: 0x80; AccessMode: RDONLY; Oplock: NONE; SharePath: /usr/share/data; Name: .: Time 2021-05-16T12:07:02Z;\"" 0
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_individual_user_count: 1\"" 0
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_pid_count: 3\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_smbd_virtual_memory_usage_percent\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_smbd_sum_virtual_memory_usage_percent\"" 0
 
 # Test the -not-expose-* options
 normalOutPutLineCount=$( $samba_exporter -test-mode -test-pipe | wc -l )

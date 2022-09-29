@@ -42,23 +42,6 @@ var psDataGenerator *smbstatusdbl.PsDataGenerator
 
 func main() {
 	handleComandlineOptions()
-
-	// pidDataGen, errPid := smbstatusdbl.NewPsDataGenerator(PROCESS_TO_MONITOR)
-	// if errPid != nil {
-	// 	logger.WriteError(errPid)
-	// }
-	// pidData, errGen := pidDataGen.GetPsUtilPidData()
-	// if errGen != nil {
-	// 	logger.WriteError(errGen)
-	// }
-	// for _, data := range pidData {
-	// 	logger.WriteInformation(fmt.Sprintf("PID: %d", data.PID))
-	// 	logger.WriteInformation(fmt.Sprintf("Memory usage in percent: %f", data.VirtualMemoryUsagePercent))
-	// }
-	// if len(pidData) != 0 {
-	// 	return
-	// }
-
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
 	logger = *commonbl.NewLogger(params.Verbose)
