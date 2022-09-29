@@ -273,8 +273,9 @@ curl http://127.0.0.1:9922/metrics > "$tmp_dir/samba_exporter.curl.metrics.2.log
 samba_exporter_no_encryption_curl_lines=$(wc -l $tmp_dir/samba_exporter.curl.metrics.2.log| awk '{print $1}' )
 echo "$tmp_dir/samba_exporter.curl.metrics.1.log has $samba_exporter_normal_curl_lines lines"
 echo "$tmp_dir/samba_exporter.curl.metrics.2.log has $samba_exporter_no_encryption_curl_lines lines"
-assert "echo $samba_exporter_normal_curl_lines" "167"
-assert "echo $samba_exporter_no_encryption_curl_lines" "158"
+assert_raises "cat $tmp_dir/samba_exporter.curl.metrics.1.log | grep \"samba_protocol_version_count\"" 0
+assert_raises "cat $tmp_dir/samba_exporter.curl.metrics.2.log | grep \"samba_protocol_version_count\"" 1
+
 
 sleep 0.5
 sudo rm -v /etc/default/samba_exporter
@@ -290,7 +291,9 @@ curl http://127.0.0.1:9922/metrics > "$tmp_dir/samba_exporter.curl.metrics.3.log
 samba_exporter_no_client_curl_lines=$(wc -l $tmp_dir/samba_exporter.curl.metrics.3.log| awk '{print $1}' )
 echo "$tmp_dir/samba_exporter.curl.metrics.1.log has $samba_exporter_normal_curl_lines lines"
 echo "$tmp_dir/samba_exporter.curl.metrics.3.log has $samba_exporter_no_client_curl_lines lines"
-assert "echo $samba_exporter_no_client_curl_lines" "158"
+assert_raises "cat $tmp_dir/samba_exporter.curl.metrics.1.log | grep \"samba_client_connected_since_seconds\"" 0
+assert_raises "cat $tmp_dir/samba_exporter.curl.metrics.3.log | grep \"samba_client_connected_since_seconds\"" 1
+
 
 echo "# ###################################################################"
 echo "# Purge package test"
