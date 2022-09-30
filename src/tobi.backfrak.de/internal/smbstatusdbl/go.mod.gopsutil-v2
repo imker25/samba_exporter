@@ -1,0 +1,14 @@
+module tobi.backfrak.de/internal/smbstatusdbl
+
+
+require tobi.backfrak.de/internal/commonbl v0.0.0
+replace tobi.backfrak.de/internal/commonbl v0.0.0 => ../commonbl
+
+require (
+	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
+	github.com/tklauser/go-sysconf v0.3.10 // indirect
+	github.com/tklauser/numcpus v0.4.0 // indirect
+	golang.org/x/sys v0.0.0-20220928140112-f11e5e49a4ec // indirect
+)
+
+
