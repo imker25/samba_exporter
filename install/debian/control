@@ -8,6 +8,7 @@ Build-Depends:  libc6 (>= 2.3.2),
                 gzip,
                 ronn, 
                 debhelper (>=12.10),
+                procps,
                 golang-any,
                 golang-github-go-kit-kit-dev,
                 golang-github-prometheus-client-golang-dev,
@@ -18,7 +19,7 @@ Build-Depends:  libc6 (>= 2.3.2),
 
 Package: samba-exporter
 Architecture: amd64
-Depends: libc6 (>= 2.3.2), samba, systemd, gzip
+Depends: libc6 (>= 2.3.2), samba, systemd, gzip, procps
 Enhances: samba
 Description: Prometheus exporter to get metrics of a samba server
   This is a prometheus exporter to get metrics of a samba server. 

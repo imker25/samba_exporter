@@ -16,7 +16,7 @@ License: ASL 2.0
 URL: https://github.com/imker25/samba_exporter
 Distribution: Fedora
 Group: utils
-Requires: samba, systemd, filesystem, binutils, man-db 
+Requires: samba, systemd, filesystem, binutils, man-db, procps-ng 
 
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  go-rpm-macros
@@ -29,6 +29,7 @@ BuildRequires:  golang(github.com/prometheus/client_model/go)
 BuildRequires:  golang(golang.org/x/sys/unix)
 BuildRequires:  golang(gopkg.in/alecthomas/kingpin.v2)
 BuildRequires:  rubygem-ronn-ng
+BuildRequires:  procps-ng
 
 %define _rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm
 %define _unpackaged_files_terminate_build 0

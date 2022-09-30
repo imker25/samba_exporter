@@ -37,6 +37,7 @@ RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y wget \
                                         git-buildpackage \
                                         git \
                                         openssh-client \
+                                        procps \
                                         gpg
 
 # Copy the script

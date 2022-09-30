@@ -8,7 +8,7 @@ License: ASL 2.0
 URL: https://github.com/imker25/samba_exporter
 Distribution: Fedora
 Group: utils
-Requires: samba, systemd, filesystem, binutils, man-db 
+Requires: samba, systemd, filesystem, binutils, man-db, procps-ng 
 
 %define _rpmdir ../
 %define _rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm

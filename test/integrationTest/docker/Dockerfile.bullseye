@@ -11,7 +11,7 @@
 FROM debian:bullseye
 
 # Install needed packages
-RUN apt-get update && apt-get install -y wget curl coreutils mawk
+RUN apt-get update && apt-get install -y wget curl coreutils mawk procps
 
 # Copy test scripts
 COPY test/integrationTest/scripts/RunIntegrationTests.sh /RunIntegrationTests.sh
