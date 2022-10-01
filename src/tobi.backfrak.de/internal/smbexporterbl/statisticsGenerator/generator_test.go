@@ -7,6 +7,7 @@ package statisticsGenerator
 
 import (
 	"testing"
+	"time"
 
 	"strings"
 
@@ -247,7 +248,7 @@ func TestGetSmbStatisticsNotExportEncryption(t *testing.T) {
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
-	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{false, false, true})
+	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{false, false, true, false})
 
 	if len(ret) != 30 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
@@ -273,7 +274,7 @@ func TestGetSmbStatisticsNotExportClient(t *testing.T) {
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
-	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{true, false, false})
+	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{true, false, false, false})
 
 	if len(ret) != 21 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
@@ -291,7 +292,7 @@ func TestGetSmbStatisticsNotExportUser(t *testing.T) {
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
-	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{false, true, false})
+	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{false, true, false, false})
 
 	if len(ret) != 25 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
@@ -318,7 +319,7 @@ func TestGetSmbStatisticsAllNotExportFlags(t *testing.T) {
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
-	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{true, true, true})
+	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{true, true, true, true})
 
 	if len(ret) != 10 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
@@ -351,5 +352,26 @@ func TestIntArrContains(t *testing.T) {
 
 	if intArrContains(arr, 100) == true {
 		t.Errorf("strArrContains returns true but should false")
+	}
+}
+
+func TestLockArrContains(t *testing.T) {
+
+	entry1 := lockCreationEntry{1, time.Now(), "/media/data"}
+	entry2 := lockCreationEntry{1, time.Now(), "/media/projects"}
+	entry3 := lockCreationEntry{2, time.Now(), "/media/projects"}
+	entry4 := lockCreationEntry{2, time.Now(), "/home/user"}
+	arr := []lockCreationEntry{
+		entry1,
+		entry2,
+		entry3,
+	}
+
+	if lockArrContainsEntry(arr, entry2) == false {
+		t.Errorf("lockArrContainsEntry returns false but should true")
+	}
+
+	if lockArrContainsEntry(arr, entry4) == true {
+		t.Errorf("lockArrContainsEntry returns true but should false")
 	}
 }

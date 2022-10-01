@@ -22,6 +22,7 @@ RUN dnf -y update && \
         go-rpm-macros \                                        
         openssh-clients \
         copr-cli \
+        procps-ng \
         gnupg && \
     dnf clean all
 RUN dnf builddep --spec /samba-exporter.from_source.spec -y && \

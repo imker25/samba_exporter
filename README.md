@@ -4,7 +4,7 @@ A [prometheus exporter](https://prometheus.io/docs/instrumenting/exporters/) for
 
 ![Screenshot of dashboard for the samba service](./docs/assets/Samba-Dashboard.png)
 
-It uses [smbstatus](https://www.samba.org/samba/docs/current/man-html/smbstatus.1.html)  to collect the data and converts the result into prometheus style data.
+It uses [smbstatus](https://www.samba.org/samba/docs/current/man-html/smbstatus.1.html) and the [proc fs](https://en.wikipedia.org/wiki/Procfs) to collect the data and converts the result into prometheus style data.
 The prometheus style data can be requested manually on port 9922 using a http client. Or a prometheus database sever can be configured to collect the data by scraping port 9922 on the samba server.
 
 ## Documentation

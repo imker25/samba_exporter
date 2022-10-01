@@ -338,3 +338,32 @@ func TestGetProcessData0Input(t *testing.T) {
 		t.Errorf("Got entries when reading wrong input")
 	}
 }
+
+func TestGetPsData0Input(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	entryList := GetPsData("", *logger)
+
+	if len(entryList) != 0 {
+		t.Errorf("Got entries when reading wrong input")
+	}
+}
+
+func TestGetPsDataEmptyInput(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	jsonData := commonbl.TestPsResponseEmpty()
+	entryList := GetPsData(string(jsonData), *logger)
+
+	if len(entryList) != 0 {
+		t.Errorf("Got entries when reading wrong input")
+	}
+}
+
+func TestGetPsDataTwoPids(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	jsonData := commonbl.TestPsResponse()
+	entryList := GetPsData(string(jsonData), *logger)
+
+	if len(entryList) != 2 {
+		t.Errorf("Got %d entries but expected 2", len(entryList))
+	}
+}

@@ -146,19 +146,33 @@ assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"Service: 
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"PID: 1120; UserID: 1080; DenyMode: DENY_NONE; Access: 0x80; AccessMode: RDONLY; Oplock: NONE; SharePath: /usr/share/data; Name: .: Time 2021-05-16T12:07:02Z;\"" 0
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_individual_user_count: 1\"" 0
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_pid_count: 3\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_smbd_virtual_memory_usage_percent\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_smbd_sum_virtual_memory_usage_percent\"" 0
 
 # Test the -not-expose-* options
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_lock_created_since_seconds\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe -not-expose-user-data | grep \"samba_lock_created_since_seconds\"" 1
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_client_connected_since_seconds\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe -not-expose-client-data | grep \"samba_client_connected_since_seconds\"" 1
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_protocol_version_count\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe -not-expose-encryption-data | grep \"samba_protocol_version_count\"" 1
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"smbd_io_counter_write_count\"" 0
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe -not-expose-pid-data | grep \"smbd_io_counter_write_count\"" 1
+
 normalOutPutLineCount=$( $samba_exporter -test-mode -test-pipe | wc -l )
 noEncryptionOutPutLineCount=$( $samba_exporter -test-mode -test-pipe -not-expose-encryption-data | wc -l )
 noClientOutPutLineCount=$( $samba_exporter -test-mode -test-pipe -not-expose-client-data | wc -l )
 noUserOutPutLineCount=$( $samba_exporter -test-mode -test-pipe -not-expose-user-data | wc -l )
+noPidOutPutLineCount=$( $samba_exporter -test-mode -test-pipe -not-expose-pid-data | wc -l )
 assert_raises " [ $normalOutPutLineCount == $noEncryptionOutPutLineCount ] " 1
 assert_raises " [ $normalOutPutLineCount == $noClientOutPutLineCount ] " 1
 assert_raises " [ $normalOutPutLineCount == $noUserOutPutLineCount ] " 1
+assert_raises " [ $normalOutPutLineCount == $noPidOutPutLineCount ] " 1
 echo "normalOutPutLineCount: $normalOutPutLineCount"
 echo "noClientOutPutLineCount: $noClientOutPutLineCount"
 echo "noEncryptionOutPutLineCount: $noEncryptionOutPutLineCount"
 echo "noUserOutPutLineCount: $noUserOutPutLineCount"
+echo "noUserOutPutLineCount: $noPidOutPutLineCount"
 
 echo "# ###################################################################"
 echo "Normal test-mode output"

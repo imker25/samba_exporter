@@ -6,6 +6,7 @@ package smbstatusreader
 // LICENSE file.
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -260,6 +261,17 @@ func GetProcessData(data string, logger commonbl.Logger) []ProcessData {
 
 		ret = append(ret, entry)
 	}
+	return ret
+}
+
+func GetPsData(data string, logger commonbl.Logger) []commonbl.PsUtilPidData {
+	var ret []commonbl.PsUtilPidData
+	errConv := json.Unmarshal([]byte(data), &ret)
+	if errConv != nil {
+		logger.WriteError(errConv)
+		return []commonbl.PsUtilPidData{}
+	}
+
 	return ret
 }
 

@@ -1,5 +1,9 @@
 package commonbl
 
+import (
+	"encoding/json"
+)
+
 // Copyright 2021 by tobi@backfrak.de. All
 // rights reserved. Use of this source code is governed
 // by a BSD-style license that can be found in the
@@ -24,3 +28,49 @@ Samba version 4.11.6-Ubuntu
 PID     Username     Group        Machine                                   Protocol Version  Encryption           Signing              
 ----------------------------------------------------------------------------------------------------------------------------------------
 1117    1080    117     192.168.1.242 (ipv4:192.168.1.242:42296)  SMB3_11           -                    partial(AES-128-CMAC)`
+
+func TestPsResponse() string {
+
+	jsonData, _ := json.MarshalIndent(GetTestPsUtilPidData(), "", " ")
+
+	return string(jsonData)
+}
+
+func TestPsResponseEmpty() string {
+
+	jsonData, _ := json.MarshalIndent([]PsUtilPidData{}, "", " ")
+
+	return string(jsonData)
+}
+
+// Always returns the same PsUtilPidData for test propose
+func GetTestPsUtilPidData() []PsUtilPidData {
+	pidData := []PsUtilPidData{}
+	pidData = append(pidData, PsUtilPidData{
+		1234,
+		0.023,
+		456789,
+		0.0034,
+		123456,
+		789123,
+		2345,
+		6789,
+		1467,
+		8765,
+	})
+
+	pidData = append(pidData, PsUtilPidData{
+		4234,
+		0.123,
+		8789,
+		0.5034,
+		23456,
+		912378,
+		34576,
+		789543,
+		467123,
+		765853,
+	})
+
+	return pidData
+}

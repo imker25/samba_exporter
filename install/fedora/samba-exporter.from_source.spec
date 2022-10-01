@@ -16,7 +16,7 @@ License: ASL 2.0
 URL: https://github.com/imker25/samba_exporter
 Distribution: Fedora
 Group: utils
-Requires: samba, systemd, filesystem, binutils, man-db 
+Requires: samba, systemd, filesystem, binutils, man-db, procps-ng 
 
 BuildRequires:  systemd-rpm-macros
 BuildRequires:  go-rpm-macros
@@ -28,7 +28,15 @@ BuildRequires:  golang(github.com/prometheus/client_golang/prometheus/promhttp)
 BuildRequires:  golang(github.com/prometheus/client_model/go)
 BuildRequires:  golang(golang.org/x/sys/unix)
 BuildRequires:  golang(gopkg.in/alecthomas/kingpin.v2)
+BuildRequires:  golang(github.com/shirou/gopsutil)
+BuildRequires:  golang(github.com/prometheus/procfs)
+BuildRequires:  golang(github.com/tklauser/go-sysconf)
+BuildRequires:  golang(github.com/tklauser/numcpus)
+BuildRequires:  golang(golang.org/x/xerrors)
+BuildRequires:  golang(gopkg.in/check.v1)
+BuildRequires:  golang(gopkg.in/yaml.v3) 
 BuildRequires:  rubygem-ronn-ng
+BuildRequires:  procps-ng
 
 %define _rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm
 %define _unpackaged_files_terminate_build 0
@@ -62,7 +70,7 @@ install -m 664  "%{gobuilddir}/src/src/man/start_samba_statusd.1.gz" "%{buildroo
 
 %check
 export GOPATH="$GOPATH:%{gobuilddir}/src/:/usr/share/gocode/"
-%gotest tobi.backfrak.de/cmd/samba_exporter tobi.backfrak.de/cmd/samba_statusd tobi.backfrak.de/internal/smbexporterbl/pipecomunication tobi.backfrak.de/internal/smbexporterbl/smbexporter tobi.backfrak.de/internal/smbexporterbl/smbstatusreader tobi.backfrak.de/internal/smbexporterbl/statisticsGenerator tobi.backfrak.de/internal/commonbl
+%gotest tobi.backfrak.de/cmd/samba_exporter tobi.backfrak.de/cmd/samba_statusd tobi.backfrak.de/internal/smbexporterbl/pipecomunication tobi.backfrak.de/internal/smbexporterbl/smbexporter tobi.backfrak.de/internal/smbexporterbl/smbstatusreader tobi.backfrak.de/internal/smbexporterbl/statisticsGenerator tobi.backfrak.de/internal/commonbl tobi.backfrak.de/internal/smbstatusdbl
 
 %pre
 if [ $1 == 2 ];then

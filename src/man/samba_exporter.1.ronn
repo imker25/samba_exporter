@@ -44,6 +44,9 @@ You might want to use one of the following optional parameters.
   * `-not-expose-user-data`
     Set to `true`, no details about the connected users will be exported
 
+  * `-not-expose-pid-data`
+        Set to `true`, no process IDs will be exported
+
   * `-print-version`:
     With this flag the program will only print it's version and exit
 

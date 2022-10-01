@@ -24,6 +24,7 @@ type StatisticsGeneratorSettings struct {
 	DoNotExportClient     bool
 	DoNotExportUser       bool
 	DoNotExportEncryption bool
+	DoNotExportPid        bool
 }
 
 type lockCreationEntry struct {

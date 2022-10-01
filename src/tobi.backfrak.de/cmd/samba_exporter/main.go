@@ -121,10 +121,11 @@ func testPipeMode(requestHandler commonbl.PipeHandler, responseHandler commonbl.
 	var processes []smbstatusreader.ProcessData
 	var shares []smbstatusreader.ShareData
 	var locks []smbstatusreader.LockData
+	var psData []commonbl.PsUtilPidData
 	var errGet error
 
 	logger.WriteVerbose("Request samba_statusd to get metrics for test-pipe mode")
-	locks, processes, shares, errGet = pipecomunication.GetSambaStatus(requestHandler, responseHandler, logger, params.RequestTimeOut)
+	locks, processes, shares, psData, errGet = pipecomunication.GetSambaStatus(requestHandler, responseHandler, logger, params.RequestTimeOut)
 	if errGet != nil {
 		return errGet
 	}
@@ -141,7 +142,12 @@ func testPipeMode(requestHandler commonbl.PipeHandler, responseHandler commonbl.
 		fmt.Fprintln(os.Stdout, lock.String())
 	}
 
+	for _, ps := range psData {
+		fmt.Fprintln(os.Stdout, ps.String())
+	}
+
 	stats := statisticsGenerator.GetSmbStatistics(locks, processes, shares, params.StatisticsGeneratorSettings)
+	stats = append(stats, statisticsGenerator.GetSmbdMetrics(psData, params.DoNotExportPid)...)
 	for _, stat := range stats {
 		fmt.Fprintln(os.Stdout, fmt.Sprintf("%s_%s: %f", smbexporter.EXPORTER_LABEL_PREFIX, stat.Name, stat.Value))
 	}

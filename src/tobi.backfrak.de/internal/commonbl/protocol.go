@@ -22,6 +22,31 @@ const SHARE_REQUEST RequestType = "SHARE_REQUEST:"
 // Request the smbd table of locked files
 const LOCK_REQUEST RequestType = "LOCK_REQUEST:"
 
+// Request the ps data of the smbd PIDs
+const PS_REQUEST RequestType = "PS_REQUEST:"
+
+// Data struct for a psutil response
+type PsUtilPidData struct {
+	PID                       int64
+	CpuUsagePercent           float64
+	VirtualMemoryUsageBytes   uint64
+	VirtualMemoryUsagePercent float64
+	IoCounterReadCount        uint64
+	IoCounterReadBytes        uint64
+	IoCounterWriteCount       uint64
+	IoCounterWriteBytes       uint64
+	OpenFilesCount            uint64
+	ThreadCount               uint64
+}
+
+// Implement Stringer Interface for LockData
+func (pidData PsUtilPidData) String() string {
+	return fmt.Sprintf("PID: %d; CPU Usage Percent: %f; VM Usage Bytes: %d; VM Usage Percent: %f; IO Read Count: %d; IO Read Bytes: %d; IO Write Count: %d; IO Write Bytes: %d; Open File Count: %d; Thread Count: %d",
+		pidData.PID, pidData.CpuUsagePercent, pidData.VirtualMemoryUsageBytes, pidData.VirtualMemoryUsagePercent,
+		pidData.IoCounterReadCount, pidData.IoCounterReadBytes, pidData.IoCounterWriteCount, pidData.IoCounterWriteBytes,
+		pidData.OpenFilesCount, pidData.ThreadCount)
+}
+
 // GetIdFromRequest - Get the ID from a request telegram
 func GetIdFromRequest(request string) (int, error) {
 	splitted := strings.Split(request, ":")

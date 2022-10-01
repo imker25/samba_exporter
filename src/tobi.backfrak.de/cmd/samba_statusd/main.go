@@ -6,6 +6,7 @@ package main
 // LICENSE file.
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -16,10 +17,12 @@ import (
 	"syscall"
 
 	"tobi.backfrak.de/internal/commonbl"
+	"tobi.backfrak.de/internal/smbstatusdbl"
 )
 
 // Authors - Information about the authors of the program. You might want to add your name here when contributing to this software
 const Authors = "tobi@backfrak.de"
+const PROCESS_TO_MONITOR = "smbd"
 
 // The version of this program, will be set at compile time by the gradle build script
 var version = "undefined"
@@ -34,6 +37,8 @@ var logger commonbl.Logger
 var smbstatusPath string
 
 var requestQueue commonbl.StringQueue
+
+var psDataGenerator *smbstatusdbl.PsDataGenerator
 
 func main() {
 	handleComandlineOptions()
@@ -85,6 +90,12 @@ func main() {
 			logger.WriteVerbose(fmt.Sprintf("Use %s to get samba status.", smbstatusPath))
 		}
 
+		psDataGeneratorTmp, errNewGen := smbstatusdbl.NewPsDataGenerator(PROCESS_TO_MONITOR)
+		if errNewGen != nil {
+			logger.WriteError(errNewGen)
+			os.Exit(-7)
+		}
+		psDataGenerator = psDataGeneratorTmp
 	}
 
 	// Ensure we exit clean on term and kill signals
@@ -128,6 +139,8 @@ func goHandleRequestQueue(responseHandler commonbl.PipeHandler) {
 		err = handleRequest(responseHandler, received, commonbl.SHARE_REQUEST, shareResponse, testShareResponse)
 	} else if strings.HasPrefix(received, string(commonbl.LOCK_REQUEST)) {
 		err = handleRequest(responseHandler, received, commonbl.LOCK_REQUEST, lockResponse, testLockResponse)
+	} else if strings.HasPrefix(received, string(commonbl.PS_REQUEST)) {
+		err = handleRequest(responseHandler, received, commonbl.PS_REQUEST, psResponse, testPsResponse)
 	}
 
 	if err != nil {
@@ -188,6 +201,29 @@ func processResponse(handler commonbl.PipeHandler, id int) error {
 		os.Exit(-4)
 	}
 	response := commonbl.GetResponse(header, string(data))
+
+	return handler.WritePipeString(response)
+}
+
+func psResponse(handler commonbl.PipeHandler, id int) error {
+	header := commonbl.GetResponseHeader(commonbl.PS_REQUEST, id)
+	pidData, err := psDataGenerator.GetPsUtilPidData()
+	if err != nil {
+		logger.WriteErrorMessage(fmt.Sprintf("\"%s -p -n\"  returned the following error: %s", smbstatusPath, err))
+		os.Exit(-4)
+	}
+	jsonData, errConv := json.MarshalIndent(pidData, "", " ")
+	if errConv != nil {
+		return errConv
+	}
+	response := commonbl.GetResponse(header, string(jsonData))
+
+	return handler.WritePipeString(response)
+}
+
+func testPsResponse(handler commonbl.PipeHandler, id int) error {
+	header := commonbl.GetResponseHeader(commonbl.PS_REQUEST, id)
+	response := commonbl.GetResponse(header, commonbl.TestPsResponse())
 
 	return handler.WritePipeString(response)
 }

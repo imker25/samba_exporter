@@ -21,6 +21,7 @@ RUN yum -y install redhat-lsb \
                 wget \
                 java-11-openjdk-headless  \
                 gnupg \
+                procps-ng \                
                 git && \
     yum clean all
 
