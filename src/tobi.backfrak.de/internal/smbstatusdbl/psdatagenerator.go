@@ -110,7 +110,7 @@ func (generator *PsDataGenerator) getPidList() ([]int32, error) {
 		if line == "" {
 			continue
 		}
-		pid, errConv := strconv.Atoi(line)
+		pid, errConv := strconv.ParseInt(line, 10, 32) 		
 		if errConv != nil {
 			return nil, errConv
 		} else {
