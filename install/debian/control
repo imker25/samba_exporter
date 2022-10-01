@@ -14,6 +14,7 @@ Build-Depends:  libc6 (>= 2.3.2),
                 golang-github-prometheus-client-golang-dev,
                 golang-github-prometheus-common-dev,
                 golang-gopkg-alecthomas-kingpin.v2-dev,
+                golang-github-shirou-gopsutil-dev, 
                 dh-golang,
 
 
