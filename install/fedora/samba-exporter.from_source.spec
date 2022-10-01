@@ -28,6 +28,13 @@ BuildRequires:  golang(github.com/prometheus/client_golang/prometheus/promhttp)
 BuildRequires:  golang(github.com/prometheus/client_model/go)
 BuildRequires:  golang(golang.org/x/sys/unix)
 BuildRequires:  golang(gopkg.in/alecthomas/kingpin.v2)
+BuildRequires:  golang(github.com/shirou/gopsutil)
+BuildRequires:  golang(github.com/prometheus/procfs)
+BuildRequires:  golang(github.com/tklauser/go-sysconf)
+BuildRequires:  golang(github.com/tklauser/numcpus)
+BuildRequires:  golang(golang.org/x/xerrors)
+BuildRequires:  golang(gopkg.in/check.v1)
+BuildRequires:  golang(gopkg.in/yaml.v3) 
 BuildRequires:  rubygem-ronn-ng
 BuildRequires:  procps-ng
 
