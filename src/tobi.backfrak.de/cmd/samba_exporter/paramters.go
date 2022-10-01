@@ -59,4 +59,6 @@ func customHelpMessage() {
 	fmt.Fprintln(os.Stdout, fmt.Sprintf("Usage: %s [options]", os.Args[0]))
 	fmt.Fprintln(os.Stdout, "Options:")
 	flag.PrintDefaults()
+	fmt.Fprintln(os.Stdout)
+	fmt.Fprintln(os.Stdout, "This program is used to run as a service. To change the service behavior edit '/etc/default/samba_exporter' according to your needs.")
 }

@@ -1,9 +1,11 @@
 # Set the command-line arguments to pass to the samba_exporter daemon
 
-# The prometheus exporter endpoint only listen on localhost by default
+# Default settings: 
+# - only listen on local host
+# - export all metrics
 ARGS='-web.listen-address=127.0.0.1:9922'
 
-# The prometheus exporter endpoint listen on all network interfaces
+# The prometheus exporter endpoint listen on all network interfaces and exports all metrics
 # ARGS=''
 
 # The prometheus exporter endpoint only listen on 192.168.0.1 and gives verbose log output
@@ -13,20 +15,28 @@ ARGS='-web.listen-address=127.0.0.1:9922'
 # ARGS='-web.listen-address=192.168.0.1:9922 -not-expose-encryption-data'
 
 # Usage of samba_exporter
-#  -help
-#        Print this help message
-#  -print-version
-#        With this flag the program will only print it's version and exit
-#  -request-timeout int
-#        The timeout for a request to samba_statusd in seconds (default 5)  
-#  -test-mode
-#        Run the program in test mode. In this mode the program will always return the same test data. 
-#        To work with samba_statusd both programs needs to run in test mode or not.
-#  -test-pipe
-#        Requests status from samba_statusd and exits. May be combinde with -test-mode.
-#  -verbose
-#        With this flag the program will print verbose output
-#  -web.listen-address string
-#        Address to listen on for web interface and telemetry. (default ":9922")
-#  -web.telemetry-path string
-#        Path under which to expose metrics. (default "/metrics")
+#   -help
+#         Print this help message
+#   -not-expose-client-data
+#         Set to 'true', no details about the connected clients will be exported
+#   -not-expose-encryption-data
+#         Set to 'true', no details about the used encryption or signing will be exported
+#   -not-expose-pid-data
+#         Set to 'true', no process IDs will be exported
+#   -not-expose-user-data
+#         Set to 'true', no details about the connected users will be exported
+#   -print-version
+#         With this flag the program will only print it's version and exit
+#   -request-timeout int
+#         The timeout for a request to samba_statusd in seconds (default 5)
+#   -test-mode
+#         Run the program in test mode. In this mode the program will always return the same test data. 
+#         To work with samba_statusd both programs needs to run in test mode or not.
+#   -test-pipe
+#         Requests status from samba_statusd and exits. May be combined with -test-mode.
+#   -verbose
+#         With this flag the program will print verbose output
+#   -web.listen-address string
+#         Address to listen on for web interface and telemetry. (default ":9922")
+#   -web.telemetry-path string
+#         Path under which to expose metrics. (default "/metrics")
