@@ -34,6 +34,7 @@ RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y wget \
                                         golang-github-mwitkow-go-conntrack-dev/buster-backports \
                                         golang-github-prometheus-client-model-dev/buster-backports \
                                         golang-gopkg-alecthomas-kingpin.v2-dev\
+                                        golang-github-shirou-gopsutil-dev \  
                                         dh-golang/buster-backports \
                                         debhelper/buster-backports \ 
                                         dwz/buster-backports \

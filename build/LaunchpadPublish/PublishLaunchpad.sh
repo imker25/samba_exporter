@@ -228,22 +228,24 @@ echo "$packageVersion" > "$WORK_DIR/VersionMaster.txt"
 echo "Patch package dependencies acording the distribution and version"
 if [ "$distVersionNumber" == "20.04" ] && [ "$distribution" == "Ubuntu" ]; then
     find . -name "go.mod" -exec sed -i "s/require github.com\\/prometheus\\/client_golang $GITHUB_PROMETHEUS_VERSION/require github.com\\/prometheus\\/client_golang $LAUNCHPAD_PROMETHEUS_VERSION/g" {} \;
+    find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod.gopsutil-v3"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum.gopsutil-v3"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod.gopsutil-v2" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod" 
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum.gopsutil-v2" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.mod" "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.mod.gopsutil-v3"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.sum" "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.sum.gopsutil-v3"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.mod.gopsutil-v2" "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.mod" 
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.sum.gopsutil-v2" "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.sum" 
 else 
     echo "Not running on ubuntu 20.04 (focal)"
 fi 
 
-if [ "$distVersionNumber" == "21.10" ] && [ "$distribution" == "Ubuntu" ]; then
-    sed -i "s/focal;/impish;/g" $WORK_DIR/install/debian/changelog
-    sed -i "s/ubuntu20.04/ubuntu21.10/g" $WORK_DIR/install/debian/changelog
-    sed -i "s/golang-1.16,/golang-1.17,/g" $WORK_DIR/install/debian/control
-else 
-    echo "Not running on ubuntu 21.10 (impish)"
-fi
 
 if [ "$distVersionNumber" == "22.04" ] && [ "$distribution" == "Ubuntu" ]; then
     sed -i "s/focal;/jammy;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/ubuntu22.04/g" $WORK_DIR/install/debian/changelog
-    sed -i "s/golang-1.16,/golang-1.18,/g" $WORK_DIR/install/debian/control
+    sed -i "s/golang-1.16,/golang-1.18,/g" $WORK_DIR/install/debian/control    
 else 
     echo "Not running on ubuntu 22.04 (jammy)"
 fi
@@ -252,6 +254,15 @@ if [ "$distVersionNumber" == "11" ] && [ "$distribution" == "Debian" ]; then
     sed -i "s/focal;/bullseye;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/debian11/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.15,/g" $WORK_DIR/install/debian/control
+    find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod.gopsutil-v3"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum.gopsutil-v3"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod.gopsutil-v2" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod" 
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum.gopsutil-v2" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.mod" "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.mod.gopsutil-v3"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.sum" "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.sum.gopsutil-v3"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.mod.gopsutil-v2" "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.mod" 
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.sum.gopsutil-v2" "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.sum"     
 else 
     echo "Not running on debian 11 (bullseye)"
 fi
@@ -262,6 +273,15 @@ if [ "$distVersionNumber" == "10" ] && [ "$distribution" == "Debian" ]; then
     sed -i "s/golang-1.16,/golang-1.15,/g" $WORK_DIR/install/debian/control
     sed -i "s/gzip (>=1.10)/gzip (>=1.9)/g" $WORK_DIR/install/debian/control
     sed -i "s/golang-any/man-db/g" $WORK_DIR/install/debian/control
+    find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod.gopsutil-v3"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum.gopsutil-v3"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod.gopsutil-v2" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod" 
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum.gopsutil-v2" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.mod" "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.mod.gopsutil-v3"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.sum" "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.sum.gopsutil-v3"
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.mod.gopsutil-v2" "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.mod" 
+    mv -v "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.sum.gopsutil-v2" "$WORK_DIR/src/tobi.backfrak.de/internal/smbstatusdbl/go.sum"     
 else 
     echo "Not running on debian 10 (buster)"
 fi
