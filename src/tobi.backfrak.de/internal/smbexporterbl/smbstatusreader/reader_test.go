@@ -104,7 +104,7 @@ func TestGetLockDataOneLine(t *testing.T) {
 		t.Errorf("The Name %s is not the expected \".\"", oneEntry[0].Name)
 	}
 
-	expectDate, _ := time.Parse(time.ANSIC, "Sun May 16 12:07:02 2021")
+	expectDate, _ := time.ParseInLocation(time.ANSIC, "Sun May 16 12:07:02 2021", time.Now().Location())
 
 	if oneEntry[0].Time != expectDate {
 		t.Errorf("The Time %s is not the expected Sun May 16 12:07:02 2021", oneEntry[0].Time)

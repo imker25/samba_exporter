@@ -240,6 +240,32 @@ func TestGetSmbStatistics(t *testing.T) {
 	if !strings.HasPrefix(value, "1080") {
 		t.Errorf("The value %s is not expected", value)
 	}
+
+	if ret[32].Name != "lock_created_since_seconds" {
+		t.Errorf("The name %s is not expected", ret[32].Name)
+	}
+
+	value, found = ret[32].Labels["user"]
+	if !found {
+		t.Errorf("No label with key \"client\" found")
+	}
+
+	if value != "1080" {
+		t.Errorf("The value %s is not expected", value)
+	}
+
+	value, found = ret[32].Labels["share"]
+	if !found {
+		t.Errorf("No label with key \"client\" found")
+	}
+
+	if !strings.HasPrefix(value, "/usr/share") {
+		t.Errorf("The value %s is not expected", value)
+	}
+
+	if ret[32].Value <= 0 {
+		t.Errorf("The 'lock_created_since_seconds' is '%f', it's expected grater then '0'", ret[32].Value)
+	}
 }
 
 func TestGetSmbStatisticsNotExportEncryption(t *testing.T) {

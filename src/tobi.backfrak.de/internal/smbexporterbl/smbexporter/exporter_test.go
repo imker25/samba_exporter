@@ -35,7 +35,7 @@ func TestNewSambaExporter(t *testing.T) {
 		t.Errorf("The exporter.RequestHandler is not of the expected type")
 	}
 
-	if exporter.Descriptions == nil {
+	if exporter.descriptions == nil {
 		t.Errorf("exporter.Descriptions are nil")
 	}
 
@@ -64,6 +64,13 @@ func TestSetDescriptionsFromResponse(t *testing.T) {
 	if len(ch) != expectedChanels {
 		t.Errorf("The number of descriptions is not expected")
 	}
+
+	for i := 0; i < expectedChanels; i++ {
+		desc := <-ch
+		if desc == nil {
+			t.Errorf("Got a nil description for a metric")
+		}
+	}
 }
 
 func TestSetMetricsFromResponse(t *testing.T) {
@@ -84,6 +91,14 @@ func TestSetMetricsFromResponse(t *testing.T) {
 
 	if len(chMet) != expectedMetChanels {
 		t.Errorf("Got %d metric channels, but expected %d", len(chMet), expectedMetChanels)
+	}
+
+	for i := 0; i < expectedMetChanels; i++ {
+		metric := <-chMet
+		desc := metric.Desc()
+		if desc == nil {
+			t.Errorf("Got a nil description for a metric")
+		}
 	}
 
 }
