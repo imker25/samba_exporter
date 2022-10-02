@@ -22,7 +22,7 @@ Pid          User(ID)   DenyMode   Access      R/W        Oplock           Share
 1120         1080       DENY_NONE  0x80        RDONLY     NONE             /usr/share/data    .   Sun May 16 12:07:02 2021
 1120         1080       DENY_NONE  0x80        RDONLY     NONE             /usr/share/foto    .   Mon May 17 06:39:38 2021
 1120         1080       DENY_NONE  0x80        RDONLY     NONE             /usr/share/film    .   Mon May 17 07:09:38 2021
-1120         1080       DENY_NONE  0x80        RDONLY     NONE             /usr/share/music   .   Sun Oct  2 12:39:21 2022`
+1120         1080       DENY_NONE  0x80        RDONLY     NONE             /usr/share/music   .   Sun Oct  1 12:39:21 2022`
 
 const LockDataNoData = `No locked files`
 
