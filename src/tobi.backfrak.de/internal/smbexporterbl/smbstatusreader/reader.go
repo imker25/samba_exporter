@@ -39,7 +39,6 @@ func (lockData LockData) String() string {
 // Will return an empty array if the data is in unexpected format
 func GetLockData(data string, logger commonbl.Logger) []LockData {
 	var ret []LockData
-
 	if strings.TrimSpace(data) == "No locked files" {
 		return ret
 	}
@@ -80,7 +79,9 @@ func GetLockData(data string, logger commonbl.Logger) []LockData {
 		entry.Oplock = fields[5]
 		entry.SharePath = fields[6]
 		entry.Name = fields[7]
-		entry.Time, err = time.Parse(time.ANSIC, fmt.Sprintf("%s %s %s %s %s", fields[8], fields[9], fields[10], fields[11], fields[12]))
+		entry.Time, err = time.ParseInLocation(time.ANSIC,
+			fmt.Sprintf("%s %s %s %s %s", fields[8], fields[9], fields[10], fields[11], fields[12]),
+			time.Now().Location())
 		if err != nil {
 			logger.WriteError(err)
 			continue
