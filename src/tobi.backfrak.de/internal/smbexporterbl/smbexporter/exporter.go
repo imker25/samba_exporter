@@ -23,11 +23,16 @@ const EXPORTER_LABEL_PREFIX = "samba"
 type SambaExporter struct {
 	RequestHandler              commonbl.PipeHandler
 	ResponseHander              commonbl.PipeHandler
-	Descriptions                map[string]prometheus.Desc
 	Logger                      commonbl.Logger
 	Version                     string
 	RequestTimeOut              int
 	StatisticsGeneratorSettings statisticsGenerator.StatisticsGeneratorSettings
+
+	// Used to ensure that every metric is only added once
+	descriptions map[string]prometheus.Desc
+
+	// Used to ensure that the order of labels is always the same for a given metric
+	metricsLabelList map[string][]string
 }
 
 // Get a new instance of the SambaExporter
@@ -38,8 +43,9 @@ func NewSambaExporter(requestHandler commonbl.PipeHandler, responseHander common
 	ret.Logger = logger
 	ret.Version = version
 	ret.RequestTimeOut = requestTimeOut
-	ret.Descriptions = make(map[string]prometheus.Desc)
+	ret.descriptions = make(map[string]prometheus.Desc)
 	ret.StatisticsGeneratorSettings = statisticsGeneratorSettings
+	ret.metricsLabelList = make(map[string][]string)
 
 	return &ret
 }
@@ -136,7 +142,7 @@ func (smbExporter *SambaExporter) setDescriptionsFromResponse(locks []smbstatusr
 }
 
 func (smbExporter *SambaExporter) setGaugeIntMetricNoLabel(name string, value float64, ch chan<- prometheus.Metric) {
-	desc, found := smbExporter.Descriptions[name]
+	desc, found := smbExporter.descriptions[name]
 	if found == false {
 		smbExporter.Logger.WriteErrorMessage(fmt.Sprintf("No description found for %s", name))
 		return
@@ -147,15 +153,39 @@ func (smbExporter *SambaExporter) setGaugeIntMetricNoLabel(name string, value fl
 }
 
 func (smbExporter *SambaExporter) setGaugeIntMetricWithLabel(name string, value float64, labels map[string]string, ch chan<- prometheus.Metric) {
-	desc, found := smbExporter.Descriptions[name]
-	if found == false {
-		smbExporter.Logger.WriteErrorMessage(fmt.Sprintf("No description found for %s", name))
+	desc, found := smbExporter.descriptions[name]
+	if !found {
+		smbExporter.Logger.WriteErrorMessage(fmt.Sprintf("No description found for metric '%s'", name))
 		return
 	}
-	var labelValues []string
-	for _, value := range labels {
+
+	// Ensure the expected order of labels is known for this metric (see bug #79)
+	labelKeys, foundInLabelList := smbExporter.metricsLabelList[name]
+	if !foundInLabelList {
+		smbExporter.Logger.WriteErrorMessage(fmt.Sprintf("No label keys found for metric '%s'", name))
+		return
+	}
+
+	// Validate that the given labels list is the same length as the expected label list for this metric (see bug #79)
+	if len(labelKeys) != len(labels) {
+		smbExporter.Logger.WriteErrorMessage(fmt.Sprintf(
+			"The number of labels given with metric '%s' ('%d') does not match the expected number '%d'",
+			name, len(labels), len(labelKeys)))
+		return
+	}
+
+	labelValues := make([]string, len(labelKeys))
+	// The loop over the expected label is done explicit form 0 to end, so the order can not be lost (see bug #79)
+	for i := 0; i < len(labelKeys); i++ {
+		key := labelKeys[i]
+		value, foundValue := labels[key]
+		if !foundValue {
+			smbExporter.Logger.WriteErrorMessage(fmt.Sprintf("No label with key '%s' found for metric '%s'", key, name))
+			return
+		}
 		if value != "" {
-			labelValues = append(labelValues, value)
+			// The set is done to a explicit field to ensure the order of labels is not lost (see bug #79)
+			labelValues[i] = value
 		} else {
 			// if a labels value is "", we don't add the value at all
 			return
@@ -168,13 +198,13 @@ func (smbExporter *SambaExporter) setGaugeIntMetricWithLabel(name string, value 
 
 func (smbExporter *SambaExporter) setGaugeDescriptionNoLabel(name string, help string, ch chan<- *prometheus.Desc) {
 	desc := prometheus.NewDesc(prometheus.BuildFQName(EXPORTER_LABEL_PREFIX, "", name), help, []string{}, nil)
-	smbExporter.Descriptions[name] = *desc
+	smbExporter.descriptions[name] = *desc
 	ch <- desc
 }
 
 func (smbExporter *SambaExporter) setGaugeDescriptionWithLabel(name string, help string, labels map[string]string, ch chan<- *prometheus.Desc) {
 	// Since the a the same label can have multiple values, we need only one description
-	_, found := smbExporter.Descriptions[name]
+	_, found := smbExporter.descriptions[name]
 
 	if !found {
 		var labelKeys []string
@@ -182,8 +212,9 @@ func (smbExporter *SambaExporter) setGaugeDescriptionWithLabel(name string, help
 			labelKeys = append(labelKeys, key)
 		}
 
+		smbExporter.metricsLabelList[name] = labelKeys
 		desc := prometheus.NewDesc(prometheus.BuildFQName(EXPORTER_LABEL_PREFIX, "", name), help, labelKeys, nil)
-		smbExporter.Descriptions[name] = *desc
+		smbExporter.descriptions[name] = *desc
 		ch <- desc
 	}
 }

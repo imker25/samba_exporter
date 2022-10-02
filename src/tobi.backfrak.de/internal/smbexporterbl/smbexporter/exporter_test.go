@@ -35,7 +35,7 @@ func TestNewSambaExporter(t *testing.T) {
 		t.Errorf("The exporter.RequestHandler is not of the expected type")
 	}
 
-	if exporter.Descriptions == nil {
+	if exporter.descriptions == nil {
 		t.Errorf("exporter.Descriptions are nil")
 	}
 
