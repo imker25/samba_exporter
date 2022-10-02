@@ -92,7 +92,7 @@
 
 <p>The <code>samba-exporter package</code> works as a prometheus exporter for statistic data of the samba file server.<br></p>
 
-<p>It uses <code>smbstatus</code> to collect the data and converts the result into prometheus style data.
+<p>It uses <code>smbstatus</code> and the <code>proc fs</code> to collect the data and converts the result into prometheus style data.
 The prometheus style data can be requested manually on port 9922 using a http client.
 Or a prometheus database sever can be configured to collect the data by scraping port 9922 on the samba server.</p>
 
@@ -112,27 +112,35 @@ Or a prometheus database sever can be configured to collect the data by scraping
 
 <p>You might want to use one of the following optional parameters.</p>
 
-<dl>
-<dt><code>-help</code></dt>
-<dd>Print the programs help message and exit</dd>
-<dt><code>-print-version</code></dt>
-<dd>With this flag the program will only print it's version and exit</dd>
-<dt><code>-request-timeout</code></dt>
-<dd>The timeout for a request to samba_statusd in seconds (default 5)</dd>
-<dt><code>-test-mode</code></dt>
-<dd>    Run the program in test mode.<br>
-    In this mode the program will always return the same test data. To work with samba_statusd both programs needs to run in test mode or not.</dd>
-<dt><code>-test-pipe</code></dt>
-<dd>    Requests status from samba_statusd and exits. May be combined with -test-mode.</dd>
-<dt><code>-verbose</code></dt>
-<dd>    With this flag the program will print verbose output</dd>
-<dt><code>-web.listen-address</code></dt>
-<dd>    Address to listen on for web interface and telemetry. (default ":9922")<br>
+<ul>
+<li><p><code>-help</code>:
+Print the programs help message and exit</p></li>
+<li><p><code>-not-expose-client-data</code>
+Set to <code>true</code>, no details about the connected clients will be exported</p></li>
+<li><p><code>-not-expose-encryption-data</code>
+Set to <code>true</code>, no details about the used encryption or signing will be exported</p></li>
+<li><p><code>-not-expose-user-data</code>
+Set to <code>true</code>, no details about the connected users will be exported</p></li>
+<li><p><code>-not-expose-pid-data</code>
+    Set to <code>true</code>, no process IDs will be exported</p></li>
+<li><p><code>-print-version</code>:
+With this flag the program will only print it's version and exit</p></li>
+<li><p><code>-request-timeout</code>:
+The timeout for a request to samba_statusd in seconds (default 5)</p></li>
+<li><p><code>-test-mode</code>:
+    Run the program in test mode.<br>
+    In this mode the program will always return the same test data. To work with samba_statusd both programs needs to run in test mode or not.</p></li>
+<li><p><code>-test-pipe</code>:
+    Requests status from samba_statusd and exits. May be combined with -test-mode.</p></li>
+<li><p><code>-verbose</code>:
+    With this flag the program will print verbose output</p></li>
+<li><p><code>-web.listen-address</code>:
+    Address to listen on for web interface and telemetry. (default ":9922")<br>
     You might want this to bind to a given ip address like 127.0.0.1 by setting this parameter as "127.0.0.1:9922".
-    To use 9123 as port use ":9123" here.</dd>
-<dt><code>-web.telemetry-path</code></dt>
-<dd>    Path under which to expose metrics. (default "/metrics")</dd>
-</dl>
+    To use 9123 as port use ":9123" here.</p></li>
+<li><p><code>-web.telemetry-path</code>:
+    Path under which to expose metrics. (default "/metrics")</p></li>
+</ul>
 
 
 <p>To change the behavior of the samba_exporter service update the <code>/etc/default/samba_exporter</code> according to your needs.
@@ -183,7 +191,7 @@ In case you found a new bug please also report as github issue on the projects p
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>September 2022</li>
+    <li class='tc'>October 2022</li>
     <li class='tr'>samba_exporter(1)</li>
   </ol>
 

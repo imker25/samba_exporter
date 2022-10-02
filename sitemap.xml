@@ -2,47 +2,47 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://imker25.github.io/samba_exporter/Index/</loc>
-         <lastmod>2022-09-24</lastmod>
+         <lastmod>2022-10-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://imker25.github.io/samba_exporter/DeveloperDocs/ActionsAndReleases/</loc>
-         <lastmod>2022-09-24</lastmod>
+         <lastmod>2022-10-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://imker25.github.io/samba_exporter/DeveloperDocs/Compile/</loc>
-         <lastmod>2022-09-24</lastmod>
+         <lastmod>2022-10-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://imker25.github.io/samba_exporter/DeveloperDocs/Hints/</loc>
-         <lastmod>2022-09-24</lastmod>
+         <lastmod>2022-10-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://imker25.github.io/samba_exporter/Installation/InstallationGuide/</loc>
-         <lastmod>2022-09-24</lastmod>
+         <lastmod>2022-10-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://imker25.github.io/samba_exporter/Installation/SupportedVersions/</loc>
-         <lastmod>2022-09-24</lastmod>
+         <lastmod>2022-10-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://imker25.github.io/samba_exporter/UserDocs/Concept/</loc>
-         <lastmod>2022-09-24</lastmod>
+         <lastmod>2022-10-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://imker25.github.io/samba_exporter/UserDocs/ServiceIntegration/</loc>
-         <lastmod>2022-09-24</lastmod>
+         <lastmod>2022-10-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://imker25.github.io/samba_exporter/UserDocs/UserGuide/</loc>
-         <lastmod>2022-09-24</lastmod>
+         <lastmod>2022-10-02</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

@@ -530,7 +530,7 @@
 <h1 id="samba-exporter">Samba Exporter<a class="headerlink" href="#samba-exporter" title="Permanent link">&para;</a></h1>
 <p>A <a href="https://prometheus.io/docs/instrumenting/exporters/">prometheus exporter</a> for statistic data of the <a href="https://www.samba.org/">samba file server</a>.</p>
 <p><img alt="Screenshot of dashboard for the samba service" src="../assets/Samba-Dashboard.png" /></p>
-<p>It uses <a href="https://www.samba.org/samba/docs/current/man-html/smbstatus.1.html">smbstatus</a>  to collect the data and converts the result into prometheus style data.
+<p>It uses <a href="https://www.samba.org/samba/docs/current/man-html/smbstatus.1.html">smbstatus</a> and the <a href="https://en.wikipedia.org/wiki/Procfs">proc fs</a> to collect the data and converts the result into prometheus style data.
 The prometheus style data can be requested manually on port 9922 using a http client. Or a prometheus database sever can be configured to collect the data by scraping port 9922 on the samba server.</p>
 <h2 id="lear-more">Lear more<a class="headerlink" href="#lear-more" title="Permanent link">&para;</a></h2>
 <ul>
@@ -544,7 +544,7 @@ The prometheus style data can be requested manually on port 9922 using a http cl
 <br></li>
 </ul>
 <hr />
-<p><br><sub>Last change at Sep 24, 2022 13:13:32 by Tobias Zellner - commit: 1e6c988<sub></p>
+<p><br><sub>Last change at Oct 02, 2022 19:58:40 by tobi - commit: a86f53e<sub></p>
 
               
             </article>
