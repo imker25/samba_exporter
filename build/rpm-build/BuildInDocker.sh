@@ -24,7 +24,7 @@ if [ ! -d "$projcetRoot" ]; then
     exit 1
 fi
 
-echo "Ensure gradle can use the sources"
+echo "Ensure ./build.sh can use the sources"
 echo "git config --global --add safe.directory /build_area"
 git config --global --add safe.directory /build_area
 
@@ -32,9 +32,9 @@ pushd "$projcetRoot"
 
 echo ""
 echo "# ###################################################################"
-echo "Compile and unit test with gradle"
+echo "Compile and unit test with ./build.sh"
 echo "# ###################################################################"
-./gradlew getBuildName build test preparePack
+./build.sh test preparePack
 if [ "$?" != "0" ]; then 
     echo "Error: Compile and test run failed"
     popd

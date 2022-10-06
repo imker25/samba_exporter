@@ -1,4 +1,4 @@
-#  Spec file to create a samba_exporter RPM binary package out of the gradle build output
+#  Spec file to create a samba_exporter RPM binary package out of the ./build.sh (former gradle) build output
 
 Name: samba-exporter
 Version: x.x.x

@@ -32,7 +32,7 @@ if [ "$?" != "0" ]; then
     echo "Error: Docker container build failed"
     exit 1
 fi
-# Move the docker build log to other folder, so it will not be deleted during the "gradle clean" when the container runs
+# Move the docker build log to other folder, so it will not be deleted during the "./build.sh clean" when the container runs
 mv -v "$BRANCH_ROOT/logs/docker-build-fedora.log" "/tmp" 
 echo ""
 echo "# ###################################################################"

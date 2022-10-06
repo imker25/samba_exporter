@@ -251,7 +251,7 @@ buildSystem="none"
 if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "28" ]; then
     echo "Do modifications for 'Fedora 28'"
     sed -i "s/Release: 1/Release: 1.fc28/g" ~/rpmbuild/SPECS/samba-exporter.spec
-    buildSystem="gradle"
+    buildSystem="mage"
 else
     echo "Not running on Fedora 28"
 fi 
@@ -353,7 +353,7 @@ if [  "$buildSystem" == "rpm" ]; then
     cp -v ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm "/build_results/${distribution}-${distVersionNumber}/"
 fi
 
-if [  "$buildSystem" == "gradle" ]; then
+if [  "$buildSystem" == "mage" ]; then
 
     echo "Prepare sources"
     echo "# ###################################################################"
@@ -363,14 +363,14 @@ if [  "$buildSystem" == "gradle" ]; then
     git clone https://github.com/imker25/samba_exporter.git
     pushd ~/build_area/samba_exporter
     git fetch --all --tags
-    git checkout tags/${tag} -b V${tag}-rpm-gradle
+    git checkout tags/${tag} -b V${tag}-rpm-mage
     git status
 
     echo "# ###################################################################"
     echo "Compile the binary files"
     echo "# ###################################################################"
-    echo "./gradlew getBuildName build preparePack"
-    ./gradlew getBuildName build preparePack
+    echo "./build.sh test preparePack"
+    ./build.sh test preparePack
     if [ "$?" != "0" ]; then 
         echo "Error: Compile failed"
         popd

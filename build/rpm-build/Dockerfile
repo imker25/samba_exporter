@@ -12,7 +12,6 @@ RUN yum -y install redhat-lsb \
                 man-db \
                 binutils \
                 wget \
-                java-11-openjdk-headless \
                 procps-ng \
                 golang && \
     yum clean all
