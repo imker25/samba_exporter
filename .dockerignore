@@ -3,11 +3,6 @@
 src/
 pkg/
 logs/
-gradle/
-.gradle/
-.github/
+build.sh
 
-build.gradle
-gradlew
-gradlew.bat
 VersionMaster.txt
