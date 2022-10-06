@@ -5,7 +5,7 @@
 # by a BSD-style license that can be found in the
 # LICENSE file.
 # ######################################################################################
-# Script to install the program files. Used by debian/rules as well as gradle.build 
+# Script to install the program files. Used by debian/rules as well as ./build.sh
 # ######################################################################################
 
 # ################################################################################################################
@@ -24,7 +24,7 @@ function print_usage()  {
     echo "binary-root       The root folder from there all copy source pathes for binaries are calculated"
     echo "package-root      The path to the package input root folder"
     echo ""
-    echo "Script to install the program files. Used by debian/rules as well as gradle.build "
+    echo "Script to install the program files. Used by debian/rules as well as ./build.sh build "
 }
 
 # ################################################################################################################

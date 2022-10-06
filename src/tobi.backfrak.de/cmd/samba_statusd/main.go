@@ -24,7 +24,7 @@ import (
 const Authors = "tobi@backfrak.de"
 const PROCESS_TO_MONITOR = "smbd"
 
-// The version of this program, will be set at compile time by the gradle build script
+// The version of this program, will be set at compile time by the ./build.sh build script
 var version = "undefined"
 
 // Type for functions that can create a response string

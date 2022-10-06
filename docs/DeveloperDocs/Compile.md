@@ -6,8 +6,7 @@ This page shows you how to build, test and install the project manually.
 
 To build the project you need the following on your development machine.
 
-- [Go](https://golang.org/) Version 1.16.x
-- [Java](https://java.com/) Version 11
+- [Go](https://golang.org/) Version 1.16.x or later
 - [Git](https://git-scm.com/) >= Version 2.30
 - [lsb_release](https://refspecs.linuxfoundation.org/LSB_3.0.0/LSB-PDA/LSB-PDA/lsbrelease.html)
 - [ronn](https://github.com/rtomayko/ronn) - Only in case you want to work on man pages
@@ -15,10 +14,10 @@ To build the project you need the following on your development machine.
 To build the software change to the repositories directory and run:
 
 ```sh
-./gradlew getBuildName build preparePack
+./build.sh build 
 ```
 
-To figure out all the valid gradle tasks, read `build.gradle`
+To figure out all the valid tasks, read `./build.sh -l`
 
 ## Create man pages
 
@@ -33,10 +32,10 @@ build/CreateManPage.sh
 To execute the unit tests you can run:
 
 ```sh
-./gradlew test
+./build.sh test
 ```
 
-**Hint:** As always it is possible to combine the gradle commands, e. g. `./gradlew build test`
+**Hint:** As always it is possible to combine the commands, e. g. `./build.sh build test`
 
 To execute the integration tests you can run:
 
@@ -51,7 +50,7 @@ On your target machine, the samba server you want to monitor, you need [samba](h
 To build for manual installation run the following:
 
 ```sh
-./gradlew getBuildName build preparePack
+./build.sh preparePack
 build/CreateManPage.sh 
 ```
 

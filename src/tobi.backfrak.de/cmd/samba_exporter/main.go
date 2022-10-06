@@ -26,7 +26,7 @@ import (
 // Authors - Information about the authors of the program. You might want to add your name here when contributing to this software
 const Authors = "tobi@backfrak.de"
 
-// The version of this program, will be set at compile time by the gradle build script
+// The version of this program, will be set at compile time by the ./build.sh build script
 var version = "undefined"
 
 // The logger used in the program

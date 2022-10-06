@@ -1,7 +1,5 @@
 **/.vscode/
 **\.vscode\
-**/.gradle/
-**\.gradle\
 
 debug
 debug.test
