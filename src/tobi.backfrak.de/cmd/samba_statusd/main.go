@@ -28,7 +28,7 @@ const PROCESS_TO_MONITOR = "smbd"
 var version = "undefined"
 
 // Type for functions that can create a response string
-type response func(commonbl.PipeHandler, int) error
+type response func(*commonbl.PipeHandler, int) error
 
 // The logger for this programm
 var logger commonbl.Logger
@@ -117,13 +117,13 @@ func main() {
 
 		// Add request to the queue and process the request in own "thread"
 		requestQueue.Push(received)
-		go goHandleRequestQueue(responseHandler)
+		go goHandleRequestQueue(&responseHandler)
 	}
 
 }
 
 // goHandleRequestQueue, is called as go routine and processes the "oldest" request in the request Queue
-func goHandleRequestQueue(responseHandler commonbl.PipeHandler) {
+func goHandleRequestQueue(responseHandler *commonbl.PipeHandler) {
 	var err error = nil
 	var received string
 	received, err = requestQueue.Pull()
@@ -149,7 +149,7 @@ func goHandleRequestQueue(responseHandler commonbl.PipeHandler) {
 	}
 }
 
-func handleRequest(handler commonbl.PipeHandler, request string, requestType commonbl.RequestType, productiveFunc response, testFunc response) error {
+func handleRequest(handler *commonbl.PipeHandler, request string, requestType commonbl.RequestType, productiveFunc response, testFunc response) error {
 	id, errConv := commonbl.GetIdFromRequest(request)
 	if errConv != nil {
 		return nil // In case we cant find an ID, we simply ingnor the request as any other invalid input
@@ -169,7 +169,7 @@ func handleRequest(handler commonbl.PipeHandler, request string, requestType com
 	return nil
 }
 
-func lockResponse(handler commonbl.PipeHandler, id int) error {
+func lockResponse(handler *commonbl.PipeHandler, id int) error {
 	header := commonbl.GetResponseHeader(commonbl.LOCK_REQUEST, id)
 	data, err := exec.Command(smbstatusPath, "-L", "-n").Output()
 	if err != nil {
@@ -181,7 +181,7 @@ func lockResponse(handler commonbl.PipeHandler, id int) error {
 	return handler.WritePipeString(response)
 }
 
-func shareResponse(handler commonbl.PipeHandler, id int) error {
+func shareResponse(handler *commonbl.PipeHandler, id int) error {
 	header := commonbl.GetResponseHeader(commonbl.SHARE_REQUEST, id)
 	data, err := exec.Command(smbstatusPath, "-S", "-n").Output()
 	if err != nil {
@@ -193,7 +193,7 @@ func shareResponse(handler commonbl.PipeHandler, id int) error {
 	return handler.WritePipeString(response)
 }
 
-func processResponse(handler commonbl.PipeHandler, id int) error {
+func processResponse(handler *commonbl.PipeHandler, id int) error {
 	header := commonbl.GetResponseHeader(commonbl.PROCESS_REQUEST, id)
 	data, err := exec.Command(smbstatusPath, "-p", "-n").Output()
 	if err != nil {
@@ -205,7 +205,7 @@ func processResponse(handler commonbl.PipeHandler, id int) error {
 	return handler.WritePipeString(response)
 }
 
-func psResponse(handler commonbl.PipeHandler, id int) error {
+func psResponse(handler *commonbl.PipeHandler, id int) error {
 	header := commonbl.GetResponseHeader(commonbl.PS_REQUEST, id)
 	pidData, err := psDataGenerator.GetPsUtilPidData()
 	if err != nil {
@@ -221,28 +221,28 @@ func psResponse(handler commonbl.PipeHandler, id int) error {
 	return handler.WritePipeString(response)
 }
 
-func testPsResponse(handler commonbl.PipeHandler, id int) error {
+func testPsResponse(handler *commonbl.PipeHandler, id int) error {
 	header := commonbl.GetResponseHeader(commonbl.PS_REQUEST, id)
 	response := commonbl.GetResponse(header, commonbl.TestPsResponse())
 
 	return handler.WritePipeString(response)
 }
 
-func testProcessResponse(handler commonbl.PipeHandler, id int) error {
+func testProcessResponse(handler *commonbl.PipeHandler, id int) error {
 	header := commonbl.GetTestResponseHeader(commonbl.PROCESS_REQUEST, id)
 	response := commonbl.GetResponse(header, commonbl.TestProcessResponse)
 
 	return handler.WritePipeString(response)
 }
 
-func testShareResponse(handler commonbl.PipeHandler, id int) error {
+func testShareResponse(handler *commonbl.PipeHandler, id int) error {
 	header := commonbl.GetTestResponseHeader(commonbl.SHARE_REQUEST, id)
 	response := commonbl.GetResponse(header, commonbl.TestShareResponse)
 
 	return handler.WritePipeString(response)
 }
 
-func testLockResponse(handler commonbl.PipeHandler, id int) error {
+func testLockResponse(handler *commonbl.PipeHandler, id int) error {
 	header := commonbl.GetTestResponseHeader(commonbl.LOCK_REQUEST, id)
 	response := commonbl.GetResponse(header, commonbl.TestLockResponse)
 
