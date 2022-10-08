@@ -42,6 +42,10 @@ var psDataGenerator *smbstatusdbl.PsDataGenerator
 
 func main() {
 	handleComandlineOptions()
+	os.Exit(realMain())
+}
+
+func realMain() int {
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
 	logger = *commonbl.NewLogger(params.Verbose)
@@ -60,12 +64,12 @@ func main() {
 
 	if params.PrintVersion {
 		printVersion()
-		os.Exit(0)
+		return 0
 	}
 
 	if params.Help {
 		flag.Usage()
-		os.Exit(0)
+		return 0
 	}
 
 	if !params.Test {
@@ -73,19 +77,19 @@ func main() {
 		currentUser, errUserGet := user.Current()
 		if errUserGet != nil {
 			logger.WriteErrorMessage(fmt.Sprintf("Error when trying to get the current user: %s", errUserGet.Error()))
-			os.Exit(-5)
+			return -5
 		}
 
 		if currentUser.Username != "root" {
 			logger.WriteErrorMessage(fmt.Sprintf("The current user %s is not root.", currentUser.Username))
-			os.Exit(-6)
+			return -6
 		}
 
 		var errLookPath error
 		smbstatusPath, errLookPath = exec.LookPath("smbstatus")
 		if errLookPath != nil {
 			logger.WriteErrorMessage("Can not find \"smbstatus\" executable. Please install the needed package.")
-			os.Exit(-3)
+			return -3
 		} else {
 			logger.WriteVerbose(fmt.Sprintf("Use %s to get samba status.", smbstatusPath))
 		}
@@ -93,7 +97,7 @@ func main() {
 		psDataGeneratorTmp, errNewGen := smbstatusdbl.NewPsDataGenerator(PROCESS_TO_MONITOR)
 		if errNewGen != nil {
 			logger.WriteError(errNewGen)
-			os.Exit(-7)
+			return -7
 		}
 		psDataGenerator = psDataGeneratorTmp
 	}
@@ -112,7 +116,7 @@ func main() {
 		received, errRecv := requestHandler.WaitForPipeInputString()
 		if errRecv != nil {
 			logger.WriteErrorMessage(fmt.Sprintf("Receive this unexpected data from the pipe: %s", errRecv))
-			os.Exit(-1)
+			return -1
 		}
 
 		// Add request to the queue and process the request in own "thread"
@@ -141,6 +145,8 @@ func goHandleRequestQueue(responseHandler *commonbl.PipeHandler) {
 		err = handleRequest(responseHandler, received, commonbl.LOCK_REQUEST, lockResponse, testLockResponse)
 	} else if strings.HasPrefix(received, string(commonbl.PS_REQUEST)) {
 		err = handleRequest(responseHandler, received, commonbl.PS_REQUEST, psResponse, testPsResponse)
+	} else {
+		logger.WriteErrorMessage(fmt.Sprintf("Can not handle the request '%s'", received))
 	}
 
 	if err != nil {
