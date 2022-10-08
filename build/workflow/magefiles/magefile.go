@@ -219,7 +219,9 @@ func Test() error {
 	if errOpen != nil {
 		return errOpen
 	}
+	defer logFile.Close()
 
+	testErrors := []error{}
 	for _, packToTest := range smbExportBuildContext.PackagesToTest {
 
 		fmt.Println(fmt.Sprintf("Test package '%s', logging to '%s'", packToTest, logPath))
@@ -230,21 +232,18 @@ func Test() error {
 		cmd.Stdout = logFile
 		errTest := cmd.Run()
 		if errTest != nil {
-			logFile.Close()
 			fmt.Println(errTest.Error())
-			return errTest
+			testErrors = append(testErrors, errTest)
 		}
 	}
-	logFile.Close()
 
-	fmt.Println(fmt.Sprintf("Convert the test results %s to %s", logPath, xmlResult))
-	cmd := exec.Command("go", "run", "github.com/tebeka/go2xunit", "-input", logPath, "-output", xmlResult)
-	cmd.Dir = filepath.Join(smbExportBuildContext.WorkDir, "build")
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	errConvert := cmd.Run()
-	if errConvert != nil {
-		return errConvert
+	errConv := convertTestResults(logPath, xmlResult)
+	if errConv != nil {
+		return errConv
+	}
+
+	if len(testErrors) > 0 {
+		return testErrors[0]
 	}
 
 	fmt.Println(fmt.Sprintf("# ##############################################################################################"))
@@ -506,4 +505,18 @@ func readOSDistribution() (string, error) {
 	}
 
 	return ret, nil
+}
+
+func convertTestResults(logPath, xmlResult string) error {
+	fmt.Println(fmt.Sprintf("Convert the test results %s to %s", logPath, xmlResult))
+	cmd := exec.Command("go", "run", "github.com/tebeka/go2xunit", "-input", logPath, "-output", xmlResult)
+	cmd.Dir = filepath.Join(smbExportBuildContext.WorkDir, "build")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	errConvert := cmd.Run()
+	if errConvert != nil {
+		return errConvert
+	}
+
+	return nil
 }
