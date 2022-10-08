@@ -161,6 +161,9 @@ func TestGoHandleRequestQueue(t *testing.T) {
 
 	requestQueue.Push(commonbl.GetRequest("NO_REQUEST", 3))
 	goHandleRequestQueue(responseHandler)
+
+	requestQueue.Push("")
+	goHandleRequestQueue(responseHandler)
 }
 
 func TestMainWithHelp(t *testing.T) {

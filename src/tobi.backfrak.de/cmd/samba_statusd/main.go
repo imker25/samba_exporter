@@ -131,10 +131,13 @@ func goHandleRequestQueue(responseHandler *commonbl.PipeHandler) {
 	var err error = nil
 	var received string
 	received, err = requestQueue.Pull()
-
 	if err != nil {
 		logger.WriteErrorMessage(fmt.Sprintf("Got error while reading request from Queue: %s", err))
 		os.Exit(-8)
+	}
+
+	if received == "" {
+		return
 	}
 
 	if strings.HasPrefix(received, string(commonbl.PROCESS_REQUEST)) {
@@ -146,7 +149,7 @@ func goHandleRequestQueue(responseHandler *commonbl.PipeHandler) {
 	} else if strings.HasPrefix(received, string(commonbl.PS_REQUEST)) {
 		err = handleRequest(responseHandler, received, commonbl.PS_REQUEST, psResponse, testPsResponse)
 	} else {
-		logger.WriteErrorMessage(fmt.Sprintf("Can not handle the request '%s'", received))
+		logger.WriteErrorMessage(fmt.Sprintf("Can not handle the request: '%s'", received))
 	}
 
 	if err != nil {
