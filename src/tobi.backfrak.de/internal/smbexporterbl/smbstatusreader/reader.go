@@ -37,7 +37,7 @@ func (lockData LockData) String() string {
 
 // GetLockData - Get the entries out of the 'smbstatus -L -n' output table multiline string
 // Will return an empty array if the data is in unexpected format
-func GetLockData(data string, logger commonbl.Logger) []LockData {
+func GetLockData(data string, logger *commonbl.Logger) []LockData {
 	var ret []LockData
 	if strings.TrimSpace(data) == "No locked files" {
 		return ret
@@ -112,7 +112,7 @@ func (shareData ShareData) String() string {
 
 // GetShareData - Get the entries out of the 'smbstatus -S -n' output table multiline string
 // Will return an empty array if the data is in unexpected format
-func GetShareData(data string, logger commonbl.Logger) []ShareData {
+func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 	var ret []ShareData
 	lines := strings.Split(data, "\n")
 	sepLineIndex := findSeperatorLineIndex(lines)
@@ -209,7 +209,7 @@ func (processData ProcessData) String() string {
 
 // GetProcessData - Get the entries out of the 'smbstatus -p -n' output table multiline string
 // Will return an empty array if the data is in unexpected format
-func GetProcessData(data string, logger commonbl.Logger) []ProcessData {
+func GetProcessData(data string, logger *commonbl.Logger) []ProcessData {
 	var ret []ProcessData
 	lines := strings.Split(data, "\n")
 	sepLineIndex := findSeperatorLineIndex(lines)
@@ -265,7 +265,7 @@ func GetProcessData(data string, logger commonbl.Logger) []ProcessData {
 	return ret
 }
 
-func GetPsData(data string, logger commonbl.Logger) []commonbl.PsUtilPidData {
+func GetPsData(data string, logger *commonbl.Logger) []commonbl.PsUtilPidData {
 	var ret []commonbl.PsUtilPidData
 	errConv := json.Unmarshal([]byte(data), &ret)
 	if errConv != nil {

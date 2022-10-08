@@ -25,7 +25,7 @@ func TestNewSambaExporter(t *testing.T) {
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
-	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
+	exporter := NewSambaExporter(&requestHandler, &responseHandler, &logger, "0.0.0", 5, getNewStatisticGenSettings())
 
 	if exporter.RequestHandler.PipeType != commonbl.RequestPipe {
 		t.Errorf("The exporter.RequestHandler is not of the expected type")
@@ -53,12 +53,12 @@ func TestSetDescriptionsFromResponse(t *testing.T) {
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := *commonbl.NewLogger(true)
-	locks := smbstatusreader.GetLockData(smbstatusout.LockDataNoData, logger)
-	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataOneLine, logger)
-	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataOneLine, logger)
-	psData := smbstatusreader.GetPsData(commonbl.TestPsResponseEmpty(), logger)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockDataNoData, &logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataOneLine, &logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataOneLine, &logger)
+	psData := smbstatusreader.GetPsData(commonbl.TestPsResponseEmpty(), &logger)
 	ch := make(chan *prometheus.Desc, expectedChanels)
-	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
+	exporter := NewSambaExporter(&requestHandler, &responseHandler, &logger, "0.0.0", 5, getNewStatisticGenSettings())
 	exporter.setDescriptionsFromResponse(locks, processes, shares, psData, ch)
 
 	if len(ch) != expectedChanels {
@@ -76,9 +76,9 @@ func TestSetDescriptionsFromResponse(t *testing.T) {
 func TestSetMetricsFromResponse(t *testing.T) {
 	expectedDescChanels := 38
 	expectedMetChanels := 65
-	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
-	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -107,9 +107,9 @@ func TestSetMetricsFromResponseNoPid(t *testing.T) {
 	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{false, false, false, true}
 	expectedDescChanels := 38
 	expectedMetChanels := 47
-	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
-	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -130,9 +130,9 @@ func TestSetMetricsFromResponseNoUser(t *testing.T) {
 	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{false, true, false, false}
 	expectedDescChanels := 38
 	expectedMetChanels := 57
-	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
-	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -153,9 +153,9 @@ func TestSetMetricsFromResponseNoClient(t *testing.T) {
 	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{true, false, false, false}
 	expectedDescChanels := 38
 	expectedMetChanels := 53
-	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
-	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -176,9 +176,9 @@ func TestSetMetricsFromResponseNoShare(t *testing.T) {
 	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{false, false, true, false}
 	expectedDescChanels := 38
 	expectedMetChanels := 62
-	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
-	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -198,9 +198,9 @@ func TestSetMetricsFromResponseNoShare(t *testing.T) {
 func TestSetMetricsFromEmptyResponse(t *testing.T) {
 	expectedDescChanels := 38
 	expectedMetChanels := 19
-	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
-	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.LockData0Line, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.LockData0Line, logger)
@@ -218,9 +218,9 @@ func TestSetMetricsFromEmptyResponse(t *testing.T) {
 }
 
 func TestSetGaugeDescriptionNoLabel(t *testing.T) {
-	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
-	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
 	help := "My help"
 	name := "my_name"
 	ch := make(chan *prometheus.Desc, 1)
@@ -246,9 +246,9 @@ func TestSetGaugeDescriptionNoLabel(t *testing.T) {
 }
 
 func TestSetGaugeDescriptionWithLabel(t *testing.T) {
-	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
-	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
 	help := "My help"
 	name := "my_name"
 	labels := map[string]string{"key1": "value1", "key2": "value2"}
@@ -281,9 +281,9 @@ func TestSetGaugeDescriptionWithLabel(t *testing.T) {
 }
 
 func TestSetGaugeIntMetricNoLabel(t *testing.T) {
-	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
-	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
 	help := "My help"
 	name := "my_name"
 	chDesc := make(chan *prometheus.Desc, 1)
@@ -308,9 +308,9 @@ func TestSetGaugeIntMetricNoLabel(t *testing.T) {
 }
 
 func TestSetGaugeIntMetricNoDescription(t *testing.T) {
-	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
-	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
 	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 	name := "my_name"
 	chMet := make(chan prometheus.Metric, 1)
@@ -323,9 +323,9 @@ func TestSetGaugeIntMetricNoDescription(t *testing.T) {
 }
 
 func TestSetGaugeIntMetricWithLabel(t *testing.T) {
-	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
-	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
 	help := "My help"
 	name := "my_name"
 	labels := map[string]string{"key1": "value1", "key2": "value2"}
@@ -351,9 +351,9 @@ func TestSetGaugeIntMetricWithLabel(t *testing.T) {
 }
 
 func TestSetGaugeIntMetricWithLabelNoDescription(t *testing.T) {
-	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
-	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
 	labels := map[string]string{"key1": "value1", "key2": "value2"}
 	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 	name := "my_name"

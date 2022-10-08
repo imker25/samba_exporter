@@ -79,7 +79,7 @@ func main() {
 	}
 
 	if params.TestPipeMode {
-		errTest := testPipeMode(requestHandler, responseHandler)
+		errTest := testPipeMode(&requestHandler, &responseHandler)
 		if errTest != nil {
 			logger.WriteError(errTest)
 			os.Exit(-2)
@@ -93,7 +93,7 @@ func main() {
 
 	logger.WriteVerbose("Setup prometheus exporter")
 
-	exporter := smbexporter.NewSambaExporter(requestHandler, responseHandler, logger, version, params.RequestTimeOut, params.StatisticsGeneratorSettings)
+	exporter := smbexporter.NewSambaExporter(&requestHandler, &responseHandler, &logger, version, params.RequestTimeOut, params.StatisticsGeneratorSettings)
 	prometheus.MustRegister(exporter)
 
 	logger.WriteInformation(fmt.Sprintf("Started %s, get metrics on http://%s%s", os.Args[0], params.ListenAddress, params.MetricsPath))
@@ -117,7 +117,7 @@ func main() {
 	}
 }
 
-func testPipeMode(requestHandler commonbl.PipeHandler, responseHandler commonbl.PipeHandler) error {
+func testPipeMode(requestHandler *commonbl.PipeHandler, responseHandler *commonbl.PipeHandler) error {
 	var processes []smbstatusreader.ProcessData
 	var shares []smbstatusreader.ShareData
 	var locks []smbstatusreader.LockData
@@ -125,7 +125,7 @@ func testPipeMode(requestHandler commonbl.PipeHandler, responseHandler commonbl.
 	var errGet error
 
 	logger.WriteVerbose("Request samba_statusd to get metrics for test-pipe mode")
-	locks, processes, shares, psData, errGet = pipecomunication.GetSambaStatus(requestHandler, responseHandler, logger, params.RequestTimeOut)
+	locks, processes, shares, psData, errGet = pipecomunication.GetSambaStatus(requestHandler, responseHandler, &logger, params.RequestTimeOut)
 	if errGet != nil {
 		return errGet
 	}

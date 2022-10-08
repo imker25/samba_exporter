@@ -21,7 +21,7 @@ import (
 
 func TestStringerLockData(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	oneLock := GetLockData(smbstatusout.LockDataOneLine, *logger)[0]
+	oneLock := GetLockData(smbstatusout.LockDataOneLine, logger)[0]
 
 	lockStr := oneLock.String()
 	if strings.Contains(lockStr, "UserID: 1080;") == false {
@@ -36,7 +36,7 @@ func TestStringerLockData(t *testing.T) {
 
 func TestStringerShareData(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	oneShare := GetShareData(smbstatusout.ShareDataOneLine, *logger)[0]
+	oneShare := GetShareData(smbstatusout.ShareDataOneLine, logger)[0]
 
 	shareStr := oneShare.String()
 	if strings.Contains(shareStr, "PID: 1119;") == false {
@@ -51,7 +51,7 @@ func TestStringerShareData(t *testing.T) {
 
 func TestStringerProcessData(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	oneProcess := GetProcessData(smbstatusout.ProcessDataOneLine, *logger)[0]
+	oneProcess := GetProcessData(smbstatusout.ProcessDataOneLine, logger)[0]
 
 	shareStr := oneProcess.String()
 	if strings.Contains(shareStr, "PID: 1117;") == false {
@@ -66,7 +66,7 @@ func TestStringerProcessData(t *testing.T) {
 
 func TestGetLockDataOneLine(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	oneEntry := GetLockData(smbstatusout.LockDataOneLine, *logger)
+	oneEntry := GetLockData(smbstatusout.LockDataOneLine, logger)
 
 	if len(oneEntry) != 1 {
 		t.Errorf("Expected 1 entry, got %d", len(oneEntry))
@@ -113,7 +113,7 @@ func TestGetLockDataOneLine(t *testing.T) {
 
 func TestGetLockData4Line(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	entryList := GetLockData(smbstatusout.LockData4Lines, *logger)
+	entryList := GetLockData(smbstatusout.LockData4Lines, logger)
 
 	if len(entryList) != 4 {
 		t.Errorf("Got %d entries, expected 4", len(entryList))
@@ -136,7 +136,7 @@ func TestGetLockData4Line(t *testing.T) {
 
 func TestGetLockDataWrongInput(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	entryList := GetLockData(smbstatusout.ProcessData4Lines, *logger)
+	entryList := GetLockData(smbstatusout.ProcessData4Lines, logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
@@ -145,7 +145,7 @@ func TestGetLockDataWrongInput(t *testing.T) {
 
 func TestGetLockData0Input(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	entryList := GetLockData(smbstatusout.LockData0Line, *logger)
+	entryList := GetLockData(smbstatusout.LockData0Line, logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
@@ -154,7 +154,7 @@ func TestGetLockData0Input(t *testing.T) {
 
 func TestGetLockDataNoDta(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	entryList := GetLockData(smbstatusout.LockDataNoData, *logger)
+	entryList := GetLockData(smbstatusout.LockDataNoData, logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
@@ -163,7 +163,7 @@ func TestGetLockDataNoDta(t *testing.T) {
 
 func TestGetShareDataDifferentTimeStampLines(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	entryList := GetShareData(smbstatusout.ShareDataDifferentTimeStampLines, *logger)
+	entryList := GetShareData(smbstatusout.ShareDataDifferentTimeStampLines, logger)
 
 	if len(entryList) != 3 {
 		t.Errorf("Got wrong amount of entries %d", len(entryList))
@@ -180,7 +180,7 @@ func TestGetShareDataDifferentTimeStampLines(t *testing.T) {
 
 func TestGetShareDataOneLine(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	oneEntry := GetShareData(smbstatusout.ShareDataOneLine, *logger)
+	oneEntry := GetShareData(smbstatusout.ShareDataOneLine, logger)
 
 	if len(oneEntry) != 1 {
 		t.Errorf("Expected 1 entry, got %d", len(oneEntry))
@@ -213,7 +213,7 @@ func TestGetShareDataOneLine(t *testing.T) {
 
 func TestGetShareData4Line(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	entries := GetShareData(smbstatusout.ShareData4Lines, *logger)
+	entries := GetShareData(smbstatusout.ShareData4Lines, logger)
 
 	if len(entries) != 4 {
 		t.Errorf("Got %d entries, expected 4", len(entries))
@@ -238,7 +238,7 @@ func TestGetShareData4Line(t *testing.T) {
 
 func TestGetShareDataWrongData(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	entries := GetShareData(smbstatusout.LockData4Lines, *logger)
+	entries := GetShareData(smbstatusout.LockData4Lines, logger)
 
 	if len(entries) != 0 {
 		t.Errorf("Got %d entries, but expected none", len(entries))
@@ -247,7 +247,7 @@ func TestGetShareDataWrongData(t *testing.T) {
 
 func TestGetShareData0Input(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	entryList := GetShareData(smbstatusout.ShareData0Line, *logger)
+	entryList := GetShareData(smbstatusout.ShareData0Line, logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
@@ -256,7 +256,7 @@ func TestGetShareData0Input(t *testing.T) {
 
 func TestGetProcessDataOneLine(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	oneProcess := GetProcessData(smbstatusout.ProcessDataOneLine, *logger)
+	oneProcess := GetProcessData(smbstatusout.ProcessDataOneLine, logger)
 
 	if len(oneProcess) != 1 {
 		t.Errorf("Got %d entries, expected 1", len(oneProcess))
@@ -293,7 +293,7 @@ func TestGetProcessDataOneLine(t *testing.T) {
 
 func TestGetProcessData4Line(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	enties := GetProcessData(smbstatusout.ProcessData4Lines, *logger)
+	enties := GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
 	if len(enties) != 4 {
 		t.Errorf("Got %d entries, expected 1", len(enties))
@@ -323,7 +323,7 @@ func TestGetProcessData4Line(t *testing.T) {
 
 func TestGetProcessDataWrongData(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	enties := GetProcessData(smbstatusout.LockData4Lines, *logger)
+	enties := GetProcessData(smbstatusout.LockData4Lines, logger)
 
 	if len(enties) != 0 {
 		t.Errorf("Got %d entries, but expected none", len(enties))
@@ -332,7 +332,7 @@ func TestGetProcessDataWrongData(t *testing.T) {
 
 func TestGetProcessData0Input(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	entryList := GetProcessData(smbstatusout.ProcessData0Lines, *logger)
+	entryList := GetProcessData(smbstatusout.ProcessData0Lines, logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
@@ -341,7 +341,7 @@ func TestGetProcessData0Input(t *testing.T) {
 
 func TestGetPsData0Input(t *testing.T) {
 	logger := commonbl.NewLogger(true)
-	entryList := GetPsData("", *logger)
+	entryList := GetPsData("", logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
@@ -351,7 +351,7 @@ func TestGetPsData0Input(t *testing.T) {
 func TestGetPsDataEmptyInput(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	jsonData := commonbl.TestPsResponseEmpty()
-	entryList := GetPsData(string(jsonData), *logger)
+	entryList := GetPsData(string(jsonData), logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
@@ -361,7 +361,7 @@ func TestGetPsDataEmptyInput(t *testing.T) {
 func TestGetPsDataTwoPids(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	jsonData := commonbl.TestPsResponse()
-	entryList := GetPsData(string(jsonData), *logger)
+	entryList := GetPsData(string(jsonData), logger)
 
 	if len(entryList) != 2 {
 		t.Errorf("Got %d entries but expected 2", len(entryList))
