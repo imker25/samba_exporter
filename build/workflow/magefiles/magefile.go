@@ -183,9 +183,9 @@ func Build() error {
 		outPutPath := filepath.Join(smbExportBuildContext.BinDir, filepath.Base(packToBuild))
 		fmt.Println(fmt.Sprintf("Compile package '%s' to '%s'", packToBuild, outPutPath))
 
-		ldfFlags := fmt.Sprintf("-ldflags=\"-X main.version=%s\"", smbExportBuildContext.ProgramVersion)
-		fmt.Println(fmt.Sprintf("Run in %s: %s %s %s %s %s %s", packToBuild, "go", "build", "-o", outPutPath, "-v", ldfFlags))
-		cmd := exec.Command("go", "build", "-o", outPutPath, "-v", ldfFlags)
+		ldfFlags := fmt.Sprintf("-X main.version=%s", smbExportBuildContext.ProgramVersion)
+		fmt.Println(fmt.Sprintf("Run in %s: %s %s %s %s %s -ldflags=\"%s\"", packToBuild, "go", "build", "-o", outPutPath, "-v", ldfFlags))
+		cmd := exec.Command("go", "build", "-o", outPutPath, "-v", "-ldflags", ldfFlags)
 		cmd.Dir = packToBuild
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
