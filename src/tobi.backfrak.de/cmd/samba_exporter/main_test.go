@@ -16,7 +16,7 @@ import (
 	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 )
 
-var mMutext sync.Mutex
+var mMutext sync.Mutex = sync.Mutex{}
 
 func TestGetVersion(t *testing.T) {
 	version := getVersion()
@@ -38,6 +38,8 @@ func TestTestPipeMode(t *testing.T) {
 	params.RequestTimeOut = 1
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger = *commonbl.NewLogger(true)
+
 	err := testPipeMode(requestHandler, responseHandler)
 	if err == nil {
 		t.Errorf("Got no error, but expected one")
