@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Copyright 2021 by tobi@backfrak.de. All
+# rights reserved. Use of this source code is governed
+# by a BSD-style license that can be found in the
+# LICENSE file.
+
+
 # Script to run the mage build workflow for the project.
 # - running the script without paramates just recompiles the project
 # - running the script with -l list the targets

@@ -24,5 +24,8 @@ func TestHandleComandlineOptions(t *testing.T) {
 }
 
 func TestCustomHelpMessage(t *testing.T) {
+	mMutext.Lock()
+	defer mMutext.Unlock()
+
 	customHelpMessage()
 }

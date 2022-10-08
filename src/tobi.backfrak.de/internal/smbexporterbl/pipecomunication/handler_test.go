@@ -27,6 +27,6 @@ func TestGetSambaStatusTimeout(t *testing.T) {
 	case *SmbStatusTimeOutError:
 		fmt.Fprintln(os.Stdout, "OK")
 	default:
-		t.Errorf("Got error of the wrong type")
+		t.Errorf("Got error '%s' type, but expected '*SmbStatusTimeOutError'", err.Error())
 	}
 }
