@@ -17,7 +17,7 @@ import (
 )
 
 func TestGetSmbStatisticsNoLockData(t *testing.T) {
-	logger := *commonbl.NewLogger(true)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockDataNoData, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataOneLine, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataOneLine, logger)
@@ -38,7 +38,7 @@ func getNewStatisticGenSettings() StatisticsGeneratorSettings {
 }
 
 func TestGetSmbStatisticsEmptyData(t *testing.T) {
-	logger := *commonbl.NewLogger(true)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines, logger)
@@ -88,7 +88,7 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 }
 
 func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
-	logger := *commonbl.NewLogger(true)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines, logger)
@@ -108,7 +108,7 @@ func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
 }
 
 func TestGetSmbStatistics(t *testing.T) {
-	logger := *commonbl.NewLogger(true)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -269,7 +269,7 @@ func TestGetSmbStatistics(t *testing.T) {
 }
 
 func TestGetSmbStatisticsNotExportEncryption(t *testing.T) {
-	logger := *commonbl.NewLogger(true)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -295,7 +295,7 @@ func TestGetSmbStatisticsNotExportEncryption(t *testing.T) {
 }
 
 func TestGetSmbStatisticsNotExportClient(t *testing.T) {
-	logger := *commonbl.NewLogger(true)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -313,7 +313,7 @@ func TestGetSmbStatisticsNotExportClient(t *testing.T) {
 }
 
 func TestGetSmbStatisticsNotExportUser(t *testing.T) {
-	logger := *commonbl.NewLogger(true)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -340,7 +340,7 @@ func TestGetSmbStatisticsNotExportUser(t *testing.T) {
 }
 
 func TestGetSmbStatisticsAllNotExportFlags(t *testing.T) {
-	logger := *commonbl.NewLogger(true)
+	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)

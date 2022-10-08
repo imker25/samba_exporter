@@ -10,6 +10,9 @@ import (
 )
 
 func TestHandleComandlineOptions(t *testing.T) {
+	mMutext.Lock()
+	defer mMutext.Unlock()
+
 	handleComandlineOptions()
 	if params.PrintVersion {
 		t.Errorf("params.PrintVersion is true, but should not")
