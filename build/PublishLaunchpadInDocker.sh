@@ -189,12 +189,22 @@ if [ "$?" != "0" ]; then
 fi
 
 if [ "$dockerError" == "false" ];then 
-echo "Publish tag $tag on launchpad within a docker cotainer for jammy"
-echo "# ###################################################################"
+    echo "Publish tag $tag on launchpad within a docker cotainer for jammy"
+    echo "# ###################################################################"
     buildAndRunDocker "jammy"
     if [ "$?" != "0" ]; then
         dockerError="true"
         echo "Error while publish package for jammy"
+    fi
+fi
+
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on launchpad within a docker cotainer for kinetic"
+    echo "# ###################################################################"
+    buildAndRunDocker "kinetic"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+        echo "Error while publish package for kinetic"
     fi
 fi
 

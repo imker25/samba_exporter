@@ -250,6 +250,14 @@ else
     echo "Not running on ubuntu 22.04 (jammy)"
 fi
 
+if [ "$distVersionNumber" == "22.10" ] && [ "$distribution" == "Ubuntu" ]; then
+    sed -i "s/focal;/kinetic;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu20.04/ubuntu22.10/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/golang-1.16,/golang-1.19,/g" $WORK_DIR/install/debian/control    
+else 
+    echo "Not running on ubuntu 22.10 (kinetic)"
+fi
+
 if [ "$distVersionNumber" == "11" ] && [ "$distribution" == "Debian" ]; then
     sed -i "s/focal;/bullseye;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/debian11/g" $WORK_DIR/install/debian/changelog
@@ -300,7 +308,7 @@ echo "# ###################################################################"
 echo "# Build packages before git commit"
 gbp buildpackage -kimker@bienenkaefig.de --git-ignore-new 
 if [ "$?" != "0" ]; then 
-    ls -l /build_area/samba-exporter/bin/src/src
+    ls -l $BUILD_DIR/samba-exporter/bin/src/src
     echo "Error: Can not build the packages with default paramters"
     exit 1
 fi

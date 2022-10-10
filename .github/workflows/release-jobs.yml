@@ -94,6 +94,15 @@ jobs:
         asset_path: ./bin/deb-packages/binary/samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu20.04_amd64.deb
         asset_name: samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu20.04_amd64.deb
         asset_content_type: application/zip    
+    - name: Upload Release Asset for Ubuntu 22.10
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
+        asset_path: ./bin/deb-packages/binary/samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu22.10_amd64.deb
+        asset_name: samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu22.10_amd64.deb
+        asset_content_type: application/zip          
     - name: Upload Release Asset for Debian 11
       uses: actions/upload-release-asset@v1
       env:
