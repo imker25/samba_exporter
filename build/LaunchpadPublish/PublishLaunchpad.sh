@@ -229,6 +229,7 @@ echo "Patch package dependencies acording the distribution and version"
 if [ "$distVersionNumber" == "20.04" ] && [ "$distribution" == "Ubuntu" ]; then
     find . -name "go.mod" -exec sed -i "s/require github.com\\/prometheus\\/client_golang $GITHUB_PROMETHEUS_VERSION/require github.com\\/prometheus\\/client_golang $LAUNCHPAD_PROMETHEUS_VERSION/g" {} \;
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
+    sed -i "s/tobi.backfrak.de\\/internal\\/smbstatusdbl//g" $WORK_DIR/install/debian/rules 
     mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod.gopsutil-v3"
     mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.sum.gopsutil-v3"
     mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod.gopsutil-v2" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod" 
