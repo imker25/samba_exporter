@@ -274,6 +274,15 @@ else
     echo "Not running on Fedora 36"
 fi 
 
+if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "37" ]; then
+    echo "Do modifications for 'Fedora 37'"
+    sed -i "s/Release: 1/Release: 1.fc37/g" ~/rpmbuild/SPECS/samba-exporter.spec
+    buildSystem="rpm"
+    changeroots="--chroot fedora-${distVersionNumber}-x86_64"
+else
+    echo "Not running on Fedora 37"
+fi 
+
 
 echo "# ###################################################################"
 echo "~/rpmbuild/SPECS/samba-exporter.spec after modification"
