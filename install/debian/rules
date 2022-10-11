@@ -42,10 +42,7 @@ override_dh_auto_install:
 
 
 override_dh_auto_test:	 
-	for TEST_DH_GOLANG_PACKAGE in ${DH_GOLANG_BUILDPKG}; do \
-		cd $(CURDIR)/src/$${TEST_DH_GOLANG_PACKAGE} &&	go test -vet=off -v -p $$(nproc) ; \
-	done
-
+	dh_auto_test --no-parallel 
 
 %:
 	dh $@ --buildsystem=golang --with=golang --builddirectory=$(CURDIR)/bin/
