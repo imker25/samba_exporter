@@ -568,32 +568,31 @@
 <h2 id="build">Build<a class="headerlink" href="#build" title="Permanent link">&para;</a></h2>
 <p>To build the project you need the following on your development machine.</p>
 <ul>
-<li><a href="https://golang.org/">Go</a> Version 1.16.x</li>
-<li><a href="https://java.com/">Java</a> Version 11</li>
+<li><a href="https://golang.org/">Go</a> Version 1.16.x or later</li>
 <li><a href="https://git-scm.com/">Git</a> &gt;= Version 2.30</li>
 <li><a href="https://refspecs.linuxfoundation.org/LSB_3.0.0/LSB-PDA/LSB-PDA/lsbrelease.html">lsb_release</a></li>
 <li><a href="https://github.com/rtomayko/ronn">ronn</a> - Only in case you want to work on man pages</li>
 </ul>
 <p>To build the software change to the repositories directory and run:</p>
-<pre><code class="language-sh">./gradlew getBuildName build preparePack
+<pre><code class="language-sh">./build.sh build 
 </code></pre>
-<p>To figure out all the valid gradle tasks, read <code>build.gradle</code></p>
+<p>To figure out all the valid tasks, read <code>./build.sh -l</code></p>
 <h2 id="create-man-pages">Create man pages<a class="headerlink" href="#create-man-pages" title="Permanent link">&para;</a></h2>
 <p>To create the man pages out of the <code>*.ronn</code> source files in <code>src/man</code> run:</p>
 <pre><code class="language-sh">build/CreateManPage.sh 
 </code></pre>
 <h2 id="run-tests-locally">Run Tests locally<a class="headerlink" href="#run-tests-locally" title="Permanent link">&para;</a></h2>
 <p>To execute the unit tests you can run:</p>
-<pre><code class="language-sh">./gradlew test
+<pre><code class="language-sh">./build.sh test
 </code></pre>
-<p><strong>Hint:</strong> As always it is possible to combine the gradle commands, e. g. <code>./gradlew build test</code></p>
+<p><strong>Hint:</strong> As always it is possible to combine the commands, e. g. <code>./build.sh build test</code></p>
 <p>To execute the integration tests you can run:</p>
 <pre><code class="language-sh">./test/integrationTest/scripts/RunIntegrationTests.sh
 </code></pre>
 <h2 id="manual-installation">Manual installation<a class="headerlink" href="#manual-installation" title="Permanent link">&para;</a></h2>
 <p>On your target machine, the samba server you want to monitor, you need <a href="https://www.samba.org/">samba</a> and <a href="https://www.freedesktop.org/wiki/Software/systemd/">systemd</a> installed.</p>
 <p>To build for manual installation run the following:</p>
-<pre><code class="language-sh">./gradlew getBuildName build preparePack
+<pre><code class="language-sh">./build.sh preparePack
 build/CreateManPage.sh 
 </code></pre>
 <p>For manual install on the <code>target</code> machine do the following copy after you build the project as shown above:</p>
@@ -652,7 +651,7 @@ samba_server_up 1
 samba_share_count 0
 </code></pre>
 <h2 id="_1"><br><a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
-<p><br><sub>Last change at Oct 02, 2022 19:58:40 by tobi - commit: a86f53e<sub></p>
+<p><br><sub>Last change at Oct 11, 2022 22:43:16 by Tobias Zellner - commit: 631fc1a<sub></p>
 
               
             </article>
