@@ -14,8 +14,9 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strconv"
 	"strings"
+
+	"github.com/imker25/gobuildhelpers"
 
 	"github.com/magefile/mage/mg" // mg contains helpful utility functions, like Deps
 )
@@ -69,14 +70,14 @@ func getEnvironment() error {
 	smbExportBuildContext.SourceDir = filepath.Join(workDir, "src")
 	smbExportBuildContext.VersionFilePath = filepath.Join(smbExportBuildContext.WorkDir, VERSION_FILE)
 
-	hash, errHash := getGitHash()
+	hash, errHash := gobuildhelpers.GetGitHash(smbExportBuildContext.WorkDir)
 	if errHash != nil {
 		return errHash
 	}
 	// fmt.Println(fmt.Sprintf("Git Hash: %s", hash))
 	smbExportBuildContext.GitHash = hash
 
-	hight, errHight := getGitHight()
+	hight, errHight := gobuildhelpers.GetGitHeight(VERSION_FILE, smbExportBuildContext.WorkDir)
 	if errHight != nil {
 		return errHight
 	}
@@ -99,40 +100,16 @@ func getEnvironment() error {
 	smbExportBuildContext.DebPackageName = fmt.Sprintf("samba-exporter_%s", debPackVersion)
 	fmt.Println(fmt.Sprintf("Run samba-exporter build workflow for V%s", smbExportBuildContext.ProgramVersion))
 
-	errFindBuild := filepath.Walk(filepath.Join(smbExportBuildContext.SourceDir, PROJECT_NAME_SPACE, "cmd"), func(path string, info os.FileInfo, err error) error {
-
-		if err != nil {
-			return nil
-		}
-
-		packToBuild := filepath.Dir(path)
-		if !info.IsDir() && filepath.Base(path) == "go.mod" && !listContains(smbExportBuildContext.PackagesToBuild, packToBuild) {
-			smbExportBuildContext.PackagesToBuild = append(smbExportBuildContext.PackagesToBuild, packToBuild)
-		}
-
-		return nil
-	})
-	if errFindBuild != nil {
-		return errFindBuild
+	var errFinBuild error
+	smbExportBuildContext.PackagesToBuild, errFinBuild = gobuildhelpers.FindPackagesToBuild(filepath.Join(smbExportBuildContext.SourceDir, PROJECT_NAME_SPACE, "cmd"))
+	if errFinBuild != nil {
+		return errFinBuild
 	}
 
-	errFindTest := filepath.Walk(filepath.Join(smbExportBuildContext.SourceDir, PROJECT_NAME_SPACE), func(path string, info os.FileInfo, err error) error {
-
-		if err != nil {
-			return nil
-		}
-
-		if !info.IsDir() && filepath.Ext(path) == ".go" {
-			packToTest := filepath.Dir(path)
-			if strings.HasSuffix(path, "_test.go") && !listContains(smbExportBuildContext.PackagesToTest, packToTest) {
-				smbExportBuildContext.PackagesToTest = append(smbExportBuildContext.PackagesToTest, packToTest)
-			}
-		}
-
-		return nil
-	})
-	if errFindTest != nil {
-		return errFindTest
+	var errFinTest error
+	smbExportBuildContext.PackagesToTest, errFinTest = gobuildhelpers.FindPackagesToTest(filepath.Join(smbExportBuildContext.SourceDir, PROJECT_NAME_SPACE))
+	if errFinTest != nil {
+		return errFinTest
 	}
 
 	fmt.Println(fmt.Sprintf("# ##############################################################################################"))
@@ -177,28 +154,11 @@ func Build() error {
 	fmt.Println(fmt.Sprintf("Building samba-exporter V%s ...", smbExportBuildContext.ProgramVersion))
 	fmt.Println(fmt.Sprintf("# ##############################################################################################"))
 
-	if _, err := os.Stat(smbExportBuildContext.BinDir); os.IsNotExist(err) {
-		errCreate := os.Mkdir(smbExportBuildContext.BinDir, 0755)
-		if errCreate != nil {
-			return errCreate
-		}
-	}
+	ldfFlags := fmt.Sprintf("-X main.version=%s", smbExportBuildContext.ProgramVersion)
 
-	for _, packToBuild := range smbExportBuildContext.PackagesToBuild {
-		outPutPath := filepath.Join(smbExportBuildContext.BinDir, filepath.Base(packToBuild))
-		fmt.Println(fmt.Sprintf("Compile package '%s' to '%s'", packToBuild, outPutPath))
-
-		ldfFlags := fmt.Sprintf("-X main.version=%s", smbExportBuildContext.ProgramVersion)
-		fmt.Println(fmt.Sprintf("Run in %s: %s %s %s %s %s -ldflags=\"%s\"", packToBuild, "go", "build", "-o", outPutPath, "-v", ldfFlags))
-		cmd := exec.Command("go", "build", "-o", outPutPath, "-v", "-ldflags", ldfFlags)
-		cmd.Dir = packToBuild
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		errBuild := cmd.Run()
-
-		if errBuild != nil {
-			return errBuild
-		}
+	err := gobuildhelpers.BuildFolders(smbExportBuildContext.PackagesToBuild, smbExportBuildContext.BinDir, ldfFlags)
+	if err != nil {
+		return err
 	}
 
 	fmt.Println(fmt.Sprintf("# ##############################################################################################"))
@@ -211,42 +171,15 @@ func Test() error {
 	fmt.Println(fmt.Sprintf("Testing samba-exporter... "))
 	fmt.Println(fmt.Sprintf("# ##############################################################################################"))
 
-	if _, err := os.Stat(smbExportBuildContext.LogDir); os.IsNotExist(err) {
-		errCreate := os.Mkdir(smbExportBuildContext.LogDir, 0755)
-		if errCreate != nil {
-			return errCreate
-		}
-	}
-
-	logPath := filepath.Join(smbExportBuildContext.LogDir, "TestsRun.log")
 	xmlResult := filepath.Join(smbExportBuildContext.LogDir, "TestsResult.xml")
-	logFile, errOpen := os.Create(logPath)
-	if errOpen != nil {
-		return errOpen
-	}
-	defer logFile.Close()
+	logFileName := "TestRun.log"
 
-	testErrors := []error{}
-	for _, packToTest := range smbExportBuildContext.PackagesToTest {
+	testErrors := gobuildhelpers.RunTestFolders(smbExportBuildContext.PackagesToTest, smbExportBuildContext.LogDir, logFileName)
 
-		fmt.Println(fmt.Sprintf("Test package '%s', logging to '%s'", packToTest, logPath))
-		fmt.Println(fmt.Sprintf("Run in %s: %s %s %s %s >> %s", packToTest, "go", "test", "-v", "-race", logPath))
-		cmd := exec.Command("go", "test", "-v", "-race")
-		cmd.Dir = packToTest
-		cmd.Stderr = logFile
-		cmd.Stdout = logFile
-		errTest := cmd.Run()
-		if errTest != nil {
-			fmt.Println(errTest.Error())
-			testErrors = append(testErrors, errTest)
-		}
-	}
-
-	errConv := convertTestResults(logPath, xmlResult)
+	errConv := gobuildhelpers.ConvertTestResults(filepath.Join(smbExportBuildContext.LogDir, logFileName), xmlResult, smbExportBuildContext.WorkDir)
 	if errConv != nil {
 		return errConv
 	}
-
 	if len(testErrors) > 0 {
 		return testErrors[0]
 	}
@@ -261,36 +194,10 @@ func Cover() error {
 	fmt.Println(fmt.Sprintf("Testing samba-exporter... "))
 	fmt.Println(fmt.Sprintf("# ##############################################################################################"))
 
-	if _, err := os.Stat(smbExportBuildContext.LogDir); os.IsNotExist(err) {
-		errCreate := os.Mkdir(smbExportBuildContext.LogDir, 0755)
-		if errCreate != nil {
-			return errCreate
-		}
+	err := gobuildhelpers.CoverTestFolders(smbExportBuildContext.PackagesToTest, smbExportBuildContext.LogDir, "TestCoverage.log")
+	if err != nil {
+		return err
 	}
-
-	logPath := filepath.Join(smbExportBuildContext.LogDir, "TestsCoverRun.log")
-	logFile, errOpen := os.Create(logPath)
-	if errOpen != nil {
-		return errOpen
-	}
-
-	for _, packToTest := range smbExportBuildContext.PackagesToTest {
-
-		fmt.Println(fmt.Sprintf("Test package '%s', logging to '%s'", packToTest, logPath))
-		fmt.Println(fmt.Sprintf("Run in %s: %s %s %s %s >> %s", packToTest, "go", "test", "-v", "-cover", logPath))
-		cmd := exec.Command("go", "test", "-v", "-cover")
-
-		cmd.Dir = packToTest
-		cmd.Stderr = logFile
-		cmd.Stdout = logFile
-		errTest := cmd.Run()
-		if errTest != nil {
-			logFile.Close()
-			fmt.Println(errTest.Error())
-			return errTest
-		}
-	}
-	logFile.Close()
 
 	fmt.Println(fmt.Sprintf("# ##############################################################################################"))
 	return nil
@@ -302,7 +209,7 @@ func Clean() error {
 	fmt.Println("Cleaning...")
 	fmt.Println(fmt.Sprintf("# ##############################################################################################"))
 
-	err := removePaths([]string{
+	err := gobuildhelpers.RemovePaths([]string{
 		smbExportBuildContext.BinDir,
 		smbExportBuildContext.PackageDir,
 		smbExportBuildContext.LogDir,
@@ -404,66 +311,14 @@ func installTestDeps() error {
 	mg.Deps(Clean)
 	fmt.Println("Installing Test Dependencies...")
 	fmt.Println(fmt.Sprintf("# ##############################################################################################"))
-	cmd := exec.Command("go", "install", "-v", "github.com/tebeka/go2xunit@v1.4.10")
-	cmd.Dir = filepath.Join(smbExportBuildContext.WorkDir, "build")
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdin
-	err := cmd.Run()
+
+	err := gobuildhelpers.InstallTestConverter(filepath.Join(smbExportBuildContext.WorkDir, "build"))
 	if err != nil {
 		return err
 	}
 
-	fmt.Println(fmt.Sprintf("# ##############################################################################################"))
+	fmt.Println("# ########################################################################################")
 	return nil
-}
-
-func getGitHash() (string, error) {
-	cmd := exec.Command("git", "describe", "--always", "--long", "--dirty")
-	cmd.Dir = smbExportBuildContext.WorkDir
-	cmd.Stderr = os.Stderr
-	hash, err := cmd.Output()
-	if err != nil {
-		return "", err
-	}
-	hashStr := strings.TrimSpace(string(hash))
-	return hashStr, nil
-}
-
-func getGitHight() (int, error) {
-	cmd := exec.Command("git", "log", "--pretty=format:\"%H\"", "-n 1", "--follow", VERSION_FILE)
-	cmd.Dir = smbExportBuildContext.WorkDir
-	cmd.Stderr = os.Stderr
-	lastChange, errLast := cmd.Output()
-	if errLast != nil {
-		return -1, errLast
-	}
-	lastChangeStr := strings.ReplaceAll(strings.TrimSpace(string(lastChange)), "\"", "")
-
-	cmd = exec.Command("git", "log", "--pretty=format:\"%H\"", "-n 1")
-	cmd.Dir = smbExportBuildContext.WorkDir
-	cmd.Stderr = os.Stderr
-	head, errHead := cmd.Output()
-	if errHead != nil {
-		return -1, errHead
-	}
-
-	headStr := strings.ReplaceAll(strings.TrimSpace(string(head)), "\"", "")
-
-	cmd = exec.Command("git", "rev-list", "--count", lastChangeStr+".."+headStr)
-	cmd.Dir = smbExportBuildContext.WorkDir
-	cmd.Stderr = os.Stderr
-	hight, hightErr := cmd.Output()
-	if hightErr != nil {
-		return -1, hightErr
-	}
-
-	hightStr := strings.TrimSpace(string(hight))
-	hightInt, errCon := strconv.Atoi(hightStr)
-	if errCon != nil {
-		return -1, nil
-	}
-
-	return hightInt, nil
 }
 
 func readVersionMaster() (string, error) {
@@ -473,26 +328,6 @@ func readVersionMaster() (string, error) {
 	}
 
 	return strings.TrimSpace(string(content)), nil
-}
-
-func listContains(list []string, value string) bool {
-	for _, item := range list {
-		if item == value {
-			return true
-		}
-	}
-
-	return false
-}
-
-func removePaths(paths []string) error {
-	for _, path := range paths {
-		err := os.RemoveAll(path)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 func readOSDistribution() (string, error) {
@@ -510,18 +345,4 @@ func readOSDistribution() (string, error) {
 	}
 
 	return ret, nil
-}
-
-func convertTestResults(logPath, xmlResult string) error {
-	fmt.Println(fmt.Sprintf("Convert the test results %s to %s", logPath, xmlResult))
-	cmd := exec.Command("go", "run", "github.com/tebeka/go2xunit", "-input", logPath, "-output", xmlResult)
-	cmd.Dir = filepath.Join(smbExportBuildContext.WorkDir, "build")
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	errConvert := cmd.Run()
-	if errConvert != nil {
-		return errConvert
-	}
-
-	return nil
 }
