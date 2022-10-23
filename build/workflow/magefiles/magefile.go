@@ -122,11 +122,8 @@ func GetBuildName() error {
 	fmt.Println(fmt.Sprintf("Create samba-exporter Version files..."))
 	fmt.Println(fmt.Sprintf("# ##############################################################################################"))
 
-	if _, err := os.Stat(smbExportBuildContext.LogDir); os.IsNotExist(err) {
-		errCreate := os.Mkdir(smbExportBuildContext.LogDir, 0755)
-		if errCreate != nil {
-			return errCreate
-		}
+	if err := gobuildhelpers.EnsureDirectoryExists(smbExportBuildContext.LogDir); err != nil {
+		return err
 	}
 
 	errNr := ioutil.WriteFile(filepath.Join(smbExportBuildContext.LogDir, "PackageName.txt"), []byte(smbExportBuildContext.DebPackageName), 0644)
@@ -176,7 +173,7 @@ func Test() error {
 
 	testErrors := gobuildhelpers.RunTestFolders(smbExportBuildContext.PackagesToTest, smbExportBuildContext.LogDir, logFileName)
 
-	errConv := gobuildhelpers.ConvertTestResults(filepath.Join(smbExportBuildContext.LogDir, logFileName), xmlResult, smbExportBuildContext.WorkDir)
+	errConv := gobuildhelpers.ConvertTestResults(filepath.Join(smbExportBuildContext.LogDir, logFileName), xmlResult, filepath.Join(smbExportBuildContext.WorkDir, "build"))
 	if errConv != nil {
 		return errConv
 	}
@@ -236,17 +233,12 @@ func PreparePack() error {
 	}
 
 	fmt.Println(fmt.Sprintf("Copy the files needed by the package to '%s'", debPackageDir))
-	if _, err := os.Stat(smbExportBuildContext.TmpDir); os.IsNotExist(err) {
-		errCreate := os.Mkdir(smbExportBuildContext.TmpDir, 0755)
-		if errCreate != nil {
-			return errCreate
-		}
+	if err := gobuildhelpers.EnsureDirectoryExists(smbExportBuildContext.TmpDir); err != nil {
+		return err
 	}
-	if _, err := os.Stat(debPackageDir); os.IsNotExist(err) {
-		errCreate := os.Mkdir(debPackageDir, 0755)
-		if errCreate != nil {
-			return errCreate
-		}
+
+	if err := gobuildhelpers.EnsureDirectoryExists(debPackageDir); err != nil {
+		return err
 	}
 
 	if dist == "ubuntu" || dist == "debian" {
