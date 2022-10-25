@@ -227,12 +227,12 @@ func PreparePack() error {
 	fmt.Println(fmt.Sprintf("# ##############################################################################################"))
 	debPackageDir := filepath.Join(smbExportBuildContext.TmpDir, smbExportBuildContext.DebPackageName)
 
-	dist, errDist := readOSDistribution()
+	dist, errDist := gobuildhelpers.ReadOSDistribution()
 	if errDist != nil {
 		return errDist
 	}
 
-	fmt.Println(fmt.Sprintf("Copy the files needed by the package to '%s'", debPackageDir))
+	fmt.Println(fmt.Sprintf("Copy the files needed by the %s package to '%s'", dist, debPackageDir))
 	if err := gobuildhelpers.EnsureDirectoryExists(smbExportBuildContext.TmpDir); err != nil {
 		return err
 	}
@@ -320,21 +320,4 @@ func readVersionMaster() (string, error) {
 	}
 
 	return strings.TrimSpace(string(content)), nil
-}
-
-func readOSDistribution() (string, error) {
-	ret := ""
-	byteContent, err := ioutil.ReadFile("/etc/os-release")
-	if err != nil {
-		return "", err
-	}
-	lines := strings.Split(string(byteContent), "\n")
-
-	for _, line := range lines {
-		if strings.HasPrefix(line, "ID=") {
-			ret = strings.Replace(line, "ID=", "", 1)
-		}
-	}
-
-	return ret, nil
 }
