@@ -197,15 +197,15 @@ if [ "$dockerError" == "false" ];then
     fi
 fi
 
-# if [ "$dockerError" == "false" ];then 
-#     echo "Publish tag $tag on corp within a docker cotainer for fedora 37"
-#     echo "# ###################################################################"
-#     buildAndRunDocker "fedora37"
-#     if [ "$?" != "0" ]; then
-#         dockerError="true"
-#          echo "Error while publish for fedora 37"
-#     fi
-# fi
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on corp within a docker cotainer for fedora 37"
+    echo "# ###################################################################"
+    buildAndRunDocker "fedora37"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+         echo "Error while publish for fedora 37"
+    fi
+fi
 
 popd
 
