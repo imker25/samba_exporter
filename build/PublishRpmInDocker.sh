@@ -169,13 +169,6 @@ cp -v "$BRANCH_ROOT/tmp/commit_logs" "$RPM_PACKAGE_DIR"
 cp -v "$BRANCH_ROOT/install/fedora/samba-exporter.from_source.spec" "$WORK_DIR/samba-exporter.from_source.spec"
 
 dockerError="false"
-echo "Publish tag $tag on corp within a docker cotainer for fedora 35"
-echo "# ###################################################################"
-buildAndRunDocker "fedora35"
-if [ "$?" != "0" ]; then
-    dockerError="true"
-    echo "Error while publish for fedora 35"
-fi
 
 if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on corp within a docker cotainer for fedora 28"
