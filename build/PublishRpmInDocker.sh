@@ -200,6 +200,10 @@ if [ "$dockerError" == "false" ];then
     fi
 fi
 
+# Whenever adding a new fedora version, ensure to enable this 
+# fedora version on copr before the first release
+
+
 popd
 
 echo "# ###################################################################"
