@@ -329,6 +329,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#rhel-9-centos-stream-9-fedora-35" class="md-nav__link">
+    RHEL 9 / CentOS Stream 9 / Fedora 35
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#github-releases-for-debian-based-distributions" class="md-nav__link">
     GitHub Releases - For debian based distributions
   </a>
@@ -580,10 +587,18 @@ sudo dnf update
 sudo dnf install samba-exporter
 </code></pre>
 <h2 id="rhel-8-centos-8-centos-stream-8-fedora-28">RHEL 8 / CentOS 8 / CentOS Stream 8 / Fedora 28<a class="headerlink" href="#rhel-8-centos-8-centos-stream-8-fedora-28" title="Permanent link">&para;</a></h2>
-<p>For Redhat Enterprise Linux 8 and all compatible distributions the <strong>samba exporter</strong> package for Debian is published on the projects GitHub Page. To install execute the commands shown below as root:</p>
+<p>For Redhat Enterprise Linux 8 and all compatible distributions the <strong>samba exporter</strong> package is published on the projects GitHub Page. To install execute the commands shown below as root:</p>
 <pre><code class="language-bash">wget -O /dev/shm/archive.key https://imker25.github.io/samba_exporter/repos/debian/archive.key
 rpm --import /dev/shm/archive.key
 dnf config-manager --add-repo https://imker25.github.io/samba_exporter/repos/rpm/fedora/releases/28/x86_64
+dnf update
+dnf install samba-exporter
+</code></pre>
+<h2 id="rhel-9-centos-stream-9-fedora-35">RHEL 9 / CentOS Stream 9 / Fedora 35<a class="headerlink" href="#rhel-9-centos-stream-9-fedora-35" title="Permanent link">&para;</a></h2>
+<p>For Redhat Enterprise Linux 9 and all compatible distributions the <strong>samba exporter</strong> package is published on the projects GitHub Page. To install execute the commands shown below as root:</p>
+<pre><code class="language-bash">wget -O /dev/shm/archive.key https://imker25.github.io/samba_exporter/repos/debian/archive.key
+rpm --import /dev/shm/archive.key
+dnf config-manager --add-repo https://imker25.github.io/samba_exporter/repos/rpm/fedora/releases/35/x86_64
 dnf update
 dnf install samba-exporter
 </code></pre>
@@ -604,7 +619,7 @@ sudo rpm -U samba-exporter-1.12.5-1.fc35.x86_64.rpm
 <p>For manual installation see the <a href="../../DeveloperDocs/Compile/">Developer Guide</a>.
 <br></p>
 <hr />
-<p><br><sub>Last change at Dec 01, 2022 20:41:49 by imker - commit: 8acae59<sub></p>
+<p><br><sub>Last change at Dec 06, 2022 22:54:29 by Tobias Zellner - commit: 22c0641<sub></p>
 
               
             </article>
