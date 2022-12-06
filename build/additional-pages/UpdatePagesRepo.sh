@@ -96,20 +96,20 @@ echo "# ###################################################################"
 echo "git status"
 git status
 
-echo "# ###################################################################"
-echo "Update the debian repo with bullseye package"
-reprepro --basedir "./repos/debian/" includedeb bullseye "$HOST_FOLDER/deb-packages/binary/samba-exporter_$tag~ppa1~debian11_amd64.deb"
-if [ "$?" != "0" ]; then 
-    echo "Error during reprepro for bullseye"
-    exit 1
-fi
-echo "# ###################################################################"
-echo "Update the debian repo with buster package"
-reprepro --basedir "./repos/debian/" includedeb buster "$HOST_FOLDER/deb-packages/binary/samba-exporter_$tag~ppa1~debian10_amd64.deb"
-if [ "$?" != "0" ]; then 
-    echo "Error during reprepro for buster"
-    exit 1
-fi
+# echo "# ###################################################################"
+# echo "Update the debian repo with bullseye package"
+# reprepro --basedir "./repos/debian/" includedeb bullseye "$HOST_FOLDER/deb-packages/binary/samba-exporter_$tag~ppa1~debian11_amd64.deb"
+# if [ "$?" != "0" ]; then 
+#     echo "Error during reprepro for bullseye"
+#     exit 1
+# fi
+# echo "# ###################################################################"
+# echo "Update the debian repo with buster package"
+# reprepro --basedir "./repos/debian/" includedeb buster "$HOST_FOLDER/deb-packages/binary/samba-exporter_$tag~ppa1~debian10_amd64.deb"
+# if [ "$?" != "0" ]; then 
+#     echo "Error during reprepro for buster"
+#     exit 1
+# fi
 
 echo "# ###################################################################"
 echo "Update the rpm repo with fc28 package"
@@ -122,6 +122,20 @@ cp -v "$HOST_FOLDER/rpm-packages/Fedora-28/samba-exporter-${rpmVersion}-1.x86_64
 createrepo_c "./repos/rpm/fedora/releases/28/x86_64/"
 if [ "$?" != "0" ]; then 
     echo "Error during createrepo for fc28"
+    exit 1
+fi
+
+echo "# ###################################################################"
+echo "Update the rpm repo with fc35 package"
+if [ ! -f "$HOST_FOLDER/rpm-packages/Fedora-35/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm" ]; then
+    echo "Error: Can not find the rpm package to publish"
+    exit 1
+fi 
+mkdir -pv "./repos/rpm/fedora/releases/35/x86_64"
+cp -v "$HOST_FOLDER/rpm-packages/Fedora-35/samba-exporter-${rpmVersion}-1.fc35.x86_64.rpm" "./repos/rpm/fedora/releases/35/x86_64/"
+createrepo_c "./repos/rpm/fedora/releases/35/x86_64/"
+if [ "$?" != "0" ]; then 
+    echo "Error during createrepo for fc35"
     exit 1
 fi
 

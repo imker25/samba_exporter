@@ -260,7 +260,7 @@ if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "35" ]; then
     echo "Do modifications for 'Fedora 35'"
     sed -i "s/Release: 1/Release: 1.fc35/g" ~/rpmbuild/SPECS/samba-exporter.spec
     buildSystem="rpm"
-    changeroots="--chroot fedora-${distVersionNumber}-x86_64 --chroot rhel-9-x86_64 --chroot rhel-9-x86_64 --chroot centos-stream-9-x86_64"
+    changeroots="--chroot fedora-${distVersionNumber}-x86_64"
 else
     echo "Not running on Fedora 35"
 fi 
@@ -462,7 +462,7 @@ if [  "$buildSystem" == "mage" ]; then
 fi
 
 if [  "$buildSystem" == "none" ]; then
-    echo "Running on unkown distribution or version"
+    echo "Running on unkown distribution '$distributio' or version '$distVersionNumber'" 
     exit 1
 fi
 

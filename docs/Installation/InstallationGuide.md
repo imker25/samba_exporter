@@ -37,12 +37,24 @@ sudo dnf install samba-exporter
 
 ## RHEL 8 / CentOS 8 / CentOS Stream 8 / Fedora 28
 
-For Redhat Enterprise Linux 8 and all compatible distributions the **samba exporter** package for Debian is published on the projects GitHub Page. To install execute the commands shown below as root:
+For Redhat Enterprise Linux 8 and all compatible distributions the **samba exporter** package is published on the projects GitHub Page. To install execute the commands shown below as root:
 
 ```bash
 wget -O /dev/shm/archive.key https://imker25.github.io/samba_exporter/repos/debian/archive.key
 rpm --import /dev/shm/archive.key
 dnf config-manager --add-repo https://imker25.github.io/samba_exporter/repos/rpm/fedora/releases/28/x86_64
+dnf update
+dnf install samba-exporter
+```
+
+## RHEL 9 / CentOS Stream 9 / Fedora 35
+
+For Redhat Enterprise Linux 9 and all compatible distributions the **samba exporter** package is published on the projects GitHub Page. To install execute the commands shown below as root:
+
+```bash
+wget -O /dev/shm/archive.key https://imker25.github.io/samba_exporter/repos/debian/archive.key
+rpm --import /dev/shm/archive.key
+dnf config-manager --add-repo https://imker25.github.io/samba_exporter/repos/rpm/fedora/releases/35/x86_64
 dnf update
 dnf install samba-exporter
 ```
@@ -59,7 +71,6 @@ sudo dpkg --install ./samba-exporter_1.3.5-pre.ppa1.debian10_amd64.deb
 **Hint:** Link and file name needs to be adapted to the latest release.
 
 It's also possible to download and install pre-releases from the GitHub this way.
-
 
 ## GitHub Releases - For RPM based distributions
 
