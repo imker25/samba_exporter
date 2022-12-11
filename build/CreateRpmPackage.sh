@@ -27,7 +27,7 @@ echo "# ###################################################################"
 echo "Build the container to run the package build"
 echo "docker build --file \"$SCRIPT_DIR/rpm-build/Dockerfile\" --tag rpm-build \"$SCRIPT_DIR/rpm-build/\""
 echo "Loggig to '$BRANCH_ROOT/logs/docker-build-fedora.log'"
-docker build --file "$SCRIPT_DIR/rpm-build/Dockerfile" --tag rpm-build "$SCRIPT_DIR/rpm-build/" > $BRANCH_ROOT/logs/docker-build-fedora.log 2>&1
+docker build --file "$SCRIPT_DIR/rpm-build/Dockerfile" --tag rpm-build --build-arg USER=${USER} --build-arg UID=$(id -u) --build-arg GID=$(id -g) "$SCRIPT_DIR/rpm-build/" > $BRANCH_ROOT/logs/docker-build-fedora.log 2>&1
 if [ "$?" != "0" ]; then 
     echo "Error: Docker container build failed"
     exit 1
@@ -38,7 +38,10 @@ echo ""
 echo "# ###################################################################"
 buildFailed="false"
 echo "Run the container to create the rpm package"
-docker run --mount type=bind,source="$BRANCH_ROOT",target="/build_area" \
+docker run  --env HOME=/home/${USER} \
+            --env USER=${USER} \
+            --mount type=bind,source="$BRANCH_ROOT",target="/build_area" \
+            --user $(id -u):$(id -g) \
             -i rpm-build \
             /bin/bash -c "/BuildInDocker.sh"
 
