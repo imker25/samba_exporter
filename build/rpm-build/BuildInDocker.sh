@@ -76,9 +76,9 @@ if [ "$fullVersion" == "" ]; then
     echo "Error: Can not read the full version from './logs/PackageName.txt'"
 fi
 echo "RPM Version will be: '$rpmVersion'"
-mkdir -pv "/root/rpmbuild/BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/"
-mv -v "./tmp/${fullVersion}/"* "/root/rpmbuild/BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/"
-pushd "/root/rpmbuild/"
+mkdir -pv "$HOME/rpmbuild/BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/"
+mv -v "./tmp/${fullVersion}/"* "$HOME/rpmbuild/BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/"
+pushd "$HOME/rpmbuild/"
 sed -i "s/Version: x.x.x/Version: $rpmVersion/g" ./BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/samba-exporter.spec
 
 echo ""
@@ -94,17 +94,15 @@ if [ "$?" != "0" ]; then
 fi
 popd
 
-if [ -f "/root/samba-exporter-${rpmVersion}-1.x86_64.rpm" ]; then
-    mv -v "/root/samba-exporter-${rpmVersion}-1.x86_64.rpm" "./bin/"
+if [ -f "$HOME/samba-exporter-${rpmVersion}-1.x86_64.rpm" ]; then
+    mv -v "$HOME/samba-exporter-${rpmVersion}-1.x86_64.rpm" "./bin/"
 else
-    echo "Error: Can not find the package file '/root/samba-exporter-${rpmVersion}-1.x86_64.rpm'"
+    echo "Error: Can not find the package file '$HOME/samba-exporter-${rpmVersion}-1.x86_64.rpm'"
     popd
     exit 1
 fi
 
 popd
-echo "Change permissions, so host can access files and folders"
-chomd 777 -R "$projcetRoot"
 
 echo ""
 echo "# ###################################################################"

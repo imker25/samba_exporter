@@ -11,10 +11,6 @@
 # Use the packages target version (jammy = ubuntu 22.04) as base image
 FROM ubuntu:jammy
 
-ARG USER
-ARG UID
-ARG GID
-
 # Setup the system and install needed packages
 ENV DEBIAN_FRONTEND="noninteractive"
 ENV TZ="Europe/London"
@@ -44,6 +40,10 @@ RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y wget \
 # Copy the script
 COPY PublishLaunchpad.sh /PublishLaunchpad.sh
 RUN chmod 777 /PublishLaunchpad.sh
+
+ARG USER
+ARG UID
+ARG GID
 
 RUN mkdir -p /home/${USER} &&\
     chmod 770 /home/${USER} && \

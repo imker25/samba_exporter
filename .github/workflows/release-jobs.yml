@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       name: Checkout
       with:
        fetch-depth: 0
@@ -42,19 +42,19 @@ jobs:
               build/PublishLaunchpadInDocker.sh $TAG
             fi
     - name: 'Upload debian packages artifact'            
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: samba-exporter_deb-packages
         path: bin/deb-packages/binary/*.deb
         retention-days: 1
     - name: 'Upload man pages artifact'            
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: samba-exporter_man-pages
         path: bin/deb-packages/man/*.*
         retention-days: 1        
     - name: 'Upload docker build logs artifact'         
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       if: always() 
       with:
         name: samba-exporter_docker-build-logs
@@ -130,7 +130,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       name: Checkout
       with:
        fetch-depth: 0
@@ -160,13 +160,13 @@ jobs:
               build/PublishRpmInDocker.sh $TAG
             fi
     - name: 'Upload rpm packages artifact'            
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: samba-exporter_rpm-packages
         path: bin/rpm-packages/**/*.rpm
         retention-days: 1              
     - name: 'Upload docker build logs artifact'         
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       if: always() 
       with:
         name: samba-exporter_docker-build-logs
@@ -239,7 +239,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       name: Checkout
       with:
        fetch-depth: 0
@@ -263,17 +263,17 @@ jobs:
               echo "Publish pages"
             fi  
     - name: Download samba_exporter deb-package artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: samba-exporter_deb-packages 
         path: ./bin/deb-packages/binary/    
     - name: Download samba_exporter rpm-package artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: samba-exporter_rpm-packages 
         path: ./bin/rpm-packages/  
     - name: Download samba_exporter man-pages artifact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: samba-exporter_man-pages 
         path: ./bin/deb-packages/man/                             

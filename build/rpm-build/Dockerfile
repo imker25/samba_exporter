@@ -18,4 +18,13 @@ RUN yum -y install redhat-lsb \
 
 COPY BuildInDocker.sh /BuildInDocker.sh
 
+ARG USER
+ARG UID
+ARG GID
+
 RUN chmod 777 /BuildInDocker.sh
+
+RUN mkdir -p /home/${USER} &&\
+    chmod 770 /home/${USER} && \
+    chown ${UID}:${GID} /home/${USER} && \
+    chmod 777 /var/lib/rpm/
