@@ -30,7 +30,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
-        files: logs/TestsResult.xml
+        junit_files: logs/TestsResult.xml
     - name: 'Get Package name and version from logs/ to GITHUB_ENVIRONMENT'
       run: ./build/GithubEnv.sh           
     - name: 'Upload Artifact samba_exporter'
