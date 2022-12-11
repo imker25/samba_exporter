@@ -104,7 +104,7 @@ fi
 
 popd
 echo "Change permissions, so host can access files and folders"
-chomd 777 -R "$projcetRoot"
+chmod 777 -R "$projcetRoot"
 
 echo ""
 echo "# ###################################################################"
