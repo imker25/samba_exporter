@@ -8,3 +8,4 @@ pymdown-extensions>=9.0
 mkdocs-mermaid2-plugin>=0.5.2
 mkdocs-material>=7.3.6
 mkdocs-macros-plugin>=0.6.3 
+mkdocs-git-revision-date-plugin>=0.3.2

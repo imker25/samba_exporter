@@ -30,9 +30,7 @@ markdown_extensions:
 plugins:
   - search:
   - mermaid2:
-  - macros:
-      module_name: git-footer
-      include_dir: .
+  - git-revision-date:
 
 extra:
   homepage: https://imker25.github.io/samba_exporter/Index
