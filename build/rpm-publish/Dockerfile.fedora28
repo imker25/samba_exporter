@@ -1,8 +1,14 @@
-FROM fedora:28
+# ######################################################################################
+# Copyright 2021 by tobi@backfrak.de. All
+# rights reserved. Use of this source code is governed
+# by a BSD-style license that can be found in the
+# LICENSE file.
+# ######################################################################################
+# Container image used by ./../PublishRpmInDocker.sh to transfer the sources to the launchpad-ppa
+# The actual transformation is done by ./RpmPublish.sh when this container get started
+# ######################################################################################
 
-ARG USER
-ARG UID
-ARG GID
+FROM fedora:28
 
 RUN yum -y update && \
     yum clean all
@@ -36,6 +42,10 @@ RUN mkdir -p /root && \
 # Install ronn
 RUN gem install --no-user-install ronn && \
     ln -s /usr/local/share/gems/gems/ronn-0.7.3/bin/ronn /usr/bin/ronn
+
+ARG USER
+ARG UID
+ARG GID
 
 # Add publish script
 COPY RpmPublish.sh /RpmPublish.sh
