@@ -109,9 +109,6 @@ jobs:
         run:  |
                 ./build/CreateRpmPackage.sh
                 build/GithubEnv.sh
-                echo "show logs content"
-                echo "# ####################################"
-                ls -la logs/
       - name: "Upload Artifact - RPM"
         uses: actions/upload-artifact@v3
         with:
@@ -130,7 +127,7 @@ jobs:
         if: always()
         with:
           name: unit-test-fedora-log
-          path: logs/TestsRun.log
+          path: logs/TestRun.log
           retention-days: 1                                  
   integration-test-ubuntu:
     needs: build-unit_test
