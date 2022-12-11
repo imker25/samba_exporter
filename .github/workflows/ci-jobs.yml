@@ -109,6 +109,9 @@ jobs:
         run:  |
                 ./build/CreateRpmPackage.sh
                 build/GithubEnv.sh
+                echo "show logs content"
+                echo "# ####################################"
+                ls -la logs/
       - name: "Upload Artifact - RPM"
         uses: actions/upload-artifact@v3
         with:
