@@ -246,6 +246,7 @@ sed -i "s/X.X.X-pre/${tag}/g" ~/rpmbuild/SPECS/samba-exporter.spec
 sed -i "s/x.x.x/${rpmVersion}/g" ~/rpmbuild/SPECS/samba-exporter.spec
 
 buildSystem="none"
+coprUpload="false"
 
 # A Fedora 36 pretends to be a V37, may this is a prerelease bug
 if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "28" ]; then
@@ -270,6 +271,7 @@ if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "36" ]; then
     sed -i "s/Release: 1/Release: 1.fc36/g" ~/rpmbuild/SPECS/samba-exporter.spec
     buildSystem="rpm"
     changeroots="--chroot fedora-${distVersionNumber}-x86_64"
+    coprUpload="true"
 else
     echo "Not running on Fedora 36"
 fi 
@@ -279,6 +281,7 @@ if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "37" ]; then
     sed -i "s/Release: 1/Release: 1.fc37/g" ~/rpmbuild/SPECS/samba-exporter.spec
     buildSystem="rpm"
     changeroots="--chroot fedora-${distVersionNumber}-x86_64"
+    coprUpload="true"
 else
     echo "Not running on Fedora 37"
 fi 
@@ -342,7 +345,7 @@ if [  "$buildSystem" == "rpm" ]; then
         exit 1
     fi
 
-    if [ "$dryRun" == "false" ]; then
+    if [ "$dryRun" == "false" && "$coprUpload"=="true" ]; then
         echo "Upload '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm' to copr"
         echo "copr-cli build $changeroots --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm"
         copr-cli build $changeroots --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm
