@@ -178,7 +178,12 @@ func Test() error {
 		return errConv
 	}
 	if len(testErrors) > 0 {
-		return testErrors[0]
+		fmt.Fprintln(os.Stderr, "Failed test packages:")
+		for _, testErr := range testErrors {
+			fmt.Fprintln(os.Stderr, testErr)
+		}
+		fmt.Println("# ########################################################################################")
+		return fmt.Errorf("Found errors in '%d' packages", len(testErrors))
 	}
 
 	fmt.Println(fmt.Sprintf("# ##############################################################################################"))
