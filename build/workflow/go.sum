@@ -1,4 +1,4 @@
-github.com/imker25/gobuildhelpers v0.1.2 h1:PxxA8/8quNrXfxmDAqjWCPPzMfR6lHQOf+6vznT7oJ0=
-github.com/imker25/gobuildhelpers v0.1.2/go.mod h1:+6D/dkCwauwTh/KmIZDcTDFVpcokMAZCXNLyckxBJFg=
+github.com/imker25/gobuildhelpers v0.1.3 h1:qO8nDsgDRLcOdloVkfXclTdOxxkgYTqCsOJWA/ySZRI=
+github.com/imker25/gobuildhelpers v0.1.3/go.mod h1:+6D/dkCwauwTh/KmIZDcTDFVpcokMAZCXNLyckxBJFg=
 github.com/magefile/mage v1.14.0 h1:6QDX3g6z1YvJ4olPhT1wksUcSa/V0a1B+pJb73fBjyo=
 github.com/magefile/mage v1.14.0/go.mod h1:z5UZb/iS3GoOSn0JgWuiw7dxlurVYTu+/jHXqQg881A=
