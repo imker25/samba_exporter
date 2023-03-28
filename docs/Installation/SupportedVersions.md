@@ -11,6 +11,7 @@
 | Ubnutu 21.10   | Impish Indri | no |
 | Ubnutu 22.04   | Jammy Jellyfish | yes |
 | Ubnutu 22.10  | Kinetic Kudu | yes |
+| Ubnutu 23.04  | Lunar Lobster | planned |
 
 ---
 
@@ -20,7 +21,8 @@
 |---------|-----------|-----------|
 | Debian 10  | Buster | yes |
 | Debian 11   | Bullseye | yes |
-| Debian testing  | Bookworm | no |
+| Debian 12  | Bookworm | planned |
+| Debian testing  | Trixie | no |
 
 ## RPM based
 
@@ -38,6 +40,7 @@
 | Fedora 35  | 2021-11-02 | yes |
 | Fedora 36   | 2022-04-19 | yes |
 | Fedora 37   | 2022-11-15 | yes |
+| Fedora 38   | 2023-04-25 | planned |
 
 ---
 
