@@ -345,7 +345,7 @@ if [  "$buildSystem" == "rpm" ]; then
         exit 1
     fi
 
-    if [ "$dryRun" == "false" && "$coprUpload"=="true" ]; then
+    if [ "$dryRun" == "false" ] && [ "$coprUpload" == "true" ]; then
         echo "Upload '~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm' to copr"
         echo "copr-cli build $changeroots --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm"
         copr-cli build $changeroots --nowait samba-exporter ~/rpmbuild/SRPMS/samba-exporter-${rpmVersion}-1.fc${distVersionNumber}.src.rpm
