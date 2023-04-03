@@ -180,53 +180,63 @@ fi
 cp -v "$BRANCH_ROOT/tmp/commit_logs" "$DEB_PACKAGE_DIR"
 
 dockerError="false"
-echo "Publish tag $tag on launchpad within a docker cotainer for focal"
-echo "# ###################################################################"
-buildAndRunDocker "focal"
-if [ "$?" != "0" ]; then
-    dockerError="true"
-    echo "Error while publish package for focal"
-fi
+# echo "Publish tag $tag on launchpad within a docker cotainer for focal"
+# echo "# ###################################################################"
+# buildAndRunDocker "focal"
+# if [ "$?" != "0" ]; then
+#     dockerError="true"
+#     echo "Error while publish package for focal"
+# fi
+
+# if [ "$dockerError" == "false" ];then 
+#     echo "Publish tag $tag on launchpad within a docker cotainer for jammy"
+#     echo "# ###################################################################"
+#     buildAndRunDocker "jammy"
+#     if [ "$?" != "0" ]; then
+#         dockerError="true"
+#         echo "Error while publish package for jammy"
+#     fi
+# fi
+
+# if [ "$dockerError" == "false" ];then 
+#     echo "Publish tag $tag on launchpad within a docker cotainer for kinetic"
+#     echo "# ###################################################################"
+#     buildAndRunDocker "kinetic"
+#     if [ "$?" != "0" ]; then
+#         dockerError="true"
+#         echo "Error while publish package for kinetic"
+#     fi
+# fi
 
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for jammy"
+    echo "Publish tag $tag on launchpad within a docker cotainer for lunar"
     echo "# ###################################################################"
-    buildAndRunDocker "jammy"
+    buildAndRunDocker "lunar"
     if [ "$?" != "0" ]; then
         dockerError="true"
-        echo "Error while publish package for jammy"
+        echo "Error while publish package for lunar"
     fi
 fi
 
-if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for kinetic"
-    echo "# ###################################################################"
-    buildAndRunDocker "kinetic"
-    if [ "$?" != "0" ]; then
-        dockerError="true"
-        echo "Error while publish package for kinetic"
-    fi
-fi
+# if [ "$dockerError" == "false" ];then 
+#     echo "Publish tag $tag on launchpad within a docker cotainer for bullseye"
+#     echo "# ###################################################################"
+#     buildAndRunDocker "bullseye"
+#     if [ "$?" != "0" ]; then
+#         dockerError="true"
+#         echo "Error while publish package for bullseye"
+#     fi
+# fi
 
-if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for bullseye"
-    echo "# ###################################################################"
-    buildAndRunDocker "bullseye"
-    if [ "$?" != "0" ]; then
-        dockerError="true"
-        echo "Error while publish package for bullseye"
-    fi
-fi
-
-if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for buster"
-    echo "# ###################################################################"
-    buildAndRunDocker "buster"
-    if [ "$?" != "0" ]; then
-        dockerError="true"
-        echo "Error while publish package for buster"
-    fi
-fi
+# if [ "$dockerError" == "false" ];then 
+#     echo "Publish tag $tag on launchpad within a docker cotainer for buster"
+#     echo "# ###################################################################"
+#     buildAndRunDocker "buster"
+#     if [ "$?" != "0" ]; then
+#         dockerError="true"
+#         echo "Error while publish package for buster"
+#     fi
+# fi
 
 echo "# ###################################################################"
 echo "Delete the container image when done"    
