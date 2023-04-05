@@ -242,6 +242,7 @@ func GetProcessData(data string, logger *commonbl.Logger) []ProcessData {
 		// In cluster versions samba adds an extra id separated by ':'
 		if strings.Contains(fields[0], ":") {
 			pidFields := strings.Split(fields[0], ":")
+			// pidFields[0] is the 'cluster_node_number'
 			entry.PID, err = strconv.Atoi(pidFields[1])
 			if err != nil {
 				logger.WriteError(err)
