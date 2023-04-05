@@ -239,20 +239,40 @@ func GetProcessData(data string, logger *commonbl.Logger) []ProcessData {
 	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], " ", 8) {
 		var err error
 		var entry ProcessData
-		entry.PID, err = strconv.Atoi(fields[0])
-		if err != nil {
-			logger.WriteError(err)
-			continue
+		// In cluster versions samba adds an extra id separated by ':'
+		if strings.Contains(fields[0], ":") {
+			pidFields := strings.Split(fields[0], ":")
+			entry.PID, err = strconv.Atoi(pidFields[1])
+			if err != nil {
+				logger.WriteError(err)
+				continue
+			}
+		} else {
+			entry.PID, err = strconv.Atoi(fields[0])
+			if err != nil {
+				logger.WriteError(err)
+				continue
+			}
 		}
-		entry.UserID, err = strconv.Atoi(fields[1])
-		if err != nil {
-			logger.WriteError(err)
-			continue
+		// In cluster versions samba does not print the users id, but nobody
+		if fields[1] == "nobody" {
+			entry.UserID = -1
+		} else {
+			entry.UserID, err = strconv.Atoi(fields[1])
+			if err != nil {
+				logger.WriteError(err)
+				continue
+			}
 		}
-		entry.GroupID, err = strconv.Atoi(fields[2])
-		if err != nil {
-			logger.WriteError(err)
-			continue
+		// In cluster versions samba does not print the group id, but nogroup
+		if fields[2] == "nogroup" {
+			entry.GroupID = -1
+		} else {
+			entry.GroupID, err = strconv.Atoi(fields[2])
+			if err != nil {
+				logger.WriteError(err)
+				continue
+			}
 		}
 		entry.Machine = fmt.Sprintf("%s %s", fields[3], fields[4])
 		entry.ProtocolVersion = fields[5]

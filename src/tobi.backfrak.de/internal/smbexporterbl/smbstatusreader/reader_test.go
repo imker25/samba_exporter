@@ -321,6 +321,29 @@ func TestGetProcessData4Line(t *testing.T) {
 	}
 }
 
+func TestGetProcessDataCluster(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	enties := GetProcessData(smbstatusout.ProcessDataCluster, logger)
+
+	if len(enties) != 7 {
+		t.Errorf("Got %d entries, expected 7", len(enties))
+	}
+
+	if enties[0].Machine != "10.63.0.41 (ipv4:10.63.0.41:62834)" {
+		t.Errorf("The Machine \"%s\" is not the expected \"10.63.0.41 (ipv4:10.63.0.41:62834)\"", enties[0].Machine)
+	}
+
+	if enties[3].Machine != "10.63.0.28 (ipv4:10.63.0.28:58968)" {
+		t.Errorf("The Machine \"%s\" is not the expected \"10.63.0.28 (ipv4:10.63.0.28:58968)\"", enties[3].Machine)
+	}
+
+	for _, entry := range enties {
+		if entry.SambaVersion != "4.9.5-Debian" {
+			t.Errorf("The SambaVersion \"%s\" is not expected", entry.SambaVersion)
+		}
+	}
+}
+
 func TestGetProcessDataWrongData(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	enties := GetProcessData(smbstatusout.LockData4Lines, logger)
