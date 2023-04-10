@@ -11,3 +11,7 @@ In case you installed the package already, you can read the man pages using man.
 ```bash
 man samba_exporter
 ```
+
+## Exported values
+
+A list of all exported values can be found at the [samba_exporter man page](https://imker25.github.io/samba_exporter/manpages/samba_exporter.1.html).
