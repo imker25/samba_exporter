@@ -236,6 +236,35 @@ func TestGetShareData4Line(t *testing.T) {
 	}
 }
 
+func TestGetShareDataCluster(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	entries := GetShareData(smbstatusout.ShareDataCluster, logger)
+
+	if len(entries) != 16 {
+		t.Errorf("Got %d entries, expected 16", len(entries))
+	}
+
+	if entries[0].PID != 19801 {
+		t.Errorf("Got %d entries[0].PID, expected 19801", entries[0].PID)
+	}
+
+	if entries[15].PID != 42597 {
+		t.Errorf("Got %d entries[15].PID, expected 19801", entries[0].PID)
+	}
+
+	if entries[15].Encryption != "-" {
+		t.Errorf("Got %s entries[15].Encryption, expected '-'", entries[0].Encryption)
+	}
+
+	if entries[0].Signing != "-" {
+		t.Errorf("Got %s entries[0].Signing, expected '-'", entries[0].Signing)
+	}
+
+	if entries[3].Machine != "10.63.0.11 (ipv4:10.63.0.11:50370)" {
+		t.Errorf("Got %s entries[3].Signing, expected '10.63.0.11 (ipv4:10.63.0.11:50370) '", entries[3].Machine)
+	}
+}
+
 func TestGetShareDataWrongData(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	entries := GetShareData(smbstatusout.LockData4Lines, logger)
