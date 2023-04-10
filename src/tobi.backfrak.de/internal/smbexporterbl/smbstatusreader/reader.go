@@ -63,7 +63,17 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], " ", 13) {
 		var err error
 		var entry LockData
-		entry.PID, err = strconv.Atoi(fields[0])
+		if strings.Contains(fields[0], ":") {
+			pidFields := strings.Split(fields[0], ":")
+			// pidFields[0] is the 'cluster_node_number'
+			entry.PID, err = strconv.Atoi(pidFields[1])
+			if err != nil {
+				logger.WriteError(err)
+				continue
+			}
+		} else {
+			entry.PID, err = strconv.Atoi(fields[0])
+		}
 		if err != nil {
 			logger.WriteError(err)
 			continue
@@ -89,7 +99,45 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 
 		ret = append(ret, entry)
 	}
+	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], " ", 14) {
+		var err error
+		var entry LockData
+		if strings.Contains(fields[0], ":") {
+			pidFields := strings.Split(fields[0], ":")
+			// pidFields[0] is the 'cluster_node_number'
+			entry.PID, err = strconv.Atoi(pidFields[1])
+			if err != nil {
+				logger.WriteError(err)
+				continue
+			}
+		} else {
+			entry.PID, err = strconv.Atoi(fields[0])
+			if err != nil {
+				logger.WriteError(err)
+				continue
+			}
+		}
+		entry.UserID, err = strconv.Atoi(fields[1])
+		if err != nil {
+			logger.WriteError(err)
+			continue
+		}
+		entry.DenyMode = fields[2]
+		entry.Access = fields[3]
+		entry.AccessMode = fields[4]
+		entry.Oplock = fields[5]
+		entry.SharePath = fields[6]
+		entry.Name = fields[7]
+		entry.Time, err = time.ParseInLocation(time.ANSIC,
+			fmt.Sprintf("%s %s %s %s %s", fields[9], fields[10], fields[11], fields[12], fields[13]),
+			time.Now().Location())
+		if err != nil {
+			logger.WriteError(err)
+			continue
+		}
 
+		ret = append(ret, entry)
+	}
 	return ret
 }
 

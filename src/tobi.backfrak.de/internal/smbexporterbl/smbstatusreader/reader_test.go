@@ -134,6 +134,35 @@ func TestGetLockData4Line(t *testing.T) {
 	}
 }
 
+func TestGetLockDataCluster(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	entryList := GetLockData(smbstatusout.LockDataCluster, logger)
+
+	if len(entryList) != 7 {
+		t.Errorf("Got %d entries, expected 4", len(entryList))
+	}
+
+	if entryList[0].SharePath != "/lfsmnt/dst01" {
+		t.Errorf("The SharePath %s is not the expected '/lfsmnt/dst01'", entryList[0].SharePath)
+	}
+
+	if entryList[3].Name != "share/data2/CLIPS001/CC0639/CC063904.MXF" {
+		t.Errorf("The Name %s is not the expected 'share/data2/CLIPS001/CC0639/CC063904.MXF'", entryList[3].Name)
+	}
+
+	if entryList[0].Name != "share/data/data1/folder/dir/100MEDIA/DJI_0177.MOV" {
+		t.Errorf("The Name %s is not the expected 'share/data/data1/folder/dir/100MEDIA/DJI_0177.MOV'", entryList[0].Name)
+	}
+
+	if entryList[3].PID != 57086 {
+		t.Errorf("Got %d entryList[5].PID, expected 57086", entryList[3].PID)
+	}
+
+	if entryList[6].Time.Format(time.ANSIC) != "Tue Apr  4 14:13:28 2023" {
+		t.Errorf("The time %s is not expected", entryList[6].Time.Format(time.ANSIC))
+	}
+}
+
 func TestGetLockDataWrongInput(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	entryList := GetLockData(smbstatusout.ProcessData4Lines, logger)
@@ -249,7 +278,7 @@ func TestGetShareDataCluster(t *testing.T) {
 	}
 
 	if entries[15].PID != 42597 {
-		t.Errorf("Got %d entries[15].PID, expected 19801", entries[0].PID)
+		t.Errorf("Got %d entries[15].PID, expected 42597", entries[0].PID)
 	}
 
 	if entries[15].Encryption != "-" {
