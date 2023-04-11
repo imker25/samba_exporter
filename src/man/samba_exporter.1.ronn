@@ -135,7 +135,7 @@ The following values are exported by default:
 
 ## smbd in cluster mode
 
-The values of `samba_client_*` and `samba_process_per_client_count` may contain no valid data when monitoring a **smbd** running in cluster mode. When running in this mode the values of `uid` and `gid` may exported in labels are shown as `-1` since `smbstatus -L` gives only anonymous data in this case.
+The values of `samba_client_*` and `samba_process_per_client_count` may contain no valid data when monitoring a **smbd** running in cluster mode. When running in this mode the values of `uid` and `gid` may exported in labels are shown as `-1` since `smbstatus -L` gives only anonymous data in this case. Another consequence of this fact is that `samba_individual_user_count` may show wrong values as well.
 
 ## Files
 
