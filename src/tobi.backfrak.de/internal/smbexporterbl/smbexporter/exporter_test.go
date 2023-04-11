@@ -172,6 +172,29 @@ func TestSetMetricsFromResponseNoClient(t *testing.T) {
 
 }
 
+func TestSetMetricsFromResponseCluster(t *testing.T) {
+	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{true, false, false, false}
+	expectedDescChanels := 38
+	expectedMetChanels := 44
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockDataCluster, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataCluster, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataCluster, logger)
+	psData := smbstatusreader.GetPsData(commonbl.TestPsResponse(), logger)
+	chDesc := make(chan *prometheus.Desc, expectedDescChanels)
+	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, exportSettings)
+	exporter.setDescriptionsFromResponse(locks, processes, shares, psData, chDesc)
+	chMet := make(chan prometheus.Metric, expectedMetChanels)
+	exporter.setMetricsFromResponse(locks, processes, shares, psData, 1, 1, 31, chMet)
+
+	if len(chMet) != expectedMetChanels {
+		t.Errorf("Got %d metric channels, but expected %d", len(chMet), expectedMetChanels)
+	}
+
+}
+
 func TestSetMetricsFromResponseNoShare(t *testing.T) {
 	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{false, false, true, false}
 	expectedDescChanels := 38
