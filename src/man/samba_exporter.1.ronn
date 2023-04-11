@@ -79,7 +79,6 @@ The service will start with `-web.listen-address=127.0.0.1:9922` by default, in 
 need to change this.<br>
 `/etc/default/samba_exporter` includes some examples.
 
-
 ## EXAMPLES
 
 To stop, start or restart the service use `systemctl`, e. g.:<br> 
@@ -90,6 +89,53 @@ To read the log output use `journalctl`, e. g.:<br>
 
 **Remark:** Due to the services dependencies `samba_exporter` service stops whenever `samba_statusd` stops. 
 And `samba_statusd` always starts when `samba_exporter` is started if not already running.
+
+## Exported values
+
+The following values are exported by default:
+
+- `samba_client_connected_at` Unix time stamp a client connected
+- `samba_client_connected_since_seconds` Seconds since a client connected
+- `samba_client_count` Number of clients using the samba server
+- `samba_encryption_method_count` Number of processes on the server using the encryption
+- `samba_exporter_information` Information of the samba_exporter
+- `samba_individual_user_count` The number of users connected to this samba server
+- `samba_lock_created_at` Unix time stamp a lock was created
+- `samba_lock_created_since_seconds` Seconds since a lock was created
+- `samba_locked_file_count` Number of files locked by the samba server
+- `samba_locks_per_share_count` Number of locks on share
+- `samba_pid_count` Number of processes running by the samba server
+- `samba_process_per_client_count` Number of processes on the server used by one client
+- `samba_protocol_version_count` Number of processes on the server using the protocol
+- `samba_request_time` Time it took to reqest the samba status from samba_statusd [ms]
+- `samba_satutsd_up` 1 if the samba_statusd seems to be running
+- `samba_server_information` Version of the samba server
+- `samba_server_up` 1 if the samba server seems to be running
+- `samba_share_count` Number of shares servered by the samba server
+- `samba_signing_method_count` Number of processes on the server using the signing
+- `samba_smbd_cpu_usage_percentage` CPU usage of the 'smbd' process with pid in percent
+- `samba_smbd_io_counter_read_bytes` IO counter reads of the process 'smbd' in byte
+- `samba_smbd_io_counter_read_count` IO counter read count of the process 'smbd'
+- `samba_smbd_io_counter_write_bytes` IO counter writes of the process 'smbd' in byte
+- `samba_smbd_io_counter_write_count` IO counter write count of the process 'smbd'
+- `samba_smbd_open_file_count` Open file handles by process 'smbd'
+- `samba_smbd_sum_cpu_usage_percentage` Sum CPU usage of all 'smbd' processes in percent
+- `samba_smbd_sum_io_counter_read_bytes` IO counter reads of all 'smbd' processes in bytes
+- `samba_smbd_sum_io_counter_read_count` IO counter read count of all 'smbd' processes
+- `samba_smbd_sum_io_counter_write_bytes` IO counter writes of all 'smbd' processes in bytes
+- `samba_smbd_sum_io_counter_write_count` IO counter write count of all 'smbd' processes
+- `samba_smbd_sum_open_file_count` Open file handles of all 'smbd' processes
+- `samba_smbd_sum_thread_count` Threads used by all 'smbd' processes
+- `samba_smbd_sum_virtual_memory_usage_bytes` Virtual memory usage of all 'smbd' processes in bytes
+- `samba_smbd_sum_virtual_memory_usage_percent` Virtual memory usage of all 'smbd' processes in percent
+- `samba_smbd_thread_count` Threads used by process 'smbd'
+- `samba_smbd_unique_process_id_count` Count of unique process IDs for 'smbd'
+- `samba_smbd_virtual_memory_usage_bytes` Virtual memory usage of the 'smbd' process with pid in bytes
+- `samba_smbd_virtual_memory_usage_percent` Virtual memory usage of the 'smbd' process with pid in percent
+
+## smbd in cluster mode
+
+The values of `samba_client_*` and `samba_process_per_client_count` may contain no valid data when monitoring a **smbd** running in cluster mode. When running in this mode the values of `uid` and `gid` may exported in labels are shown as `-1` since `smbstatus -L` gives only anonymous data in this case. Another consequence of this fact is that `samba_individual_user_count` may show wrong values as well.
 
 ## Files
 

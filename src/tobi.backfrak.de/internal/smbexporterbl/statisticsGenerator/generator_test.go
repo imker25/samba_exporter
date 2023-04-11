@@ -25,12 +25,34 @@ func TestGetSmbStatisticsNoLockData(t *testing.T) {
 	ret := GetSmbStatistics(locks, processes, shares, getNewStatisticGenSettings())
 
 	if len(ret) != 15 {
-		t.Errorf("The number of resturn values %d was not expected", len(ret))
+		t.Errorf("The number of return values %d was not expected", len(ret))
 	}
 
-	if ret[0].Name != "individual_user_count" && ret[0].Value != 1.0 {
+	if ret[0].Name != "individual_user_count" || ret[0].Value != 1.0 {
 		t.Errorf("The individual_user_count does not match as expected")
 	}
+}
+
+func TestGetSmbStatisticsClusterData(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockDataCluster, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataCluster, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataCluster, logger)
+
+	ret := GetSmbStatistics(locks, processes, shares, getNewStatisticGenSettings())
+
+	if len(ret) != 24 {
+		t.Errorf("The number of return values %d was not expected", len(ret))
+	}
+
+	if ret[0].Name != "individual_user_count" || ret[0].Value != 2.0 {
+		t.Errorf("The individual_user_count does not match as expected")
+	}
+
+	if ret[4].Name != "client_count" || ret[4].Value != 4.0 {
+		t.Errorf("The client_count does not match as expected")
+	}
+
 }
 
 func getNewStatisticGenSettings() StatisticsGeneratorSettings {

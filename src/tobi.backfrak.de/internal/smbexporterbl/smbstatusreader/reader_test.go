@@ -134,6 +134,35 @@ func TestGetLockData4Line(t *testing.T) {
 	}
 }
 
+func TestGetLockDataCluster(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	entryList := GetLockData(smbstatusout.LockDataCluster, logger)
+
+	if len(entryList) != 7 {
+		t.Errorf("Got %d entries, expected 4", len(entryList))
+	}
+
+	if entryList[0].SharePath != "/lfsmnt/dst01" {
+		t.Errorf("The SharePath %s is not the expected '/lfsmnt/dst01'", entryList[0].SharePath)
+	}
+
+	if entryList[3].Name != "share/data2/CLIPS001/CC0639/CC063904.MXF" {
+		t.Errorf("The Name %s is not the expected 'share/data2/CLIPS001/CC0639/CC063904.MXF'", entryList[3].Name)
+	}
+
+	if entryList[0].Name != "share/data/data1/folder/dir/100MEDIA/DJI_0177.MOV" {
+		t.Errorf("The Name %s is not the expected 'share/data/data1/folder/dir/100MEDIA/DJI_0177.MOV'", entryList[0].Name)
+	}
+
+	if entryList[3].PID != 57086 {
+		t.Errorf("Got %d entryList[5].PID, expected 57086", entryList[3].PID)
+	}
+
+	if entryList[6].Time.Format(time.ANSIC) != "Tue Apr  4 14:13:28 2023" {
+		t.Errorf("The time %s is not expected", entryList[6].Time.Format(time.ANSIC))
+	}
+}
+
 func TestGetLockDataWrongInput(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	entryList := GetLockData(smbstatusout.ProcessData4Lines, logger)
@@ -236,6 +265,35 @@ func TestGetShareData4Line(t *testing.T) {
 	}
 }
 
+func TestGetShareDataCluster(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	entries := GetShareData(smbstatusout.ShareDataCluster, logger)
+
+	if len(entries) != 16 {
+		t.Errorf("Got %d entries, expected 16", len(entries))
+	}
+
+	if entries[0].PID != 19801 {
+		t.Errorf("Got %d entries[0].PID, expected 19801", entries[0].PID)
+	}
+
+	if entries[15].PID != 42597 {
+		t.Errorf("Got %d entries[15].PID, expected 42597", entries[0].PID)
+	}
+
+	if entries[15].Encryption != "-" {
+		t.Errorf("Got %s entries[15].Encryption, expected '-'", entries[0].Encryption)
+	}
+
+	if entries[0].Signing != "-" {
+		t.Errorf("Got %s entries[0].Signing, expected '-'", entries[0].Signing)
+	}
+
+	if entries[3].Machine != "10.63.0.11 (ipv4:10.63.0.11:50370)" {
+		t.Errorf("Got %s entries[3].Signing, expected '10.63.0.11 (ipv4:10.63.0.11:50370) '", entries[3].Machine)
+	}
+}
+
 func TestGetShareDataWrongData(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	entries := GetShareData(smbstatusout.LockData4Lines, logger)
@@ -316,6 +374,29 @@ func TestGetProcessData4Line(t *testing.T) {
 
 	for _, entry := range enties {
 		if entry.SambaVersion != "4.11.6-Ubuntu" {
+			t.Errorf("The SambaVersion \"%s\" is not expected", entry.SambaVersion)
+		}
+	}
+}
+
+func TestGetProcessDataCluster(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	enties := GetProcessData(smbstatusout.ProcessDataCluster, logger)
+
+	if len(enties) != 7 {
+		t.Errorf("Got %d entries, expected 7", len(enties))
+	}
+
+	if enties[0].Machine != "10.63.0.41 (ipv4:10.63.0.41:62834)" {
+		t.Errorf("The Machine \"%s\" is not the expected \"10.63.0.41 (ipv4:10.63.0.41:62834)\"", enties[0].Machine)
+	}
+
+	if enties[3].Machine != "10.63.0.28 (ipv4:10.63.0.28:58968)" {
+		t.Errorf("The Machine \"%s\" is not the expected \"10.63.0.28 (ipv4:10.63.0.28:58968)\"", enties[3].Machine)
+	}
+
+	for _, entry := range enties {
+		if entry.SambaVersion != "4.9.5-Debian" {
 			t.Errorf("The SambaVersion \"%s\" is not expected", entry.SambaVersion)
 		}
 	}
