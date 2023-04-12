@@ -261,7 +261,8 @@ fi
 if [ "$distVersionNumber" == "23.04" ] && [ "$distribution" == "Ubuntu" ]; then
     sed -i "s/focal;/lunar;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/ubuntu23.04/g" $WORK_DIR/install/debian/changelog
-    sed -i "s/golang-1.16,/golang-1.20,/g" $WORK_DIR/install/debian/control    
+    sed -i "s/golang-1.16,/golang-1.20,/g" $WORK_DIR/install/debian/control 
+    find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
 else 
     echo "Not running on lunar 23.04 (lunar)"
 fi

@@ -45,14 +45,17 @@ function buildAndRunDocker() {
     fi
     echo "# ###################################################################"
     echo "Run the container"
-
+    userName="${USER}"
+    if [ "${distVersion}" == "lunar" ] && [ "$(id -u)" == "1000" ]; then
+        userName="ubuntu"
+    fi
     if [ "$dryRun" == "false" ]; then
         docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
             --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
             --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
             --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
-            --env HOME=/home/${USER} \
-            --env USER=${USER} \
+            --env HOME=/home/${userName} \
+            --env USER=${userName} \
             --mount type=bind,source="$DEB_PACKAGE_DIR",target="/build_results" \
             --user $(id -u):$(id -g) \
             -i launchapd-publish-container-$distVersion \
@@ -62,8 +65,8 @@ function buildAndRunDocker() {
             --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
             --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
             --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
-            --env HOME=/home/${USER} \
-            --env USER=${USER} \
+            --env HOME=/home/${userName} \
+            --env USER=${userName} \
             --mount type=bind,source="$DEB_PACKAGE_DIR",target="/build_results" \
             --user $(id -u):$(id -g) \
             -i launchapd-publish-container-$distVersion \
@@ -180,33 +183,33 @@ fi
 cp -v "$BRANCH_ROOT/tmp/commit_logs" "$DEB_PACKAGE_DIR"
 
 dockerError="false"
-# echo "Publish tag $tag on launchpad within a docker cotainer for focal"
-# echo "# ###################################################################"
-# buildAndRunDocker "focal"
-# if [ "$?" != "0" ]; then
-#     dockerError="true"
-#     echo "Error while publish package for focal"
-# fi
+echo "Publish tag $tag on launchpad within a docker cotainer for focal"
+echo "# ###################################################################"
+buildAndRunDocker "focal"
+if [ "$?" != "0" ]; then
+    dockerError="true"
+    echo "Error while publish package for focal"
+fi
 
-# if [ "$dockerError" == "false" ];then 
-#     echo "Publish tag $tag on launchpad within a docker cotainer for jammy"
-#     echo "# ###################################################################"
-#     buildAndRunDocker "jammy"
-#     if [ "$?" != "0" ]; then
-#         dockerError="true"
-#         echo "Error while publish package for jammy"
-#     fi
-# fi
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on launchpad within a docker cotainer for jammy"
+    echo "# ###################################################################"
+    buildAndRunDocker "jammy"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+        echo "Error while publish package for jammy"
+    fi
+fi
 
-# if [ "$dockerError" == "false" ];then 
-#     echo "Publish tag $tag on launchpad within a docker cotainer for kinetic"
-#     echo "# ###################################################################"
-#     buildAndRunDocker "kinetic"
-#     if [ "$?" != "0" ]; then
-#         dockerError="true"
-#         echo "Error while publish package for kinetic"
-#     fi
-# fi
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on launchpad within a docker cotainer for kinetic"
+    echo "# ###################################################################"
+    buildAndRunDocker "kinetic"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+        echo "Error while publish package for kinetic"
+    fi
+fi
 
 if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on launchpad within a docker cotainer for lunar"
@@ -218,25 +221,25 @@ if [ "$dockerError" == "false" ];then
     fi
 fi
 
-# if [ "$dockerError" == "false" ];then 
-#     echo "Publish tag $tag on launchpad within a docker cotainer for bullseye"
-#     echo "# ###################################################################"
-#     buildAndRunDocker "bullseye"
-#     if [ "$?" != "0" ]; then
-#         dockerError="true"
-#         echo "Error while publish package for bullseye"
-#     fi
-# fi
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on launchpad within a docker cotainer for bullseye"
+    echo "# ###################################################################"
+    buildAndRunDocker "bullseye"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+        echo "Error while publish package for bullseye"
+    fi
+fi
 
-# if [ "$dockerError" == "false" ];then 
-#     echo "Publish tag $tag on launchpad within a docker cotainer for buster"
-#     echo "# ###################################################################"
-#     buildAndRunDocker "buster"
-#     if [ "$?" != "0" ]; then
-#         dockerError="true"
-#         echo "Error while publish package for buster"
-#     fi
-# fi
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on launchpad within a docker cotainer for buster"
+    echo "# ###################################################################"
+    buildAndRunDocker "buster"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+        echo "Error while publish package for buster"
+    fi
+fi
 
 echo "# ###################################################################"
 echo "Delete the container image when done"    

@@ -51,3 +51,5 @@ RUN mkdir -p /home/${USER} &&\
 
 RUN addgroup --gid ${GID} ${USER} &&\ 
     adduser --system --quiet --home /home/${USER} --gid ${GID} --uid ${UID} --gecos "builder" ${USER}  || true
+
+RUN id ${UID} && ls -l /home/ 
