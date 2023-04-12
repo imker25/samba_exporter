@@ -48,3 +48,8 @@ func (logger *Logger) WriteErrorMessage(message string) {
 func (logger *Logger) WriteError(err error) {
 	fmt.Fprintln(os.Stderr, err.Error())
 }
+
+// WriteError - Writes the 'err.Error() - addition' output to Stderr
+func (logger *Logger) WriteErrorWithAddition(err error, addition string) {
+	fmt.Fprintln(os.Stderr, fmt.Sprintf("%s - %s", err.Error(), addition))
+}

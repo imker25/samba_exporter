@@ -68,19 +68,19 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 			// pidFields[0] is the 'cluster_node_number'
 			entry.PID, err = strconv.Atoi(pidFields[1])
 			if err != nil {
-				logger.WriteError(err)
+				logger.WriteErrorWithAddition(err, "while getting LockData PID (cluster - 13c)")
 				continue
 			}
 		} else {
 			entry.PID, err = strconv.Atoi(fields[0])
-		}
-		if err != nil {
-			logger.WriteError(err)
-			continue
+			if err != nil {
+				logger.WriteErrorWithAddition(err, "while getting LockData PID (normal - 13c)")
+				continue
+			}
 		}
 		entry.UserID, err = strconv.Atoi(fields[1])
 		if err != nil {
-			logger.WriteError(err)
+			logger.WriteErrorWithAddition(err, "while getting LockData UserID (13c)")
 			continue
 		}
 		entry.DenyMode = fields[2]
@@ -93,7 +93,7 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 			fmt.Sprintf("%s %s %s %s %s", fields[8], fields[9], fields[10], fields[11], fields[12]),
 			time.Now().Location())
 		if err != nil {
-			logger.WriteError(err)
+			logger.WriteErrorWithAddition(err, "while getting LockData Time (13c)")
 			continue
 		}
 
@@ -107,19 +107,19 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 			// pidFields[0] is the 'cluster_node_number'
 			entry.PID, err = strconv.Atoi(pidFields[1])
 			if err != nil {
-				logger.WriteError(err)
+				logger.WriteErrorWithAddition(err, "while getting LockData PID (cluster - 14c)")
 				continue
 			}
 		} else {
 			entry.PID, err = strconv.Atoi(fields[0])
 			if err != nil {
-				logger.WriteError(err)
+				logger.WriteErrorWithAddition(err, "while getting LockData PID (normal - 14c)")
 				continue
 			}
 		}
 		entry.UserID, err = strconv.Atoi(fields[1])
 		if err != nil {
-			logger.WriteError(err)
+			logger.WriteErrorWithAddition(err, "while getting LockData UserID (14c)")
 			continue
 		}
 		entry.DenyMode = fields[2]
@@ -132,7 +132,7 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 			fmt.Sprintf("%s %s %s %s %s", fields[9], fields[10], fields[11], fields[12], fields[13]),
 			time.Now().Location())
 		if err != nil {
-			logger.WriteError(err)
+			logger.WriteErrorWithAddition(err, "while getting LockData Time (14c)")
 			continue
 		}
 
@@ -197,10 +197,20 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 				var err error
 				var entry ShareData
 				entry.Service = fields[0]
-				entry.PID, err = strconv.Atoi(fields[1])
-				if err != nil {
-					logger.WriteError(err)
-					continue
+				if strings.Contains(fields[1], ":") {
+					pidFields := strings.Split(fields[1], ":")
+					// pidFields[0] is the 'cluster_node_number'
+					entry.PID, err = strconv.Atoi(pidFields[1])
+					if err != nil {
+						logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal - c12 - with :)")
+						continue
+					}
+				} else {
+					entry.PID, err = strconv.Atoi(fields[1])
+					if err != nil {
+						logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal - c12 - without :)")
+						continue
+					}
 				}
 				entry.Machine = fields[2]
 				timeStr := fmt.Sprintf("%s %s %s %s %s %s %s", fields[3], fields[4], fields[5], fields[6], fields[7], fields[8], fields[9])
@@ -208,7 +218,7 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 				if err != nil {
 					entry.ConnectedAt, err = time.Parse("Mon Jan 2 03:04:05 PM 2006 MST", timeStr)
 					if err != nil {
-						logger.WriteError(err)
+						logger.WriteErrorWithAddition(err, "while getting ShareData ConnectedAt (normal - c12)")
 						continue
 					}
 				}
@@ -224,10 +234,20 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 					var err error
 					var entry ShareData
 					entry.Service = fields[0]
-					entry.PID, err = strconv.Atoi(fields[1])
-					if err != nil {
-						logger.WriteError(err)
-						continue
+					if strings.Contains(fields[1], ":") {
+						pidFields := strings.Split(fields[1], ":")
+						// pidFields[0] is the 'cluster_node_number'
+						entry.PID, err = strconv.Atoi(pidFields[1])
+						if err != nil {
+							logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal - c11 - with :)")
+							continue
+						}
+					} else {
+						entry.PID, err = strconv.Atoi(fields[1])
+						if err != nil {
+							logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal - c11 - without :)")
+							continue
+						}
 					}
 					entry.Machine = fields[2]
 					timeStr := fmt.Sprintf("%s %s %s %s %s %s", fields[3], fields[4], fields[5], fields[6], fields[7], fields[8])
@@ -235,7 +255,7 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 					if err != nil {
 						entry.ConnectedAt, err = time.Parse("Mo Jan _2 15:04:05 2006 MST", timeStr)
 						if err != nil {
-							logger.WriteError(err)
+							logger.WriteErrorWithAddition(err, "while getting ShareData ConnectedAt (normal - c11)")
 							continue
 						}
 					}
@@ -252,12 +272,20 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 			for _, fields := range fieldMatrix {
 				var err error
 				var entry ShareData
-				pidFields := strings.Split(fields[0], ":")
-				// pidFields[0] is the 'cluster_node_number'
-				entry.PID, err = strconv.Atoi(pidFields[1])
-				if err != nil {
-					logger.WriteError(err)
-					continue
+				if strings.Contains(fields[0], ":") {
+					pidFields := strings.Split(fields[0], ":")
+					// pidFields[0] is the 'cluster_node_number'
+					entry.PID, err = strconv.Atoi(pidFields[1])
+					if err != nil {
+						logger.WriteErrorWithAddition(err, "while getting ShareData PID (cluster - with :)")
+						continue
+					}
+				} else {
+					entry.PID, err = strconv.Atoi(fields[0])
+					if err != nil {
+						logger.WriteErrorWithAddition(err, "while getting ShareData PID (cluster - without :)")
+						continue
+					}
 				}
 				entry.Machine = fmt.Sprintf("%s %s", fields[3], fields[4])
 				entry.Encryption = fields[6]
@@ -328,13 +356,13 @@ func GetProcessData(data string, logger *commonbl.Logger) []ProcessData {
 			// pidFields[0] is the 'cluster_node_number'
 			entry.PID, err = strconv.Atoi(pidFields[1])
 			if err != nil {
-				logger.WriteError(err)
+				logger.WriteErrorWithAddition(err, "while getting ProcessData PID (with :)")
 				continue
 			}
 		} else {
 			entry.PID, err = strconv.Atoi(fields[0])
 			if err != nil {
-				logger.WriteError(err)
+				logger.WriteErrorWithAddition(err, "while getting ProcessData PID (without :)")
 				continue
 			}
 		}
@@ -344,7 +372,7 @@ func GetProcessData(data string, logger *commonbl.Logger) []ProcessData {
 		} else {
 			entry.UserID, err = strconv.Atoi(fields[1])
 			if err != nil {
-				logger.WriteError(err)
+				logger.WriteErrorWithAddition(err, "while getting ProcessData UserID")
 				continue
 			}
 		}
@@ -354,7 +382,7 @@ func GetProcessData(data string, logger *commonbl.Logger) []ProcessData {
 		} else {
 			entry.GroupID, err = strconv.Atoi(fields[2])
 			if err != nil {
-				logger.WriteError(err)
+				logger.WriteErrorWithAddition(err, "while getting ProcessData GroupID")
 				continue
 			}
 		}
@@ -373,7 +401,7 @@ func GetPsData(data string, logger *commonbl.Logger) []commonbl.PsUtilPidData {
 	var ret []commonbl.PsUtilPidData
 	errConv := json.Unmarshal([]byte(data), &ret)
 	if errConv != nil {
-		logger.WriteError(errConv)
+		logger.WriteErrorWithAddition(errConv, "while converting PsData json")
 		return []commonbl.PsUtilPidData{}
 	}
 

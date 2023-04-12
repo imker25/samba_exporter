@@ -45,3 +45,10 @@ func TestWriteError(t *testing.T) {
 
 	logger.WriteError(err)
 }
+
+func TestWriteErrorWithAddition(t *testing.T) {
+	logger := NewLogger(false)
+	err := NewReaderError("my data", LOCK_REQUEST, 3)
+
+	logger.WriteErrorWithAddition(err, "additional data")
+}
