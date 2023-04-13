@@ -45,14 +45,17 @@ function buildAndRunDocker() {
     fi
     echo "# ###################################################################"
     echo "Run the container"
-
+    userName="${USER}"
+    if [ "${distVersion}" == "lunar" ] && [ "$(id -u)" == "1000" ]; then
+        userName="ubuntu"
+    fi
     if [ "$dryRun" == "false" ]; then
         docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
             --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
             --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
             --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
-            --env HOME=/home/${USER} \
-            --env USER=${USER} \
+            --env HOME=/home/${userName} \
+            --env USER=${userName} \
             --mount type=bind,source="$DEB_PACKAGE_DIR",target="/build_results" \
             --user $(id -u):$(id -g) \
             -i launchapd-publish-container-$distVersion \
@@ -62,8 +65,8 @@ function buildAndRunDocker() {
             --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
             --env LAUNCHPAD_GPG_KEY_PUB="$LAUNCHPAD_GPG_KEY_PUB" \
             --env LAUNCHPAD_GPG_KEY_PRV="$LAUNCHPAD_GPG_KEY_PRV" \
-            --env HOME=/home/${USER} \
-            --env USER=${USER} \
+            --env HOME=/home/${userName} \
+            --env USER=${userName} \
             --mount type=bind,source="$DEB_PACKAGE_DIR",target="/build_results" \
             --user $(id -u):$(id -g) \
             -i launchapd-publish-container-$distVersion \
@@ -198,13 +201,23 @@ if [ "$dockerError" == "false" ];then
     fi
 fi
 
+# if [ "$dockerError" == "false" ];then 
+#     echo "Publish tag $tag on launchpad within a docker cotainer for kinetic"
+#     echo "# ###################################################################"
+#     buildAndRunDocker "kinetic"
+#     if [ "$?" != "0" ]; then
+#         dockerError="true"
+#         echo "Error while publish package for kinetic"
+#     fi
+# fi
+
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for kinetic"
+    echo "Publish tag $tag on launchpad within a docker cotainer for lunar"
     echo "# ###################################################################"
-    buildAndRunDocker "kinetic"
+    buildAndRunDocker "lunar"
     if [ "$?" != "0" ]; then
         dockerError="true"
-        echo "Error while publish package for kinetic"
+        echo "Error while publish package for lunar"
     fi
 fi
 
