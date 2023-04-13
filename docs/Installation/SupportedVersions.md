@@ -10,8 +10,8 @@
 | Ubnutu 21.04   | Hirsute Hippo | no |
 | Ubnutu 21.10   | Impish Indri | no |
 | Ubnutu 22.04   | Jammy Jellyfish | yes |
-| Ubnutu 22.10  | Kinetic Kudu | yes |
-| Ubnutu 23.04  | Lunar Lobster | planned |
+| Ubnutu 22.10  | Kinetic Kudu | no |
+| Ubnutu 23.04  | Lunar Lobster | yes |
 
 ---
 

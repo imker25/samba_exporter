@@ -201,15 +201,15 @@ if [ "$dockerError" == "false" ];then
     fi
 fi
 
-if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for kinetic"
-    echo "# ###################################################################"
-    buildAndRunDocker "kinetic"
-    if [ "$?" != "0" ]; then
-        dockerError="true"
-        echo "Error while publish package for kinetic"
-    fi
-fi
+# if [ "$dockerError" == "false" ];then 
+#     echo "Publish tag $tag on launchpad within a docker cotainer for kinetic"
+#     echo "# ###################################################################"
+#     buildAndRunDocker "kinetic"
+#     if [ "$?" != "0" ]; then
+#         dockerError="true"
+#         echo "Error while publish package for kinetic"
+#     fi
+# fi
 
 if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on launchpad within a docker cotainer for lunar"
