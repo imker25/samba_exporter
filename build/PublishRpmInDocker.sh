@@ -210,6 +210,16 @@ if [ "$dockerError" == "false" ];then
     fi
 fi
 
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on corp within a docker cotainer for fedora 38"
+    echo "# ###################################################################"
+    buildAndRunDocker "fedora38"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+         echo "Error while publish for fedora 38"
+    fi
+fi
+
 # Whenever adding a new fedora version, ensure to enable this 
 # fedora version on copr before the first release
 
