@@ -210,16 +210,7 @@ jobs:
         upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
         asset_path: bin/rpm-packages/Fedora-35/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc35.x86_64.rpm 
         asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc35.x86_64.rpm 
-        asset_content_type: application/zip                  
-    - name: Upload Release Asset for Fedora 36
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
-        asset_path: bin/rpm-packages/Fedora-36/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc36.x86_64.rpm 
-        asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc36.x86_64.rpm 
-        asset_content_type: application/zip    
+        asset_content_type: application/zip                   
     - name: Upload Release Asset for Fedora 37
       uses: actions/upload-release-asset@v1
       env:
@@ -229,6 +220,15 @@ jobs:
         asset_path: bin/rpm-packages/Fedora-37/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc37.x86_64.rpm 
         asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc37.x86_64.rpm 
         asset_content_type: application/zip  
+    - name: Upload Release Asset for Fedora 38
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
+        asset_path: bin/rpm-packages/Fedora-38/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc38.x86_64.rpm 
+        asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc38.x86_64.rpm 
+        asset_content_type: application/zip   
 
   publish-pages:
     name: Publish docs and repositories on Github

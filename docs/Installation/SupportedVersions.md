@@ -38,9 +38,9 @@
 | Fedora 33  | 2020-10-28 | no |
 | Fedora 34  | 2021-04-27 | no |
 | Fedora 35  | 2021-11-02 | yes |
-| Fedora 36   | 2022-04-19 | yes |
+| Fedora 36   | 2022-04-19 | no |
 | Fedora 37   | 2022-11-15 | yes |
-| Fedora 38   | 2023-04-25 | planned |
+| Fedora 38   | 2023-04-25 | yes |
 
 ---
 
