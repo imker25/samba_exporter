@@ -96,20 +96,20 @@ echo "# ###################################################################"
 echo "git status"
 git status
 
-# echo "# ###################################################################"
-# echo "Update the debian repo with bullseye package"
-# reprepro --basedir "./repos/debian/" includedeb bullseye "$HOST_FOLDER/deb-packages/binary/samba-exporter_$tag~ppa1~debian11_amd64.deb"
-# if [ "$?" != "0" ]; then 
-#     echo "Error during reprepro for bullseye"
-#     exit 1
-# fi
-# echo "# ###################################################################"
-# echo "Update the debian repo with buster package"
-# reprepro --basedir "./repos/debian/" includedeb buster "$HOST_FOLDER/deb-packages/binary/samba-exporter_$tag~ppa1~debian10_amd64.deb"
-# if [ "$?" != "0" ]; then 
-#     echo "Error during reprepro for buster"
-#     exit 1
-# fi
+echo "# ###################################################################"
+echo "Update the debian repo with bullseye package"
+reprepro --basedir "./repos/debian/" includedeb bullseye "$HOST_FOLDER/deb-packages/binary/samba-exporter_$tag~ppa1~debian11_amd64.deb"
+if [ "$?" != "0" ]; then 
+    echo "Error during reprepro for bullseye"
+    exit 1
+fi
+echo "# ###################################################################"
+echo "Update the debian repo with buster package"
+reprepro --basedir "./repos/debian/" includedeb buster "$HOST_FOLDER/deb-packages/binary/samba-exporter_$tag~ppa1~debian10_amd64.deb"
+if [ "$?" != "0" ]; then 
+    echo "Error during reprepro for buster"
+    exit 1
+fi
 
 echo "# ###################################################################"
 echo "Update the rpm repo with fc28 package"

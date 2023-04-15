@@ -190,15 +190,15 @@ if [ "$dockerError" == "false" ];then
     fi
 fi
 
-if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on corp within a docker cotainer for fedora 36"
-    echo "# ###################################################################"
-    buildAndRunDocker "fedora36"
-    if [ "$?" != "0" ]; then
-        dockerError="true"
-         echo "Error while publish for fedora 36"
-    fi
-fi
+# if [ "$dockerError" == "false" ];then 
+#     echo "Publish tag $tag on corp within a docker cotainer for fedora 36"
+#     echo "# ###################################################################"
+#     buildAndRunDocker "fedora36"
+#     if [ "$?" != "0" ]; then
+#         dockerError="true"
+#          echo "Error while publish for fedora 36"
+#     fi
+# fi
 
 if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on corp within a docker cotainer for fedora 37"
@@ -207,6 +207,16 @@ if [ "$dockerError" == "false" ];then
     if [ "$?" != "0" ]; then
         dockerError="true"
          echo "Error while publish for fedora 37"
+    fi
+fi
+
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on corp within a docker cotainer for fedora 38"
+    echo "# ###################################################################"
+    buildAndRunDocker "fedora38"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+         echo "Error while publish for fedora 38"
     fi
 fi
 
