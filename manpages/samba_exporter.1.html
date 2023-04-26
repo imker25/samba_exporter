@@ -58,6 +58,8 @@
     <a href="#DESCRIPTION">DESCRIPTION</a>
     <a href="#OPTIONS">OPTIONS</a>
     <a href="#EXAMPLES">EXAMPLES</a>
+    <a href="#EXPORTED-VALUES">Exported values</a>
+    <a href="#SMBD-IN-CLUSTER-MODE">smbd in cluster mode</a>
     <a href="#FILES">Files</a>
     <a href="#BUGS">BUGS</a>
     <a href="#COPYRIGHT">COPYRIGHT</a>
@@ -162,6 +164,94 @@ need to change this.<br>
 <p><strong>Remark:</strong> Due to the services dependencies <code>samba_exporter</code> service stops whenever <code>samba_statusd</code> stops.
 And <code>samba_statusd</code> always starts when <code>samba_exporter</code> is started if not already running.</p>
 
+<h2 id="Exported-values">Exported values</h2>
+
+<p>The following values are exported by default:</p>
+
+<ul>
+<li>
+<code>samba_client_connected_at</code> Unix time stamp a client connected</li>
+<li>
+<code>samba_client_connected_since_seconds</code> Seconds since a client connected</li>
+<li>
+<code>samba_client_count</code> Number of clients using the samba server</li>
+<li>
+<code>samba_encryption_method_count</code> Number of processes on the server using the encryption</li>
+<li>
+<code>samba_exporter_information</code> Information of the samba_exporter</li>
+<li>
+<code>samba_individual_user_count</code> The number of users connected to this samba server</li>
+<li>
+<code>samba_lock_created_at</code> Unix time stamp a lock was created</li>
+<li>
+<code>samba_lock_created_since_seconds</code> Seconds since a lock was created</li>
+<li>
+<code>samba_locked_file_count</code> Number of files locked by the samba server</li>
+<li>
+<code>samba_locks_per_share_count</code> Number of locks on share</li>
+<li>
+<code>samba_pid_count</code> Number of processes running by the samba server</li>
+<li>
+<code>samba_process_per_client_count</code> Number of processes on the server used by one client</li>
+<li>
+<code>samba_protocol_version_count</code> Number of processes on the server using the protocol</li>
+<li>
+<code>samba_request_time</code> Time it took to reqest the samba status from samba_statusd [ms]</li>
+<li>
+<code>samba_satutsd_up</code> 1 if the samba_statusd seems to be running</li>
+<li>
+<code>samba_server_information</code> Version of the samba server</li>
+<li>
+<code>samba_server_up</code> 1 if the samba server seems to be running</li>
+<li>
+<code>samba_share_count</code> Number of shares servered by the samba server</li>
+<li>
+<code>samba_signing_method_count</code> Number of processes on the server using the signing</li>
+<li>
+<code>samba_smbd_cpu_usage_percentage</code> CPU usage of the 'smbd' process with pid in percent</li>
+<li>
+<code>samba_smbd_io_counter_read_bytes</code> IO counter reads of the process 'smbd' in byte</li>
+<li>
+<code>samba_smbd_io_counter_read_count</code> IO counter read count of the process 'smbd'</li>
+<li>
+<code>samba_smbd_io_counter_write_bytes</code> IO counter writes of the process 'smbd' in byte</li>
+<li>
+<code>samba_smbd_io_counter_write_count</code> IO counter write count of the process 'smbd'</li>
+<li>
+<code>samba_smbd_open_file_count</code> Open file handles by process 'smbd'</li>
+<li>
+<code>samba_smbd_sum_cpu_usage_percentage</code> Sum CPU usage of all 'smbd' processes in percent</li>
+<li>
+<code>samba_smbd_sum_io_counter_read_bytes</code> IO counter reads of all 'smbd' processes in bytes</li>
+<li>
+<code>samba_smbd_sum_io_counter_read_count</code> IO counter read count of all 'smbd' processes</li>
+<li>
+<code>samba_smbd_sum_io_counter_write_bytes</code> IO counter writes of all 'smbd' processes in bytes</li>
+<li>
+<code>samba_smbd_sum_io_counter_write_count</code> IO counter write count of all 'smbd' processes</li>
+<li>
+<code>samba_smbd_sum_open_file_count</code> Open file handles of all 'smbd' processes</li>
+<li>
+<code>samba_smbd_sum_thread_count</code> Threads used by all 'smbd' processes</li>
+<li>
+<code>samba_smbd_sum_virtual_memory_usage_bytes</code> Virtual memory usage of all 'smbd' processes in bytes</li>
+<li>
+<code>samba_smbd_sum_virtual_memory_usage_percent</code> Virtual memory usage of all 'smbd' processes in percent</li>
+<li>
+<code>samba_smbd_thread_count</code> Threads used by process 'smbd'</li>
+<li>
+<code>samba_smbd_unique_process_id_count</code> Count of unique process IDs for 'smbd'</li>
+<li>
+<code>samba_smbd_virtual_memory_usage_bytes</code> Virtual memory usage of the 'smbd' process with pid in bytes</li>
+<li>
+<code>samba_smbd_virtual_memory_usage_percent</code> Virtual memory usage of the 'smbd' process with pid in percent</li>
+</ul>
+
+
+<h2 id="smbd-in-cluster-mode">smbd in cluster mode</h2>
+
+<p>The values of <code>samba_client_*</code> and <code>samba_process_per_client_count</code> may contain no valid data when monitoring a <strong>smbd</strong> running in cluster mode. When running in this mode the values of <code>uid</code> and <code>gid</code> may exported in labels are shown as <code>-1</code> since <code>smbstatus -L</code> gives only anonymous data in this case. Another consequence of this fact is that <code>samba_individual_user_count</code> may show wrong values as well.</p>
+
 <h2 id="Files">Files</h2>
 
 <ul>
@@ -191,7 +281,7 @@ In case you found a new bug please also report as github issue on the projects p
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>March 2023</li>
+    <li class='tc'>April 2023</li>
     <li class='tr'>samba_exporter(1)</li>
   </ol>
 
