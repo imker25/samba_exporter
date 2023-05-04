@@ -6,6 +6,7 @@ package statisticsGenerator
 // LICENSE file.
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -42,6 +43,7 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 	var shares []string
 	var clients []string
 	var sambaVersion string
+	var cluserNodeIds []int
 	var lockCreationEntries []lockCreationEntry
 	locksPerShare := make(map[string]int, 0)
 	processPerClient := make(map[string]int, 0)
@@ -57,6 +59,10 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 
 		if !intArrContains(pids, lock.PID) {
 			pids = append(pids, lock.PID)
+		}
+
+		if !intArrContains(cluserNodeIds, lock.ClusterNodeId) {
+			cluserNodeIds = append(cluserNodeIds, lock.ClusterNodeId)
 		}
 
 		locksOfShare, found := locksPerShare[lock.SharePath]
@@ -81,6 +87,9 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 			pids = append(pids, process.PID)
 		}
 		sambaVersion = process.SambaVersion
+		if !intArrContains(cluserNodeIds, process.ClusterNodeId) {
+			cluserNodeIds = append(cluserNodeIds, process.ClusterNodeId)
+		}
 
 		processOnShare, foundC := processPerClient[process.Machine]
 		if !foundC {
@@ -116,6 +125,10 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 			pids = append(pids, share.PID)
 		}
 
+		if !intArrContains(cluserNodeIds, share.ClusterNodeId) {
+			cluserNodeIds = append(cluserNodeIds, share.ClusterNodeId)
+		}
+
 		if !strArrContains(shares, share.Service) {
 			shares = append(shares, share.Service)
 		}
@@ -129,12 +142,29 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 			clientConnectionTime[share.Machine] = share.ConnectedAt.Unix()
 		}
 	}
+
+	clusterMode := false
+	if len(cluserNodeIds) > 1 || (len(cluserNodeIds) == 1 && cluserNodeIds[0] != -1) {
+		clusterMode = true
+	}
+
+	// Sanity check, if running in cluster mode, no ClusterNodeId should be -1
+	if clusterMode {
+		if intArrContains(cluserNodeIds, -1) {
+			fmt.Println("warning: ClusterNodeId -1 detected while running in cluster mode")
+		}
+	}
+
 	// TODO: Generate more metrics
 	ret = append(ret, SmbStatisticsNumeric{"individual_user_count", float64(len(users)), "The number of users connected to this samba server", nil})
 	ret = append(ret, SmbStatisticsNumeric{"locked_file_count", float64(len(lockData)), "Number of files locked by the samba server", nil})
 	ret = append(ret, SmbStatisticsNumeric{"pid_count", float64(len(pids)), "Number of processes running by the samba server", nil})
 	ret = append(ret, SmbStatisticsNumeric{"share_count", float64(len(shares)), "Number of shares servered by the samba server", nil})
 	ret = append(ret, SmbStatisticsNumeric{"client_count", float64(len(clients)), "Number of clients using the samba server", nil})
+
+	if clusterMode {
+		ret = append(ret, SmbStatisticsNumeric{"cluster_node_count", float64(len(cluserNodeIds)), "Number of cluster nodes running the samba cluster", nil})
+	}
 
 	if len(locksPerShare) > 0 {
 		for share, locks := range locksPerShare {

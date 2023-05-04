@@ -41,7 +41,7 @@ func TestGetSmbStatisticsClusterData(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares, getNewStatisticGenSettings())
 
-	if len(ret) != 24 {
+	if len(ret) != 25 {
 		t.Errorf("The number of return values %d was not expected", len(ret))
 	}
 
@@ -53,6 +53,9 @@ func TestGetSmbStatisticsClusterData(t *testing.T) {
 		t.Errorf("The client_count does not match as expected")
 	}
 
+	if ret[5].Name != "cluster_node_count" || ret[5].Value != 3.0 {
+		t.Errorf("The cluster_node_count does not match as expected")
+	}
 }
 
 func getNewStatisticGenSettings() StatisticsGeneratorSettings {

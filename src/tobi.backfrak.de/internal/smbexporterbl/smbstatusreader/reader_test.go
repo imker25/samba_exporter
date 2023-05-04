@@ -32,6 +32,20 @@ func TestStringerLockData(t *testing.T) {
 		t.Errorf("The string does not contain the expected sub string")
 	}
 
+	if strings.Contains(lockStr, "ClusterNodeId: ") == true {
+		t.Errorf("The string does contain the expected sub string")
+	}
+
+	oneLock = GetLockData(smbstatusout.LockDataCluster, logger)[0]
+	lockStr = oneLock.String()
+	if strings.Contains(lockStr, "ClusterNodeId: 1;") == false {
+		t.Errorf("The string does contain the expected sub string")
+	}
+
+	if strings.Contains(lockStr, "SharePath: /lfsmnt/dst01") == false {
+		t.Errorf("The string does not contain the expected sub string")
+	}
+
 }
 
 func TestStringerShareData(t *testing.T) {
@@ -45,6 +59,19 @@ func TestStringerShareData(t *testing.T) {
 
 	if strings.Contains(shareStr, "Machine: 192.168.1.242;") == false {
 		t.Errorf("The string does not contain the expected sub string")
+	}
+	if strings.Contains(shareStr, "ClusterNodeId: ") == true {
+		t.Errorf("The string does contain the expected sub string")
+	}
+
+	oneShare = GetShareData(smbstatusout.ShareDataCluster, logger)[0]
+
+	shareStr = oneShare.String()
+	if strings.Contains(shareStr, "PID: 19801;") == false {
+		t.Errorf("The string does not contain the expected sub string")
+	}
+	if strings.Contains(shareStr, "ClusterNodeId: 1;") == false {
+		t.Errorf("The string does contain the expected sub string")
 	}
 
 }
@@ -61,7 +88,19 @@ func TestStringerProcessData(t *testing.T) {
 	if strings.Contains(shareStr, "Machine: 192.168.1.242 (ipv4:192.168.1.242:42296);") == false {
 		t.Errorf("The string does not contain the expected sub string")
 	}
+	if strings.Contains(shareStr, "ClusterNodeId: ") == true {
+		t.Errorf("The string does contain the expected sub string")
+	}
 
+	oneProcess = GetProcessData(smbstatusout.ProcessDataCluster, logger)[0]
+
+	shareStr = oneProcess.String()
+	if strings.Contains(shareStr, "PID: 57086;") == false {
+		t.Errorf("The string does not contain the expected sub string")
+	}
+	if strings.Contains(shareStr, "ClusterNodeId: 3;") == false {
+		t.Errorf("The string does contain the expected sub string")
+	}
 }
 
 func TestGetLockDataOneLine(t *testing.T) {
@@ -132,6 +171,10 @@ func TestGetLockData4Line(t *testing.T) {
 	if entryList[3].SharePath != "/usr/share/music" {
 		t.Errorf("The SharePath %s is not the expected /usr/share/music", entryList[3].SharePath)
 	}
+
+	if entryList[3].ClusterNodeId != -1 {
+		t.Errorf("The SharePath %d is not the expected '-1'", entryList[3].ClusterNodeId)
+	}
 }
 
 func TestGetLockDataCluster(t *testing.T) {
@@ -156,6 +199,10 @@ func TestGetLockDataCluster(t *testing.T) {
 
 	if entryList[3].PID != 57086 {
 		t.Errorf("Got %d entryList[5].PID, expected 57086", entryList[3].PID)
+	}
+
+	if entryList[3].ClusterNodeId != 3 {
+		t.Errorf("Got %d entryList[5].ClusterNodeId, expected 3", entryList[3].ClusterNodeId)
 	}
 
 	if entryList[6].Time.Format(time.ANSIC) != "Tue Apr  4 14:13:28 2023" {
@@ -263,6 +310,10 @@ func TestGetShareData4Line(t *testing.T) {
 	if entries[3].ConnectedAt.Format(time.ANSIC) != "Fri Nov  5 23:07:13 2021" {
 		t.Errorf("The ConnectedAt %s is not the expected 'Fri Nov  5 23:07:13 2021'", entries[3].ConnectedAt.Format(time.ANSIC))
 	}
+
+	if entries[3].ClusterNodeId != -1 {
+		t.Errorf("The ClusterNodeId %d is not the expected '-1'", entries[3].ClusterNodeId)
+	}
 }
 
 func TestGetShareDataCluster(t *testing.T) {
@@ -291,6 +342,10 @@ func TestGetShareDataCluster(t *testing.T) {
 
 	if entries[3].Machine != "10.63.0.11 (ipv4:10.63.0.11:50370)" {
 		t.Errorf("Got %s entries[3].Signing, expected '10.63.0.11 (ipv4:10.63.0.11:50370) '", entries[3].Machine)
+	}
+
+	if entries[3].ClusterNodeId != 1 {
+		t.Errorf("Got %d entries[3].ClusterNodeId, expected '1'", entries[3].ClusterNodeId)
 	}
 }
 
@@ -372,6 +427,10 @@ func TestGetProcessData4Line(t *testing.T) {
 		t.Errorf("The Machine \"%s\" is not the expected \"192.168.1.245 (ipv4:192.168.1.245:47514)\"", enties[3].Machine)
 	}
 
+	if enties[3].ClusterNodeId != -1 {
+		t.Errorf("The ClusterNodeId \"%d\" is not the expected \"-1\"", enties[3].ClusterNodeId)
+	}
+
 	for _, entry := range enties {
 		if entry.SambaVersion != "4.11.6-Ubuntu" {
 			t.Errorf("The SambaVersion \"%s\" is not expected", entry.SambaVersion)
@@ -393,6 +452,10 @@ func TestGetProcessDataCluster(t *testing.T) {
 
 	if enties[3].Machine != "10.63.0.28 (ipv4:10.63.0.28:58968)" {
 		t.Errorf("The Machine \"%s\" is not the expected \"10.63.0.28 (ipv4:10.63.0.28:58968)\"", enties[3].Machine)
+	}
+
+	if enties[3].ClusterNodeId != 3 {
+		t.Errorf("The ClusterNodeId \"%d\" is not the expected \"3\"", enties[3].ClusterNodeId)
 	}
 
 	for _, entry := range enties {
