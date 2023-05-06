@@ -175,7 +175,7 @@ func TestSetMetricsFromResponseNoClient(t *testing.T) {
 func TestSetMetricsFromResponseCluster(t *testing.T) {
 	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{true, false, false, false}
 	expectedDescChanels := 39
-	expectedMetChanels := 45
+	expectedMetChanels := 47
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := commonbl.NewLogger(true)
