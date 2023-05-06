@@ -41,7 +41,7 @@ func TestGetSmbStatisticsClusterData(t *testing.T) {
 
 	ret := GetSmbStatistics(locks, processes, shares, getNewStatisticGenSettings())
 
-	if len(ret) != 27 {
+	if len(ret) != 33 {
 		t.Errorf("The number of return values %d was not expected", len(ret))
 	}
 
@@ -56,6 +56,22 @@ func TestGetSmbStatisticsClusterData(t *testing.T) {
 	if ret[4].Name != "cluster_node_count" || ret[4].Value != 3.0 {
 		t.Errorf("The cluster_node_count does not match as expected")
 	}
+
+	// if ret[6].Name != "pids_per_node_count" || ret[6].Value != 1.0 || ret[6].Labels["node"] != "3" {
+	// 	t.Errorf("The pids_per_node_count does not match as expected")
+	// }
+
+	// if ret[8].Name != "locks_per_node_count" || ret[8].Value != 6.0 || ret[8].Labels["node"] != "1" {
+	// 	t.Errorf("The locks_per_node_count does not match as expected")
+	// }
+
+	// if ret[10].Name != "porcesses_per_node_count" || ret[10].Value != 3.0 || ret[10].Labels["node"] != "3" {
+	// 	t.Errorf("The porcesses_per_node_count does not match as expected")
+	// }
+
+	// if ret[12].Name != "shares_per_node_count" || ret[12].Value != 14.0 || ret[12].Labels["node"] != "1" {
+	// 	t.Errorf("The shares_per_node_count does not match as expected")
+	// }
 }
 
 func getNewStatisticGenSettings() StatisticsGeneratorSettings {
