@@ -216,19 +216,19 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 	if clusterMode {
 		ret = append(ret, SmbStatisticsNumeric{"cluster_node_count", float64(len(cluserNodeIds)), "Number of cluster nodes running the samba cluster", nil})
 		for node, pids := range pidsPerNode {
-			ret = append(ret, SmbStatisticsNumeric{"pids_per_node_count", float64(len(pids)), "Number of PIDs per node", map[string]string{"node": fmt.Sprint(node)}})
+			ret = append(ret, SmbStatisticsNumeric{"pids_per_node_count", float64(len(pids)), "Number of PIDs per cluster node", map[string]string{"node": fmt.Sprint(node)}})
 		}
 
 		for node, locks := range locksPerNode {
-			ret = append(ret, SmbStatisticsNumeric{"locks_per_node_count", float64(locks), "Number of Locks per node", map[string]string{"node": fmt.Sprint(node)}})
+			ret = append(ret, SmbStatisticsNumeric{"locks_per_node_count", float64(locks), "Number of Locks per cluster node", map[string]string{"node": fmt.Sprint(node)}})
 		}
 
 		for node, porcesses := range processPerNode {
-			ret = append(ret, SmbStatisticsNumeric{"porcesses_per_node_count", float64(porcesses), "Number of Locks per node", map[string]string{"node": fmt.Sprint(node)}})
+			ret = append(ret, SmbStatisticsNumeric{"porcesses_per_node_count", float64(porcesses), "Number of Locks per cluster node", map[string]string{"node": fmt.Sprint(node)}})
 		}
 
 		for node, shares := range sharesPerNode {
-			ret = append(ret, SmbStatisticsNumeric{"shares_per_node_count", float64(shares), "Number of Shares per node", map[string]string{"node": fmt.Sprint(node)}})
+			ret = append(ret, SmbStatisticsNumeric{"shares_per_node_count", float64(shares), "Number of Shares per cluster node", map[string]string{"node": fmt.Sprint(node)}})
 		}
 
 	} else {
