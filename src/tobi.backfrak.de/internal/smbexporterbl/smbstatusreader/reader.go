@@ -17,19 +17,25 @@ import (
 
 // Type to represent a entry in the 'smbstatus -L -n' output table
 type LockData struct {
-	PID        int
-	UserID     int
-	DenyMode   string
-	Access     string
-	AccessMode string
-	Oplock     string
-	SharePath  string
-	Name       string
-	Time       time.Time
+	PID           int
+	ClusterNodeId int // In case smaba is running in cluster mode, otherwise -1
+	UserID        int
+	DenyMode      string
+	Access        string
+	AccessMode    string
+	Oplock        string
+	SharePath     string
+	Name          string
+	Time          time.Time
 }
 
 // Implement Stringer Interface for LockData
 func (lockData LockData) String() string {
+	if lockData.ClusterNodeId > -1 {
+		return fmt.Sprintf("ClusterNodeId: %d; PID: %d; UserID: %d; DenyMode: %s; Access: %s; AccessMode: %s; Oplock: %s; SharePath: %s; Name: %s: Time %s;",
+			lockData.ClusterNodeId, lockData.PID, lockData.UserID, lockData.DenyMode, lockData.Access, lockData.AccessMode, lockData.Oplock,
+			lockData.SharePath, lockData.Name, lockData.Time.Format(time.RFC3339))
+	}
 	return fmt.Sprintf("PID: %d; UserID: %d; DenyMode: %s; Access: %s; AccessMode: %s; Oplock: %s; SharePath: %s; Name: %s: Time %s;",
 		lockData.PID, lockData.UserID, lockData.DenyMode, lockData.Access, lockData.AccessMode, lockData.Oplock,
 		lockData.SharePath, lockData.Name, lockData.Time.Format(time.RFC3339))
@@ -65,13 +71,18 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 		var entry LockData
 		if strings.Contains(fields[0], ":") {
 			pidFields := strings.Split(fields[0], ":")
-			// pidFields[0] is the 'cluster_node_number'
+			entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
+			if err != nil {
+				logger.WriteErrorWithAddition(err, "while getting LockData ClusterNodeId (cluster - 13c)")
+				continue
+			}
 			entry.PID, err = strconv.Atoi(pidFields[1])
 			if err != nil {
 				logger.WriteErrorWithAddition(err, "while getting LockData PID (cluster - 13c)")
 				continue
 			}
 		} else {
+			entry.ClusterNodeId = -1
 			entry.PID, err = strconv.Atoi(fields[0])
 			if err != nil {
 				logger.WriteErrorWithAddition(err, "while getting LockData PID (normal - 13c)")
@@ -104,13 +115,18 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 		var entry LockData
 		if strings.Contains(fields[0], ":") {
 			pidFields := strings.Split(fields[0], ":")
-			// pidFields[0] is the 'cluster_node_number'
+			entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
+			if err != nil {
+				logger.WriteErrorWithAddition(err, "while getting LockData ClusterNodeId (cluster - 14c)")
+				continue
+			}
 			entry.PID, err = strconv.Atoi(pidFields[1])
 			if err != nil {
 				logger.WriteErrorWithAddition(err, "while getting LockData PID (cluster - 14c)")
 				continue
 			}
 		} else {
+			entry.ClusterNodeId = -1
 			entry.PID, err = strconv.Atoi(fields[0])
 			if err != nil {
 				logger.WriteErrorWithAddition(err, "while getting LockData PID (normal - 14c)")
@@ -143,16 +159,22 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 
 // Type to represent a entry in the 'smbstatus -S -n' output table
 type ShareData struct {
-	Service     string
-	PID         int
-	Machine     string
-	ConnectedAt time.Time
-	Encryption  string
-	Signing     string
+	Service       string
+	PID           int
+	ClusterNodeId int // In case smaba is running in cluster mode, otherwise -1
+	Machine       string
+	ConnectedAt   time.Time
+	Encryption    string
+	Signing       string
 }
 
 // Implement Stringer Interface for ShareData
 func (shareData ShareData) String() string {
+	if shareData.ClusterNodeId > -1 {
+		return fmt.Sprintf("Service: %s; ClusterNodeId: %d; PID: %d; Machine: %s; ConnectedAt: %s; Encryption: %s; Signing: %s;",
+			shareData.Service, shareData.ClusterNodeId, shareData.PID, shareData.Machine, shareData.ConnectedAt.Format(time.RFC3339),
+			shareData.Encryption, shareData.Signing)
+	}
 	return fmt.Sprintf("Service: %s; PID: %d; Machine: %s; ConnectedAt: %s; Encryption: %s; Signing: %s;",
 		shareData.Service, shareData.PID, shareData.Machine, shareData.ConnectedAt.Format(time.RFC3339),
 		shareData.Encryption, shareData.Signing)
@@ -199,13 +221,18 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 				entry.Service = fields[0]
 				if strings.Contains(fields[1], ":") {
 					pidFields := strings.Split(fields[1], ":")
-					// pidFields[0] is the 'cluster_node_number'
+					entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
+					if err != nil {
+						logger.WriteErrorWithAddition(err, "while getting ShareData ClusterNodeId (normal - c12 - with :)")
+						continue
+					}
 					entry.PID, err = strconv.Atoi(pidFields[1])
 					if err != nil {
 						logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal - c12 - with :)")
 						continue
 					}
 				} else {
+					entry.ClusterNodeId = -1
 					entry.PID, err = strconv.Atoi(fields[1])
 					if err != nil {
 						logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal - c12 - without :)")
@@ -236,13 +263,18 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 					entry.Service = fields[0]
 					if strings.Contains(fields[1], ":") {
 						pidFields := strings.Split(fields[1], ":")
-						// pidFields[0] is the 'cluster_node_number'
+						entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
+						if err != nil {
+							logger.WriteErrorWithAddition(err, "while getting ShareData ClusterNodeId (normal - c11 - with :)")
+							continue
+						}
 						entry.PID, err = strconv.Atoi(pidFields[1])
 						if err != nil {
 							logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal - c11 - with :)")
 							continue
 						}
 					} else {
+						entry.ClusterNodeId = -1
 						entry.PID, err = strconv.Atoi(fields[1])
 						if err != nil {
 							logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal - c11 - without :)")
@@ -274,13 +306,18 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 				var entry ShareData
 				if strings.Contains(fields[0], ":") {
 					pidFields := strings.Split(fields[0], ":")
-					// pidFields[0] is the 'cluster_node_number'
+					entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
+					if err != nil {
+						logger.WriteErrorWithAddition(err, "while getting ShareData ClusterNodeId (cluster - with :)")
+						continue
+					}
 					entry.PID, err = strconv.Atoi(pidFields[1])
 					if err != nil {
 						logger.WriteErrorWithAddition(err, "while getting ShareData PID (cluster - with :)")
 						continue
 					}
 				} else {
+					entry.ClusterNodeId = -1
 					entry.PID, err = strconv.Atoi(fields[0])
 					if err != nil {
 						logger.WriteErrorWithAddition(err, "while getting ShareData PID (cluster - without :)")
@@ -302,6 +339,7 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 // Type to represent a entry in the 'smbstatus -p -n' output table
 type ProcessData struct {
 	PID             int
+	ClusterNodeId   int // In case smaba is running in cluster mode, otherwise -1
 	UserID          int
 	GroupID         int
 	Machine         string
@@ -313,6 +351,11 @@ type ProcessData struct {
 
 // Implement Stringer Interface for ProcessData
 func (processData ProcessData) String() string {
+	if processData.ClusterNodeId > -1 {
+		return fmt.Sprintf("ClusterNodeId: %d; PID: %d; UserID: %d; GroupID: %d; Machine: %s; ProtocolVersion: %s; Encryption: %s; Signing: %s;",
+			processData.ClusterNodeId, processData.PID, processData.UserID, processData.GroupID, processData.Machine, processData.ProtocolVersion,
+			processData.Encryption, processData.Signing)
+	}
 	return fmt.Sprintf("PID: %d; UserID: %d; GroupID: %d; Machine: %s; ProtocolVersion: %s; Encryption: %s; Signing: %s;",
 		processData.PID, processData.UserID, processData.GroupID, processData.Machine, processData.ProtocolVersion,
 		processData.Encryption, processData.Signing)
@@ -353,13 +396,18 @@ func GetProcessData(data string, logger *commonbl.Logger) []ProcessData {
 		// In cluster versions samba adds an extra id separated by ':'
 		if strings.Contains(fields[0], ":") {
 			pidFields := strings.Split(fields[0], ":")
-			// pidFields[0] is the 'cluster_node_number'
+			entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
+			if err != nil {
+				logger.WriteErrorWithAddition(err, "while getting ProcessData ClusterNodeId")
+				continue
+			}
 			entry.PID, err = strconv.Atoi(pidFields[1])
 			if err != nil {
 				logger.WriteErrorWithAddition(err, "while getting ProcessData PID (with :)")
 				continue
 			}
 		} else {
+			entry.ClusterNodeId = -1
 			entry.PID, err = strconv.Atoi(fields[0])
 			if err != nil {
 				logger.WriteErrorWithAddition(err, "while getting ProcessData PID (without :)")
