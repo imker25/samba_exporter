@@ -511,3 +511,79 @@ func TestGetPsDataTwoPids(t *testing.T) {
 		t.Errorf("Got %d entries but expected 2", len(entryList))
 	}
 }
+
+func TestTryGetTimeStampFromStrArr(t *testing.T) {
+	var suc bool
+	var value time.Time
+	fields := []string{"", ""}
+	suc, _ = tryGetTimeStampFromStrArr(fields)
+	if suc == true {
+		t.Errorf("Got a time from an empty string")
+	}
+
+	fields = []string{"/my/cool/path", "RW"}
+	suc, _ = tryGetTimeStampFromStrArr(fields)
+	if suc == true {
+		t.Errorf("Got a time from an empty string")
+	}
+
+	fields = []string{"Fri", "Nov", "5", "11:07:13", "PM", "2021", "CET"}
+	suc, value = tryGetTimeStampFromStrArr(fields)
+	if suc == false {
+		t.Errorf("Got no time from \"Fri Nov 5 11:07:13 PM 2021 CET\"")
+	}
+
+	if value.Format(time.ANSIC) != "Fri Nov  5 23:07:13 2021" {
+		t.Errorf("Time is '%s', but expected 'Fri Nov  5 23:07:13 2021'", value.Format(time.ANSIC))
+	}
+
+	fields = []string{"Fri", "Nov", "05", "11:07:13", "PM", "2021", "CET"}
+	suc, value = tryGetTimeStampFromStrArr(fields)
+	if suc == false {
+		t.Errorf("Got no time from \"Fri Nov 5 11:07:13 PM 2021 CET\"")
+	}
+
+	if value.Format(time.ANSIC) != "Fri Nov  5 23:07:13 2021" {
+		t.Errorf("Time is '%s', but expected 'Fri Nov  5 23:07:13 2021'", value.Format(time.ANSIC))
+	}
+
+	fields = []string{"Wed", "Jun", "2", "21:32:31 2021", "UTC"}
+	suc, value = tryGetTimeStampFromStrArr(fields)
+	if suc == false {
+		t.Errorf("Got no time from \"Wed Jun  2 21:32:31 2021 UTC\"")
+	}
+
+	if value.Format(time.ANSIC) != "Wed Jun  2 21:32:31 2021" {
+		t.Errorf("Time is '%s', but expected 'Wed Jun  2 21:32:31 2021'", value.Format(time.ANSIC))
+	}
+
+	fields = []string{"Wed", "Jun", " 2", "21:32:31 2021", "UTC"}
+	suc, value = tryGetTimeStampFromStrArr(fields)
+	if suc == false {
+		t.Errorf("Got no time from \"Wed Jun  2 21:32:31 2021 UTC\"")
+	}
+
+	if value.Format(time.ANSIC) != "Wed Jun  2 21:32:31 2021" {
+		t.Errorf("Time is '%s', but expected 'Wed Jun  2 21:32:31 2021'", value.Format(time.ANSIC))
+	}
+
+	fields = []string{"Wed", "Jun", "02", "21:32:31 2021", "UTC"}
+	suc, value = tryGetTimeStampFromStrArr(fields)
+	if suc == false {
+		t.Errorf("Got no time from \"Wed Jun 02 21:32:31 2021 UTC\"")
+	}
+
+	if value.Format(time.ANSIC) != "Wed Jun  2 21:32:31 2021" {
+		t.Errorf("Time is '%s', but expected 'Wed Jun  2 21:32:31 2021'", value.Format(time.ANSIC))
+	}
+
+	fields = []string{"Wed", "Jun", " 2", "21:32:31 2021"}
+	suc, value = tryGetTimeStampFromStrArr(fields)
+	if suc == false {
+		t.Errorf("Got no time from \"Wed Jun  2 21:32:31 2021 UTC\"")
+	}
+
+	if value.Format(time.ANSIC) != "Wed Jun  2 21:32:31 2021" {
+		t.Errorf("Time is '%s', but expected 'Wed Jun  2 21:32:31 2021'", value.Format(time.ANSIC))
+	}
+}

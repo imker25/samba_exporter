@@ -56,7 +56,7 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 		return ret
 	}
 
-	tableHeaderMatrix := getFieldMatrix(lines[sepLineIndex-1:sepLineIndex], "  ", 9)
+	tableHeaderMatrix := getFieldMatrixFixLength(lines[sepLineIndex-1:sepLineIndex], "  ", 9)
 	if len(tableHeaderMatrix) != 1 {
 		return ret
 	}
@@ -66,7 +66,7 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 		return ret
 	}
 
-	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], " ", 13) {
+	for _, fields := range getFieldMatrixFixLength(lines[sepLineIndex+1:], " ", 13) {
 		var err error
 		var entry LockData
 		if strings.Contains(fields[0], ":") {
@@ -110,7 +110,7 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 
 		ret = append(ret, entry)
 	}
-	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], " ", 14) {
+	for _, fields := range getFieldMatrixFixLength(lines[sepLineIndex+1:], " ", 14) {
 		var err error
 		var entry LockData
 		if strings.Contains(fields[0], ":") {
@@ -192,11 +192,11 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 	}
 
 	// Normal setup gives 6 fields in this line
-	tableHeaderMatrix := getFieldMatrix(lines[sepLineIndex-1:sepLineIndex], "  ", 6)
+	tableHeaderMatrix := getFieldMatrixFixLength(lines[sepLineIndex-1:sepLineIndex], "  ", 6)
 
 	if len(tableHeaderMatrix) != 1 {
 		// Cluster setup gives 7 fields in this line
-		tableHeaderMatrix = getFieldMatrix(lines[sepLineIndex-1:sepLineIndex], "  ", 7)
+		tableHeaderMatrix = getFieldMatrixFixLength(lines[sepLineIndex-1:sepLineIndex], "  ", 7)
 
 		if len(tableHeaderMatrix) != 1 {
 			return ret
@@ -213,7 +213,7 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 	}
 
 	if runningMode == "normal" {
-		fieldMatrix := getFieldMatrix(lines[sepLineIndex+1:], " ", 12)
+		fieldMatrix := getFieldMatrixFixLength(lines[sepLineIndex+1:], " ", 12)
 		if fieldMatrix != nil {
 			for _, fields := range fieldMatrix {
 				var err error
@@ -255,7 +255,7 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 				ret = append(ret, entry)
 			}
 		} else {
-			fieldMatrix = getFieldMatrix(lines[sepLineIndex+1:], " ", 11)
+			fieldMatrix = getFieldMatrixFixLength(lines[sepLineIndex+1:], " ", 11)
 			if fieldMatrix != nil {
 				for _, fields := range fieldMatrix {
 					var err error
@@ -299,7 +299,7 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 			}
 		}
 	} else if runningMode == "cluster" {
-		fieldMatrix := getFieldMatrix(lines[sepLineIndex+1:], " ", 8)
+		fieldMatrix := getFieldMatrixFixLength(lines[sepLineIndex+1:], " ", 8)
 		if fieldMatrix != nil {
 			for _, fields := range fieldMatrix {
 				var err error
@@ -380,7 +380,7 @@ func GetProcessData(data string, logger *commonbl.Logger) []ProcessData {
 		return ret
 	}
 
-	tableHeaderMatrix := getFieldMatrix(lines[sepLineIndex-1:sepLineIndex], "  ", 7)
+	tableHeaderMatrix := getFieldMatrixFixLength(lines[sepLineIndex-1:sepLineIndex], "  ", 7)
 	if len(tableHeaderMatrix) != 1 {
 		return ret
 	}
@@ -390,7 +390,7 @@ func GetProcessData(data string, logger *commonbl.Logger) []ProcessData {
 		return ret
 	}
 
-	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], " ", 8) {
+	for _, fields := range getFieldMatrixFixLength(lines[sepLineIndex+1:], " ", 8) {
 		var err error
 		var entry ProcessData
 		// In cluster versions samba adds an extra id separated by ':'
@@ -456,12 +456,25 @@ func GetPsData(data string, logger *commonbl.Logger) []commonbl.PsUtilPidData {
 	return ret
 }
 
-func getFieldMatrix(dataLines []string, seperator string, lineFields int) [][]string {
+func getFieldMatrixFixLength(dataLines []string, separator string, lineFields int) [][]string {
+
+	var fieldMatrix [][]string
+
+	for _, matrixLine := range getFieldMatrix(dataLines, separator) {
+		if len(matrixLine) == lineFields {
+			fieldMatrix = append(fieldMatrix, matrixLine)
+		}
+	}
+
+	return fieldMatrix
+}
+
+func getFieldMatrix(dataLines []string, separator string) [][]string {
 
 	var fieldMatrix [][]string
 
 	for _, line := range dataLines {
-		fields := strings.Split(line, seperator)
+		fields := strings.Split(line, separator)
 		var matrixLine []string
 		for _, field := range fields {
 			trimmedField := strings.TrimSpace(field)
@@ -469,12 +482,46 @@ func getFieldMatrix(dataLines []string, seperator string, lineFields int) [][]st
 				matrixLine = append(matrixLine, trimmedField)
 			}
 		}
-		if len(matrixLine) == lineFields {
-			fieldMatrix = append(fieldMatrix, matrixLine)
-		}
+		fieldMatrix = append(fieldMatrix, matrixLine)
 	}
 
 	return fieldMatrix
+}
+
+func tryGetTimeStampFromStrArr(fields []string) (bool, time.Time) {
+	timeStr := ""
+	var ret time.Time
+	var err error
+	for _, sec := range fields {
+		timeStr = fmt.Sprintf("%s %s", timeStr, sec)
+	}
+	timeStr = strings.TrimSpace(timeStr)
+	ret, err = time.ParseInLocation(time.ANSIC, timeStr, time.Now().Location())
+	if err == nil {
+		return true, ret
+	}
+	ret, err = time.Parse(time.ANSIC, timeStr)
+	if err == nil {
+		return true, ret
+	}
+	ret, err = time.Parse("Mon Jan 02 03:04:05 PM 2006 MST", timeStr)
+	if err == nil {
+		return true, ret
+	}
+	ret, err = time.Parse("Mon Jan 2 03:04:05 PM 2006 MST", timeStr)
+	if err == nil {
+		return true, ret
+	}
+	ret, err = time.Parse("Mon Jan _2 15:04:05 2006 MST", timeStr)
+	if err == nil {
+		return true, ret
+	}
+	ret, err = time.Parse("Mo Jan _2 15:04:05 2006 MST", timeStr)
+	if err == nil {
+		return true, ret
+	}
+
+	return false, time.Now()
 }
 
 func findSeperatorLineIndex(lines []string) int {
