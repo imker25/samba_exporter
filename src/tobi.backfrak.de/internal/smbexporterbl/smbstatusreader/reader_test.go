@@ -189,19 +189,19 @@ func TestGetLockDataCluster(t *testing.T) {
 		t.Errorf("The SharePath %s is not the expected '/lfsmnt/dst01'", entryList[0].SharePath)
 	}
 
-	if entryList[3].Name != "share/data2/CLIPS001/CC0639/CC063904.MXF" {
+	if entryList[5].Name != "share/data2/CLIPS001/CC0639/CC063904.MXF" {
 		t.Errorf("The Name %s is not the expected 'share/data2/CLIPS001/CC0639/CC063904.MXF'", entryList[3].Name)
 	}
 
-	if entryList[0].Name != "share/data/data1/folder/dir/100MEDIA/DJI_0177.MOV" {
-		t.Errorf("The Name %s is not the expected 'share/data/data1/folder/dir/100MEDIA/DJI_0177.MOV'", entryList[0].Name)
+	if entryList[6].Name != "share/test.wav 48000.pek" {
+		t.Errorf("The Name %s is not the expected 'share/test.wav 48000.pek'", entryList[0].Name)
 	}
 
-	if entryList[3].PID != 57086 {
+	if entryList[5].PID != 57086 {
 		t.Errorf("Got %d entryList[5].PID, expected 57086", entryList[3].PID)
 	}
 
-	if entryList[3].ClusterNodeId != 3 {
+	if entryList[5].ClusterNodeId != 3 {
 		t.Errorf("Got %d entryList[5].ClusterNodeId, expected 3", entryList[3].ClusterNodeId)
 	}
 

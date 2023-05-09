@@ -66,32 +66,35 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 		return ret
 	}
 
-	for _, fields := range getFieldMatrixFixLength(lines[sepLineIndex+1:], " ", 13) {
+	i := -1
+	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], " ") {
+		i++
 		var err error
 		var entry LockData
+		fieldLength := len(fields)
 		if strings.Contains(fields[0], ":") {
 			pidFields := strings.Split(fields[0], ":")
 			entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
 			if err != nil {
-				logger.WriteErrorWithAddition(err, "while getting LockData ClusterNodeId (cluster - 13c)")
+				logger.WriteErrorWithAddition(err, "while getting LockData ClusterNodeId")
 				continue
 			}
 			entry.PID, err = strconv.Atoi(pidFields[1])
 			if err != nil {
-				logger.WriteErrorWithAddition(err, "while getting LockData PID (cluster - 13c)")
+				logger.WriteErrorWithAddition(err, "while getting LockData PID (ClusterNodeId)")
 				continue
 			}
 		} else {
 			entry.ClusterNodeId = -1
 			entry.PID, err = strconv.Atoi(fields[0])
 			if err != nil {
-				logger.WriteErrorWithAddition(err, "while getting LockData PID (normal - 13c)")
+				logger.WriteErrorWithAddition(err, "while getting LockData PID")
 				continue
 			}
 		}
 		entry.UserID, err = strconv.Atoi(fields[1])
 		if err != nil {
-			logger.WriteErrorWithAddition(err, "while getting LockData UserID (13c)")
+			logger.WriteErrorWithAddition(err, "while getting LockData UserID")
 			continue
 		}
 		entry.DenyMode = fields[2]
@@ -99,58 +102,36 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 		entry.AccessMode = fields[4]
 		entry.Oplock = fields[5]
 		entry.SharePath = fields[6]
-		entry.Name = fields[7]
-		entry.Time, err = time.ParseInLocation(time.ANSIC,
-			fmt.Sprintf("%s %s %s %s %s", fields[8], fields[9], fields[10], fields[11], fields[12]),
-			time.Now().Location())
-		if err != nil {
-			logger.WriteErrorWithAddition(err, "while getting LockData Time (13c)")
+		timeConvSuc := false
+		var connectTime time.Time
+		var lastNameIndex = -1
+		timeConvSuc, connectTime = tryGetTimeStampFromStrArr(fields[fieldLength-5 : fieldLength])
+		if timeConvSuc {
+			entry.Time = connectTime
+			lastNameIndex = fieldLength - 5
+		} else {
+			timeConvSuc, connectTime = tryGetTimeStampFromStrArr(fields[fieldLength-6 : fieldLength])
+			if timeConvSuc {
+				entry.Time = connectTime
+				lastNameIndex = fieldLength - 6
+			}
+		}
+
+		if lastNameIndex == -1 {
+			logger.WriteErrorMessage(fmt.Sprintf("Not able to parse the time stamp in following LockData line: \"%s\"", lines[i]))
 			continue
 		}
 
-		ret = append(ret, entry)
-	}
-	for _, fields := range getFieldMatrixFixLength(lines[sepLineIndex+1:], " ", 14) {
-		var err error
-		var entry LockData
-		if strings.Contains(fields[0], ":") {
-			pidFields := strings.Split(fields[0], ":")
-			entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
-			if err != nil {
-				logger.WriteErrorWithAddition(err, "while getting LockData ClusterNodeId (cluster - 14c)")
-				continue
-			}
-			entry.PID, err = strconv.Atoi(pidFields[1])
-			if err != nil {
-				logger.WriteErrorWithAddition(err, "while getting LockData PID (cluster - 14c)")
-				continue
-			}
-		} else {
-			entry.ClusterNodeId = -1
-			entry.PID, err = strconv.Atoi(fields[0])
-			if err != nil {
-				logger.WriteErrorWithAddition(err, "while getting LockData PID (normal - 14c)")
-				continue
-			}
-		}
-		entry.UserID, err = strconv.Atoi(fields[1])
-		if err != nil {
-			logger.WriteErrorWithAddition(err, "while getting LockData UserID (14c)")
+		if lastNameIndex <= 7 {
+			logger.WriteErrorMessage(fmt.Sprintf("Not able to find the name in following LockData line: \"%s\"", lines[i]))
 			continue
 		}
-		entry.DenyMode = fields[2]
-		entry.Access = fields[3]
-		entry.AccessMode = fields[4]
-		entry.Oplock = fields[5]
-		entry.SharePath = fields[6]
-		entry.Name = fields[7]
-		entry.Time, err = time.ParseInLocation(time.ANSIC,
-			fmt.Sprintf("%s %s %s %s %s", fields[9], fields[10], fields[11], fields[12], fields[13]),
-			time.Now().Location())
-		if err != nil {
-			logger.WriteErrorWithAddition(err, "while getting LockData Time (14c)")
-			continue
+
+		name := ""
+		for _, namePart := range fields[7:lastNameIndex] {
+			name = fmt.Sprintf("%s %s", name, namePart)
 		}
+		entry.Name = strings.TrimSpace(name)
 
 		ret = append(ret, entry)
 	}
