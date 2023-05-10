@@ -67,13 +67,13 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 	}
 
 	i := -1
-	for _, fields := range getFieldMatrix(lines[sepLineIndex+1:], " ") {
+	for _, oneLineFields := range getFieldMatrix(lines[sepLineIndex+1:], " ") {
 		i++
 		var err error
 		var entry LockData
-		fieldLength := len(fields)
-		if strings.Contains(fields[0], ":") {
-			pidFields := strings.Split(fields[0], ":")
+		fieldLength := len(oneLineFields)
+		if strings.Contains(oneLineFields[0], ":") {
+			pidFields := strings.Split(oneLineFields[0], ":")
 			entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
 			if err != nil {
 				logger.WriteErrorWithAddition(err, "while getting LockData ClusterNodeId")
@@ -86,31 +86,31 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 			}
 		} else {
 			entry.ClusterNodeId = -1
-			entry.PID, err = strconv.Atoi(fields[0])
+			entry.PID, err = strconv.Atoi(oneLineFields[0])
 			if err != nil {
 				logger.WriteErrorWithAddition(err, "while getting LockData PID")
 				continue
 			}
 		}
-		entry.UserID, err = strconv.Atoi(fields[1])
+		entry.UserID, err = strconv.Atoi(oneLineFields[1])
 		if err != nil {
 			logger.WriteErrorWithAddition(err, "while getting LockData UserID")
 			continue
 		}
-		entry.DenyMode = fields[2]
-		entry.Access = fields[3]
-		entry.AccessMode = fields[4]
-		entry.Oplock = fields[5]
-		entry.SharePath = fields[6]
+		entry.DenyMode = oneLineFields[2]
+		entry.Access = oneLineFields[3]
+		entry.AccessMode = oneLineFields[4]
+		entry.Oplock = oneLineFields[5]
+		entry.SharePath = oneLineFields[6]
 		timeConvSuc := false
 		var connectTime time.Time
 		var lastNameIndex = -1
-		timeConvSuc, connectTime = tryGetTimeStampFromStrArr(fields[fieldLength-5 : fieldLength])
+		timeConvSuc, connectTime = tryGetTimeStampFromStrArr(oneLineFields[fieldLength-5 : fieldLength])
 		if timeConvSuc {
 			entry.Time = connectTime
 			lastNameIndex = fieldLength - 5
 		} else {
-			timeConvSuc, connectTime = tryGetTimeStampFromStrArr(fields[fieldLength-6 : fieldLength])
+			timeConvSuc, connectTime = tryGetTimeStampFromStrArr(oneLineFields[fieldLength-6 : fieldLength])
 			if timeConvSuc {
 				entry.Time = connectTime
 				lastNameIndex = fieldLength - 6
@@ -128,7 +128,7 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 		}
 
 		name := ""
-		for _, namePart := range fields[7:lastNameIndex] {
+		for _, namePart := range oneLineFields[7:lastNameIndex] {
 			name = fmt.Sprintf("%s %s", name, namePart)
 		}
 		entry.Name = strings.TrimSpace(name)
@@ -194,123 +194,105 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 	}
 
 	if runningMode == "normal" {
-		fieldMatrix := getFieldMatrixFixLength(lines[sepLineIndex+1:], " ", 12)
-		if fieldMatrix != nil {
-			for _, fields := range fieldMatrix {
-				var err error
-				var entry ShareData
-				entry.Service = fields[0]
-				if strings.Contains(fields[1], ":") {
-					pidFields := strings.Split(fields[1], ":")
-					entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
-					if err != nil {
-						logger.WriteErrorWithAddition(err, "while getting ShareData ClusterNodeId (normal - c12 - with :)")
-						continue
-					}
-					entry.PID, err = strconv.Atoi(pidFields[1])
-					if err != nil {
-						logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal - c12 - with :)")
-						continue
-					}
-				} else {
-					entry.ClusterNodeId = -1
-					entry.PID, err = strconv.Atoi(fields[1])
-					if err != nil {
-						logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal - c12 - without :)")
-						continue
-					}
-				}
-				entry.Machine = fields[2]
-				timeStr := fmt.Sprintf("%s %s %s %s %s %s %s", fields[3], fields[4], fields[5], fields[6], fields[7], fields[8], fields[9])
-				entry.ConnectedAt, err = time.Parse("Mon Jan 02 03:04:05 PM 2006 MST", timeStr)
+		i := -1
+		for _, oneLineFields := range getFieldMatrix(lines[sepLineIndex+1:], " ") {
+			i++
+			var err error
+			var entry ShareData
+			fieldLength := len(oneLineFields)
+			entry.Service = oneLineFields[0]
+			if strings.Contains(oneLineFields[1], ":") {
+				pidFields := strings.Split(oneLineFields[1], ":")
+				entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
 				if err != nil {
-					entry.ConnectedAt, err = time.Parse("Mon Jan 2 03:04:05 PM 2006 MST", timeStr)
-					if err != nil {
-						logger.WriteErrorWithAddition(err, "while getting ShareData ConnectedAt (normal - c12)")
-						continue
-					}
+					logger.WriteErrorWithAddition(err, "while getting ShareData ClusterNodeId (normal with :)")
+					continue
 				}
-				entry.Encryption = fields[10]
-				entry.Signing = fields[11]
-
-				ret = append(ret, entry)
-			}
-		} else {
-			fieldMatrix = getFieldMatrixFixLength(lines[sepLineIndex+1:], " ", 11)
-			if fieldMatrix != nil {
-				for _, fields := range fieldMatrix {
-					var err error
-					var entry ShareData
-					entry.Service = fields[0]
-					if strings.Contains(fields[1], ":") {
-						pidFields := strings.Split(fields[1], ":")
-						entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
-						if err != nil {
-							logger.WriteErrorWithAddition(err, "while getting ShareData ClusterNodeId (normal - c11 - with :)")
-							continue
-						}
-						entry.PID, err = strconv.Atoi(pidFields[1])
-						if err != nil {
-							logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal - c11 - with :)")
-							continue
-						}
-					} else {
-						entry.ClusterNodeId = -1
-						entry.PID, err = strconv.Atoi(fields[1])
-						if err != nil {
-							logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal - c11 - without :)")
-							continue
-						}
-					}
-					entry.Machine = fields[2]
-					timeStr := fmt.Sprintf("%s %s %s %s %s %s", fields[3], fields[4], fields[5], fields[6], fields[7], fields[8])
-					entry.ConnectedAt, err = time.Parse("Mon Jan _2 15:04:05 2006 MST", timeStr)
-					if err != nil {
-						entry.ConnectedAt, err = time.Parse("Mo Jan _2 15:04:05 2006 MST", timeStr)
-						if err != nil {
-							logger.WriteErrorWithAddition(err, "while getting ShareData ConnectedAt (normal - c11)")
-							continue
-						}
-					}
-					entry.Encryption = fields[9]
-					entry.Signing = fields[10]
-
-					ret = append(ret, entry)
+				entry.PID, err = strconv.Atoi(pidFields[1])
+				if err != nil {
+					logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal with :)")
+					continue
+				}
+			} else {
+				entry.ClusterNodeId = -1
+				entry.PID, err = strconv.Atoi(oneLineFields[1])
+				if err != nil {
+					logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal without :)")
+					continue
 				}
 			}
+			entry.Machine = oneLineFields[2]
+			timeConvSuc := false
+			var connectTime time.Time
+			var lastTimeIndex = -1
+			timeConvSuc, connectTime = tryGetTimeStampFromStrArr(oneLineFields[3:10])
+			if timeConvSuc {
+				entry.ConnectedAt = connectTime
+				lastTimeIndex = 9
+			} else {
+				timeConvSuc, connectTime = tryGetTimeStampFromStrArr(oneLineFields[3:9])
+				if timeConvSuc {
+					entry.ConnectedAt = connectTime
+					lastTimeIndex = 8
+				}
+			}
+
+			if lastTimeIndex == -1 {
+				logger.WriteErrorMessage(fmt.Sprintf("Not able to parse the time stamp in following LockData line: \"%s\"", lines[i]))
+				continue
+			}
+			if lastTimeIndex != fieldLength-3 {
+				logger.WriteErrorMessage(fmt.Sprintf("Can not find end of time stamp in following LockData line: \"%s\"", lines[i]))
+				continue
+			}
+			entry.Encryption = oneLineFields[lastTimeIndex+1]
+			entry.Signing = oneLineFields[lastTimeIndex+2]
+
+			ret = append(ret, entry)
 		}
-	} else if runningMode == "cluster" {
-		fieldMatrix := getFieldMatrixFixLength(lines[sepLineIndex+1:], " ", 8)
-		if fieldMatrix != nil {
-			for _, fields := range fieldMatrix {
-				var err error
-				var entry ShareData
-				if strings.Contains(fields[0], ":") {
-					pidFields := strings.Split(fields[0], ":")
-					entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
-					if err != nil {
-						logger.WriteErrorWithAddition(err, "while getting ShareData ClusterNodeId (cluster - with :)")
-						continue
-					}
-					entry.PID, err = strconv.Atoi(pidFields[1])
-					if err != nil {
-						logger.WriteErrorWithAddition(err, "while getting ShareData PID (cluster - with :)")
-						continue
-					}
-				} else {
-					entry.ClusterNodeId = -1
-					entry.PID, err = strconv.Atoi(fields[0])
-					if err != nil {
-						logger.WriteErrorWithAddition(err, "while getting ShareData PID (cluster - without :)")
-						continue
-					}
-				}
-				entry.Machine = fmt.Sprintf("%s %s", fields[3], fields[4])
-				entry.Encryption = fields[6]
-				entry.Signing = fields[7]
 
-				ret = append(ret, entry)
+	} else if runningMode == "cluster" {
+		i := -1
+		for _, oneLineFields := range getFieldMatrix(lines[sepLineIndex+1:], " ") {
+			i++
+			var err error
+			var entry ShareData
+			fieldLength := len(oneLineFields)
+			if strings.Contains(oneLineFields[0], ":") {
+				pidFields := strings.Split(oneLineFields[0], ":")
+				entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
+				if err != nil {
+					logger.WriteErrorWithAddition(err, "while getting ShareData ClusterNodeId (cluster - with :)")
+					continue
+				}
+				entry.PID, err = strconv.Atoi(pidFields[1])
+				if err != nil {
+					logger.WriteErrorWithAddition(err, "while getting ShareData PID (cluster - with :)")
+					continue
+				}
+			} else {
+				entry.ClusterNodeId = -1
+				entry.PID, err = strconv.Atoi(oneLineFields[0])
+				if err != nil {
+					logger.WriteErrorWithAddition(err, "while getting ShareData PID (cluster - without :)")
+					continue
+				}
 			}
+			if fieldLength == 8 {
+				entry.Machine = fmt.Sprintf("%s %s", oneLineFields[3], oneLineFields[4])
+				entry.Encryption = oneLineFields[6]
+				entry.Signing = oneLineFields[7]
+
+			} else if fieldLength == 7 {
+				entry.Machine = oneLineFields[3]
+				entry.Encryption = oneLineFields[5]
+				entry.Signing = oneLineFields[6]
+			} else {
+				logger.WriteErrorMessage(fmt.Sprintf("Can not parse the following ShareData line: \"%s\"", lines[i]))
+				continue
+			}
+
+			ret = append(ret, entry)
 		}
 	}
 
