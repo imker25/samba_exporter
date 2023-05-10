@@ -65,8 +65,8 @@ func TestGetSmbStatisticsClusterData(t *testing.T) {
 	// 	t.Errorf("The locks_per_node_count does not match as expected")
 	// }
 
-	// if ret[10].Name != "porcesses_per_node_count" || ret[10].Value != 3.0 || ret[10].Labels["node"] != "3" {
-	// 	t.Errorf("The porcesses_per_node_count does not match as expected")
+	// if ret[10].Name != "processes_per_node_count" || ret[10].Value != 3.0 || ret[10].Labels["node"] != "3" {
+	// 	t.Errorf("The processes_per_node_count does not match as expected")
 	// }
 
 	// if ret[12].Name != "shares_per_node_count" || ret[12].Value != 14.0 || ret[12].Labels["node"] != "1" {

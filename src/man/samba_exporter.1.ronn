@@ -142,7 +142,7 @@ But when running in cluster mode the following additional metrics are exported:
 - `samba_cluster_node_count` Number of cluster nodes running the samba cluster
 - `samba_pids_per_node_count` Number of PIDs per cluster node
 - `samba_locks_per_node_count` Number of Locks per cluster node
-- `samba_porcesses_per_node_count` Number of Locks per cluster node
+- `samba_processes_per_node_count` Number of Locks per cluster node
 - `samba_shares_per_node_count` Number of Shares per cluster node
 
 ## Files

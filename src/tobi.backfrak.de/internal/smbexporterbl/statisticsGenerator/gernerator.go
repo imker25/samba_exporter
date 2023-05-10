@@ -223,8 +223,8 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 			ret = append(ret, SmbStatisticsNumeric{"locks_per_node_count", float64(locks), "Number of Locks per cluster node", map[string]string{"node": fmt.Sprint(node)}})
 		}
 
-		for node, porcesses := range processPerNode {
-			ret = append(ret, SmbStatisticsNumeric{"porcesses_per_node_count", float64(porcesses), "Number of Locks per cluster node", map[string]string{"node": fmt.Sprint(node)}})
+		for node, processes := range processPerNode {
+			ret = append(ret, SmbStatisticsNumeric{"processes_per_node_count", float64(processes), "Number of Locks per cluster node", map[string]string{"node": fmt.Sprint(node)}})
 		}
 
 		for node, shares := range sharesPerNode {
