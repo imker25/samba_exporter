@@ -353,12 +353,15 @@ func GetProcessData(data string, logger *commonbl.Logger) []ProcessData {
 		return ret
 	}
 
-	for _, fields := range getFieldMatrixFixLength(lines[sepLineIndex+1:], " ", 8) {
+	i := -1
+	for _, oneLineFields := range getFieldMatrix(lines[sepLineIndex+1:], " ") {
+		i++
 		var err error
 		var entry ProcessData
+		fieldLength := len(oneLineFields)
 		// In cluster versions samba adds an extra id separated by ':'
-		if strings.Contains(fields[0], ":") {
-			pidFields := strings.Split(fields[0], ":")
+		if strings.Contains(oneLineFields[0], ":") {
+			pidFields := strings.Split(oneLineFields[0], ":")
 			entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
 			if err != nil {
 				logger.WriteErrorWithAddition(err, "while getting ProcessData ClusterNodeId")
@@ -371,36 +374,46 @@ func GetProcessData(data string, logger *commonbl.Logger) []ProcessData {
 			}
 		} else {
 			entry.ClusterNodeId = -1
-			entry.PID, err = strconv.Atoi(fields[0])
+			entry.PID, err = strconv.Atoi(oneLineFields[0])
 			if err != nil {
 				logger.WriteErrorWithAddition(err, "while getting ProcessData PID (without :)")
 				continue
 			}
 		}
 		// In cluster versions samba does not print the users id, but nobody
-		if fields[1] == "nobody" {
+		if oneLineFields[1] == "nobody" {
 			entry.UserID = -1
 		} else {
-			entry.UserID, err = strconv.Atoi(fields[1])
+			entry.UserID, err = strconv.Atoi(oneLineFields[1])
 			if err != nil {
 				logger.WriteErrorWithAddition(err, "while getting ProcessData UserID")
 				continue
 			}
 		}
 		// In cluster versions samba does not print the group id, but nogroup
-		if fields[2] == "nogroup" {
+		if oneLineFields[2] == "nogroup" {
 			entry.GroupID = -1
 		} else {
-			entry.GroupID, err = strconv.Atoi(fields[2])
+			entry.GroupID, err = strconv.Atoi(oneLineFields[2])
 			if err != nil {
 				logger.WriteErrorWithAddition(err, "while getting ProcessData GroupID")
 				continue
 			}
 		}
-		entry.Machine = fmt.Sprintf("%s %s", fields[3], fields[4])
-		entry.ProtocolVersion = fields[5]
-		entry.Encryption = fields[6]
-		entry.Signing = fields[7]
+		if fieldLength == 8 {
+			entry.Machine = fmt.Sprintf("%s %s", oneLineFields[3], oneLineFields[4])
+			entry.ProtocolVersion = oneLineFields[5]
+			entry.Encryption = oneLineFields[6]
+			entry.Signing = oneLineFields[7]
+		} else if fieldLength == 7 {
+			entry.Machine = oneLineFields[3]
+			entry.ProtocolVersion = oneLineFields[4]
+			entry.Encryption = oneLineFields[5]
+			entry.Signing = oneLineFields[6]
+		} else {
+			logger.WriteErrorMessage(fmt.Sprintf("Can not parse the following ProcessData line: \"%s\"", lines[i]))
+			continue
+		}
 		entry.SambaVersion = sambaVersion
 
 		ret = append(ret, entry)
