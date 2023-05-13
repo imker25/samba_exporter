@@ -1,6 +1,6 @@
 module tobi.backfrak.de/samba_exporter-testconvert
 
-go 1.19
+go 1.20
 
 require github.com/tebeka/go2xunit v1.4.10
 

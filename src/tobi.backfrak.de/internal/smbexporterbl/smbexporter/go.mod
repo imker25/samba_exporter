@@ -1,6 +1,6 @@
 module tobi.backfrak.de/internal/smbexporterbl/smbexporter
 
-go 1.19
+go 1.20
 
 require tobi.backfrak.de/internal/commonbl v0.0.0
 
