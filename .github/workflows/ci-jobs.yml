@@ -154,7 +154,7 @@ jobs:
         run: docker build --file test/integrationTest/docker/Dockerfile.ubuntu --tag integration-test-container .
       - name: Run integration tests
         run: docker run -i integration-test-container /bin/bash -c "/RunIntegrationTests.sh container"
-  integration-test-bullseye:
+  integration-test-bookworm:
     needs: build-unit_test
     strategy:
       matrix:
@@ -176,7 +176,7 @@ jobs:
       - name: Check artifacts
         run: ls -l bin/
       - name: Build test environment container
-        run: docker build --file test/integrationTest/docker/Dockerfile.bullseye --tag integration-test-container .
+        run: docker build --file test/integrationTest/docker/Dockerfile.bookworm --tag integration-test-container .
       - name: Run integration tests
         run: docker run -i integration-test-container /bin/bash -c "/RunIntegrationTests.sh container"                  
   installation-test:
@@ -205,7 +205,7 @@ jobs:
         SAMBA_EXPORTER_PACKAGE_NAME:  ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
       run: test/installationTest/RunInstallationTest.sh
   release-to-github:
-    needs: [ integration-test-ubuntu, integration-test-bullseye, installation-test, build-pages, build-rpm-package ]
+    needs: [ integration-test-ubuntu, integration-test-bookworm, installation-test, build-pages, build-rpm-package ]
     runs-on: "ubuntu-22.04"
     if: ((github.ref == 'refs/heads/main') || contains(github.ref, 'release'))
     timeout-minutes: 10
