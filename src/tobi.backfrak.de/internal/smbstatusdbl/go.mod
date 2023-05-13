@@ -1,6 +1,6 @@
 module tobi.backfrak.de/internal/smbstatusdbl
 
-go 1.19
+go 1.20
 
 require tobi.backfrak.de/internal/commonbl v0.0.0
 replace tobi.backfrak.de/internal/commonbl v0.0.0 => ../commonbl
