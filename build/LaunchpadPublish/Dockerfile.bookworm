@@ -1,0 +1,54 @@
+# ######################################################################################
+# Copyright 2021 by tobi@backfrak.de. All
+# rights reserved. Use of this source code is governed
+# by a BSD-style license that can be found in the
+# LICENSE file.
+# ######################################################################################
+# Container image used by ./../PublishLaunchpadInDocker.sh to transfer the sources to the launchpad-ppa
+# The actual transformation is done by ./PublishLaunchpad.sh when this container get started
+# ######################################################################################
+
+# Use the packages target version (bookworm = debian 12) as base image
+FROM debian:bookworm
+
+# Setup the system and install needed packages
+ENV DEBIAN_FRONTEND="noninteractive"
+ENV TZ="Europe/London"
+RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y wget \
+                                        curl  \
+                                        libc6  \
+                                        golang-1.19 \
+                                        gzip  \
+                                        ronn\
+                                        debhelper \
+                                        golang-any \
+                                        golang-github-go-kit-kit-dev \
+                                        golang-github-prometheus-client-golang-dev \
+                                        golang-github-prometheus-common-dev \
+                                        golang-gopkg-alecthomas-kingpin.v2-dev \
+                                        golang-github-shirou-gopsutil-dev \  
+                                        dh-golang \
+                                        debhelper \ 
+                                        dh-make \
+                                        lintian \
+                                        git-buildpackage \
+                                        git \
+                                        openssh-client \
+                                        procps \
+                                        gpg
+
+# Copy the script
+COPY PublishLaunchpad.sh /PublishLaunchpad.sh
+RUN chmod 777 /PublishLaunchpad.sh
+
+ARG USER
+ARG UID
+ARG GID
+
+# Configure git
+RUN mkdir -p /home/${USER} &&\
+    chmod 770 /home/${USER} && \
+    chown ${UID}:${GID} /home/${USER} 
+
+RUN addgroup --gid ${GID} ${USER} &&\ 
+    adduser --system --quiet --home /home/${USER} --gid ${GID} --uid ${UID} --gecos "builder" ${USER}  || true
