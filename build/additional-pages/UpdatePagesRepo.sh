@@ -104,10 +104,10 @@ if [ "$?" != "0" ]; then
     exit 1
 fi
 echo "# ###################################################################"
-echo "Update the debian repo with buster package"
-reprepro --basedir "./repos/debian/" includedeb buster "$HOST_FOLDER/deb-packages/binary/samba-exporter_$tag~ppa1~debian10_amd64.deb"
+echo "Update the debian repo with bookworm package"
+reprepro --basedir "./repos/debian/" includedeb bookworm "$HOST_FOLDER/deb-packages/binary/samba-exporter_$tag~ppa1~debian12_amd64.deb"
 if [ "$?" != "0" ]; then 
-    echo "Error during reprepro for buster"
+    echo "Error during reprepro for bookworm"
     exit 1
 fi
 

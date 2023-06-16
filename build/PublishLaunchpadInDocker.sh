@@ -201,16 +201,6 @@ if [ "$dockerError" == "false" ];then
     fi
 fi
 
-# if [ "$dockerError" == "false" ];then 
-#     echo "Publish tag $tag on launchpad within a docker cotainer for kinetic"
-#     echo "# ###################################################################"
-#     buildAndRunDocker "kinetic"
-#     if [ "$?" != "0" ]; then
-#         dockerError="true"
-#         echo "Error while publish package for kinetic"
-#     fi
-# fi
-
 if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on launchpad within a docker cotainer for lunar"
     echo "# ###################################################################"
@@ -231,13 +221,23 @@ if [ "$dockerError" == "false" ];then
     fi
 fi
 
+# if [ "$dockerError" == "false" ];then 
+#     echo "Publish tag $tag on launchpad within a docker cotainer for buster"
+#     echo "# ###################################################################"
+#     buildAndRunDocker "buster"
+#     if [ "$?" != "0" ]; then
+#         dockerError="true"
+#         echo "Error while publish package for buster"
+#     fi
+# fi
+
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for buster"
+    echo "Publish tag $tag on launchpad within a docker cotainer for bookworm"
     echo "# ###################################################################"
-    buildAndRunDocker "buster"
+    buildAndRunDocker "bookworm"
     if [ "$?" != "0" ]; then
         dockerError="true"
-        echo "Error while publish package for buster"
+        echo "Error while publish package for bookworm"
     fi
 fi
 

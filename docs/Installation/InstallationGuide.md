@@ -23,7 +23,7 @@ apt-get update
 apt-get install samba-exporter
 ```
 
-**Hint:** Change `bullseye` to `buster` in case you use Debian 10.
+**Hint:** Change `bullseye` to `bookworm` in case you use Debian 12.
 
 ## Fedora 35 and later
 

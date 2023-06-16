@@ -267,6 +267,15 @@ else
     echo "Not running on lunar 23.04 (lunar)"
 fi
 
+if [ "$distVersionNumber" == "12" ] && [ "$distribution" == "Debian" ]; then
+    sed -i "s/focal;/bookworm;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu20.04/debian12/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/golang-1.16,/golang-1.19,/g" $WORK_DIR/install/debian/control 
+    find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
+else 
+    echo "Not running on Debian 12 (Bookworm)"
+fi
+
 if [ "$distVersionNumber" == "11" ] && [ "$distribution" == "Debian" ]; then
     sed -i "s/focal;/bullseye;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/debian11/g" $WORK_DIR/install/debian/changelog
