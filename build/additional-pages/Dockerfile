@@ -9,7 +9,7 @@
 # ######################################################################################
 
 # Use the packages target version (focal = ubuntu 20.04) as base image
-FROM debian:bullseye
+FROM debian:bookworm
 
 # Setup the system and install needed packages
 ENV DEBIAN_FRONTEND="noninteractive"
