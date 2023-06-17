@@ -96,20 +96,20 @@ echo "# ###################################################################"
 echo "git status"
 git status
 
-echo "# ###################################################################"
-echo "Patch ./repos/debian/conf/distributions"
 
-# rm -v ./repos/debian/conf/distributions
-echo "" >> ./repos/debian/conf/distributions
-echo "Origin: imker25.github.io/samba_exporter/" >> ./repos/debian/conf/distributions
-echo "Label: imker25.github.io/samba_exporter/"  >> ./repos/debian/conf/distributions
-echo "Codename: bookworm"  >> ./repos/debian/conf/distributions
-echo "Architectures: amd64"  >> ./repos/debian/conf/distributions
-echo "Components: main"  >> ./repos/debian/conf/distributions
-echo "Description: Personal repository for samba-exporter packages"  >> ./repos/debian/conf/distributions
-echo "SignWith: CB6E90E9EC323850B16C1C14A38A1091C018AE68"  >> ./repos/debian/conf/distributions
-echo "" >> ./repos/debian/conf/distributions
-
+# Only needed once, when a new debian version is added to this repository
+# echo "# ###################################################################"
+# echo "Patch ./repos/debian/conf/distributions"
+# # rm -v ./repos/debian/conf/distributions
+# echo "" >> ./repos/debian/conf/distributions
+# echo "Origin: imker25.github.io/samba_exporter/" >> ./repos/debian/conf/distributions
+# echo "Label: imker25.github.io/samba_exporter/"  >> ./repos/debian/conf/distributions
+# echo "Codename: bookworm"  >> ./repos/debian/conf/distributions
+# echo "Architectures: amd64"  >> ./repos/debian/conf/distributions
+# echo "Components: main"  >> ./repos/debian/conf/distributions
+# echo "Description: Personal repository for samba-exporter packages"  >> ./repos/debian/conf/distributions
+# echo "SignWith: CB6E90E9EC323850B16C1C14A38A1091C018AE68"  >> ./repos/debian/conf/distributions
+# echo "" >> ./repos/debian/conf/distributions
 # reprepro clearvanished ./repos/debian/
 
 echo "# ###################################################################"
