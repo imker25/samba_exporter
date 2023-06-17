@@ -13,3 +13,12 @@ Architectures: amd64
 Components: main
 Description: Personal repository for samba-exporter packages
 SignWith: CB6E90E9EC323850B16C1C14A38A1091C018AE68
+
+Origin: imker25.github.io/samba_exporter/
+Label: imker25.github.io/samba_exporter/
+Codename: bookworm
+Architectures: amd64
+Components: main
+Description: Personal repository for samba-exporter packages
+SignWith: CB6E90E9EC323850B16C1C14A38A1091C018AE68
+

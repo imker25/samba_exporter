@@ -1,0 +1,33 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: imker25.github.io/samba_exporter/
+Label: imker25.github.io/samba_exporter/
+Codename: bookworm
+Date: Sat, 17 Jun 2023 08:14:43 UTC
+Architectures: amd64
+Components: main
+Description: Personal repository for samba-exporter packages
+MD5Sum:
+ 591ee5a62e549a65c1b73110b804e292 989 main/binary-amd64/Packages
+ 1929dd2f0ce318d9743725b994d72ed9 595 main/binary-amd64/Packages.gz
+ de839c73b53c7e1faf2f9d3d248bc3cd 180 main/binary-amd64/Release
+SHA1:
+ fd644fe9538bfcd515c7551785a9d346ddd5a740 989 main/binary-amd64/Packages
+ e94783d0eab07090c716ba81ba0704eae64c1c56 595 main/binary-amd64/Packages.gz
+ 64634860d65a043f07360b0de9a2dd2c60fe9d16 180 main/binary-amd64/Release
+SHA256:
+ 1679d9c0c5129415c8c4fe254cc23460e2db307ed5539a71da1debd2319318db 989 main/binary-amd64/Packages
+ aa23d00cd559d55c52e7a2e76c41c41b4c0c5e982271cdbe4028656fd897568f 595 main/binary-amd64/Packages.gz
+ d863fc2fbffb928988032b869897f10697f2d98909508b92fc74fafc7f334798 180 main/binary-amd64/Release
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEy26Q6ewyOFCxbBwUo4oQkcAYrmgFAmSNa3MACgkQo4oQkcAY
+rmie4wf/V3LRgznlwWdSj57jlVuU5HaPmEhykxFgXGNfPDPqwfSJOmKCSvVofSfJ
+iWsWh+uYDl7LaRpEkI+YeLIV8kIOCz/i2T53krPVFvBusyt88Iu3uZs8S7/5FHad
+dzZyEKV3X5tUmIGYWt16FX65AN1rfl1tLv46k/q1PR3oWH5QAbW/GcozDevIVkzE
+N2fL1he/rLef/yUITUnHRV6tD7zCyWHreNA+8B1apfF24wi2zCnrxePZc1PEvKaB
+k9JSAiAEpFf+FQEIK3r/YNrW1yE5L9aIKIY+h4tVbyTYf5OeRaBsQc6jktMxKeCu
+3gxJpH+Y83Prx4vAcUHBOpn0O+dx2w==
+=n6PR
+-----END PGP SIGNATURE-----

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv='content-type' content='text/html;charset=utf8'>
-  <meta name='generator' content='Ronn-NG/v0.8.0 (http://github.com/apjanke/ronn-ng/tree/0.8.0)'>
+  <meta name='generator' content='Ronn-NG/v0.9.1 (http://github.com/apjanke/ronn-ng/tree/0.9.1)'>
   <title>samba_statusd(1) - part of the samba-exporter package</title>
   <style type='text/css' media='all'>
   /* style: man */
@@ -92,20 +92,27 @@
 
 <p>You might want to use one of the following optional parameters.</p>
 
-<dl>
-<dt><code>-help</code></dt>
-<dd>Print the programs help message and exit</dd>
-<dt><code>-print-version</code></dt>
-<dd>With this flag the program will only print it's version and exit</dd>
-<dt><code>-test-mode</code></dt>
-<dd>    Run the program in test mode.<br>
-    In this mode the program will always return the same test data. To work with samba_exporter both programs needs to run in test mode or not.</dd>
-<dt><code>-verbose</code></dt>
-<dd>    With this flag the program will print verbose output</dd>
-</dl>
+<ul>
+  <li>
+    <p><code>-help</code>: 
+Print the programs help message and exit</p>
+  </li>
+  <li>
+    <p><code>-print-version</code>:
+With this flag the program will only print it's version and exit</p>
+  </li>
+  <li>
+    <p><code>-test-mode</code>:
+    Run the program in test mode.<br>
+    In this mode the program will always return the same test data. To work with samba_exporter both programs needs to run in test mode or not.</p>
+  </li>
+  <li>
+    <p><code>-verbose</code>:
+    With this flag the program will print verbose output</p>
+  </li>
+</ul>
 
-
-<p>To change the behavior of the samba_statusd service update the <code>/etc/default/samba_statusd</code> according to your needs.
+<p>To change the behavior of the samba_statusd service update the <code>/etc/default/samba_statusd</code> according to your needs. 
 You can add any option shown in the help output of <code>samba_statusd</code> to the <code>ARGS</code> variable.<br></p>
 
 <p>You may not want to start the service with arguments that will exit before listening starts like <code>-help</code> or <code>-print-version</code>.</p>
@@ -118,20 +125,19 @@ You can add any option shown in the help output of <code>samba_statusd</code> to
 <p>To read the log output use <code>journalctl</code>, e. g. <br>
 <code>sudo journalctl -u samba_statusd</code></p>
 
-<p><strong>Remark:</strong> Due to the services dependencies <code>samba_exporter</code> service stops whenever <code>samba_statusd</code> stops.
+<p><strong>Remark:</strong> Due to the services dependencies <code>samba_exporter</code> service stops whenever <code>samba_statusd</code> stops. 
 And <code>samba_statusd</code> always starts when <code>samba_exporter</code> is started if not already running.</p>
 
 <h2 id="Files">Files</h2>
 
 <ul>
-<li>
+  <li>
 <code>/etc/default/samba_statusd</code> The configuration file for the samba_exporter service</li>
-<li>
+  <li>
 <code>/run/samba_exporter.request.pipe</code> The pipe samba_exporter requests the status from samba_statusd</li>
-<li>
+  <li>
 <code>/run/samba_exporter.response.pipe</code> The pipe samba_statusd answers requests from samba_exporter</li>
 </ul>
-
 
 <h2 id="BUGS">BUGS</h2>
 
@@ -148,7 +154,7 @@ In case you found a new bug please also report as github issue on the projects p
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>April 2023</li>
+    <li class='tc'>June 2023</li>
     <li class='tr'>samba_statusd(1)</li>
   </ol>
 

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv='content-type' content='text/html;charset=utf8'>
-  <meta name='generator' content='Ronn-NG/v0.8.0 (http://github.com/apjanke/ronn-ng/tree/0.8.0)'>
+  <meta name='generator' content='Ronn-NG/v0.9.1 (http://github.com/apjanke/ronn-ng/tree/0.9.1)'>
   <title>samba_exporter(1) - part of the samba-exporter package</title>
   <style type='text/css' media='all'>
   /* style: man */
@@ -95,18 +95,17 @@
 <p>The <code>samba-exporter package</code> works as a prometheus exporter for statistic data of the samba file server.<br></p>
 
 <p>It uses <code>smbstatus</code> and the <code>proc fs</code> to collect the data and converts the result into prometheus style data.
-The prometheus style data can be requested manually on port 9922 using a http client.
+The prometheus style data can be requested manually on port 9922 using a http client. 
 Or a prometheus database sever can be configured to collect the data by scraping port 9922 on the samba server.</p>
 
 <p>The <code>samba-exporter package</code> has two main components running as daemons:</p>
 
 <ul>
-<li>
+  <li>
 <code>samba_exporter</code> as prometheus exporter frontend</li>
-<li>
+  <li>
 <code>samba_statusd</code> as tool collect the data from samba</li>
 </ul>
-
 
 <p>See <a href="https://imker25.github.io/samba_exporter/UserDocs/Concept/" data-bare-link="true">https://imker25.github.io/samba_exporter/UserDocs/Concept/</a> for more details.</p>
 
@@ -115,37 +114,60 @@ Or a prometheus database sever can be configured to collect the data by scraping
 <p>You might want to use one of the following optional parameters.</p>
 
 <ul>
-<li><p><code>-help</code>:
-Print the programs help message and exit</p></li>
-<li><p><code>-not-expose-client-data</code>
-Set to <code>true</code>, no details about the connected clients will be exported</p></li>
-<li><p><code>-not-expose-encryption-data</code>
-Set to <code>true</code>, no details about the used encryption or signing will be exported</p></li>
-<li><p><code>-not-expose-user-data</code>
-Set to <code>true</code>, no details about the connected users will be exported</p></li>
-<li><p><code>-not-expose-pid-data</code>
-    Set to <code>true</code>, no process IDs will be exported</p></li>
-<li><p><code>-print-version</code>:
-With this flag the program will only print it's version and exit</p></li>
-<li><p><code>-request-timeout</code>:
-The timeout for a request to samba_statusd in seconds (default 5)</p></li>
-<li><p><code>-test-mode</code>:
+  <li>
+    <p><code>-help</code>: 
+Print the programs help message and exit</p>
+  </li>
+  <li>
+    <p><code>-not-expose-client-data</code>
+Set to <code>true</code>, no details about the connected clients will be exported</p>
+  </li>
+  <li>
+    <p><code>-not-expose-encryption-data</code>
+Set to <code>true</code>, no details about the used encryption or signing will be exported</p>
+  </li>
+  <li>
+    <p><code>-not-expose-user-data</code>
+Set to <code>true</code>, no details about the connected users will be exported</p>
+  </li>
+  <li>
+    <p><code>-not-expose-pid-data</code>
+    Set to <code>true</code>, no process IDs will be exported</p>
+  </li>
+  <li>
+    <p><code>-print-version</code>:
+With this flag the program will only print it's version and exit</p>
+  </li>
+  <li>
+    <p><code>-request-timeout</code>:
+The timeout for a request to samba_statusd in seconds (default 5)</p>
+  </li>
+  <li>
+    <p><code>-test-mode</code>:
     Run the program in test mode.<br>
-    In this mode the program will always return the same test data. To work with samba_statusd both programs needs to run in test mode or not.</p></li>
-<li><p><code>-test-pipe</code>:
-    Requests status from samba_statusd and exits. May be combined with -test-mode.</p></li>
-<li><p><code>-verbose</code>:
-    With this flag the program will print verbose output</p></li>
-<li><p><code>-web.listen-address</code>:
+    In this mode the program will always return the same test data. To work with samba_statusd both programs needs to run in test mode or not.</p>
+  </li>
+  <li>
+    <p><code>-test-pipe</code>:
+    Requests status from samba_statusd and exits. May be combined with -test-mode.</p>
+  </li>
+  <li>
+    <p><code>-verbose</code>:
+    With this flag the program will print verbose output</p>
+  </li>
+  <li>
+    <p><code>-web.listen-address</code>:
     Address to listen on for web interface and telemetry. (default ":9922")<br>
     You might want this to bind to a given ip address like 127.0.0.1 by setting this parameter as "127.0.0.1:9922".
-    To use 9123 as port use ":9123" here.</p></li>
-<li><p><code>-web.telemetry-path</code>:
-    Path under which to expose metrics. (default "/metrics")</p></li>
+    To use 9123 as port use ":9123" here.</p>
+  </li>
+  <li>
+    <p><code>-web.telemetry-path</code>:
+    Path under which to expose metrics. (default "/metrics")</p>
+  </li>
 </ul>
 
-
-<p>To change the behavior of the samba_exporter service update the <code>/etc/default/samba_exporter</code> according to your needs.
+<p>To change the behavior of the samba_exporter service update the <code>/etc/default/samba_exporter</code> according to your needs. 
 You can add any option shown in the help output of <code>samba_exporter</code> to the <code>ARGS</code> variable.<br></p>
 
 <p>You may not want to start the service with arguments that will exit before listening starts like <code>-test-pipe</code>, <code>-help</code> or <code>-print-version</code>.<br>
@@ -155,13 +177,13 @@ need to change this.<br>
 
 <h2 id="EXAMPLES">EXAMPLES</h2>
 
-<p>To stop, start or restart the service use <code>systemctl</code>, e. g.:<br>
+<p>To stop, start or restart the service use <code>systemctl</code>, e. g.:<br> 
 <code>sudo systemctl stop samba_exporter</code></p>
 
-<p>To read the log output use <code>journalctl</code>, e. g.:<br>
+<p>To read the log output use <code>journalctl</code>, e. g.:<br> 
 <code>sudo journalctl -u samba_exporter</code>.<br></p>
 
-<p><strong>Remark:</strong> Due to the services dependencies <code>samba_exporter</code> service stops whenever <code>samba_statusd</code> stops.
+<p><strong>Remark:</strong> Due to the services dependencies <code>samba_exporter</code> service stops whenever <code>samba_statusd</code> stops. 
 And <code>samba_statusd</code> always starts when <code>samba_exporter</code> is started if not already running.</p>
 
 <h2 id="Exported-values">Exported values</h2>
@@ -169,102 +191,115 @@ And <code>samba_statusd</code> always starts when <code>samba_exporter</code> is
 <p>The following values are exported by default:</p>
 
 <ul>
-<li>
+  <li>
 <code>samba_client_connected_at</code> Unix time stamp a client connected</li>
-<li>
+  <li>
 <code>samba_client_connected_since_seconds</code> Seconds since a client connected</li>
-<li>
+  <li>
 <code>samba_client_count</code> Number of clients using the samba server</li>
-<li>
+  <li>
 <code>samba_encryption_method_count</code> Number of processes on the server using the encryption</li>
-<li>
+  <li>
 <code>samba_exporter_information</code> Information of the samba_exporter</li>
-<li>
+  <li>
 <code>samba_individual_user_count</code> The number of users connected to this samba server</li>
-<li>
+  <li>
 <code>samba_lock_created_at</code> Unix time stamp a lock was created</li>
-<li>
+  <li>
 <code>samba_lock_created_since_seconds</code> Seconds since a lock was created</li>
-<li>
+  <li>
 <code>samba_locked_file_count</code> Number of files locked by the samba server</li>
-<li>
+  <li>
 <code>samba_locks_per_share_count</code> Number of locks on share</li>
-<li>
-<code>samba_pid_count</code> Number of processes running by the samba server</li>
-<li>
+  <li>
+<code>samba_pid_count</code> Number of processes running by the samba server. Only exported when not running in cluster mode.</li>
+  <li>
 <code>samba_process_per_client_count</code> Number of processes on the server used by one client</li>
-<li>
+  <li>
 <code>samba_protocol_version_count</code> Number of processes on the server using the protocol</li>
-<li>
+  <li>
 <code>samba_request_time</code> Time it took to reqest the samba status from samba_statusd [ms]</li>
-<li>
+  <li>
 <code>samba_satutsd_up</code> 1 if the samba_statusd seems to be running</li>
-<li>
+  <li>
 <code>samba_server_information</code> Version of the samba server</li>
-<li>
+  <li>
 <code>samba_server_up</code> 1 if the samba server seems to be running</li>
-<li>
+  <li>
 <code>samba_share_count</code> Number of shares servered by the samba server</li>
-<li>
+  <li>
 <code>samba_signing_method_count</code> Number of processes on the server using the signing</li>
-<li>
+  <li>
 <code>samba_smbd_cpu_usage_percentage</code> CPU usage of the 'smbd' process with pid in percent</li>
-<li>
+  <li>
 <code>samba_smbd_io_counter_read_bytes</code> IO counter reads of the process 'smbd' in byte</li>
-<li>
+  <li>
 <code>samba_smbd_io_counter_read_count</code> IO counter read count of the process 'smbd'</li>
-<li>
+  <li>
 <code>samba_smbd_io_counter_write_bytes</code> IO counter writes of the process 'smbd' in byte</li>
-<li>
+  <li>
 <code>samba_smbd_io_counter_write_count</code> IO counter write count of the process 'smbd'</li>
-<li>
+  <li>
 <code>samba_smbd_open_file_count</code> Open file handles by process 'smbd'</li>
-<li>
+  <li>
 <code>samba_smbd_sum_cpu_usage_percentage</code> Sum CPU usage of all 'smbd' processes in percent</li>
-<li>
+  <li>
 <code>samba_smbd_sum_io_counter_read_bytes</code> IO counter reads of all 'smbd' processes in bytes</li>
-<li>
+  <li>
 <code>samba_smbd_sum_io_counter_read_count</code> IO counter read count of all 'smbd' processes</li>
-<li>
+  <li>
 <code>samba_smbd_sum_io_counter_write_bytes</code> IO counter writes of all 'smbd' processes in bytes</li>
-<li>
+  <li>
 <code>samba_smbd_sum_io_counter_write_count</code> IO counter write count of all 'smbd' processes</li>
-<li>
+  <li>
 <code>samba_smbd_sum_open_file_count</code> Open file handles of all 'smbd' processes</li>
-<li>
+  <li>
 <code>samba_smbd_sum_thread_count</code> Threads used by all 'smbd' processes</li>
-<li>
+  <li>
 <code>samba_smbd_sum_virtual_memory_usage_bytes</code> Virtual memory usage of all 'smbd' processes in bytes</li>
-<li>
+  <li>
 <code>samba_smbd_sum_virtual_memory_usage_percent</code> Virtual memory usage of all 'smbd' processes in percent</li>
-<li>
+  <li>
 <code>samba_smbd_thread_count</code> Threads used by process 'smbd'</li>
-<li>
+  <li>
 <code>samba_smbd_unique_process_id_count</code> Count of unique process IDs for 'smbd'</li>
-<li>
+  <li>
 <code>samba_smbd_virtual_memory_usage_bytes</code> Virtual memory usage of the 'smbd' process with pid in bytes</li>
-<li>
+  <li>
 <code>samba_smbd_virtual_memory_usage_percent</code> Virtual memory usage of the 'smbd' process with pid in percent</li>
 </ul>
-
 
 <h2 id="smbd-in-cluster-mode">smbd in cluster mode</h2>
 
 <p>The values of <code>samba_client_*</code> and <code>samba_process_per_client_count</code> may contain no valid data when monitoring a <strong>smbd</strong> running in cluster mode. When running in this mode the values of <code>uid</code> and <code>gid</code> may exported in labels are shown as <code>-1</code> since <code>smbstatus -L</code> gives only anonymous data in this case. Another consequence of this fact is that <code>samba_individual_user_count</code> may show wrong values as well.</p>
 
+<p>But when running in cluster mode the following additional metrics are exported:</p>
+
+<ul>
+  <li>
+<code>samba_cluster_node_count</code> Number of cluster nodes running the samba cluster</li>
+  <li>
+<code>samba_pids_per_node_count</code> Number of PIDs per cluster node</li>
+  <li>
+<code>samba_locks_per_node_count</code> Number of Locks per cluster node</li>
+  <li>
+<code>samba_processes_per_node_count</code> Number of Locks per cluster node</li>
+  <li>
+<code>samba_shares_per_node_count</code> Number of Shares per cluster node</li>
+</ul>
+
 <h2 id="Files">Files</h2>
 
 <ul>
-<li>
+  <li>
 <code>/etc/default/samba_exporter</code> The configuration file for the samba_exporter service</li>
-<li>
+  <li>
 <code>/run/samba_exporter.request.pipe</code> The pipe samba_exporter requests the status from samba_statusd</li>
-<li>
+  <li>
 <code>/run/samba_exporter.response.pipe</code> The pipe samba_statusd answers requests from samba_exporter</li>
-<li>
+  <li>
 <code>/usr/share/doc/samba-exporter/grafana/SambaService.json</code> A example dashboard for Grafana</li>
 </ul>
-
 
 <h2 id="BUGS">BUGS</h2>
 
@@ -281,7 +316,7 @@ In case you found a new bug please also report as github issue on the projects p
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>April 2023</li>
+    <li class='tc'>June 2023</li>
     <li class='tr'>samba_exporter(1)</li>
   </ol>
 
