@@ -228,9 +228,18 @@ func TestGetLockData0Input(t *testing.T) {
 	}
 }
 
-func TestGetLockDataNoDta(t *testing.T) {
+func TestGetLockDataNoData(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	entryList := GetLockData(smbstatusout.LockDataNoData, logger)
+
+	if len(entryList) != 0 {
+		t.Errorf("Got entries when reading wrong input")
+	}
+}
+
+func TestGetLockDataNoDataV4_17_7(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	entryList := GetLockData(smbstatusout.LockDataNoDataV4_17_7, logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")

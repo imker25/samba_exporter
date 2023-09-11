@@ -26,6 +26,9 @@ Pid          User(ID)   DenyMode   Access      R/W        Oplock           Share
 
 const LockDataNoData = `No locked files`
 
+const LockDataNoDataV4_17_7 = `No locked files
+`
+
 const LockDataCluster = `Locked files:
 Pid          Uid        DenyMode   Access      R/W        Oplock           SharePath   Name   Time
 --------------------------------------------------------------------------------------------------
