@@ -1188,7 +1188,7 @@
         "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
-      "description": "Lock crated since",
+      "description": "Lock created since",
       "fieldConfig": {
         "defaults": {
           "color": {
