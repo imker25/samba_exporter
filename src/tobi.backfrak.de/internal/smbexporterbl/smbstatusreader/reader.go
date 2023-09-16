@@ -49,6 +49,11 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 		return ret
 	}
 
+	if strings.TrimSpace(data) == "" {
+		logger.WriteInformation("Got an empty string from 'smbstatus -L -n'")
+		return ret
+	}
+
 	lines := strings.Split(data, "\n")
 	sepLineIndex := findSeperatorLineIndex(lines)
 
@@ -165,6 +170,12 @@ func (shareData ShareData) String() string {
 // Will return an empty array if the data is in unexpected format
 func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 	var ret []ShareData
+
+	if strings.TrimSpace(data) == "" {
+		logger.WriteInformation("Got an empty string from 'smbstatus -S -n'")
+		return ret
+	}
+
 	lines := strings.Split(data, "\n")
 	sepLineIndex := findSeperatorLineIndex(lines)
 
@@ -328,6 +339,12 @@ func (processData ProcessData) String() string {
 // Will return an empty array if the data is in unexpected format
 func GetProcessData(data string, logger *commonbl.Logger) []ProcessData {
 	var ret []ProcessData
+
+	if strings.TrimSpace(data) == "" {
+		logger.WriteInformation("Got an empty string from 'smbstatus -p -n'")
+		return ret
+	}
+
 	lines := strings.Split(data, "\n")
 	sepLineIndex := findSeperatorLineIndex(lines)
 

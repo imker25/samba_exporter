@@ -246,6 +246,15 @@ func TestGetLockDataNoDataV4_17_7(t *testing.T) {
 	}
 }
 
+func TestGetLockDataEmpty(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	entryList := GetLockData(smbstatusout.LockDataEmpty, logger)
+
+	if len(entryList) != 0 {
+		t.Errorf("Got entries when reading wrong input")
+	}
+}
+
 func TestGetShareDataDifferentTimeStampLines(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	entryList := GetShareData(smbstatusout.ShareDataDifferentTimeStampLines, logger)

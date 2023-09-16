@@ -218,15 +218,37 @@ func TestSetMetricsFromResponseNoShare(t *testing.T) {
 
 }
 
-func TestSetMetricsFromEmptyResponse(t *testing.T) {
+func TestSetMetricsFromEmptyResponse1(t *testing.T) {
 	expectedDescChanels := 38
 	expectedMetChanels := 19
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line, logger)
-	shares := smbstatusreader.GetShareData(smbstatusout.LockData0Line, logger)
-	processes := smbstatusreader.GetProcessData(smbstatusout.LockData0Line, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines, logger)
+	psData := smbstatusreader.GetPsData(commonbl.TestPsResponseEmpty(), logger)
+	chDesc := make(chan *prometheus.Desc, expectedDescChanels)
+	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
+	exporter.setDescriptionsFromResponse(locks, processes, shares, psData, chDesc)
+	chMet := make(chan prometheus.Metric, expectedMetChanels)
+	exporter.setMetricsFromResponse(locks, processes, shares, psData, 1, 1, 32, chMet)
+
+	if len(chMet) != expectedMetChanels {
+		t.Errorf("Got %d metric chanels, but expected %d", len(chMet), expectedMetChanels)
+	}
+
+}
+
+func TestSetMetricsFromEmptyResponse2(t *testing.T) {
+	expectedDescChanels := 38
+	expectedMetChanels := 19
+	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
+	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
+	logger := commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockDataEmpty, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataEmpty, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataEmpty, logger)
 	psData := smbstatusreader.GetPsData(commonbl.TestPsResponseEmpty(), logger)
 	chDesc := make(chan *prometheus.Desc, expectedDescChanels)
 	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())

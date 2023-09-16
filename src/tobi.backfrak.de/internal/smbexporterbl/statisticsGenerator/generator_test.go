@@ -128,6 +128,56 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 
 }
 
+func TestGetSmbStatisticsEmptyRespomse(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockDataEmpty, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataEmpty, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataEmpty, logger)
+
+	ret := GetSmbStatistics(locks, processes, shares, getNewStatisticGenSettings())
+
+	if len(ret) != 15 {
+		t.Errorf("The number of resturn values %d was not expected", len(ret))
+	}
+
+	for _, field := range ret[0:6] {
+		if field.Value != 0 {
+			t.Errorf("The value is not 0 when reading only empty tables")
+		}
+	}
+
+	if ret[6].Name != "server_information" {
+		t.Errorf("The Name \"%s\" is not expected", ret[6].Name)
+	}
+
+	if ret[6].Value != 1 {
+		t.Errorf("The Value %f is not expected", ret[6].Value)
+	}
+
+	if len(ret[6].Labels) != 1 {
+		t.Errorf("There are more labels than expected")
+	}
+
+	value, found := ret[6].Labels["version"]
+	if !found {
+		t.Errorf("No label with key \"version\" found")
+	}
+
+	if value != "" {
+		t.Errorf("The SambaVersion \"%s\" is not expected", value)
+	}
+
+	value, found = ret[12].Labels["client"]
+	if !found {
+		t.Errorf("No label with key \"client\" found")
+	}
+
+	if value != "" {
+		t.Errorf("The client \"%s\" is not expected", value)
+	}
+
+}
+
 func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line, logger)

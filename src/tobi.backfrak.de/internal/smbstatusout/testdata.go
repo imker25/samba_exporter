@@ -29,6 +29,10 @@ const LockDataNoData = `No locked files`
 const LockDataNoDataV4_17_7 = `No locked files
 `
 
+const LockDataEmpty = `  
+  
+`
+
 const LockDataCluster = `Locked files:
 Pid          Uid        DenyMode   Access      R/W        Oplock           SharePath   Name   Time
 --------------------------------------------------------------------------------------------------
@@ -84,6 +88,10 @@ PID     Username     Group        Machine                                   Prot
 1:19801 nobody       nogroup      10.63.0.36 (ipv4:10.63.0.36:53407)        SMB3_11           -                    -
 2:42597 nobody       nogroup      10.63.1.55 (ipv4:10.63.1.55:57033)        SMB3_11           -                    -`
 
+const ShareDataEmpty = `  
+  
+`
+
 const ProcessDataOneLine = `
 Samba version 4.11.6-Ubuntu
 PID     Username     Group        Machine                                   Protocol Version  Encryption           Signing              
@@ -114,3 +122,5 @@ PID     Username     Group        Machine                                   Prot
 1:55399 nobody       nogroup      10.63.0.11 (ipv4:10.63.0.11:50370)        SMB3_11           -                    -
 1:55399 nobody       nogroup      10.63.0.11 (ipv4:10.63.0.11:50370)        SMB3_11           -                    -
 1:55399 nobody       nogroup      10.63.0.11 (ipv4:10.63.0.11:50370)        SMB3_11           -                    -`
+
+const ProcessDataEmpty = `  `
