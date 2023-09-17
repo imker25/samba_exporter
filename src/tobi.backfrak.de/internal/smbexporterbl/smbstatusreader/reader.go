@@ -45,7 +45,7 @@ func (lockData LockData) String() string {
 // Will return an empty array if the data is in unexpected format
 func GetLockData(data string, logger *commonbl.Logger) []LockData {
 	var ret []LockData
-	if strings.HasPrefix(strings.TrimSpace(data), "No locked files") {
+	if strings.HasPrefix(strings.TrimSpace(data), commonbl.NO_LOCKED_FILES) {
 		return ret
 	}
 

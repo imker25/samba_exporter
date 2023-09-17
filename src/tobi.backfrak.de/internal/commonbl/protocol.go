@@ -25,6 +25,9 @@ const LOCK_REQUEST RequestType = "LOCK_REQUEST:"
 // Request the ps data of the smbd PIDs
 const PS_REQUEST RequestType = "PS_REQUEST:"
 
+// Normal response when no files are locked
+const NO_LOCKED_FILES = "No locked files"
+
 // Data struct for a psutil response
 type PsUtilPidData struct {
 	PID                       int64
@@ -85,7 +88,17 @@ func GetResponse(header string, data string) string {
 }
 
 // SplitResponse - Split a response string in header and data
+// Always use CheckResponseHeader to validate the returned header string before further processing
 func SplitResponse(response string) (string, string, error) {
+
+	if !strings.Contains(response, "\n") {
+		return strings.TrimSpace(response), "", nil
+	}
+
+	if strings.TrimSpace(response) == NO_LOCKED_FILES {
+		return strings.TrimSpace(response), "", nil
+	}
+
 	splitResponse := strings.SplitN(response, "\n", 2)
 
 	if len(splitResponse) != 2 {
@@ -100,8 +113,11 @@ func SplitResponse(response string) (string, string, error) {
 
 // CheckResponseHeader - Check if a response is for a specific request
 func CheckResponseHeader(header string, rType RequestType, id int) bool {
-	if !strings.HasPrefix(header, string(rType)) &&
-		!strings.Contains(header, fmt.Sprintf("Response for request %d", id)) {
+	if !strings.HasPrefix(header+":", string(rType)) {
+		return false
+	}
+
+	if !strings.Contains(header, fmt.Sprintf("Response for request %d", id)) {
 		return false
 	}
 

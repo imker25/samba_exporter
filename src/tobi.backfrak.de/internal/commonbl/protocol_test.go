@@ -109,21 +109,89 @@ func TestGetResponse(t *testing.T) {
 	}
 }
 
-func TestSplitResponse(t *testing.T) {
+func TestSplitResponseUnValid1(t *testing.T) {
 
 	response := fmt.Sprintf("%s Response for id my data is hot or not", SHARE_REQUEST)
 
 	header, data, err := SplitResponse(response)
 
-	if header != "" {
-		t.Errorf("The header is not the expected")
+	if CheckResponseHeader(header, SHARE_REQUEST, 2) {
+		t.Errorf("The header is valid but should not")
 	}
 	if data != "" {
 		t.Errorf("The data is not the expected")
 	}
 
-	if err == nil {
-		t.Errorf("Got no error but expected one")
+	if err != nil {
+		t.Errorf("Got error but expected none")
+	}
+}
+
+func TestSplitResponseUnValid2(t *testing.T) {
+
+
+	id := 2
+	response := fmt.Sprintf("BLA: Response for request %d", id)
+
+	header, data, err := SplitResponse(response)
+
+	if CheckResponseHeader(header, SHARE_REQUEST, id) {
+		t.Errorf("The header is valid but should not")
+	}
+	if data != "" {
+		t.Errorf("The data is not the expected")
+	}
+
+	if err != nil {
+		t.Errorf("Got error but expected none")
+	}
+}
+
+func TestSplitResponseEmpty1(t *testing.T) {
+
+	id := 23
+	rType := RequestType("bal:")
+	header := GetResponseHeader(rType, id)
+	data := " "
+
+	response := GetResponse(header, data)
+
+	rHeader, rData, err := SplitResponse(response)
+
+	if err != nil {
+		t.Errorf("Got error \"%s\" but expected none", err)
+	}
+
+	if rHeader != header {
+		t.Errorf("The header is not the expected")
+	}
+
+	if rData != data {
+		t.Errorf("The data is not the expected")
+	}
+}
+
+func TestSplitResponseEmpty(t *testing.T) {
+
+	id := 23
+	rType := RequestType("bal:")
+	header := GetResponseHeader(rType, id)
+	data := " "
+
+	response := header + data
+
+	rHeader, rData, err := SplitResponse(response)
+
+	if err != nil {
+		t.Errorf("Got error \"%s\" but expected none", err)
+	}
+
+	if rHeader != header {
+		t.Errorf("The header is not the expected")
+	}
+
+	if rData != "" {
+		t.Errorf("The data is not the expected")
 	}
 }
 
