@@ -95,10 +95,6 @@ func SplitResponse(response string) (string, string, error) {
 		return strings.TrimSpace(response), "", nil
 	}
 
-	if strings.TrimSpace(response) == NO_LOCKED_FILES {
-		return strings.TrimSpace(response), "", nil
-	}
-
 	splitResponse := strings.SplitN(response, "\n", 2)
 
 	if len(splitResponse) != 2 {
