@@ -49,6 +49,9 @@ function buildAndRunDocker() {
     if [ "${distVersion}" == "lunar" ] && [ "$(id -u)" == "1000" ]; then
         userName="ubuntu"
     fi
+    if [ "${distVersion}" == "mantic" ] && [ "$(id -u)" == "1000" ]; then
+        userName="ubuntu"
+    fi
     if [ "$dryRun" == "false" ]; then
         docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
             --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
@@ -202,12 +205,12 @@ if [ "$dockerError" == "false" ];then
 fi
 
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for lunar"
+    echo "Publish tag $tag on launchpad within a docker cotainer for mantic"
     echo "# ###################################################################"
-    buildAndRunDocker "lunar"
+    buildAndRunDocker "mantic"
     if [ "$?" != "0" ]; then
         dockerError="true"
-        echo "Error while publish package for lunar"
+        echo "Error while publish package for mantic"
     fi
 fi
 
@@ -220,16 +223,6 @@ if [ "$dockerError" == "false" ];then
         echo "Error while publish package for bullseye"
     fi
 fi
-
-# if [ "$dockerError" == "false" ];then 
-#     echo "Publish tag $tag on launchpad within a docker cotainer for buster"
-#     echo "# ###################################################################"
-#     buildAndRunDocker "buster"
-#     if [ "$?" != "0" ]; then
-#         dockerError="true"
-#         echo "Error while publish package for buster"
-#     fi
-# fi
 
 if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on launchpad within a docker cotainer for bookworm"
