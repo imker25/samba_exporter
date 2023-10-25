@@ -12,7 +12,8 @@
 | Ubnutu 22.04   | Jammy Jellyfish | yes |
 | Ubnutu 22.10  | Kinetic Kudu | no |
 | Ubnutu 23.04  | Lunar Lobster | yes |
-| Ubnutu 23.10  | Mantic Minotaur | planed |
+| Ubnutu 23.10  | Mantic Minotaur | yes |
+| Ubnutu 24.04  | -| planed |
 
 ---
 
