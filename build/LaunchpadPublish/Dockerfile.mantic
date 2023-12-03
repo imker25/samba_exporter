@@ -17,7 +17,7 @@ ENV TZ="Europe/London"
 RUN apt-get update && apt-get dist-upgrade -y && apt-get install -y wget \
                                         curl  \
                                         libc6  \
-                                        golang-1.20 \
+                                        golang-1.21 \
                                         gzip  \
                                         ronn\
                                         debhelper \
