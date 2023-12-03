@@ -169,7 +169,6 @@ cp -v "$BRANCH_ROOT/tmp/commit_logs" "$RPM_PACKAGE_DIR"
 cp -v "$BRANCH_ROOT/install/fedora/samba-exporter.from_source.spec" "$WORK_DIR/samba-exporter.from_source.spec"
 
 dockerError="false"
-
 if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on corp within a docker cotainer for fedora 28"
     echo "# ###################################################################"
@@ -179,6 +178,10 @@ if [ "$dockerError" == "false" ];then
          echo "Error while publish for fedora 28"
     fi
 fi
+echo "# ###################################################################"
+echo "Delete the container image when done" 
+docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+docker builder prune --all --force
 
 if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on corp within a docker cotainer for fedora 35"
@@ -189,7 +192,10 @@ if [ "$dockerError" == "false" ];then
          echo "Error while publish for fedora 35"
     fi
 fi
-
+echo "# ###################################################################"
+echo "Delete the container image when done" 
+docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+docker builder prune --all --force
 
 
 if [ "$dockerError" == "false" ];then 
@@ -201,6 +207,10 @@ if [ "$dockerError" == "false" ];then
          echo "Error while publish for fedora 39"
     fi
 fi
+echo "# ###################################################################"
+echo "Delete the container image when done" 
+docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+docker builder prune --all --force
 
 if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on corp within a docker cotainer for fedora 38"
@@ -221,6 +231,7 @@ popd
 echo "# ###################################################################"
 echo "Delete the container image when done"    
 docker rmi -f $(docker images --filter=reference="rpm-publish*" -q) 
+docker builder prune --all --force
 
 if [ "$dockerError" == "true" ];then 
     echo "Error detected"
