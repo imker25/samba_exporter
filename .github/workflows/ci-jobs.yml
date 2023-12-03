@@ -205,7 +205,7 @@ jobs:
   #       SAMBA_EXPORTER_PACKAGE_NAME:  ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
   #     run: test/installationTest/RunInstallationTest.sh
   release-to-github:
-    needs: [ integration-test-ubuntu, integration-test-bookworm, installation-test, build-pages, build-rpm-package ]
+    needs: [ integration-test-ubuntu, integration-test-bookworm, build-pages, build-rpm-package ]
     runs-on: "ubuntu-22.04"
     if: ((github.ref == 'refs/heads/main') || contains(github.ref, 'release'))
     timeout-minutes: 10
