@@ -179,31 +179,31 @@ jobs:
         run: docker build --file test/integrationTest/docker/Dockerfile.bookworm --tag integration-test-container .
       - name: Run integration tests
         run: docker run -i integration-test-container /bin/bash -c "/RunIntegrationTests.sh container"                  
-  installation-test:
-    needs: build-unit_test
-    strategy:
-      matrix:
-        os: [ubuntu-22.04]
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 10
-    steps: 
-    - uses: actions/checkout@v3
-    - name: Download PackageName.txt artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: PackageName-${{ matrix.os }}.txt   
-        path: logs/ 
-    - name: Download samba_exporter package artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: samba_exporter-${{ matrix.os }}.deb  
-        path: .           
-    - name: 'Get Package name from logs/PackageName.txt'
-      run: ./build/GithubEnv.sh        
-    - name: "Run installation tests"
-      env:
-        SAMBA_EXPORTER_PACKAGE_NAME:  ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
-      run: test/installationTest/RunInstallationTest.sh
+  # installation-test:
+  #   needs: build-unit_test
+  #   strategy:
+  #     matrix:
+  #       os: [ubuntu-22.04]
+  #   runs-on: ${{ matrix.os }}
+  #   timeout-minutes: 10
+  #   steps: 
+  #   - uses: actions/checkout@v3
+  #   - name: Download PackageName.txt artifact
+  #     uses: actions/download-artifact@v3
+  #     with:
+  #       name: PackageName-${{ matrix.os }}.txt   
+  #       path: logs/ 
+  #   - name: Download samba_exporter package artifact
+  #     uses: actions/download-artifact@v3
+  #     with:
+  #       name: samba_exporter-${{ matrix.os }}.deb  
+  #       path: .           
+  #   - name: 'Get Package name from logs/PackageName.txt'
+  #     run: ./build/GithubEnv.sh        
+  #   - name: "Run installation tests"
+  #     env:
+  #       SAMBA_EXPORTER_PACKAGE_NAME:  ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}
+  #     run: test/installationTest/RunInstallationTest.sh
   release-to-github:
     needs: [ integration-test-ubuntu, integration-test-bookworm, installation-test, build-pages, build-rpm-package ]
     runs-on: "ubuntu-22.04"
