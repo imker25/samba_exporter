@@ -61,6 +61,14 @@ foto         1121    192.168.1.243  Mon May 17 10:56:56 AM 2021 CEST -          
 film         1117    192.168.1.244  Tue May 18 09:52:38 AM 2021 CEST -            -           
 musik        1117    192.168.1.245  Fri Nov 5 11:07:13 PM 2021 CET   -            -           `
 
+const ShareData4LinesWithSpacesInName = `
+Service      pid     Machine       Connected at                      Encryption   Signing     
+---------------------------------------------------------------------------------------------
+test share        4642    127.0.0.1     Mon May 31 17:23:44 2021 UTC     -            -           
+IPC$ admin share  4642    127.0.0.1     Wed Jun  2 21:32:31 2021 UTC     -            -    
+a b c d e f g h i 4642    127.0.0.1     Wed Jun  2 21:32:31 2021 UTC     -            -    
+musik             1117    192.168.1.245  Mo Sep 19 18:34:17 2022 CEST    -            -        `
+
 const ShareDataDifferentTimeStampLines = `
 Service      pid     Machine       Connected at                     Encryption   Signing     
 ---------------------------------------------------------------------------------------------

@@ -334,6 +334,51 @@ func TestGetShareData4Line(t *testing.T) {
 	}
 }
 
+func TestGetShareDataNamesWithSpaces(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	entries := GetShareData(smbstatusout.ShareData4LinesWithSpacesInName, logger)
+
+	if len(entries) != 4 {
+		t.Errorf("Got %d entries, expected 4", len(entries))
+	}
+
+	if entries[0].ConnectedAt.Format(time.ANSIC) != "Mon May 31 17:23:44 2021" {
+		t.Errorf("The ConnectedAt %s is not the expected 'Mon May 31 17:23:44 2021'", entries[0].ConnectedAt.Format(time.ANSIC))
+	}
+
+	if entries[0].Service != "test share" {
+		t.Errorf("The Service %s is not the expected 'test share'", entries[0].Service)
+	}
+
+	if entries[1].ConnectedAt.Format(time.ANSIC) != "Wed Jun  2 21:32:31 2021" {
+		t.Errorf("The ConnectedAt %s is not the expected 'Wed Jun  2 21:32:31 2021'", entries[1].ConnectedAt.Format(time.ANSIC))
+	}
+
+	if entries[1].Service != "IPC$ admin share" {
+		t.Errorf("The Service %s is not the expected 'IPC$ admin share'", entries[0].Service)
+	}
+
+	if entries[2].ConnectedAt.Format(time.ANSIC) != "Wed Jun  2 21:32:31 2021" {
+		t.Errorf("The ConnectedAt %s is not the expected 'Wed Jun  2 21:32:31 2021'", entries[2].ConnectedAt.Format(time.ANSIC))
+	}
+
+	if entries[2].Service != "a b c d e f g h i" {
+		t.Errorf("The Service %s is not the expected 'a b c d e f g h i'", entries[0].Service)
+	}
+
+	if entries[3].ConnectedAt.Format(time.ANSIC) != "Mon Sep 19 18:34:17 2022" {
+		t.Errorf("The ConnectedAt %s is not the expected 'Mon Sep 19 18:34:17 2022'", entries[3].ConnectedAt.Format(time.ANSIC))
+	}
+
+	if entries[3].Service != "musik" {
+		t.Errorf("The Service %s is not the expected 'musik'", entries[0].Service)
+	}
+
+	if entries[3].ClusterNodeId != -1 {
+		t.Errorf("The ClusterNodeId %d is not the expected '-1'", entries[3].ClusterNodeId)
+	}
+}
+
 func TestGetShareDataCluster(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	entries := GetShareData(smbstatusout.ShareDataCluster, logger)
