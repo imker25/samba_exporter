@@ -44,6 +44,11 @@ Pid          Uid        DenyMode   Access      R/W        Oplock           Share
 3:57086      1001       DENY_NONE  0x120089    RDONLY     LEASE(RWH)       /lfsmnt/dst01   share/data2/CLIPS001/CC0639/CC063904.MXF   Tue Apr  4 08:11:39 2023
 1:55399      1001       DENY_WRITE 0x120089    RDONLY     LEASE(RWH)       /lfsmnt/dst01   share/test.wav 48000.pek   Tue Apr  4 14:13:28 2023`
 
+const LockData1LineWithSpaces = `Locked files:
+Pid          User(ID)   DenyMode   Access      R/W        Oplock           SharePath   Name   Time
+--------------------------------------------------------------------------------------------------
+3336         1000       DENY_NONE  0x120089    RDONLY     LEASE(RWH)       /srv/shares/simple   my test file.txt   Tue Jan  2 14:13:18 2024`
+
 const ShareDataOneLine = `
 Service      pid     Machine       Connected at                      Encryption   Signing     
 ---------------------------------------------------------------------------------------------

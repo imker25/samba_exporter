@@ -177,6 +177,23 @@ func TestGetLockData4Line(t *testing.T) {
 	}
 }
 
+func TestGetLockDataFileNameWithSpaces(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	entryList := GetLockData(smbstatusout.LockData1LineWithSpaces, logger)
+
+	if len(entryList) != 1 {
+		t.Errorf("Got %d entries, expected 1", len(entryList))
+	}
+
+	if entryList[0].SharePath != "/srv/shares/simple" {
+		t.Errorf("The SharePath %s is not the expected '/srv/shares/simple'", entryList[0].SharePath)
+	}
+
+	if entryList[0].Name != "my test file.txt" {
+		t.Errorf("The Name '%s' is not the expected 'my test file.txt'", entryList[0].Name)
+	}
+
+}
 func TestGetLockDataCluster(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	entryList := GetLockData(smbstatusout.LockDataCluster, logger)
