@@ -123,12 +123,12 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 		}
 
 		if lastNameIndex == -1 {
-			logger.WriteErrorMessage(fmt.Sprintf("Not able to parse the time stamp in following LockData line: \"%s\"", lines[i]))
+			logger.WriteErrorMessage(fmt.Sprintf("Not able to parse the time stamp in following LockData line: \"%s\"", lines[sepLineIndex+1+i]))
 			continue
 		}
 
 		if lastNameIndex <= 7 {
-			logger.WriteErrorMessage(fmt.Sprintf("Not able to find the name in following LockData line: \"%s\"", lines[i]))
+			logger.WriteErrorMessage(fmt.Sprintf("Not able to find the name in following LockData line: \"%s\"", lines[sepLineIndex+1+i]))
 			continue
 		}
 
@@ -208,10 +208,10 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 		i := -1
 		for _, oneLineFields := range getFieldMatrix(lines[sepLineIndex+1:], " ") {
 			i++
+			lastNameField := -1
 			var err error
 			var entry ShareData
 			fieldLength := len(oneLineFields)
-			entry.Service = oneLineFields[0]
 			if strings.Contains(oneLineFields[1], ":") {
 				pidFields := strings.Split(oneLineFields[1], ":")
 				entry.ClusterNodeId, err = strconv.Atoi(pidFields[0])
@@ -225,35 +225,50 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 					continue
 				}
 			} else {
+
 				entry.ClusterNodeId = -1
-				entry.PID, err = strconv.Atoi(oneLineFields[1])
-				if err != nil {
-					logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal without :)")
+
+				pidFound := true
+				for {
+					lastNameField++
+					entry.PID, err = strconv.Atoi(oneLineFields[lastNameField+1])
+					if err == nil {
+						break
+					}
+					if len(oneLineFields)-11 <= lastNameField {
+						logger.WriteErrorWithAddition(err, "while getting ShareData PID (normal without :)")
+						pidFound = false
+						break
+					}
+				}
+
+				if !pidFound {
 					continue
 				}
+				entry.Service = concatStrFromArr(oneLineFields[0 : lastNameField+1])
 			}
-			entry.Machine = oneLineFields[2]
+			entry.Machine = oneLineFields[lastNameField+2]
 			timeConvSuc := false
 			var connectTime time.Time
 			var lastTimeIndex = -1
-			timeConvSuc, connectTime = tryGetTimeStampFromStrArr(oneLineFields[3:10])
+			timeConvSuc, connectTime = tryGetTimeStampFromStrArr(oneLineFields[lastNameField+3 : lastNameField+10])
 			if timeConvSuc {
 				entry.ConnectedAt = connectTime
-				lastTimeIndex = 9
+				lastTimeIndex = lastNameField + 9
 			} else {
-				timeConvSuc, connectTime = tryGetTimeStampFromStrArr(oneLineFields[3:9])
+				timeConvSuc, connectTime = tryGetTimeStampFromStrArr(oneLineFields[lastNameField+3 : lastNameField+9])
 				if timeConvSuc {
 					entry.ConnectedAt = connectTime
-					lastTimeIndex = 8
+					lastTimeIndex = lastNameField + 8
 				}
 			}
 
 			if lastTimeIndex == -1 {
-				logger.WriteErrorMessage(fmt.Sprintf("Not able to parse the time stamp in following LockData line: \"%s\"", lines[i]))
+				logger.WriteErrorMessage(fmt.Sprintf("Not able to parse the time stamp in following LockData line: \"%s\"", lines[sepLineIndex+1+i]))
 				continue
 			}
 			if lastTimeIndex != fieldLength-3 {
-				logger.WriteErrorMessage(fmt.Sprintf("Can not find end of time stamp in following LockData line: \"%s\"", lines[i]))
+				logger.WriteErrorMessage(fmt.Sprintf("Can not find end of time stamp in following LockData line: \"%s\"", lines[sepLineIndex+1+i]))
 				continue
 			}
 			entry.Encryption = oneLineFields[lastTimeIndex+1]
@@ -479,6 +494,19 @@ func getFieldMatrix(dataLines []string, separator string) [][]string {
 	}
 
 	return fieldMatrix
+}
+
+func concatStrFromArr(fields []string) string {
+	ret := ""
+	for i, field := range fields {
+		if i == 0 {
+			ret = field
+		} else {
+			ret = ret + " " + field
+		}
+	}
+
+	return ret
 }
 
 func tryGetTimeStampFromStrArr(fields []string) (bool, time.Time) {

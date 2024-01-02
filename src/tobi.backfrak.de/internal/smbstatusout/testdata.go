@@ -24,6 +24,14 @@ Pid          User(ID)   DenyMode   Access      R/W        Oplock           Share
 1120         1080       DENY_NONE  0x80        RDONLY     NONE             /usr/share/film    .   Mon May 17 07:09:38 2021
 1120         1080       DENY_NONE  0x80        RDONLY     NONE             /usr/share/music   .   Sun Oct  1 12:39:21 2022`
 
+const LockDataInvadlidResponse = `Locked files:
+Pid          User(ID)   DenyMode   Access      R/W        Oplock           SharePath   Name   Time
+--------------------------------------------------------------------------------------------------
+1120         1080       DENY_NONE  0x80        RDONLY     NONE             /usr/share/data    .   Sun May 16 12:07:02 2021
+1120         1080       DENY_NONE  0x80        RDONLY     NONE             /usr/share/foto    .   Mon May 17 06:39:38 2021
+1120         1080       DENY_NONE  0x80        RDONLY     NONE             /usr/share/film    .   No time stamp
+1120         1080       DENY_NONE  0x80        RDONLY     NONE             /usr/share/music   .   Sun Oct  1 12:39:21 2022`
+
 const LockDataNoData = `No locked files`
 
 const LockDataNoDataV4_17_7 = `No locked files
@@ -44,6 +52,11 @@ Pid          Uid        DenyMode   Access      R/W        Oplock           Share
 3:57086      1001       DENY_NONE  0x120089    RDONLY     LEASE(RWH)       /lfsmnt/dst01   share/data2/CLIPS001/CC0639/CC063904.MXF   Tue Apr  4 08:11:39 2023
 1:55399      1001       DENY_WRITE 0x120089    RDONLY     LEASE(RWH)       /lfsmnt/dst01   share/test.wav 48000.pek   Tue Apr  4 14:13:28 2023`
 
+const LockData1LineWithSpaces = `Locked files:
+Pid          User(ID)   DenyMode   Access      R/W        Oplock           SharePath   Name   Time
+--------------------------------------------------------------------------------------------------
+3336         1000       DENY_NONE  0x120089    RDONLY     LEASE(RWH)       /srv/shares/simple   my test file.txt   Tue Jan  2 14:13:18 2024`
+
 const ShareDataOneLine = `
 Service      pid     Machine       Connected at                      Encryption   Signing     
 ---------------------------------------------------------------------------------------------
@@ -60,6 +73,22 @@ IPC$         1119    192.168.1.242  Sun May 16 11:55:36 AM 2021 CEST -          
 foto         1121    192.168.1.243  Mon May 17 10:56:56 AM 2021 CEST -            -           
 film         1117    192.168.1.244  Tue May 18 09:52:38 AM 2021 CEST -            -           
 musik        1117    192.168.1.245  Fri Nov 5 11:07:13 PM 2021 CET   -            -           `
+
+const ShareData4LinesWithSpacesInName = `
+Service      pid     Machine       Connected at                      Encryption   Signing     
+---------------------------------------------------------------------------------------------
+test share        4642    127.0.0.1     Mon May 31 17:23:44 2021 UTC     -            -           
+IPC$ admin share  4642    127.0.0.1     Wed Jun  2 21:32:31 2021 UTC     -            -    
+a b c d e f g h i 4642    127.0.0.1     Wed Jun  2 21:32:31 2021 UTC     -            -    
+musik             1117    192.168.1.245  Mo Sep 19 18:34:17 2022 CEST    -            -        `
+
+const ShareData4LinesInvalide = `
+Service      pid     Machine       Connected at                      Encryption   Signing     
+---------------------------------------------------------------------------------------------
+test share        4642    127.0.0.1     Mon May 31 17:23:44 2021 UTC     -            -           
+IPC$ admin share  4642    127.0.0.1     Wed Jun  2 21:32:31 2021 UTC     -            -    
+a b c d e f g h i zyx     127.0.0.1     Wed Jun  2 21:32:31 2021 UTC     -            -    
+musik             1117    192.168.1.245  Mo Sep 19 18:34:17 2022 CEST    -            -        `
 
 const ShareDataDifferentTimeStampLines = `
 Service      pid     Machine       Connected at                     Encryption   Signing     

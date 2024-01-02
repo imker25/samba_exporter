@@ -57,21 +57,6 @@ func TestGetSmbStatisticsClusterData(t *testing.T) {
 		t.Errorf("The cluster_node_count does not match as expected")
 	}
 
-	// if ret[6].Name != "pids_per_node_count" || ret[6].Value != 1.0 || ret[6].Labels["node"] != "3" {
-	// 	t.Errorf("The pids_per_node_count does not match as expected")
-	// }
-
-	// if ret[8].Name != "locks_per_node_count" || ret[8].Value != 6.0 || ret[8].Labels["node"] != "1" {
-	// 	t.Errorf("The locks_per_node_count does not match as expected")
-	// }
-
-	// if ret[10].Name != "processes_per_node_count" || ret[10].Value != 3.0 || ret[10].Labels["node"] != "3" {
-	// 	t.Errorf("The processes_per_node_count does not match as expected")
-	// }
-
-	// if ret[12].Name != "shares_per_node_count" || ret[12].Value != 14.0 || ret[12].Labels["node"] != "1" {
-	// 	t.Errorf("The shares_per_node_count does not match as expected")
-	// }
 }
 
 func getNewStatisticGenSettings() StatisticsGeneratorSettings {
@@ -446,6 +431,31 @@ func TestGetSmbStatisticsAllNotExportFlags(t *testing.T) {
 		t.Errorf("The name %s is not expected", ret[9].Name)
 	}
 
+}
+
+func TestGetSmbStatisticsNameWithSpaces(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4LinesWithSpacesInName, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
+
+	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{false, false, false, false})
+
+	if len(ret) != 29 {
+		t.Errorf("The number of resturn values %d was not expected", len(ret))
+	}
+
+	if ret[9].Name != "server_information" {
+		t.Errorf("The name %s is not expected", ret[9].Name)
+	}
+
+	if ret[12].Name != "encryption_method_count" {
+		t.Errorf("The name '%s' is not the expected 'encryption_method_count'", ret[12].Name)
+	}
+
+	if ret[12].Value != 4.0 {
+		t.Errorf("The value '%f' is not the expected '4.0'", ret[12].Value)
+	}
 }
 
 func TestStringArrContains(t *testing.T) {
