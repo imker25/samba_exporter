@@ -194,6 +194,25 @@ func TestGetLockDataFileNameWithSpaces(t *testing.T) {
 	}
 
 }
+
+func TestGetLockDataInvalidResponse(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	entryList := GetLockData(smbstatusout.LockDataInvadlidResponse, logger)
+
+	if len(entryList) != 3 {
+		t.Errorf("Got %d entries, expected 1", len(entryList))
+	}
+
+	if entryList[0].SharePath != "/usr/share/data" {
+		t.Errorf("The SharePath '%s' is not the expected '/usr/share/data'", entryList[0].SharePath)
+	}
+
+	if entryList[2].SharePath != "/usr/share/music" {
+		t.Errorf("The SharePath '%s' is not the expected '/usr/share/music'", entryList[2].SharePath)
+	}
+
+}
+
 func TestGetLockDataCluster(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	entryList := GetLockData(smbstatusout.LockDataCluster, logger)

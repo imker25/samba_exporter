@@ -123,12 +123,12 @@ func GetLockData(data string, logger *commonbl.Logger) []LockData {
 		}
 
 		if lastNameIndex == -1 {
-			logger.WriteErrorMessage(fmt.Sprintf("Not able to parse the time stamp in following LockData line: \"%s\"", lines[i]))
+			logger.WriteErrorMessage(fmt.Sprintf("Not able to parse the time stamp in following LockData line: \"%s\"", lines[sepLineIndex+1+i]))
 			continue
 		}
 
 		if lastNameIndex <= 7 {
-			logger.WriteErrorMessage(fmt.Sprintf("Not able to find the name in following LockData line: \"%s\"", lines[i]))
+			logger.WriteErrorMessage(fmt.Sprintf("Not able to find the name in following LockData line: \"%s\"", lines[sepLineIndex+1+i]))
 			continue
 		}
 
