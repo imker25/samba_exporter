@@ -370,6 +370,20 @@ func TestGetShareData4Line(t *testing.T) {
 	}
 }
 
+func TestGetShareDataInvlaideResponse(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	entries := GetShareData(smbstatusout.ShareData4LinesInvalide, logger)
+
+	if len(entries) != 3 {
+		t.Errorf("Got %d entries, expected 4", len(entries))
+	}
+
+	if entries[2].ConnectedAt.Format(time.ANSIC) != "Mon Sep 19 18:34:17 2022" {
+		t.Errorf("The ConnectedAt '%s' is not the expected 'Mon Sep 19 18:34:17 2022'", entries[2].ConnectedAt.Format(time.ANSIC))
+	}
+
+}
+
 func TestGetShareDataNamesWithSpaces(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	entries := GetShareData(smbstatusout.ShareData4LinesWithSpacesInName, logger)

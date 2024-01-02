@@ -82,6 +82,14 @@ IPC$ admin share  4642    127.0.0.1     Wed Jun  2 21:32:31 2021 UTC     -      
 a b c d e f g h i 4642    127.0.0.1     Wed Jun  2 21:32:31 2021 UTC     -            -    
 musik             1117    192.168.1.245  Mo Sep 19 18:34:17 2022 CEST    -            -        `
 
+const ShareData4LinesInvalide = `
+Service      pid     Machine       Connected at                      Encryption   Signing     
+---------------------------------------------------------------------------------------------
+test share        4642    127.0.0.1     Mon May 31 17:23:44 2021 UTC     -            -           
+IPC$ admin share  4642    127.0.0.1     Wed Jun  2 21:32:31 2021 UTC     -            -    
+a b c d e f g h i zyx     127.0.0.1     Wed Jun  2 21:32:31 2021 UTC     -            -    
+musik             1117    192.168.1.245  Mo Sep 19 18:34:17 2022 CEST    -            -        `
+
 const ShareDataDifferentTimeStampLines = `
 Service      pid     Machine       Connected at                     Encryption   Signing     
 ---------------------------------------------------------------------------------------------
