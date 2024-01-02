@@ -157,6 +157,12 @@ But when running in cluster mode the following additional metrics are exported:
 See <https://github.com/imker25/samba_exporter/issues> <br>
 In case you found a new bug please also report as github issue on the projects page.
 
+### Konwn issues
+
+1. While `samba_exporter` can work with files that contains spaces in the path and with shares that contain spaces in the name it can not work with shares that contain spaces in the path.<br>
+  **Example:** It is fine to have a share named `share with spaces`, but it's a problem to export statistics if the shared folder is `/srv/shares/with spaces/`
+
+
 ## COPYRIGHT
 
 samba_exporter is Copyright (C) 2021 Tobias Zellner <tobi@backfraki.de>
