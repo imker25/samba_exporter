@@ -264,11 +264,11 @@ func GetShareData(data string, logger *commonbl.Logger) []ShareData {
 			}
 
 			if lastTimeIndex == -1 {
-				logger.WriteErrorMessage(fmt.Sprintf("Not able to parse the time stamp in following LockData line: \"%s\"", lines[sepLineIndex+1+i]))
+				logger.WriteErrorMessage(fmt.Sprintf("Not able to parse the time stamp in following ShareData line: \"%s\"", lines[sepLineIndex+1+i]))
 				continue
 			}
 			if lastTimeIndex != fieldLength-3 {
-				logger.WriteErrorMessage(fmt.Sprintf("Can not find end of time stamp in following LockData line: \"%s\"", lines[sepLineIndex+1+i]))
+				logger.WriteErrorMessage(fmt.Sprintf("Can not find end of time stamp in following ShareData line: \"%s\"", lines[sepLineIndex+1+i]))
 				continue
 			}
 			entry.Encryption = oneLineFields[lastTimeIndex+1]
