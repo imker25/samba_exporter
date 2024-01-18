@@ -5,6 +5,8 @@ After=network-online.target samba_statusd.service
 
 [Service]
 Type=exec
+Environment="LANG=C"
+Environment="LC_TIME=c.utf-8"
 EnvironmentFile=/etc/default/samba_exporter
 ExecStart=/usr/bin/samba_exporter $ARGS
 ExecReload=/bin/kill -HUP $MAINPID
