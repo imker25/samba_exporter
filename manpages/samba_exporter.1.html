@@ -306,6 +306,14 @@ And <code>samba_statusd</code> always starts when <code>samba_exporter</code> is
 <p>See <a href="https://github.com/imker25/samba_exporter/issues" data-bare-link="true">https://github.com/imker25/samba_exporter/issues</a> <br>
 In case you found a new bug please also report as github issue on the projects page.</p>
 
+<h3 id="Konwn-issues">Konwn issues</h3>
+
+<ol>
+  <li>While <code>samba_exporter</code> can work with files that contains spaces in the path and with shares that contain spaces in the name it can not work with shares that contain spaces in the path.<br>
+  <strong>Example:</strong> It is fine to have a share named <code>share with spaces</code>, but it's a problem to export statistics if the shared folder is <code>/srv/shares/with spaces/</code>
+</li>
+</ol>
+
 <h2 id="COPYRIGHT">COPYRIGHT</h2>
 
 <p>samba_exporter is Copyright (C) 2021 Tobias Zellner <a href="mailto:tobi@backfraki.de" data-bare-link="true">tobi@backfraki.de</a></p>
@@ -316,7 +324,7 @@ In case you found a new bug please also report as github issue on the projects p
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>October 2023</li>
+    <li class='tc'>January 2024</li>
     <li class='tr'>samba_exporter(1)</li>
   </ol>
 
