@@ -22,10 +22,11 @@ type SmbStatisticsNumeric struct {
 }
 
 type StatisticsGeneratorSettings struct {
-	DoNotExportClient     bool
-	DoNotExportUser       bool
-	DoNotExportEncryption bool
-	DoNotExportPid        bool
+	DoNotExportClient       bool
+	DoNotExportUser         bool
+	DoNotExportEncryption   bool
+	DoNotExportPid          bool
+	DoNotExportShareDetails bool
 }
 
 type lockCreationEntry struct {
@@ -235,16 +236,18 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 		ret = append(ret, SmbStatisticsNumeric{"pid_count", float64(len(pids)), "Number of processes running by the samba server", nil})
 	}
 
-	if len(locksPerShare) > 0 {
-		for share, locks := range locksPerShare {
-			ret = append(ret, SmbStatisticsNumeric{"locks_per_share_count", float64(locks), "Number of locks on share", map[string]string{"share": share}})
-		}
-	} else {
-		// Add this value even if no locks found, so prometheus description will be created
-		ret = append(ret, SmbStatisticsNumeric{"locks_per_share_count", float64(0), "Number of locks on share", map[string]string{"share": ""}})
-	}
-
 	ret = append(ret, SmbStatisticsNumeric{"server_information", 1, "Version of the samba server", map[string]string{"version": sambaVersion}})
+
+	if !settings.DoNotExportShareDetails {
+		if len(locksPerShare) > 0 {
+			for share, locks := range locksPerShare {
+				ret = append(ret, SmbStatisticsNumeric{"locks_per_share_count", float64(locks), "Number of locks on share", map[string]string{"share": share}})
+			}
+		} else {
+			// Add this value even if no locks found, so prometheus description will be created
+			ret = append(ret, SmbStatisticsNumeric{"locks_per_share_count", float64(0), "Number of locks on share", map[string]string{"share": ""}})
+		}
+	}
 
 	if !settings.DoNotExportEncryption {
 		if len(protocolVersionCount) > 0 {
@@ -295,7 +298,7 @@ func GetSmbStatistics(lockData []smbstatusreader.LockData, processData []smbstat
 		}
 	}
 
-	if !settings.DoNotExportUser {
+	if !(settings.DoNotExportUser || settings.DoNotExportShareDetails) {
 		if len(lockCreationEntries) > 0 {
 			for _, lockEntry := range lockCreationEntries {
 				ret = append(ret, SmbStatisticsNumeric{"lock_created_at", float64(lockEntry.CreationTime.Unix()),
