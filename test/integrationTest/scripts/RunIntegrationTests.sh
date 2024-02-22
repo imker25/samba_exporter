@@ -159,6 +159,8 @@ assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"samba_pro
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe -not-expose-encryption-data | grep \"samba_protocol_version_count\"" 1
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe | grep \"smbd_io_counter_write_count\"" 0
 assert_raises "$samba_exporter -test-mode -verbose -test-pipe -not-expose-pid-data | grep \"smbd_io_counter_write_count\"" 1
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe -not-expose-share-details | grep \"samba_lock_created_since_seconds\"" 1
+assert_raises "$samba_exporter -test-mode -verbose -test-pipe -not-expose-share-details | grep \"locks_per_share_count\"" 1
 
 normalOutPutLineCount=$( $samba_exporter -test-mode -test-pipe | wc -l )
 noEncryptionOutPutLineCount=$( $samba_exporter -test-mode -test-pipe -not-expose-encryption-data | wc -l )
