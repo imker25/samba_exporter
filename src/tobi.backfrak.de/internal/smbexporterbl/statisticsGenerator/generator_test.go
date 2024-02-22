@@ -75,25 +75,25 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
-	for _, field := range ret[0:6] {
+	for _, field := range ret[0:5] {
 		if field.Value != 0 {
 			t.Errorf("The value is not 0 when reading only empty tables")
 		}
 	}
 
-	if ret[6].Name != "server_information" {
-		t.Errorf("The Name \"%s\" is not expected", ret[6].Name)
+	if ret[5].Name != "server_information" {
+		t.Errorf("The Name \"%s\" is not expected", ret[5].Name)
 	}
 
-	if ret[6].Value != 1 {
-		t.Errorf("The Value %f is not expected", ret[6].Value)
+	if ret[5].Value != 1 {
+		t.Errorf("The Value %f is not expected", ret[5].Value)
 	}
 
-	if len(ret[6].Labels) != 1 {
+	if len(ret[5].Labels) != 1 {
 		t.Errorf("There are more labels than expected")
 	}
 
-	value, found := ret[6].Labels["version"]
+	value, found := ret[5].Labels["version"]
 	if !found {
 		t.Errorf("No label with key \"version\" found")
 	}
@@ -125,25 +125,25 @@ func TestGetSmbStatisticsEmptyRespomse(t *testing.T) {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
-	for _, field := range ret[0:6] {
+	for _, field := range ret[0:5] {
 		if field.Value != 0 {
 			t.Errorf("The value is not 0 when reading only empty tables")
 		}
 	}
 
-	if ret[6].Name != "server_information" {
-		t.Errorf("The Name \"%s\" is not expected", ret[6].Name)
+	if ret[5].Name != "server_information" {
+		t.Errorf("The Name \"%s\" is not expected", ret[5].Name)
 	}
 
-	if ret[6].Value != 1 {
-		t.Errorf("The Value %f is not expected", ret[6].Value)
+	if ret[5].Value != 1 {
+		t.Errorf("The Value %f is not expected", ret[5].Value)
 	}
 
-	if len(ret[6].Labels) != 1 {
+	if len(ret[5].Labels) != 1 {
 		t.Errorf("There are more labels than expected")
 	}
 
-	value, found := ret[6].Labels["version"]
+	value, found := ret[5].Labels["version"]
 	if !found {
 		t.Errorf("No label with key \"version\" found")
 	}
@@ -174,11 +174,11 @@ func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
-	if ret[5].Name != "locks_per_share_count" {
+	if ret[6].Name != "locks_per_share_count" {
 		t.Errorf("The Name \"%s\" is not expected", ret[5].Name)
 	}
 
-	if ret[5].Labels["share"] != "" {
+	if ret[6].Labels["share"] != "" {
 		t.Errorf("The Labels[\"share\"] %s is not expected", ret[5].Labels["share"])
 	}
 }
@@ -235,19 +235,19 @@ func TestGetSmbStatistics(t *testing.T) {
 		t.Errorf("The client_count is not the expected value")
 	}
 
-	if ret[9].Name != "server_information" {
-		t.Errorf("The Name \"%s\" is not expected", ret[6].Name)
+	if ret[5].Name != "server_information" {
+		t.Errorf("The Name \"%s\" is not expected", ret[5].Name)
 	}
 
-	if ret[9].Value != 1 {
-		t.Errorf("The Value %f is not expected", ret[6].Value)
+	if ret[5].Value != 1 {
+		t.Errorf("The Value %f is not expected", ret[5].Value)
 	}
 
-	if len(ret[9].Labels) != 1 {
+	if len(ret[5].Labels) != 1 {
 		t.Errorf("There are more labels than expected")
 	}
 
-	value, found := ret[9].Labels["version"]
+	value, found := ret[5].Labels["version"]
 	if !found {
 		t.Errorf("No label with key \"version\" found")
 	}
@@ -415,20 +415,74 @@ func TestGetSmbStatisticsNotExportUser(t *testing.T) {
 
 }
 
+func TestGetSmbStatisticsNotExportShare(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
+
+	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{false, false, false, false, true})
+
+	if len(ret) != 21 {
+		t.Errorf("The number of resturn values %d was not expected", len(ret))
+	}
+
+	if ret[8].Name != "encryption_method_count" {
+		t.Errorf("The name %s is not expected", ret[8].Name)
+	}
+
+	value, found := ret[20].Labels["client"]
+	if !found {
+		t.Errorf("No label with key \"client\" found")
+	}
+
+	if !strings.HasPrefix(value, "192.168.1.") {
+		t.Errorf("The value %s is not expected", value)
+	}
+
+}
+
+func TestGetSmbStatisticsNotExportShareAndUser(t *testing.T) {
+	logger := commonbl.NewLogger(true)
+	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
+	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
+	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
+
+	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{false, true, false, false, true})
+
+	if len(ret) != 21 {
+		t.Errorf("The number of resturn values %d was not expected", len(ret))
+	}
+
+	if ret[8].Name != "encryption_method_count" {
+		t.Errorf("The name %s is not expected", ret[8].Name)
+	}
+
+	value, found := ret[20].Labels["client"]
+	if !found {
+		t.Errorf("No label with key \"client\" found")
+	}
+
+	if !strings.HasPrefix(value, "192.168.1.") {
+		t.Errorf("The value %s is not expected", value)
+	}
+
+}
+
 func TestGetSmbStatisticsAllNotExportFlags(t *testing.T) {
 	logger := commonbl.NewLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
-	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{true, true, true, true, false})
+	ret := GetSmbStatistics(locks, processes, shares, StatisticsGeneratorSettings{true, true, true, true, true})
 
-	if len(ret) != 10 {
+	if len(ret) != 6 {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
-	if ret[9].Name != "server_information" {
-		t.Errorf("The name %s is not expected", ret[9].Name)
+	if ret[5].Name != "server_information" {
+		t.Errorf("The name %s is not expected", ret[5].Name)
 	}
 
 }
@@ -445,7 +499,7 @@ func TestGetSmbStatisticsNameWithSpaces(t *testing.T) {
 		t.Errorf("The number of resturn values %d was not expected", len(ret))
 	}
 
-	if ret[9].Name != "server_information" {
+	if ret[5].Name != "server_information" {
 		t.Errorf("The name %s is not expected", ret[9].Name)
 	}
 
