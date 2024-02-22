@@ -43,6 +43,7 @@ func handleComandlineOptions() {
 	flag.BoolVar(&params.DoNotExportClient, "not-expose-client-data", false, "Set to 'true', no details about the connected clients will be exported")
 	flag.BoolVar(&params.DoNotExportUser, "not-expose-user-data", false, "Set to 'true', no details about the connected users will be exported")
 	flag.BoolVar(&params.DoNotExportPid, "not-expose-pid-data", false, "Set to 'true', no process IDs will be exported")
+	flag.BoolVar(&params.DoNotExportShareDetails, "not-expose-share-details", false, "Set to 'true', no details about the shares will be exported")
 
 	// Overwrite the std Usage function with some custom stuff
 	flag.Usage = customHelpMessage

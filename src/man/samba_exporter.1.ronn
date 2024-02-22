@@ -47,6 +47,9 @@ You might want to use one of the following optional parameters.
   * `-not-expose-pid-data`
         Set to `true`, no process IDs will be exported
 
+  * `-not-expose-share-details`
+        Set to 'true', no details about the shares will be exported
+        
   * `-print-version`:
     With this flag the program will only print it's version and exit
 

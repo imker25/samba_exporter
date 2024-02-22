@@ -23,6 +23,8 @@ ARGS='-web.listen-address=127.0.0.1:9922'
 #         Set to 'true', no details about the used encryption or signing will be exported
 #   -not-expose-pid-data
 #         Set to 'true', no process IDs will be exported
+#   -not-expose-share-details
+#         Set to 'true', no details about the shares will be exported
 #   -not-expose-user-data
 #         Set to 'true', no details about the connected users will be exported
 #   -print-version

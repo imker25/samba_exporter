@@ -139,7 +139,7 @@ func TestSetMetricsFromResponseNameWithSpaces(t *testing.T) {
 }
 
 func TestSetMetricsFromResponseNoPid(t *testing.T) {
-	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{false, false, false, true}
+	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{false, false, false, true, false}
 	expectedDescChanels := 38
 	expectedMetChanels := 47
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
@@ -162,7 +162,7 @@ func TestSetMetricsFromResponseNoPid(t *testing.T) {
 }
 
 func TestSetMetricsFromResponseNoUser(t *testing.T) {
-	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{false, true, false, false}
+	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{false, true, false, false, false}
 	expectedDescChanels := 38
 	expectedMetChanels := 57
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
@@ -185,7 +185,7 @@ func TestSetMetricsFromResponseNoUser(t *testing.T) {
 }
 
 func TestSetMetricsFromResponseNoClient(t *testing.T) {
-	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{true, false, false, false}
+	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{true, false, false, false, false}
 	expectedDescChanels := 38
 	expectedMetChanels := 53
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
@@ -208,7 +208,7 @@ func TestSetMetricsFromResponseNoClient(t *testing.T) {
 }
 
 func TestSetMetricsFromResponseCluster(t *testing.T) {
-	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{true, false, false, false}
+	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{true, false, false, false, false}
 	expectedDescChanels := 42
 	expectedMetChanels := 53
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
@@ -231,7 +231,7 @@ func TestSetMetricsFromResponseCluster(t *testing.T) {
 }
 
 func TestSetMetricsFromResponseNoShare(t *testing.T) {
-	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{false, false, true, false}
+	exportSettings := statisticsGenerator.StatisticsGeneratorSettings{false, false, true, false, false}
 	expectedDescChanels := 38
 	expectedMetChanels := 62
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)

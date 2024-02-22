@@ -22,10 +22,11 @@ type SmbStatisticsNumeric struct {
 }
 
 type StatisticsGeneratorSettings struct {
-	DoNotExportClient     bool
-	DoNotExportUser       bool
-	DoNotExportEncryption bool
-	DoNotExportPid        bool
+	DoNotExportClient       bool
+	DoNotExportUser         bool
+	DoNotExportEncryption   bool
+	DoNotExportPid          bool
+	DoNotExportShareDetails bool
 }
 
 type lockCreationEntry struct {
