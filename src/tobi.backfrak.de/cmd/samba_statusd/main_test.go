@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"tobi.backfrak.de/internal/commonbl"
+	"tobi.backfrak.de/internal/testhelper"
 )
 
 var mMutext sync.Mutex = sync.Mutex{}
@@ -88,7 +89,8 @@ func TestHandleRequest(t *testing.T) {
 	oldParmas := params
 	defer func() { params = oldParmas }()
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger = *commonbl.NewLogger(true)
+	testLogger := testhelper.NewTestLogger(true)
+	logger = testLogger
 
 	errNil := handleRequest(responseHandler,
 		commonbl.GetRequest(commonbl.LOCK_REQUEST, 12),
@@ -136,6 +138,10 @@ func TestHandleRequest(t *testing.T) {
 	if errHandle != errRequest {
 		t.Errorf("Got error '%s', but expected error '%s'", errHandle.Error(), errRequest.Error())
 	}
+
+	if testLogger.GetOutputCount() != 4 {
+		t.Errorf("Got '%d' output messages but expected '4'", testLogger.GetOutputCount())
+	}
 }
 
 func TestGoHandleRequestQueue(t *testing.T) {
@@ -147,7 +153,8 @@ func TestGoHandleRequestQueue(t *testing.T) {
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	requestQueue = *commonbl.NewStringQueue()
 	params.Test = true
-	logger = *commonbl.NewLogger(true)
+	testLogger := testhelper.NewTestLogger(true)
+	logger = testLogger
 
 	requestQueue.Push(commonbl.GetRequest(commonbl.LOCK_REQUEST, 0))
 	goHandleRequestQueue(responseHandler)
@@ -166,6 +173,10 @@ func TestGoHandleRequestQueue(t *testing.T) {
 
 	requestQueue.Push("")
 	goHandleRequestQueue(responseHandler)
+
+	if testLogger.GetOutputCount() != 5 {
+		t.Errorf("Got '%d' output messages but expected '5'", testLogger.GetOutputCount())
+	}
 }
 
 func TestMainWithHelp(t *testing.T) {

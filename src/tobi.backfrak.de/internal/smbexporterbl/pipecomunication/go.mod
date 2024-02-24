@@ -8,3 +8,6 @@ replace tobi.backfrak.de/internal/smbexporterbl/smbstatusreader v0.0.0 => ../smb
 
 require tobi.backfrak.de/internal/smbstatusout v0.0.0
 replace tobi.backfrak.de/internal/smbstatusout v0.0.0 => ../../smbstatusout
+
+require tobi.backfrak.de/internal/testhelper v0.0.0
+replace tobi.backfrak.de/internal/testhelper v0.0.0 => ../../../internal/testhelper

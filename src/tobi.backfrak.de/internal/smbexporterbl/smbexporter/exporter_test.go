@@ -15,6 +15,7 @@ import (
 	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 	"tobi.backfrak.de/internal/smbexporterbl/statisticsGenerator"
 	"tobi.backfrak.de/internal/smbstatusout"
+	"tobi.backfrak.de/internal/testhelper"
 )
 
 func getNewStatisticGenSettings() statisticsGenerator.StatisticsGeneratorSettings {
@@ -24,7 +25,7 @@ func getNewStatisticGenSettings() statisticsGenerator.StatisticsGeneratorSetting
 func TestNewSambaExporter(t *testing.T) {
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	logger := *testhelper.NewTestLogger(true)
 	exporter := NewSambaExporter(&requestHandler, &responseHandler, &logger, "0.0.0", 5, getNewStatisticGenSettings())
 
 	if exporter.RequestHandler.PipeType != commonbl.RequestPipe {
@@ -39,12 +40,16 @@ func TestNewSambaExporter(t *testing.T) {
 		t.Errorf("exporter.Descriptions are nil")
 	}
 
-	if logger.Verbose != exporter.Logger.Verbose {
+	if logger.Verbose != exporter.Logger.GetVerbose() {
 		t.Errorf("The exporter uses the wrong logger")
 	}
 
 	if exporter.Version != "0.0.0" {
 		t.Errorf("The Version \"%s\" is not expected", exporter.Version)
+	}
+
+	if logger.GetOutputCount() != 0 {
+		t.Errorf("The OutputCount '%d' is not the expected '0'", logger.GetOutputCount())
 	}
 }
 
@@ -52,7 +57,7 @@ func TestSetDescriptionsFromResponse(t *testing.T) {
 	expectedChanels := 38
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	logger := *testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockDataNoData, &logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataOneLine, &logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataOneLine, &logger)
@@ -71,6 +76,10 @@ func TestSetDescriptionsFromResponse(t *testing.T) {
 			t.Errorf("Got a nil description for a metric")
 		}
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestSetMetricsFromResponse(t *testing.T) {
@@ -78,7 +87,7 @@ func TestSetMetricsFromResponse(t *testing.T) {
 	expectedMetChanels := 65
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -101,6 +110,9 @@ func TestSetMetricsFromResponse(t *testing.T) {
 		}
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestSetMetricsFromResponseNameWithSpaces(t *testing.T) {
@@ -108,7 +120,7 @@ func TestSetMetricsFromResponseNameWithSpaces(t *testing.T) {
 	expectedMetChanels := 61
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4LinesWithSpacesInName, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -136,6 +148,10 @@ func TestSetMetricsFromResponseNameWithSpaces(t *testing.T) {
 	if len(metrics) != expectedMetChanels {
 		t.Errorf("Got '%d' metrics but expected '%d'", len(metrics), expectedMetChanels)
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestSetMetricsFromResponseNoPid(t *testing.T) {
@@ -144,7 +160,7 @@ func TestSetMetricsFromResponseNoPid(t *testing.T) {
 	expectedMetChanels := 47
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -157,6 +173,10 @@ func TestSetMetricsFromResponseNoPid(t *testing.T) {
 
 	if len(chMet) != expectedMetChanels {
 		t.Errorf("Got %d metric channels, but expected %d", len(chMet), expectedMetChanels)
+	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
 	}
 
 }
@@ -167,7 +187,7 @@ func TestSetMetricsFromResponseNoUser(t *testing.T) {
 	expectedMetChanels := 57
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -180,6 +200,10 @@ func TestSetMetricsFromResponseNoUser(t *testing.T) {
 
 	if len(chMet) != expectedMetChanels {
 		t.Errorf("Got %d metric channels, but expected %d", len(chMet), expectedMetChanels)
+	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
 	}
 
 }
@@ -190,7 +214,7 @@ func TestSetMetricsFromResponseNoShareDetails(t *testing.T) {
 	expectedMetChanels := 53
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -203,6 +227,10 @@ func TestSetMetricsFromResponseNoShareDetails(t *testing.T) {
 
 	if len(chMet) != expectedMetChanels {
 		t.Errorf("Got %d metric channels, but expected %d", len(chMet), expectedMetChanels)
+	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
 	}
 
 }
@@ -213,7 +241,7 @@ func TestSetMetricsFromResponseNoClient(t *testing.T) {
 	expectedMetChanels := 53
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -228,6 +256,9 @@ func TestSetMetricsFromResponseNoClient(t *testing.T) {
 		t.Errorf("Got %d metric channels, but expected %d", len(chMet), expectedMetChanels)
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestSetMetricsFromResponseCluster(t *testing.T) {
@@ -236,7 +267,7 @@ func TestSetMetricsFromResponseCluster(t *testing.T) {
 	expectedMetChanels := 53
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockDataCluster, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataCluster, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataCluster, logger)
@@ -251,6 +282,9 @@ func TestSetMetricsFromResponseCluster(t *testing.T) {
 		t.Errorf("Got %d metric channels, but expected %d", len(chMet), expectedMetChanels)
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestSetMetricsFromResponseNoShare(t *testing.T) {
@@ -259,7 +293,7 @@ func TestSetMetricsFromResponseNoShare(t *testing.T) {
 	expectedMetChanels := 62
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -274,6 +308,9 @@ func TestSetMetricsFromResponseNoShare(t *testing.T) {
 		t.Errorf("Got %d metric channels, but expected %d", len(chMet), expectedMetChanels)
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestSetMetricsFromEmptyResponse1(t *testing.T) {
@@ -281,7 +318,7 @@ func TestSetMetricsFromEmptyResponse1(t *testing.T) {
 	expectedMetChanels := 19
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines, logger)
@@ -296,6 +333,9 @@ func TestSetMetricsFromEmptyResponse1(t *testing.T) {
 		t.Errorf("Got %d metric chanels, but expected %d", len(chMet), expectedMetChanels)
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestSetMetricsFromEmptyResponse2(t *testing.T) {
@@ -303,7 +343,7 @@ func TestSetMetricsFromEmptyResponse2(t *testing.T) {
 	expectedMetChanels := 19
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockDataEmpty, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataEmpty, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataEmpty, logger)
@@ -318,12 +358,15 @@ func TestSetMetricsFromEmptyResponse2(t *testing.T) {
 		t.Errorf("Got %d metric chanels, but expected %d", len(chMet), expectedMetChanels)
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestSetGaugeDescriptionNoLabel(t *testing.T) {
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	help := "My help"
 	name := "my_name"
 	ch := make(chan *prometheus.Desc, 1)
@@ -346,12 +389,15 @@ func TestSetGaugeDescriptionNoLabel(t *testing.T) {
 		t.Errorf("The description does not contain the name")
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestSetGaugeDescriptionWithLabel(t *testing.T) {
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	help := "My help"
 	name := "my_name"
 	labels := map[string]string{"key1": "value1", "key2": "value2"}
@@ -381,12 +427,15 @@ func TestSetGaugeDescriptionWithLabel(t *testing.T) {
 		}
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestSetGaugeIntMetricNoLabel(t *testing.T) {
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	help := "My help"
 	name := "my_name"
 	chDesc := make(chan *prometheus.Desc, 1)
@@ -408,12 +457,16 @@ func TestSetGaugeIntMetricNoLabel(t *testing.T) {
 	if met.Desc().String() != desc.String() {
 		t.Errorf("The metrics description is not the expected")
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestSetGaugeIntMetricNoDescription(t *testing.T) {
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 	name := "my_name"
 	chMet := make(chan prometheus.Metric, 1)
@@ -423,12 +476,19 @@ func TestSetGaugeIntMetricNoDescription(t *testing.T) {
 		t.Errorf("Got metric from the chanel but expected none")
 	}
 
+	if logger.GetErrorCount() != 1 {
+		t.Errorf("The ErrorCount '%d' is not the expected '1'", logger.GetErrorCount())
+	}
+
+	if logger.WrittenErrors[0] != "Error: No description found for my_name" {
+		t.Errorf("The error message '%s' is not the expected 'Error: No description found for my_name'", logger.WrittenErrors[0])
+	}
 }
 
 func TestSetGaugeIntMetricWithLabel(t *testing.T) {
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	help := "My help"
 	name := "my_name"
 	labels := map[string]string{"key1": "value1", "key2": "value2"}
@@ -451,12 +511,16 @@ func TestSetGaugeIntMetricWithLabel(t *testing.T) {
 	if met.Desc().String() != desc.String() {
 		t.Errorf("The metrics description is not the expected")
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestSetGaugeIntMetricWithLabelNoDescription(t *testing.T) {
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	labels := map[string]string{"key1": "value1", "key2": "value2"}
 	exporter := NewSambaExporter(requestHandler, responseHandler, logger, "0.0.0", 5, getNewStatisticGenSettings())
 	name := "my_name"
@@ -467,4 +531,11 @@ func TestSetGaugeIntMetricWithLabelNoDescription(t *testing.T) {
 		t.Errorf("Got metric from the chanel but expected none")
 	}
 
+	if logger.GetErrorCount() != 1 {
+		t.Errorf("The ErrorCount '%d' is not the expected '1'", logger.GetErrorCount())
+	}
+
+	if logger.WrittenErrors[0] != "Error: No description found for metric 'my_name'" {
+		t.Errorf("The error message '%s' is not the expected 'Error: No description found for metric 'my_name''", logger.WrittenErrors[0])
+	}
 }

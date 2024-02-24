@@ -11,13 +11,13 @@ import (
 
 	"strings"
 
-	"tobi.backfrak.de/internal/commonbl"
 	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
 	"tobi.backfrak.de/internal/smbstatusout"
+	"tobi.backfrak.de/internal/testhelper"
 )
 
 func TestGetSmbStatisticsNoLockData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockDataNoData, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataOneLine, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataOneLine, logger)
@@ -31,10 +31,14 @@ func TestGetSmbStatisticsNoLockData(t *testing.T) {
 	if ret[0].Name != "individual_user_count" || ret[0].Value != 1.0 {
 		t.Errorf("The individual_user_count does not match as expected")
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetSmbStatisticsClusterData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockDataCluster, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataCluster, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataCluster, logger)
@@ -57,6 +61,9 @@ func TestGetSmbStatisticsClusterData(t *testing.T) {
 		t.Errorf("The cluster_node_count does not match as expected")
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func getNewStatisticGenSettings() StatisticsGeneratorSettings {
@@ -64,7 +71,7 @@ func getNewStatisticGenSettings() StatisticsGeneratorSettings {
 }
 
 func TestGetSmbStatisticsEmptyData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines, logger)
@@ -111,10 +118,13 @@ func TestGetSmbStatisticsEmptyData(t *testing.T) {
 		t.Errorf("The client \"%s\" is not expected", value)
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetSmbStatisticsEmptyRespomse(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockDataEmpty, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareDataEmpty, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessDataEmpty, logger)
@@ -161,10 +171,13 @@ func TestGetSmbStatisticsEmptyRespomse(t *testing.T) {
 		t.Errorf("The client \"%s\" is not expected", value)
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData0Line, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData0Line, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData0Lines, logger)
@@ -181,10 +194,14 @@ func TestGetSmbStatisticsEmptyResponseLabels(t *testing.T) {
 	if ret[6].Labels["share"] != "" {
 		t.Errorf("The Labels[\"share\"] %s is not expected", ret[5].Labels["share"])
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetSmbStatistics(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -342,10 +359,14 @@ func TestGetSmbStatistics(t *testing.T) {
 	if ret[32].Value <= 0 {
 		t.Errorf("The 'lock_created_since_seconds' is '%f', it's expected grater then '0'", ret[32].Value)
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetSmbStatisticsNotExportEncryption(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -368,10 +389,14 @@ func TestGetSmbStatisticsNotExportEncryption(t *testing.T) {
 	if !strings.HasPrefix(value, "192.168.1.") {
 		t.Errorf("The value %s is not expected", value)
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetSmbStatisticsNotExportClient(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -386,10 +411,13 @@ func TestGetSmbStatisticsNotExportClient(t *testing.T) {
 		t.Errorf("The name %s is not expected", ret[12].Name)
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetSmbStatisticsNotExportUser(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -413,10 +441,13 @@ func TestGetSmbStatisticsNotExportUser(t *testing.T) {
 		t.Errorf("The value %s is not expected", value)
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetSmbStatisticsNotExportShare(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -440,10 +471,13 @@ func TestGetSmbStatisticsNotExportShare(t *testing.T) {
 		t.Errorf("The value %s is not expected", value)
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetSmbStatisticsNotExportShareAndUser(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -467,10 +501,13 @@ func TestGetSmbStatisticsNotExportShareAndUser(t *testing.T) {
 		t.Errorf("The value %s is not expected", value)
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetSmbStatisticsAllNotExportFlags(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4Lines, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -485,10 +522,13 @@ func TestGetSmbStatisticsAllNotExportFlags(t *testing.T) {
 		t.Errorf("The name %s is not expected", ret[5].Name)
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetSmbStatisticsNameWithSpaces(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	locks := smbstatusreader.GetLockData(smbstatusout.LockData4Lines, logger)
 	shares := smbstatusreader.GetShareData(smbstatusout.ShareData4LinesWithSpacesInName, logger)
 	processes := smbstatusreader.GetProcessData(smbstatusout.ProcessData4Lines, logger)
@@ -509,6 +549,10 @@ func TestGetSmbStatisticsNameWithSpaces(t *testing.T) {
 
 	if ret[12].Value != 4.0 {
 		t.Errorf("The value '%f' is not the expected '4.0'", ret[12].Value)
+	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
 	}
 }
 

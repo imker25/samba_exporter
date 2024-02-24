@@ -17,10 +17,11 @@ import (
 
 	"tobi.backfrak.de/internal/commonbl"
 	"tobi.backfrak.de/internal/smbstatusout"
+	"tobi.backfrak.de/internal/testhelper"
 )
 
 func TestStringerLockData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	oneLock := GetLockData(smbstatusout.LockDataOneLine, logger)[0]
 
 	lockStr := oneLock.String()
@@ -46,10 +47,13 @@ func TestStringerLockData(t *testing.T) {
 		t.Errorf("The string does not contain the expected sub string")
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestStringerShareData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	oneShare := GetShareData(smbstatusout.ShareDataOneLine, logger)[0]
 
 	shareStr := oneShare.String()
@@ -74,10 +78,13 @@ func TestStringerShareData(t *testing.T) {
 		t.Errorf("The string does contain the expected sub string")
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestStringerProcessData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	oneProcess := GetProcessData(smbstatusout.ProcessDataOneLine, logger)[0]
 
 	shareStr := oneProcess.String()
@@ -101,10 +108,14 @@ func TestStringerProcessData(t *testing.T) {
 	if strings.Contains(shareStr, "ClusterNodeId: 3;") == false {
 		t.Errorf("The string does contain the expected sub string")
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetLockDataOneLine(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	oneEntry := GetLockData(smbstatusout.LockDataOneLine, logger)
 
 	if len(oneEntry) != 1 {
@@ -148,10 +159,14 @@ func TestGetLockDataOneLine(t *testing.T) {
 	if oneEntry[0].Time != expectDate {
 		t.Errorf("The Time %s is not the expected Sun May 16 12:07:02 2021", oneEntry[0].Time)
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetLockData4Line(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entryList := GetLockData(smbstatusout.LockData4Lines, logger)
 
 	if len(entryList) != 4 {
@@ -175,10 +190,14 @@ func TestGetLockData4Line(t *testing.T) {
 	if entryList[3].ClusterNodeId != -1 {
 		t.Errorf("The SharePath %d is not the expected '-1'", entryList[3].ClusterNodeId)
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetLockDataFileNameWithSpaces(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entryList := GetLockData(smbstatusout.LockData1LineWithSpaces, logger)
 
 	if len(entryList) != 1 {
@@ -193,10 +212,13 @@ func TestGetLockDataFileNameWithSpaces(t *testing.T) {
 		t.Errorf("The Name '%s' is not the expected 'my test file.txt'", entryList[0].Name)
 	}
 
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetLockDataInvalidResponse(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entryList := GetLockData(smbstatusout.LockDataInvadlidResponse, logger)
 
 	if len(entryList) != 3 {
@@ -211,10 +233,17 @@ func TestGetLockDataInvalidResponse(t *testing.T) {
 		t.Errorf("The SharePath '%s' is not the expected '/usr/share/music'", entryList[2].SharePath)
 	}
 
+	if logger.GetErrorCount() != 1 {
+		t.Errorf("The ErrorCount '%d' is not the expected '1'", logger.GetErrorCount())
+	}
+
+	if !strings.HasPrefix(logger.WrittenErrors[0], "Error: Not able to parse the time stamp in following LockData") {
+		t.Errorf("The error message '%s' is not the expected 'Error: Not able to parse the time stamp in following LockData ...'", logger.WrittenErrors[0])
+	}
 }
 
 func TestGetLockDataCluster(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entryList := GetLockData(smbstatusout.LockDataCluster, logger)
 
 	if len(entryList) != 7 {
@@ -244,55 +273,79 @@ func TestGetLockDataCluster(t *testing.T) {
 	if entryList[6].Time.Format(time.ANSIC) != "Tue Apr  4 14:13:28 2023" {
 		t.Errorf("The time %s is not expected", entryList[6].Time.Format(time.ANSIC))
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetLockDataWrongInput(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entryList := GetLockData(smbstatusout.ProcessData4Lines, logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetLockData0Input(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entryList := GetLockData(smbstatusout.LockData0Line, logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetLockDataNoData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entryList := GetLockData(smbstatusout.LockDataNoData, logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetLockDataNoDataV4_17_7(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entryList := GetLockData(smbstatusout.LockDataNoDataV4_17_7, logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetLockDataEmpty(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entryList := GetLockData(smbstatusout.LockDataEmpty, logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetShareDataDifferentTimeStampLines(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entryList := GetShareData(smbstatusout.ShareDataDifferentTimeStampLines, logger)
 
 	if len(entryList) != 3 {
@@ -306,10 +359,14 @@ func TestGetShareDataDifferentTimeStampLines(t *testing.T) {
 	if entryList[2].ConnectedAt.Format(time.ANSIC) != "Mon Sep 19 18:34:17 2022" {
 		t.Errorf("The time %s is not expected", entryList[2].ConnectedAt.Format(time.ANSIC))
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetShareDataOneLine(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	oneEntry := GetShareData(smbstatusout.ShareDataOneLine, logger)
 
 	if len(oneEntry) != 1 {
@@ -339,10 +396,14 @@ func TestGetShareDataOneLine(t *testing.T) {
 	if oneEntry[0].ConnectedAt.Format(time.ANSIC) != "Sun May 16 11:55:36 2021" {
 		t.Errorf("The ConnectedAt %s is not the expected Sun May 16 11:55:36 2021", oneEntry[0].ConnectedAt.Format(time.ANSIC))
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetShareData4Line(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entries := GetShareData(smbstatusout.ShareData4Lines, logger)
 
 	if len(entries) != 4 {
@@ -368,10 +429,14 @@ func TestGetShareData4Line(t *testing.T) {
 	if entries[3].ClusterNodeId != -1 {
 		t.Errorf("The ClusterNodeId %d is not the expected '-1'", entries[3].ClusterNodeId)
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetShareDataInvlaideResponse(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entries := GetShareData(smbstatusout.ShareData4LinesInvalide, logger)
 
 	if len(entries) != 3 {
@@ -382,10 +447,17 @@ func TestGetShareDataInvlaideResponse(t *testing.T) {
 		t.Errorf("The ConnectedAt '%s' is not the expected 'Mon Sep 19 18:34:17 2022'", entries[2].ConnectedAt.Format(time.ANSIC))
 	}
 
+	if logger.GetErrorCount() != 1 {
+		t.Errorf("The ErrorCount '%d' is not the expected '1'", logger.GetErrorCount())
+	}
+
+	if logger.WrittenErrors[0] != "strconv.Atoi: parsing \"zyx\": invalid syntax - while getting ShareData PID (normal without :)" {
+		t.Errorf("The error message '%s' is not the expected 'strconv.Atoi: parsing \"zyx\": invalid syntax - while getting ShareData PID (normal without :)'", logger.WrittenErrors[0])
+	}
 }
 
 func TestGetShareDataNamesWithSpaces(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entries := GetShareData(smbstatusout.ShareData4LinesWithSpacesInName, logger)
 
 	if len(entries) != 4 {
@@ -427,10 +499,14 @@ func TestGetShareDataNamesWithSpaces(t *testing.T) {
 	if entries[3].ClusterNodeId != -1 {
 		t.Errorf("The ClusterNodeId %d is not the expected '-1'", entries[3].ClusterNodeId)
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetShareDataCluster(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entries := GetShareData(smbstatusout.ShareDataCluster, logger)
 
 	if len(entries) != 16 {
@@ -460,28 +536,40 @@ func TestGetShareDataCluster(t *testing.T) {
 	if entries[3].ClusterNodeId != 1 {
 		t.Errorf("Got %d entries[3].ClusterNodeId, expected '1'", entries[3].ClusterNodeId)
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetShareDataWrongData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entries := GetShareData(smbstatusout.LockData4Lines, logger)
 
 	if len(entries) != 0 {
 		t.Errorf("Got %d entries, but expected none", len(entries))
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetShareData0Input(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entryList := GetShareData(smbstatusout.ShareData0Line, logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetProcessDataOneLine(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	oneProcess := GetProcessData(smbstatusout.ProcessDataOneLine, logger)
 
 	if len(oneProcess) != 1 {
@@ -515,10 +603,14 @@ func TestGetProcessDataOneLine(t *testing.T) {
 	if oneProcess[0].Signing != "partial(AES-128-CMAC)" {
 		t.Errorf("The Signing \"%s\" is not the expected \"partial(AES-128-CMAC)\"", oneProcess[0].Signing)
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetProcessData4Line(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	enties := GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
 	if len(enties) != 4 {
@@ -549,10 +641,14 @@ func TestGetProcessData4Line(t *testing.T) {
 			t.Errorf("The SambaVersion \"%s\" is not expected", entry.SambaVersion)
 		}
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetProcessDataCluster(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	enties := GetProcessData(smbstatusout.ProcessDataCluster, logger)
 
 	if len(enties) != 7 {
@@ -576,52 +672,80 @@ func TestGetProcessDataCluster(t *testing.T) {
 			t.Errorf("The SambaVersion \"%s\" is not expected", entry.SambaVersion)
 		}
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetProcessDataWrongData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	enties := GetProcessData(smbstatusout.LockData4Lines, logger)
 
 	if len(enties) != 0 {
 		t.Errorf("Got %d entries, but expected none", len(enties))
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetProcessData0Input(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entryList := GetProcessData(smbstatusout.ProcessData0Lines, logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetPsData0Input(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	entryList := GetPsData("", logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
 	}
+
+	if logger.GetErrorCount() != 1 {
+		t.Errorf("The ErrorCount '%d' is not the expected '1'", logger.GetErrorCount())
+	}
+
+	if logger.WrittenErrors[0] != "unexpected end of JSON input - while converting PsData json" {
+		t.Errorf("The error message '%s' is not the expected 'unexpected end of JSON input - while converting PsData json'", logger.WrittenErrors[0])
+	}
 }
 
 func TestGetPsDataEmptyInput(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	jsonData := commonbl.TestPsResponseEmpty()
 	entryList := GetPsData(string(jsonData), logger)
 
 	if len(entryList) != 0 {
 		t.Errorf("Got entries when reading wrong input")
 	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
+	}
 }
 
 func TestGetPsDataTwoPids(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := testhelper.NewTestLogger(true)
 	jsonData := commonbl.TestPsResponse()
 	entryList := GetPsData(string(jsonData), logger)
 
 	if len(entryList) != 2 {
 		t.Errorf("Got %d entries but expected 2", len(entryList))
+	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("The ErrorCount '%d' is not the expected '0'", logger.GetErrorCount())
 	}
 }
 

@@ -10,20 +10,47 @@ import (
 	"os"
 )
 
-// Logger - A "class" with log functions
-type Logger struct {
+// Logger - Interface for logger implementations
+type Logger interface {
+	// GetVerbose - Tell if logger is verbose or not
+	GetVerbose() bool
+
+	// WriteInformation - Write a Info message to Stdout, will be prefixed with "Information: "
+	WriteInformation(message string)
+
+	// WriteVerbose - Write a Verbose message to Stdout. Message will be written only if logger.Verbose is true.
+	// The message will be prefixed with "Verbose :"
+	WriteVerbose(message string)
+
+	// WriteErrorMessage - Write the message to Stderr. The Message will be prefixed with "Error: "
+	WriteErrorMessage(message string)
+
+	// WriteError - Writes the err.Error() output to Stderr
+	WriteError(err error)
+
+	// WriteError - Writes the 'err.Error() - addition' output to Stderr
+	WriteErrorWithAddition(err error, addition string)
+}
+
+// ConsoleLogger - A "class" with log functions
+type ConsoleLogger struct {
 	Verbose bool
 }
 
 // Get a new instance of the Logger
-func NewLogger(verbose bool) *Logger {
-	ret := Logger{verbose}
+func NewConsoleLogger(verbose bool) *ConsoleLogger {
+	ret := ConsoleLogger{verbose}
 
 	return &ret
 }
 
+// GetVerbose - Tell if logger is verbose or not
+func (logger *ConsoleLogger) GetVerbose() bool {
+	return logger.Verbose
+}
+
 // WriteInformation - Write a Info message to Stdout, will be prefixed with "Information: "
-func (logger *Logger) WriteInformation(message string) {
+func (logger *ConsoleLogger) WriteInformation(message string) {
 	fmt.Fprintln(os.Stdout, fmt.Sprintf("Information: %s", message))
 
 	return
@@ -31,7 +58,7 @@ func (logger *Logger) WriteInformation(message string) {
 
 // WriteVerbose - Write a Verbose message to Stdout. Message will be written only if logger.Verbose is true.
 // The message will be prefixed with "Verbose :"
-func (logger *Logger) WriteVerbose(message string) {
+func (logger *ConsoleLogger) WriteVerbose(message string) {
 	if logger.Verbose {
 		fmt.Fprintln(os.Stdout, fmt.Sprintf("Verbose: %s", message))
 	}
@@ -40,16 +67,16 @@ func (logger *Logger) WriteVerbose(message string) {
 }
 
 // WriteErrorMessage - Write the message to Stderr. The Message will be prefixed with "Error: "
-func (logger *Logger) WriteErrorMessage(message string) {
+func (logger *ConsoleLogger) WriteErrorMessage(message string) {
 	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: %s", message))
 }
 
 // WriteError - Writes the err.Error() output to Stderr
-func (logger *Logger) WriteError(err error) {
+func (logger *ConsoleLogger) WriteError(err error) {
 	fmt.Fprintln(os.Stderr, err.Error())
 }
 
 // WriteError - Writes the 'err.Error() - addition' output to Stderr
-func (logger *Logger) WriteErrorWithAddition(err error, addition string) {
+func (logger *ConsoleLogger) WriteErrorWithAddition(err error, addition string) {
 	fmt.Fprintln(os.Stderr, fmt.Sprintf("%s - %s", err.Error(), addition))
 }

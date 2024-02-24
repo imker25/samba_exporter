@@ -14,6 +14,7 @@ import (
 	"tobi.backfrak.de/internal/commonbl"
 	"tobi.backfrak.de/internal/smbexporterbl/pipecomunication"
 	"tobi.backfrak.de/internal/smbexporterbl/smbstatusreader"
+	"tobi.backfrak.de/internal/testhelper"
 )
 
 var mMutext sync.Mutex = sync.Mutex{}
@@ -38,7 +39,8 @@ func TestTestPipeMode(t *testing.T) {
 	params.RequestTimeOut = 1
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger = *commonbl.NewLogger(true)
+	testLogger := testhelper.NewTestLogger(true)
+	logger = testLogger
 
 	err := testPipeMode(requestHandler, responseHandler)
 	if err == nil {
@@ -52,6 +54,9 @@ func TestTestPipeMode(t *testing.T) {
 		t.Errorf("Got error of type '%s', but expected type '*pipecomunication.SmbStatusTimeOutError'", err)
 	}
 
+	if testLogger.GetOutputCount() != 4 {
+		t.Errorf("Got '%d' output messages but expected '4'", testLogger.GetOutputCount())
+	}
 }
 
 func TestHandleTestResponse(t *testing.T) {
@@ -61,7 +66,8 @@ func TestHandleTestResponse(t *testing.T) {
 	oldParmas := params
 	defer func() { params = oldParmas }()
 
-	logger := commonbl.NewLogger(true)
+	testLogger := testhelper.NewTestLogger(true)
+	logger = testLogger
 	shares := smbstatusreader.GetShareData(commonbl.TestShareResponse, logger)
 	processes := smbstatusreader.GetProcessData(commonbl.TestProcessResponse, logger)
 	locks := smbstatusreader.GetLockData(commonbl.TestLockResponse, logger)
@@ -69,6 +75,9 @@ func TestHandleTestResponse(t *testing.T) {
 
 	handleTestResponse(processes, shares, locks, psData)
 
+	if testLogger.GetOutputCount() != 1 {
+		t.Errorf("Got '%d' output messages but expected '1'", testLogger.GetOutputCount())
+	}
 }
 
 func TestMainWithHelp(t *testing.T) {

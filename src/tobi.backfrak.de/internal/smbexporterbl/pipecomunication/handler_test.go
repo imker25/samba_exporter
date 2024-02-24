@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"tobi.backfrak.de/internal/commonbl"
+	"tobi.backfrak.de/internal/testhelper"
 )
 
 // Copyright 2021 by tobi@backfrak.de. All
@@ -16,7 +17,7 @@ import (
 func TestGetSambaStatusTimeout(t *testing.T) {
 	requestHandler := *commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger := *commonbl.NewLogger(true)
+	logger := *testhelper.NewTestLogger(true)
 	_, _, _, _, err := GetSambaStatus(&requestHandler, &responseHandler, &logger, 2)
 
 	if err == nil {
@@ -28,5 +29,9 @@ func TestGetSambaStatusTimeout(t *testing.T) {
 		fmt.Fprintln(os.Stdout, "OK")
 	default:
 		t.Errorf("Got error '%s' type, but expected '*SmbStatusTimeOutError'", err.Error())
+	}
+
+	if logger.GetOutputCount() != 3 {
+		t.Errorf("The OutputCount '%d' is not the expected '3'", logger.GetOutputCount())
 	}
 }

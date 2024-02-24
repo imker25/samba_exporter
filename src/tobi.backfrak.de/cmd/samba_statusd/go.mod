@@ -6,6 +6,9 @@ require tobi.backfrak.de/internal/commonbl v0.0.0
 
 replace tobi.backfrak.de/internal/commonbl v0.0.0 => ../../internal/commonbl
 
+require tobi.backfrak.de/internal/testhelper v0.0.0
+replace tobi.backfrak.de/internal/testhelper v0.0.0 => ../../internal/testhelper
+
 require tobi.backfrak.de/internal/smbstatusdbl v0.0.0
 
 replace tobi.backfrak.de/internal/smbstatusdbl v0.0.0 => ../../internal/smbstatusdbl

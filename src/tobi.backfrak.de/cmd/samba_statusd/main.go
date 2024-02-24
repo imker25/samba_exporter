@@ -48,7 +48,7 @@ func main() {
 func realMain() int {
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
-	logger = *commonbl.NewLogger(params.Verbose)
+	logger = commonbl.NewConsoleLogger(params.Verbose)
 	if params.Verbose {
 		args := ""
 		for _, arg := range os.Args {
