@@ -24,7 +24,7 @@ type smbResponse struct {
 }
 
 // GetSambaStatus - Get the output of all data tables from samba_statusd
-func GetSambaStatus(requestHandler *commonbl.PipeHandler, responseHandler *commonbl.PipeHandler, logger *commonbl.Logger, requestTimeOut int) ([]smbstatusreader.LockData, []smbstatusreader.ProcessData, []smbstatusreader.ShareData, []commonbl.PsUtilPidData, error) {
+func GetSambaStatus(requestHandler *commonbl.PipeHandler, responseHandler *commonbl.PipeHandler, logger *commonbl.ConsoleLogger, requestTimeOut int) ([]smbstatusreader.LockData, []smbstatusreader.ProcessData, []smbstatusreader.ShareData, []commonbl.PsUtilPidData, error) {
 	var processes []smbstatusreader.ProcessData
 	var shares []smbstatusreader.ShareData
 	var locks []smbstatusreader.LockData
@@ -76,31 +76,31 @@ func GetSambaStatus(requestHandler *commonbl.PipeHandler, responseHandler *commo
 	return locks, processes, shares, psdata, nil
 }
 
-func goGetProcessData(res string, logger *commonbl.Logger, c chan []smbstatusreader.ProcessData) {
+func goGetProcessData(res string, logger *commonbl.ConsoleLogger, c chan []smbstatusreader.ProcessData) {
 	processes := smbstatusreader.GetProcessData(res, logger)
 
 	c <- processes
 }
 
-func goGetShareData(res string, logger *commonbl.Logger, c chan []smbstatusreader.ShareData) {
+func goGetShareData(res string, logger *commonbl.ConsoleLogger, c chan []smbstatusreader.ShareData) {
 	shares := smbstatusreader.GetShareData(res, logger)
 
 	c <- shares
 }
 
-func goGetLockData(res string, logger *commonbl.Logger, c chan []smbstatusreader.LockData) {
+func goGetLockData(res string, logger *commonbl.ConsoleLogger, c chan []smbstatusreader.LockData) {
 	locks := smbstatusreader.GetLockData(res, logger)
 
 	c <- locks
 }
 
-func goGetPsData(res string, logger *commonbl.Logger, c chan []commonbl.PsUtilPidData) {
+func goGetPsData(res string, logger *commonbl.ConsoleLogger, c chan []commonbl.PsUtilPidData) {
 	locks := smbstatusreader.GetPsData(res, logger)
 
 	c <- locks
 }
 
-func getSmbStatusDataTimeOut(requestHandler *commonbl.PipeHandler, responseHandler *commonbl.PipeHandler, request commonbl.RequestType, logger *commonbl.Logger, requestTimeOut int) (string, error) {
+func getSmbStatusDataTimeOut(requestHandler *commonbl.PipeHandler, responseHandler *commonbl.PipeHandler, request commonbl.RequestType, logger *commonbl.ConsoleLogger, requestTimeOut int) (string, error) {
 	c := make(chan smbResponse, 1)
 	var data string
 
@@ -124,7 +124,7 @@ func getSmbStatusDataTimeOut(requestHandler *commonbl.PipeHandler, responseHandl
 	return data, nil
 }
 
-func goGetSmbStatusData(requestHandler *commonbl.PipeHandler, responseHandler *commonbl.PipeHandler, request commonbl.RequestType, logger *commonbl.Logger, c chan smbResponse) {
+func goGetSmbStatusData(requestHandler *commonbl.PipeHandler, responseHandler *commonbl.PipeHandler, request commonbl.RequestType, logger *commonbl.ConsoleLogger, c chan smbResponse) {
 	retStr, err := getSmbStatusData(requestHandler, responseHandler, request, logger)
 
 	ret := smbResponse{retStr, err}
@@ -132,7 +132,7 @@ func goGetSmbStatusData(requestHandler *commonbl.PipeHandler, responseHandler *c
 	c <- ret
 }
 
-func getSmbStatusData(requestHandler *commonbl.PipeHandler, responseHandler *commonbl.PipeHandler, request commonbl.RequestType, logger *commonbl.Logger) (string, error) {
+func getSmbStatusData(requestHandler *commonbl.PipeHandler, responseHandler *commonbl.PipeHandler, request commonbl.RequestType, logger *commonbl.ConsoleLogger) (string, error) {
 	// Ensure we run only one request per time on the pipes
 	requestMux.Lock()
 	defer requestMux.Unlock()

@@ -30,7 +30,7 @@ const Authors = "tobi@backfrak.de"
 var version = "undefined"
 
 // The logger used in the program
-var logger commonbl.Logger
+var logger commonbl.ConsoleLogger
 
 func main() {
 	handleComandlineOptions()
@@ -40,7 +40,7 @@ func main() {
 func realMain() int {
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
-	logger = *commonbl.NewLogger(params.Verbose)
+	logger = *commonbl.NewConsoleLogger(params.Verbose)
 
 	if !strings.HasPrefix(params.MetricsPath, "/") {
 		params.MetricsPath = fmt.Sprintf("/%s", params.MetricsPath)

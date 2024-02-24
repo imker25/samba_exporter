@@ -88,7 +88,7 @@ func TestHandleRequest(t *testing.T) {
 	oldParmas := params
 	defer func() { params = oldParmas }()
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger = *commonbl.NewLogger(true)
+	logger = *commonbl.NewConsoleLogger(true)
 
 	errNil := handleRequest(responseHandler,
 		commonbl.GetRequest(commonbl.LOCK_REQUEST, 12),
@@ -147,7 +147,7 @@ func TestGoHandleRequestQueue(t *testing.T) {
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
 	requestQueue = *commonbl.NewStringQueue()
 	params.Test = true
-	logger = *commonbl.NewLogger(true)
+	logger = *commonbl.NewConsoleLogger(true)
 
 	requestQueue.Push(commonbl.GetRequest(commonbl.LOCK_REQUEST, 0))
 	goHandleRequestQueue(responseHandler)

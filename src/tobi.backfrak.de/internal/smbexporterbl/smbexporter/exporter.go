@@ -23,7 +23,7 @@ const EXPORTER_LABEL_PREFIX = "samba"
 type SambaExporter struct {
 	RequestHandler              *commonbl.PipeHandler
 	ResponseHander              *commonbl.PipeHandler
-	Logger                      *commonbl.Logger
+	Logger                      *commonbl.ConsoleLogger
 	Version                     string
 	RequestTimeOut              int
 	StatisticsGeneratorSettings statisticsGenerator.StatisticsGeneratorSettings
@@ -36,7 +36,7 @@ type SambaExporter struct {
 }
 
 // Get a new instance of the SambaExporter
-func NewSambaExporter(requestHandler *commonbl.PipeHandler, responseHander *commonbl.PipeHandler, logger *commonbl.Logger, version string, requestTimeOut int, statisticsGeneratorSettings statisticsGenerator.StatisticsGeneratorSettings) *SambaExporter {
+func NewSambaExporter(requestHandler *commonbl.PipeHandler, responseHander *commonbl.PipeHandler, logger *commonbl.ConsoleLogger, version string, requestTimeOut int, statisticsGeneratorSettings statisticsGenerator.StatisticsGeneratorSettings) *SambaExporter {
 	var ret SambaExporter
 	ret.RequestHandler = requestHandler
 	ret.ResponseHander = responseHander

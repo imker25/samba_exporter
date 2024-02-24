@@ -31,7 +31,7 @@ var version = "undefined"
 type response func(*commonbl.PipeHandler, int) error
 
 // The logger for this programm
-var logger commonbl.Logger
+var logger commonbl.ConsoleLogger
 
 // Path to the smbstatus executable
 var smbstatusPath string
@@ -48,7 +48,7 @@ func main() {
 func realMain() int {
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
-	logger = *commonbl.NewLogger(params.Verbose)
+	logger = *commonbl.NewConsoleLogger(params.Verbose)
 	if params.Verbose {
 		args := ""
 		for _, arg := range os.Args {

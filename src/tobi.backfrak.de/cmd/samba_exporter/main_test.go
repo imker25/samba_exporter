@@ -38,7 +38,7 @@ func TestTestPipeMode(t *testing.T) {
 	params.RequestTimeOut = 1
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger = *commonbl.NewLogger(true)
+	logger = *commonbl.NewConsoleLogger(true)
 
 	err := testPipeMode(requestHandler, responseHandler)
 	if err == nil {
@@ -61,7 +61,7 @@ func TestHandleTestResponse(t *testing.T) {
 	oldParmas := params
 	defer func() { params = oldParmas }()
 
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	shares := smbstatusreader.GetShareData(commonbl.TestShareResponse, logger)
 	processes := smbstatusreader.GetProcessData(commonbl.TestProcessResponse, logger)
 	locks := smbstatusreader.GetLockData(commonbl.TestLockResponse, logger)

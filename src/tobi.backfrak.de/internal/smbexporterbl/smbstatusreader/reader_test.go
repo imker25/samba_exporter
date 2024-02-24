@@ -20,7 +20,7 @@ import (
 )
 
 func TestStringerLockData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	oneLock := GetLockData(smbstatusout.LockDataOneLine, logger)[0]
 
 	lockStr := oneLock.String()
@@ -49,7 +49,7 @@ func TestStringerLockData(t *testing.T) {
 }
 
 func TestStringerShareData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	oneShare := GetShareData(smbstatusout.ShareDataOneLine, logger)[0]
 
 	shareStr := oneShare.String()
@@ -77,7 +77,7 @@ func TestStringerShareData(t *testing.T) {
 }
 
 func TestStringerProcessData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	oneProcess := GetProcessData(smbstatusout.ProcessDataOneLine, logger)[0]
 
 	shareStr := oneProcess.String()
@@ -104,7 +104,7 @@ func TestStringerProcessData(t *testing.T) {
 }
 
 func TestGetLockDataOneLine(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	oneEntry := GetLockData(smbstatusout.LockDataOneLine, logger)
 
 	if len(oneEntry) != 1 {
@@ -151,7 +151,7 @@ func TestGetLockDataOneLine(t *testing.T) {
 }
 
 func TestGetLockData4Line(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entryList := GetLockData(smbstatusout.LockData4Lines, logger)
 
 	if len(entryList) != 4 {
@@ -178,7 +178,7 @@ func TestGetLockData4Line(t *testing.T) {
 }
 
 func TestGetLockDataFileNameWithSpaces(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entryList := GetLockData(smbstatusout.LockData1LineWithSpaces, logger)
 
 	if len(entryList) != 1 {
@@ -196,7 +196,7 @@ func TestGetLockDataFileNameWithSpaces(t *testing.T) {
 }
 
 func TestGetLockDataInvalidResponse(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entryList := GetLockData(smbstatusout.LockDataInvadlidResponse, logger)
 
 	if len(entryList) != 3 {
@@ -214,7 +214,7 @@ func TestGetLockDataInvalidResponse(t *testing.T) {
 }
 
 func TestGetLockDataCluster(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entryList := GetLockData(smbstatusout.LockDataCluster, logger)
 
 	if len(entryList) != 7 {
@@ -247,7 +247,7 @@ func TestGetLockDataCluster(t *testing.T) {
 }
 
 func TestGetLockDataWrongInput(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entryList := GetLockData(smbstatusout.ProcessData4Lines, logger)
 
 	if len(entryList) != 0 {
@@ -256,7 +256,7 @@ func TestGetLockDataWrongInput(t *testing.T) {
 }
 
 func TestGetLockData0Input(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entryList := GetLockData(smbstatusout.LockData0Line, logger)
 
 	if len(entryList) != 0 {
@@ -265,7 +265,7 @@ func TestGetLockData0Input(t *testing.T) {
 }
 
 func TestGetLockDataNoData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entryList := GetLockData(smbstatusout.LockDataNoData, logger)
 
 	if len(entryList) != 0 {
@@ -274,7 +274,7 @@ func TestGetLockDataNoData(t *testing.T) {
 }
 
 func TestGetLockDataNoDataV4_17_7(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entryList := GetLockData(smbstatusout.LockDataNoDataV4_17_7, logger)
 
 	if len(entryList) != 0 {
@@ -283,7 +283,7 @@ func TestGetLockDataNoDataV4_17_7(t *testing.T) {
 }
 
 func TestGetLockDataEmpty(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entryList := GetLockData(smbstatusout.LockDataEmpty, logger)
 
 	if len(entryList) != 0 {
@@ -292,7 +292,7 @@ func TestGetLockDataEmpty(t *testing.T) {
 }
 
 func TestGetShareDataDifferentTimeStampLines(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entryList := GetShareData(smbstatusout.ShareDataDifferentTimeStampLines, logger)
 
 	if len(entryList) != 3 {
@@ -309,7 +309,7 @@ func TestGetShareDataDifferentTimeStampLines(t *testing.T) {
 }
 
 func TestGetShareDataOneLine(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	oneEntry := GetShareData(smbstatusout.ShareDataOneLine, logger)
 
 	if len(oneEntry) != 1 {
@@ -342,7 +342,7 @@ func TestGetShareDataOneLine(t *testing.T) {
 }
 
 func TestGetShareData4Line(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entries := GetShareData(smbstatusout.ShareData4Lines, logger)
 
 	if len(entries) != 4 {
@@ -371,7 +371,7 @@ func TestGetShareData4Line(t *testing.T) {
 }
 
 func TestGetShareDataInvlaideResponse(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entries := GetShareData(smbstatusout.ShareData4LinesInvalide, logger)
 
 	if len(entries) != 3 {
@@ -385,7 +385,7 @@ func TestGetShareDataInvlaideResponse(t *testing.T) {
 }
 
 func TestGetShareDataNamesWithSpaces(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entries := GetShareData(smbstatusout.ShareData4LinesWithSpacesInName, logger)
 
 	if len(entries) != 4 {
@@ -430,7 +430,7 @@ func TestGetShareDataNamesWithSpaces(t *testing.T) {
 }
 
 func TestGetShareDataCluster(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entries := GetShareData(smbstatusout.ShareDataCluster, logger)
 
 	if len(entries) != 16 {
@@ -463,7 +463,7 @@ func TestGetShareDataCluster(t *testing.T) {
 }
 
 func TestGetShareDataWrongData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entries := GetShareData(smbstatusout.LockData4Lines, logger)
 
 	if len(entries) != 0 {
@@ -472,7 +472,7 @@ func TestGetShareDataWrongData(t *testing.T) {
 }
 
 func TestGetShareData0Input(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entryList := GetShareData(smbstatusout.ShareData0Line, logger)
 
 	if len(entryList) != 0 {
@@ -481,7 +481,7 @@ func TestGetShareData0Input(t *testing.T) {
 }
 
 func TestGetProcessDataOneLine(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	oneProcess := GetProcessData(smbstatusout.ProcessDataOneLine, logger)
 
 	if len(oneProcess) != 1 {
@@ -518,7 +518,7 @@ func TestGetProcessDataOneLine(t *testing.T) {
 }
 
 func TestGetProcessData4Line(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	enties := GetProcessData(smbstatusout.ProcessData4Lines, logger)
 
 	if len(enties) != 4 {
@@ -552,7 +552,7 @@ func TestGetProcessData4Line(t *testing.T) {
 }
 
 func TestGetProcessDataCluster(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	enties := GetProcessData(smbstatusout.ProcessDataCluster, logger)
 
 	if len(enties) != 7 {
@@ -579,7 +579,7 @@ func TestGetProcessDataCluster(t *testing.T) {
 }
 
 func TestGetProcessDataWrongData(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	enties := GetProcessData(smbstatusout.LockData4Lines, logger)
 
 	if len(enties) != 0 {
@@ -588,7 +588,7 @@ func TestGetProcessDataWrongData(t *testing.T) {
 }
 
 func TestGetProcessData0Input(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entryList := GetProcessData(smbstatusout.ProcessData0Lines, logger)
 
 	if len(entryList) != 0 {
@@ -597,7 +597,7 @@ func TestGetProcessData0Input(t *testing.T) {
 }
 
 func TestGetPsData0Input(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	entryList := GetPsData("", logger)
 
 	if len(entryList) != 0 {
@@ -606,7 +606,7 @@ func TestGetPsData0Input(t *testing.T) {
 }
 
 func TestGetPsDataEmptyInput(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	jsonData := commonbl.TestPsResponseEmpty()
 	entryList := GetPsData(string(jsonData), logger)
 
@@ -616,7 +616,7 @@ func TestGetPsDataEmptyInput(t *testing.T) {
 }
 
 func TestGetPsDataTwoPids(t *testing.T) {
-	logger := commonbl.NewLogger(true)
+	logger := commonbl.NewConsoleLogger(true)
 	jsonData := commonbl.TestPsResponse()
 	entryList := GetPsData(string(jsonData), logger)
 

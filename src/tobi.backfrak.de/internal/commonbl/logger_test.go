@@ -9,45 +9,45 @@ import (
 	"testing"
 )
 
-func TestNewLogger(t *testing.T) {
-	logger := NewLogger(false)
+func TestNewConsoleLogger(t *testing.T) {
+	logger := NewConsoleLogger(false)
 	if logger.Verbose == true {
 		t.Errorf("Logger is verbose but should not")
 	}
 
-	logger = NewLogger(true)
+	logger = NewConsoleLogger(true)
 	if logger.Verbose == false {
 		t.Errorf("Logger is not verbose but should")
 	}
 }
 
 func TestWriteInformation(t *testing.T) {
-	logger := NewLogger(false)
+	logger := NewConsoleLogger(false)
 	logger.WriteInformation("My message")
 }
 
 func TestWriteErrorMessage(t *testing.T) {
-	logger := NewLogger(false)
+	logger := NewConsoleLogger(false)
 	logger.WriteErrorMessage("My message")
 }
 
 func TestWriteVerbose(t *testing.T) {
-	logger := NewLogger(false)
+	logger := NewConsoleLogger(false)
 	logger.WriteVerbose("My message 1")
 
-	logger = NewLogger(true)
+	logger = NewConsoleLogger(true)
 	logger.WriteVerbose("My message 2")
 }
 
 func TestWriteError(t *testing.T) {
-	logger := NewLogger(false)
+	logger := NewConsoleLogger(false)
 	err := NewReaderError("my data", LOCK_REQUEST, 3)
 
 	logger.WriteError(err)
 }
 
 func TestWriteErrorWithAddition(t *testing.T) {
-	logger := NewLogger(false)
+	logger := NewConsoleLogger(false)
 	err := NewReaderError("my data", LOCK_REQUEST, 3)
 
 	logger.WriteErrorWithAddition(err, "additional data")
