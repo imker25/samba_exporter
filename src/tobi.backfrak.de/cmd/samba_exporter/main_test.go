@@ -38,7 +38,7 @@ func TestTestPipeMode(t *testing.T) {
 	params.RequestTimeOut = 1
 	requestHandler := commonbl.NewPipeHandler(true, commonbl.RequestPipe)
 	responseHandler := commonbl.NewPipeHandler(true, commonbl.ResposePipe)
-	logger = *commonbl.NewConsoleLogger(true)
+	logger = commonbl.NewConsoleLogger(true)
 
 	err := testPipeMode(requestHandler, responseHandler)
 	if err == nil {
