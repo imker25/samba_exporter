@@ -19,6 +19,17 @@ func TestNewConsoleLogger(t *testing.T) {
 	if logger.Verbose == false {
 		t.Errorf("Logger is not verbose but should")
 	}
+
+	iLogger := Logger(logger)
+
+	if iLogger.GetVerbose() == false {
+		t.Errorf("Logger is not verbose but should")
+	}
+
+	logger.Verbose = false
+	if iLogger.GetVerbose() == true {
+		t.Errorf("Logger is verbose but not should")
+	}
 }
 
 func TestWriteInformation(t *testing.T) {

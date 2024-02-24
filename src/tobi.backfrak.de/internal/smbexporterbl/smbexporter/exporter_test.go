@@ -39,7 +39,7 @@ func TestNewSambaExporter(t *testing.T) {
 		t.Errorf("exporter.Descriptions are nil")
 	}
 
-	if logger.Verbose != exporter.Logger.Verbose {
+	if logger.Verbose != exporter.Logger.GetVerbose() {
 		t.Errorf("The exporter uses the wrong logger")
 	}
 

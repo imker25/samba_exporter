@@ -30,7 +30,7 @@ const Authors = "tobi@backfrak.de"
 var version = "undefined"
 
 // The logger used in the program
-var logger commonbl.ConsoleLogger
+var logger commonbl.Logger
 
 func main() {
 	handleComandlineOptions()
@@ -40,7 +40,7 @@ func main() {
 func realMain() int {
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
-	logger = *commonbl.NewConsoleLogger(params.Verbose)
+	logger = commonbl.NewConsoleLogger(params.Verbose)
 
 	if !strings.HasPrefix(params.MetricsPath, "/") {
 		params.MetricsPath = fmt.Sprintf("/%s", params.MetricsPath)
@@ -97,7 +97,7 @@ func realMain() int {
 
 	logger.WriteVerbose("Setup prometheus exporter")
 
-	exporter := smbexporter.NewSambaExporter(&requestHandler, &responseHandler, &logger, version, params.RequestTimeOut, params.StatisticsGeneratorSettings)
+	exporter := smbexporter.NewSambaExporter(&requestHandler, &responseHandler, logger, version, params.RequestTimeOut, params.StatisticsGeneratorSettings)
 	prometheus.MustRegister(exporter)
 
 	logger.WriteInformation(fmt.Sprintf("Started %s, get metrics on http://%s%s", os.Args[0], params.ListenAddress, params.MetricsPath))
@@ -131,7 +131,7 @@ func testPipeMode(requestHandler *commonbl.PipeHandler, responseHandler *commonb
 	var errGet error
 
 	logger.WriteVerbose("Request samba_statusd to get metrics for test-pipe mode")
-	locks, processes, shares, psData, errGet = pipecomunication.GetSambaStatus(requestHandler, responseHandler, &logger, params.RequestTimeOut)
+	locks, processes, shares, psData, errGet = pipecomunication.GetSambaStatus(requestHandler, responseHandler, logger, params.RequestTimeOut)
 	if errGet != nil {
 		return errGet
 	}
