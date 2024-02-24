@@ -8,6 +8,9 @@ replace tobi.backfrak.de/internal/commonbl v0.0.0 => ../../internal/commonbl
 require tobi.backfrak.de/internal/smbstatusdbl v0.0.0
 replace tobi.backfrak.de/internal/smbstatusdbl v0.0.0 => ../../internal/smbstatusdbl
 
+require tobi.backfrak.de/internal/testhelper v0.0.0
+replace tobi.backfrak.de/internal/testhelper v0.0.0 => ../../internal/testhelper
+
 require (
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/shirou/gopsutil v3.21.11+incompatible // indirect
