@@ -82,6 +82,10 @@ func realMain() int {
 		logger.WriteVerbose("-not-expose-encryption-data set, will not export encryption data")
 	}
 
+	if params.DoNotExportShareDetails {
+		logger.WriteVerbose("-not-expose-share-details set, will not export share details")
+	}
+
 	if params.TestPipeMode {
 		errTest := testPipeMode(&requestHandler, &responseHandler)
 		if errTest != nil {
