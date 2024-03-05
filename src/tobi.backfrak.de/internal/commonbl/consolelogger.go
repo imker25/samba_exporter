@@ -8,6 +8,7 @@ package commonbl
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 // ConsoleLogger - A "class" with log functions
@@ -46,15 +47,17 @@ func (logger *ConsoleLogger) WriteVerbose(message string) {
 
 // WriteErrorMessage - Write the message to Stderr. The Message will be prefixed with "Error: "
 func (logger *ConsoleLogger) WriteErrorMessage(message string) {
-	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: %s", message))
+	trimmedMsg := strings.TrimPrefix(message, "Error: ")
+	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: %s", trimmedMsg))
 }
 
 // WriteError - Writes the err.Error() output to Stderr
 func (logger *ConsoleLogger) WriteError(err error) {
-	fmt.Fprintln(os.Stderr, err.Error())
+	trimmedMsg := strings.TrimPrefix(err.Error(), "Error: ")
+	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: %s", trimmedMsg))
 }
 
 // WriteError - Writes the 'err.Error() - addition' output to Stderr
 func (logger *ConsoleLogger) WriteErrorWithAddition(err error, addition string) {
-	fmt.Fprintln(os.Stderr, fmt.Sprintf("%s - %s", err.Error(), addition))
+	logger.WriteErrorMessage(fmt.Sprintf("%s - %s", err.Error(), addition))
 }

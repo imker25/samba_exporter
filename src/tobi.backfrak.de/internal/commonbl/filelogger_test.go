@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -62,8 +63,10 @@ func TestFileLoggerWriteInformation(t *testing.T) {
 	}
 
 	sut := NewFileLogger(true, logfile_path)
-
-	sut.WriteInformation("Some info message - 1")
+	infoMsg1 := "Some info message - 1"
+	infoMsg2 := "Some info message - 2"
+	infoMsg3 := "Some info message - 3"
+	sut.WriteInformation(infoMsg1)
 
 	if sut.Verbose != true {
 		t.Errorf("FileLogger is not verbose, but should")
@@ -74,17 +77,213 @@ func TestFileLoggerWriteInformation(t *testing.T) {
 		t.Errorf("FileLogger is verbose, but should not")
 	}
 
-	sut.WriteInformation("Some info message - 2")
+	sut.WriteInformation(infoMsg2)
+	iut := Logger(sut)
+	iut.WriteInformation(infoMsg3)
 
 	if !logFileExists() {
 		t.Errorf("Log file does not exist, but should after test was running")
 	}
 
 	fileLines := readLogFileLines()
-	if len(fileLines) != 2 {
-		t.Errorf("The log file has '%d' lines but '2' lines is expected", len(fileLines))
+	if len(fileLines) != 3 {
+		t.Errorf("The log file has '%d' lines but '3' lines is expected", len(fileLines))
 	}
 
+	expectedMsg1 := fmt.Sprintf("Information: %s", infoMsg1)
+	if strings.HasSuffix(fileLines[0], expectedMsg1) == false {
+		t.Errorf("The log on index '0' is '%s', but '%s' was expected", fileLines[0], expectedMsg1)
+	}
+
+	expectedMsg2 := fmt.Sprintf("Information: %s", infoMsg2)
+	if strings.HasSuffix(fileLines[1], expectedMsg2) == false {
+		t.Errorf("The log on index '1' is '%s', but '%s' was expected", fileLines[1], expectedMsg2)
+	}
+
+	expectedMsg3 := fmt.Sprintf("Information: %s", infoMsg3)
+	if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
+		t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
+	}
+}
+
+func TestFileLoggerWriteVerbose(t *testing.T) {
+	if logFileExists() {
+		deleteTestsLogFile(t)
+	}
+
+	sut := NewFileLogger(true, logfile_path)
+	verboseMsg1 := "Some verbose message - 1"
+	verboseMsg2 := "Some verbose message - 2"
+	verboseMsg3 := "Some verbose message - 3"
+	sut.WriteVerbose(verboseMsg1)
+
+	if sut.Verbose != true {
+		t.Errorf("FileLogger is not verbose, but should")
+	}
+
+	sut.Verbose = false
+	if sut.Verbose != false {
+		t.Errorf("FileLogger is verbose, but should not")
+	}
+
+	sut.WriteVerbose(verboseMsg2)
+	if !logFileExists() {
+		t.Errorf("Log file does not exist, but should after test was running")
+	}
+
+	fileLines := readLogFileLines()
+	if len(fileLines) != 1 {
+		t.Errorf("The log file has '%d' lines but '1' lines is expected", len(fileLines))
+	}
+
+	iut := Logger(sut)
+	iut.WriteVerbose(verboseMsg3)
+	fileLines = readLogFileLines()
+	if len(fileLines) != 1 {
+		t.Errorf("The log file has '%d' lines but '1' lines is expected", len(fileLines))
+	}
+
+	sut.Verbose = true
+	if iut.GetVerbose() == false {
+		t.Errorf("FileLogger is not verbose, but should")
+	}
+	sut.WriteVerbose(verboseMsg2)
+	iut.WriteVerbose(verboseMsg3)
+
+	fileLines = readLogFileLines()
+	if len(fileLines) != 3 {
+		t.Errorf("The log file has '%d' lines but '3' lines is expected", len(fileLines))
+	}
+
+	expectedMsg1 := fmt.Sprintf("Verbose: %s", verboseMsg1)
+	if strings.HasSuffix(fileLines[0], expectedMsg1) == false {
+		t.Errorf("The log on index '0' is '%s', but '%s' was expected", fileLines[0], expectedMsg1)
+	}
+
+	expectedMsg2 := fmt.Sprintf("Verbose: %s", verboseMsg2)
+	if strings.HasSuffix(fileLines[1], expectedMsg2) == false {
+		t.Errorf("The log on index '1' is '%s', but '%s' was expected", fileLines[1], expectedMsg2)
+	}
+
+	expectedMsg3 := fmt.Sprintf("Verbose: %s", verboseMsg3)
+	if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
+		t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
+	}
+}
+
+func TestFileLoggerWriteInError(t *testing.T) {
+	if logFileExists() {
+		deleteTestsLogFile(t)
+	}
+
+	sut := NewFileLogger(true, logfile_path)
+	errorMsg1 := "Some error message - 1"
+	errorMsg2 := "Some error message - 2"
+	errorMsg3 := "Some error message - 3"
+	additionalMsg := "More info on error"
+	sut.WriteErrorMessage(errorMsg1)
+
+	if sut.Verbose != true {
+		t.Errorf("FileLogger is not verbose, but should")
+	}
+
+	sut.Verbose = false
+	if sut.Verbose != false {
+		t.Errorf("FileLogger is verbose, but should not")
+	}
+
+	sut.WriteError(NewWriterError(errorMsg2))
+	iut := Logger(sut)
+	iut.WriteErrorWithAddition(NewWriterError(errorMsg3), additionalMsg)
+
+	if !logFileExists() {
+		t.Errorf("Log file does not exist, but should after test was running")
+	}
+
+	fileLines := readLogFileLines()
+	if len(fileLines) != 3 {
+		t.Errorf("The log file has '%d' lines but '3' lines is expected", len(fileLines))
+	}
+
+	expectedMsg1 := fmt.Sprintf("Error: %s", errorMsg1)
+	if strings.HasSuffix(fileLines[0], expectedMsg1) == false {
+		t.Errorf("The log on index '0' is '%s', but '%s' was expected", fileLines[0], expectedMsg1)
+	}
+
+	expectedMsg2 := fmt.Sprintf("Error: The data \"%s\" was not written", errorMsg2)
+	if strings.HasSuffix(fileLines[1], expectedMsg2) == false {
+		t.Errorf("The log on index '1' is '%s', but '%s' was expected", fileLines[1], expectedMsg2)
+	}
+
+	expectedMsg3 := fmt.Sprintf("Error: The data \"%s\" was not written - %s", errorMsg3, additionalMsg)
+	if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
+		t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
+	}
+}
+
+func TestFileLoggerWriteMixed(t *testing.T) {
+	if logFileExists() {
+		deleteTestsLogFile(t)
+	}
+
+	sut := NewFileLogger(true, logfile_path)
+	infoMsg1 := "Some info message - 1"
+	verboseMsg2 := "Some verbose message - 2"
+	errorMsg3 := "Some error message - 3"
+	sut.WriteInformation(infoMsg1)
+
+	if sut.Verbose != true {
+		t.Errorf("FileLogger is not verbose, but should")
+	}
+
+	sut.Verbose = false
+	if sut.Verbose != false {
+		t.Errorf("FileLogger is verbose, but should not")
+	}
+
+	sut.WriteVerbose(verboseMsg2)
+	if !logFileExists() {
+		t.Errorf("Log file does not exist, but should after test was running")
+	}
+
+	fileLines := readLogFileLines()
+	if len(fileLines) != 1 {
+		t.Errorf("The log file has '%d' lines but '1' lines is expected", len(fileLines))
+	}
+
+	iut := Logger(sut)
+	iut.WriteVerbose(verboseMsg2)
+	fileLines = readLogFileLines()
+	if len(fileLines) != 1 {
+		t.Errorf("The log file has '%d' lines but '1' lines is expected", len(fileLines))
+	}
+
+	sut.Verbose = true
+	if iut.GetVerbose() == false {
+		t.Errorf("FileLogger is not verbose, but should")
+	}
+	iut.WriteVerbose(verboseMsg2)
+	iut.WriteErrorMessage(errorMsg3)
+
+	fileLines = readLogFileLines()
+	if len(fileLines) != 3 {
+		t.Errorf("The log file has '%d' lines but '3' lines is expected", len(fileLines))
+	}
+
+	expectedMsg1 := fmt.Sprintf("Information: %s", infoMsg1)
+	if strings.HasSuffix(fileLines[0], expectedMsg1) == false {
+		t.Errorf("The log on index '0' is '%s', but '%s' was expected", fileLines[0], expectedMsg1)
+	}
+
+	expectedMsg2 := fmt.Sprintf("Verbose: %s", verboseMsg2)
+	if strings.HasSuffix(fileLines[1], expectedMsg2) == false {
+		t.Errorf("The log on index '1' is '%s', but '%s' was expected", fileLines[1], expectedMsg2)
+	}
+
+	expectedMsg3 := fmt.Sprintf("Error: %s", errorMsg3)
+	if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
+		t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
+	}
 }
 
 func deleteTestsLogFile(t *testing.T) {

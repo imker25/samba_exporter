@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strings"
 )
 
 // FileLogger - A "class" with log functions
@@ -58,15 +59,17 @@ func (logger *FileLogger) WriteVerbose(message string) {
 
 // WriteErrorMessage - Write the message to Stderr. The Message will be prefixed with "Error: "
 func (logger *FileLogger) WriteErrorMessage(message string) {
-	logger.errorLogger.Println(message)
+	trimedMsg := strings.TrimPrefix(message, "Error: ")
+	logger.errorLogger.Println(trimedMsg)
 }
 
 // WriteError - Writes the err.Error() output to Stderr
 func (logger *FileLogger) WriteError(err error) {
-	logger.errorLogger.Panicln(err.Error())
+	trimedMsg := strings.TrimPrefix(err.Error(), "Error: ")
+	logger.errorLogger.Println(trimedMsg)
 }
 
 // WriteError - Writes the 'err.Error() - addition' output to Stderr
 func (logger *FileLogger) WriteErrorWithAddition(err error, addition string) {
-	logger.errorLogger.Println(fmt.Sprintf("%s - %s", err.Error(), addition))
+	logger.WriteErrorMessage(fmt.Sprintf("%s - %s", err.Error(), addition))
 }
