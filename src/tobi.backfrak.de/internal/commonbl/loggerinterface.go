@@ -1,5 +1,7 @@
 package commonbl
 
+import "strings"
+
 // Logger - Interface for logger implementations
 type Logger interface {
 	// GetVerbose - Tell if logger is verbose or not
@@ -20,4 +22,14 @@ type Logger interface {
 
 	// WriteError - Writes the 'err.Error() - addition' output to Stderr
 	WriteErrorWithAddition(err error, addition string)
+}
+
+// Get the right logger depending on the input parameters
+func GetLogger(logFilePath string, verbose bool) (Logger, error) {
+	trimmedPath := strings.TrimSpace(logFilePath)
+	if trimmedPath == "" {
+		return NewConsoleLogger(verbose), nil
+	}
+
+	return NewFileLogger(verbose, trimmedPath)
 }

@@ -11,4 +11,5 @@ type Parmeters struct {
 	Verbose      bool
 	Help         bool
 	Test         bool
+	LogFilePath  string
 }

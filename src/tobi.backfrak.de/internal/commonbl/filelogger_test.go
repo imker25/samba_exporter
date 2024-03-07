@@ -16,7 +16,7 @@ func TestNewFileLogger(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(true, logfile_path)
 
 	if sut.Verbose != true {
 		t.Errorf("FileLogger is not verbose, but should")
@@ -57,12 +57,35 @@ func TestNewFileLogger(t *testing.T) {
 	}
 }
 
+func TestNewFileLoggerNotExistingDir(t *testing.T) {
+	sut, err := NewFileLogger(true, "/dev/shm/not/existing/path/file.log")
+
+	if sut != nil {
+		t.Errorf("The 'FileLogger' should be nil, but is not")
+	}
+
+	if err == nil {
+		t.Errorf("The 'error' should not be nil, but is")
+	}
+
+	if !strings.Contains(err.Error(), "/dev/shm/not/existing/path") {
+		t.Errorf("The error message does not contain the expected data")
+	}
+
+	switch err.(type) {
+	case *DirectoryNotExistError:
+		fmt.Println("OK")
+	default:
+		t.Errorf("Got error of type '%s', but expected type '*DirectoryNotExistError'", err)
+	}
+}
+
 func TestFileLoggerWriteInformation(t *testing.T) {
 	if logFileExists() {
 		deleteTestsLogFile(t)
 	}
 
-	sut := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(true, logfile_path)
 	infoMsg1 := "Some info message - 1"
 	infoMsg2 := "Some info message - 2"
 	infoMsg3 := "Some info message - 3"
@@ -111,7 +134,7 @@ func TestFileLoggerWriteVerbose(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(true, logfile_path)
 	verboseMsg1 := "Some verbose message - 1"
 	verboseMsg2 := "Some verbose message - 2"
 	verboseMsg3 := "Some verbose message - 3"
@@ -176,7 +199,7 @@ func TestFileLoggerWriteInError(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(true, logfile_path)
 	errorMsg1 := "Some error message - 1"
 	errorMsg2 := "Some error message - 2"
 	errorMsg3 := "Some error message - 3"
@@ -226,7 +249,7 @@ func TestFileLoggerWriteMixed(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(true, logfile_path)
 	infoMsg1 := "Some info message - 1"
 	verboseMsg2 := "Some verbose message - 2"
 	errorMsg3 := "Some error message - 3"
@@ -284,6 +307,31 @@ func TestFileLoggerWriteMixed(t *testing.T) {
 	if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
 		t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
 	}
+}
+
+func TestDirectoryExists(t *testing.T) {
+
+	if logFileExists() {
+		deleteTestsLogFile(t)
+	}
+
+	if directoryExists("/bin") == false {
+		t.Errorf("'directoryExists' tells '/bin' does not exist")
+	}
+
+	if directoryExists("/bin/") == false {
+		t.Errorf("'directoryExists' tells '/bin/' does not exist")
+	}
+
+	if directoryExists("/dev/shm/not/existing/path/") == true {
+		t.Errorf("'directoryExists' tells '/dev/shm/not/existing/path/' does exist")
+	}
+
+	os.OpenFile(logfile_path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
+	if directoryExists(logfile_path) == true {
+		t.Errorf("'directoryExists' tells '%s' does exist", logfile_path)
+	}
+
 }
 
 func deleteTestsLogFile(t *testing.T) {

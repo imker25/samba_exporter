@@ -38,9 +38,14 @@ func main() {
 }
 
 func realMain() int {
+	var newLoggerErrror error
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
-	logger = commonbl.NewConsoleLogger(params.Verbose)
+	logger, newLoggerErrror = commonbl.GetLogger(params.LogFilePath, params.Verbose)
+	if newLoggerErrror != nil {
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error when creating the logger: %s", newLoggerErrror.Error()))
+		return -9
+	}
 
 	if !strings.HasPrefix(params.MetricsPath, "/") {
 		params.MetricsPath = fmt.Sprintf("/%s", params.MetricsPath)

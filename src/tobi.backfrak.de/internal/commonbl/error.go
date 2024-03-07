@@ -85,3 +85,17 @@ func (e *EmptyStringQueueError) Error() string { // Implement the Error Interfac
 func NewEmptyStringQueueError() *EmptyStringQueueError {
 	return &EmptyStringQueueError{"The StringQueue is empty, no elements to pull."}
 }
+
+// DirectoryNotExistError - Error when a directory that should be used does not exist
+type DirectoryNotExistError struct {
+	err           string
+	DirectoryPath string
+}
+
+func NewDirectoryNotExistError(directoryPath string) *DirectoryNotExistError {
+	return &DirectoryNotExistError{fmt.Sprintf("The directory '%s' does not exist.", directoryPath), directoryPath}
+}
+
+func (e *DirectoryNotExistError) Error() string { // Implement the Error Interface for the DirectoryNotExistError struct
+	return fmt.Sprintf("Error: %s", e.err)
+}

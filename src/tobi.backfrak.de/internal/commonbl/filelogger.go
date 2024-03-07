@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -22,12 +23,17 @@ type FileLogger struct {
 }
 
 // Get a new instance of the Logger
-func NewFileLogger(verbose bool, fullFilePath string) *FileLogger {
+func NewFileLogger(verbose bool, fullFilePath string) (*FileLogger, error) {
+
+	logFileDir := filepath.Dir(fullFilePath)
+	if !directoryExists(logFileDir) {
+		return nil, NewDirectoryNotExistError(logFileDir)
+	}
 
 	// If the file doesn't exist, create it or append to the file
 	file, err := os.OpenFile(fullFilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	infoLogger := log.New(file, "Information: ", log.LstdFlags|log.Lmsgprefix /*|log.Lmicroseconds*/)
 	verboseLogger := log.New(file, "Verbose: ", log.LstdFlags|log.Lmsgprefix /*|log.Lmicroseconds*/)
@@ -35,7 +41,7 @@ func NewFileLogger(verbose bool, fullFilePath string) *FileLogger {
 
 	ret := FileLogger{verbose, fullFilePath, infoLogger, verboseLogger, errorLogger}
 
-	return &ret
+	return &ret, nil
 }
 
 // GetVerbose - Tell if logger is verbose or not
@@ -72,4 +78,12 @@ func (logger *FileLogger) WriteError(err error) {
 // WriteError - Writes the 'err.Error() - addition' output to Stderr
 func (logger *FileLogger) WriteErrorWithAddition(err error, addition string) {
 	logger.WriteErrorMessage(fmt.Sprintf("%s - %s", err.Error(), addition))
+}
+
+func directoryExists(path string) bool {
+	if stat, err := os.Stat(path); err == nil && stat.IsDir() {
+		return true
+	}
+
+	return false
 }
