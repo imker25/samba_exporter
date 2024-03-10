@@ -371,7 +371,7 @@ func logFileExists() bool {
 func ensureLogFileDirExists() {
 	logFileDir := filepath.Dir(logfile_path)
 	if !directoryExists(logFileDir) {
-		os.MkdirAll(logFileDir, os.ModeDir)
+		os.MkdirAll(logFileDir, os.ModePerm)
 	}
 }
 
