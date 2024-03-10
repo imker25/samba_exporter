@@ -14,9 +14,14 @@ ARGS='-web.listen-address=127.0.0.1:9922'
 # The prometheus exporter endpoint only listen on 192.168.0.1 and does not export data about encryption details 
 # ARGS='-web.listen-address=192.168.0.1:9922 -not-expose-encryption-data'
 
+# The samba_exporter running with verbose output and output is written into a log file
+# ARGS='-verbose -log-file-path=/var/log/samba_exporter.log'
+
 # Usage of samba_exporter
 #   -help
 #         Print this help message
+#   -log-file-path string
+#         Give the full file path for a log file. When parameter is not set (as by default), logs will be written to stdout and stderr (default " ")
 #   -not-expose-client-data
 #         Set to 'true', no details about the connected clients will be exported
 #   -not-expose-encryption-data
