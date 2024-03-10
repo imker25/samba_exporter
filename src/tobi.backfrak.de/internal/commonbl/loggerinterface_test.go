@@ -6,6 +6,9 @@ import (
 )
 
 func TestGetLoggerForFileLogger(t *testing.T) {
+	mutex.Lock()
+	defer mutex.Unlock()
+	ensureLogFileDirExists()
 	logger, err := GetLogger(logfile_path, false)
 
 	if err != nil {

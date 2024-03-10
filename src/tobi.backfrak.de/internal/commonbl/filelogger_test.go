@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
@@ -17,6 +18,7 @@ func TestNewFileLogger(t *testing.T) {
 
 	mutex.Lock()
 	defer mutex.Unlock()
+	ensureLogFileDirExists()
 	if logFileExists() {
 		deleteTestsLogFile(t)
 	}
@@ -88,6 +90,7 @@ func TestNewFileLoggerNotExistingDir(t *testing.T) {
 func TestFileLoggerWriteInformation(t *testing.T) {
 	mutex.Lock()
 	defer mutex.Unlock()
+	ensureLogFileDirExists()
 	if logFileExists() {
 		deleteTestsLogFile(t)
 	}
@@ -139,6 +142,7 @@ func TestFileLoggerWriteInformation(t *testing.T) {
 func TestFileLoggerWriteVerbose(t *testing.T) {
 	mutex.Lock()
 	defer mutex.Unlock()
+	ensureLogFileDirExists()
 	if logFileExists() {
 		deleteTestsLogFile(t)
 	}
@@ -206,6 +210,7 @@ func TestFileLoggerWriteVerbose(t *testing.T) {
 func TestFileLoggerWriteInError(t *testing.T) {
 	mutex.Lock()
 	defer mutex.Unlock()
+	ensureLogFileDirExists()
 	if logFileExists() {
 		deleteTestsLogFile(t)
 	}
@@ -258,6 +263,7 @@ func TestFileLoggerWriteInError(t *testing.T) {
 func TestFileLoggerWriteMixed(t *testing.T) {
 	mutex.Lock()
 	defer mutex.Unlock()
+	ensureLogFileDirExists()
 	if logFileExists() {
 		deleteTestsLogFile(t)
 	}
@@ -354,11 +360,19 @@ func deleteTestsLogFile(t *testing.T) {
 }
 
 func logFileExists() bool {
+
 	info, err := os.Stat(logfile_path)
 	if os.IsNotExist(err) {
 		return false
 	}
 	return !info.IsDir()
+}
+
+func ensureLogFileDirExists() {
+	logFileDir := filepath.Dir(logfile_path)
+	if !directoryExists(logFileDir) {
+		os.MkdirAll(logFileDir, os.ModeDir)
+	}
 }
 
 func readLogFileLines() []string {
