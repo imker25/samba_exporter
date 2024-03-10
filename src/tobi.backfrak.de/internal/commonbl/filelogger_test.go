@@ -5,13 +5,18 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"sync"
 	"testing"
 )
 
 const logfile_path = "./../../../../logs/file_logger_test.log"
 
+var mutex = sync.Mutex{}
+
 func TestNewFileLogger(t *testing.T) {
 
+	mutex.Lock()
+	defer mutex.Unlock()
 	if logFileExists() {
 		deleteTestsLogFile(t)
 	}
@@ -81,6 +86,8 @@ func TestNewFileLoggerNotExistingDir(t *testing.T) {
 }
 
 func TestFileLoggerWriteInformation(t *testing.T) {
+	mutex.Lock()
+	defer mutex.Unlock()
 	if logFileExists() {
 		deleteTestsLogFile(t)
 	}
@@ -130,6 +137,8 @@ func TestFileLoggerWriteInformation(t *testing.T) {
 }
 
 func TestFileLoggerWriteVerbose(t *testing.T) {
+	mutex.Lock()
+	defer mutex.Unlock()
 	if logFileExists() {
 		deleteTestsLogFile(t)
 	}
@@ -195,6 +204,8 @@ func TestFileLoggerWriteVerbose(t *testing.T) {
 }
 
 func TestFileLoggerWriteInError(t *testing.T) {
+	mutex.Lock()
+	defer mutex.Unlock()
 	if logFileExists() {
 		deleteTestsLogFile(t)
 	}
@@ -245,6 +256,8 @@ func TestFileLoggerWriteInError(t *testing.T) {
 }
 
 func TestFileLoggerWriteMixed(t *testing.T) {
+	mutex.Lock()
+	defer mutex.Unlock()
 	if logFileExists() {
 		deleteTestsLogFile(t)
 	}
@@ -310,11 +323,6 @@ func TestFileLoggerWriteMixed(t *testing.T) {
 }
 
 func TestDirectoryExists(t *testing.T) {
-
-	if logFileExists() {
-		deleteTestsLogFile(t)
-	}
-
 	if directoryExists("/bin") == false {
 		t.Errorf("'directoryExists' tells '/bin' does not exist")
 	}
@@ -329,12 +337,16 @@ func TestDirectoryExists(t *testing.T) {
 
 	os.OpenFile(logfile_path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0666)
 	if directoryExists(logfile_path) == true {
-		t.Errorf("'directoryExists' tells '%s' does exist", logfile_path)
+		t.Errorf("'directoryExists' tells '%s' does exist but it is a file!", logfile_path)
 	}
 
 }
 
 func deleteTestsLogFile(t *testing.T) {
+	if !logFileExists() {
+		return
+	}
+
 	err := os.Remove(logfile_path)
 	if err != nil {
 		t.Fatal(fmt.Println(fmt.Sprintf("Error '%s' when deleting file '%s'", err.Error(), logfile_path)))
