@@ -8,29 +8,8 @@ package commonbl
 import (
 	"fmt"
 	"os"
+	"strings"
 )
-
-// Logger - Interface for logger implementations
-type Logger interface {
-	// GetVerbose - Tell if logger is verbose or not
-	GetVerbose() bool
-
-	// WriteInformation - Write a Info message to Stdout, will be prefixed with "Information: "
-	WriteInformation(message string)
-
-	// WriteVerbose - Write a Verbose message to Stdout. Message will be written only if logger.Verbose is true.
-	// The message will be prefixed with "Verbose :"
-	WriteVerbose(message string)
-
-	// WriteErrorMessage - Write the message to Stderr. The Message will be prefixed with "Error: "
-	WriteErrorMessage(message string)
-
-	// WriteError - Writes the err.Error() output to Stderr
-	WriteError(err error)
-
-	// WriteError - Writes the 'err.Error() - addition' output to Stderr
-	WriteErrorWithAddition(err error, addition string)
-}
 
 // ConsoleLogger - A "class" with log functions
 type ConsoleLogger struct {
@@ -68,15 +47,17 @@ func (logger *ConsoleLogger) WriteVerbose(message string) {
 
 // WriteErrorMessage - Write the message to Stderr. The Message will be prefixed with "Error: "
 func (logger *ConsoleLogger) WriteErrorMessage(message string) {
-	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: %s", message))
+	trimmedMsg := strings.TrimPrefix(message, "Error: ")
+	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: %s", trimmedMsg))
 }
 
 // WriteError - Writes the err.Error() output to Stderr
 func (logger *ConsoleLogger) WriteError(err error) {
-	fmt.Fprintln(os.Stderr, err.Error())
+	trimmedMsg := strings.TrimPrefix(err.Error(), "Error: ")
+	fmt.Fprintln(os.Stderr, fmt.Sprintf("Error: %s", trimmedMsg))
 }
 
 // WriteError - Writes the 'err.Error() - addition' output to Stderr
 func (logger *ConsoleLogger) WriteErrorWithAddition(err error, addition string) {
-	fmt.Fprintln(os.Stderr, fmt.Sprintf("%s - %s", err.Error(), addition))
+	logger.WriteErrorMessage(fmt.Sprintf("%s - %s", err.Error(), addition))
 }

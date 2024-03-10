@@ -3,12 +3,17 @@
 # The samba_statusd running without args by default
 ARGS=''
 
-# The samba_statusd running without verbose output
+# The samba_statusd running with verbose output
 # ARGS='-verbose'
+
+# The samba_statusd running with verbose output and output is written into a log file
+# ARGS='-verbose -log-file-path=/var/log/samba_statusd.log'
 
 # Usage of samba_statusd
 #  -help
 #        Print this help message
+#   -log-file-path string
+#         Give the full file path for a log file. When parameter is not set (as by default), logs will be written to stdout and stderr (default " ")
 #  -print-version
 #        With this flag the program will only print it's version and exit
 #  -test-mode

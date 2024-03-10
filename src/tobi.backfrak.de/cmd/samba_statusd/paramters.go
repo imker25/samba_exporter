@@ -29,6 +29,8 @@ func handleComandlineOptions() {
 	flag.BoolVar(&params.Test, "test-mode", false,
 		"Run the program in test mode. In this mode the program will always return the same test data. To work with samba_exporter both programs needs to run in test mode or not.")
 	flag.BoolVar(&params.Help, "help", false, "Print this help message")
+	flag.StringVar(&params.LogFilePath, "log-file-path", " ",
+		"Give the full file path for a log file. When parameter is not set (as by default), logs will be written to stdout and stderr")
 
 	// Overwrite the std Usage function with some custom stuff
 	flag.Usage = customHelpMessage

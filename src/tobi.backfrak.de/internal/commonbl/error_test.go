@@ -67,3 +67,16 @@ func TestUnexpectedRequestFormatError(t *testing.T) {
 		t.Errorf("The error message of WriterError does not contain the expected data")
 	}
 }
+
+func TestDirectoryNotExistError(t *testing.T) {
+	path := "/some/sample/path"
+	err := NewDirectoryNotExistError(path)
+
+	if err.DirectoryPath != path {
+		t.Errorf("DirectoryNotExistError DirectoryPath path value is '%s', but '%s' is expected", err.DirectoryPath, path)
+	}
+
+	if strings.Contains(err.Error(), path) == false {
+		t.Errorf("The error message of DirectoryNotExistError does not contain the expected data")
+	}
+}

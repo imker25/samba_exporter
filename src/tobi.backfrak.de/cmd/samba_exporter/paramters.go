@@ -44,6 +44,8 @@ func handleComandlineOptions() {
 	flag.BoolVar(&params.DoNotExportUser, "not-expose-user-data", false, "Set to 'true', no details about the connected users will be exported")
 	flag.BoolVar(&params.DoNotExportPid, "not-expose-pid-data", false, "Set to 'true', no process IDs will be exported")
 	flag.BoolVar(&params.DoNotExportShareDetails, "not-expose-share-details", false, "Set to 'true', no details about the shares will be exported")
+	flag.StringVar(&params.LogFilePath, "log-file-path", " ",
+		"Give the full file path for a log file. When parameter is not set (as by default), logs will be written to stdout and stderr")
 
 	// Overwrite the std Usage function with some custom stuff
 	flag.Usage = customHelpMessage
