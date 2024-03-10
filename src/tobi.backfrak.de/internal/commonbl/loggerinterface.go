@@ -27,9 +27,10 @@ type Logger interface {
 // Get the right logger depending on the input parameters
 func GetLogger(logFilePath string, verbose bool) (Logger, error) {
 	trimmedPath := strings.TrimSpace(logFilePath)
-	if trimmedPath == "" {
-		return NewConsoleLogger(verbose), nil
+	if trimmedPath != "" {
+		return NewFileLogger(verbose, trimmedPath)
 	}
 
-	return NewFileLogger(verbose, trimmedPath)
+	return NewConsoleLogger(verbose), nil
+
 }

@@ -35,6 +35,9 @@ You might want to use one of the following optional parameters.
   * `-help`: 
     Print the programs help message and exit
 
+  * `-log-file-path string`:
+    Give the full file path for a log file. When parameter is not set (as by default), logs will be written to stdout and stderr (default " ")
+
   * `-not-expose-client-data`
     Set to `true`, no details about the connected clients will be exported
 
