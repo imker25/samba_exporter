@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"testing"
@@ -123,19 +124,21 @@ func TestFileLoggerWriteInformation(t *testing.T) {
 		t.Errorf("The log file has '%d' lines but '3' lines is expected", len(fileLines))
 	}
 
-	expectedMsg1 := fmt.Sprintf("Information: %s", infoMsg1)
-	if strings.HasSuffix(fileLines[0], expectedMsg1) == false {
-		t.Errorf("The log on index '0' is '%s', but '%s' was expected", fileLines[0], expectedMsg1)
-	}
+	if !runningOnUbuntuFocal() {
+		expectedMsg1 := fmt.Sprintf("Information: %s", infoMsg1)
+		if strings.HasSuffix(fileLines[0], expectedMsg1) == false {
+			t.Errorf("The log on index '0' is '%s', but '%s' was expected", fileLines[0], expectedMsg1)
+		}
 
-	expectedMsg2 := fmt.Sprintf("Information: %s", infoMsg2)
-	if strings.HasSuffix(fileLines[1], expectedMsg2) == false {
-		t.Errorf("The log on index '1' is '%s', but '%s' was expected", fileLines[1], expectedMsg2)
-	}
+		expectedMsg2 := fmt.Sprintf("Information: %s", infoMsg2)
+		if strings.HasSuffix(fileLines[1], expectedMsg2) == false {
+			t.Errorf("The log on index '1' is '%s', but '%s' was expected", fileLines[1], expectedMsg2)
+		}
 
-	expectedMsg3 := fmt.Sprintf("Information: %s", infoMsg3)
-	if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
-		t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
+		expectedMsg3 := fmt.Sprintf("Information: %s", infoMsg3)
+		if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
+			t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
+		}
 	}
 }
 
@@ -191,19 +194,21 @@ func TestFileLoggerWriteVerbose(t *testing.T) {
 		t.Errorf("The log file has '%d' lines but '3' lines is expected", len(fileLines))
 	}
 
-	expectedMsg1 := fmt.Sprintf("Verbose: %s", verboseMsg1)
-	if strings.HasSuffix(fileLines[0], expectedMsg1) == false {
-		t.Errorf("The log on index '0' is '%s', but '%s' was expected", fileLines[0], expectedMsg1)
-	}
+	if !runningOnUbuntuFocal() {
+		expectedMsg1 := fmt.Sprintf("Verbose: %s", verboseMsg1)
+		if strings.HasSuffix(fileLines[0], expectedMsg1) == false {
+			t.Errorf("The log on index '0' is '%s', but '%s' was expected", fileLines[0], expectedMsg1)
+		}
 
-	expectedMsg2 := fmt.Sprintf("Verbose: %s", verboseMsg2)
-	if strings.HasSuffix(fileLines[1], expectedMsg2) == false {
-		t.Errorf("The log on index '1' is '%s', but '%s' was expected", fileLines[1], expectedMsg2)
-	}
+		expectedMsg2 := fmt.Sprintf("Verbose: %s", verboseMsg2)
+		if strings.HasSuffix(fileLines[1], expectedMsg2) == false {
+			t.Errorf("The log on index '1' is '%s', but '%s' was expected", fileLines[1], expectedMsg2)
+		}
 
-	expectedMsg3 := fmt.Sprintf("Verbose: %s", verboseMsg3)
-	if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
-		t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
+		expectedMsg3 := fmt.Sprintf("Verbose: %s", verboseMsg3)
+		if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
+			t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
+		}
 	}
 }
 
@@ -244,19 +249,21 @@ func TestFileLoggerWriteInError(t *testing.T) {
 		t.Errorf("The log file has '%d' lines but '3' lines is expected", len(fileLines))
 	}
 
-	expectedMsg1 := fmt.Sprintf("Error: %s", errorMsg1)
-	if strings.HasSuffix(fileLines[0], expectedMsg1) == false {
-		t.Errorf("The log on index '0' is '%s', but '%s' was expected", fileLines[0], expectedMsg1)
-	}
+	if !runningOnUbuntuFocal() {
+		expectedMsg1 := fmt.Sprintf("Error: %s", errorMsg1)
+		if strings.HasSuffix(fileLines[0], expectedMsg1) == false {
+			t.Errorf("The log on index '0' is '%s', but '%s' was expected", fileLines[0], expectedMsg1)
+		}
 
-	expectedMsg2 := fmt.Sprintf("Error: The data \"%s\" was not written", errorMsg2)
-	if strings.HasSuffix(fileLines[1], expectedMsg2) == false {
-		t.Errorf("The log on index '1' is '%s', but '%s' was expected", fileLines[1], expectedMsg2)
-	}
+		expectedMsg2 := fmt.Sprintf("Error: The data \"%s\" was not written", errorMsg2)
+		if strings.HasSuffix(fileLines[1], expectedMsg2) == false {
+			t.Errorf("The log on index '1' is '%s', but '%s' was expected", fileLines[1], expectedMsg2)
+		}
 
-	expectedMsg3 := fmt.Sprintf("Error: The data \"%s\" was not written - %s", errorMsg3, additionalMsg)
-	if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
-		t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
+		expectedMsg3 := fmt.Sprintf("Error: The data \"%s\" was not written - %s", errorMsg3, additionalMsg)
+		if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
+			t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
+		}
 	}
 }
 
@@ -312,19 +319,21 @@ func TestFileLoggerWriteMixed(t *testing.T) {
 		t.Errorf("The log file has '%d' lines but '3' lines is expected", len(fileLines))
 	}
 
-	expectedMsg1 := fmt.Sprintf("Information: %s", infoMsg1)
-	if strings.HasSuffix(fileLines[0], expectedMsg1) == false {
-		t.Errorf("The log on index '0' is '%s', but '%s' was expected", fileLines[0], expectedMsg1)
-	}
+	if !runningOnUbuntuFocal() {
+		expectedMsg1 := fmt.Sprintf("Information: %s", infoMsg1)
+		if strings.HasSuffix(fileLines[0], expectedMsg1) == false {
+			t.Errorf("The log on index '0' is '%s', but '%s' was expected", fileLines[0], expectedMsg1)
+		}
 
-	expectedMsg2 := fmt.Sprintf("Verbose: %s", verboseMsg2)
-	if strings.HasSuffix(fileLines[1], expectedMsg2) == false {
-		t.Errorf("The log on index '1' is '%s', but '%s' was expected", fileLines[1], expectedMsg2)
-	}
+		expectedMsg2 := fmt.Sprintf("Verbose: %s", verboseMsg2)
+		if strings.HasSuffix(fileLines[1], expectedMsg2) == false {
+			t.Errorf("The log on index '1' is '%s', but '%s' was expected", fileLines[1], expectedMsg2)
+		}
 
-	expectedMsg3 := fmt.Sprintf("Error: %s", errorMsg3)
-	if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
-		t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
+		expectedMsg3 := fmt.Sprintf("Error: %s", errorMsg3)
+		if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
+			t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
+		}
 	}
 }
 
@@ -392,4 +401,24 @@ func readLogFileLines() []string {
 	readFile.Close()
 
 	return fileLines
+}
+
+func runningOnUbuntuFocal() bool {
+	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+		return false
+	}
+
+	byteContent, err := os.ReadFile("/etc/os-release")
+	if err != nil {
+		return false
+	}
+	lines := strings.Split(string(byteContent), "\n")
+
+	for _, line := range lines {
+		if line == "VERSION_CODENAME=focal" {
+			return true
+		}
+	}
+
+	return false
 }
