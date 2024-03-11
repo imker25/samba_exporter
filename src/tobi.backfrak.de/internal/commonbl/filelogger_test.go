@@ -385,11 +385,31 @@ func ensureLogFileDirExists() {
 }
 
 func readLogFileLines() []string {
-	readFile, err := os.Open(logfile_path)
+	return readFileLines(logfile_path)
+}
 
+func runningOnUbuntuFocal() bool {
+	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+		return false
+	}
+
+	lines := readFileLines("/etc/os-release")
+	for _, line := range lines {
+		if line == "VERSION_CODENAME=focal" {
+			return true
+		}
+	}
+
+	return false
+}
+
+func readFileLines(path string) []string {
+	readFile, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
 	}
+	defer readFile.Close()
+
 	fileScanner := bufio.NewScanner(readFile)
 	fileScanner.Split(bufio.ScanLines)
 	var fileLines []string
@@ -398,27 +418,5 @@ func readLogFileLines() []string {
 		fileLines = append(fileLines, fileScanner.Text())
 	}
 
-	readFile.Close()
-
 	return fileLines
-}
-
-func runningOnUbuntuFocal() bool {
-	if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
-		return false
-	}
-
-	byteContent, err := os.ReadFile("/etc/os-release")
-	if err != nil {
-		return false
-	}
-	lines := strings.Split(string(byteContent), "\n")
-
-	for _, line := range lines {
-		if line == "VERSION_CODENAME=focal" {
-			return true
-		}
-	}
-
-	return false
 }
