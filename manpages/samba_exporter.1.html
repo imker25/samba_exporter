@@ -119,6 +119,10 @@ Or a prometheus database sever can be configured to collect the data by scraping
 Print the programs help message and exit</p>
   </li>
   <li>
+    <p><code>-log-file-path string</code>:
+Give the full file path for a log file. When parameter is not set (as by default), logs will be written to stdout and stderr (default " ")</p>
+  </li>
+  <li>
     <p><code>-not-expose-client-data</code>
 Set to <code>true</code>, no details about the connected clients will be exported</p>
   </li>
@@ -133,6 +137,10 @@ Set to <code>true</code>, no details about the connected users will be exported<
   <li>
     <p><code>-not-expose-pid-data</code>
     Set to <code>true</code>, no process IDs will be exported</p>
+  </li>
+  <li>
+    <p><code>-not-expose-share-details</code>
+    Set to 'true', no details about the shares will be exported</p>
   </li>
   <li>
     <p><code>-print-version</code>:
@@ -324,7 +332,7 @@ In case you found a new bug please also report as github issue on the projects p
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>January 2024</li>
+    <li class='tc'>March 2024</li>
     <li class='tr'>samba_exporter(1)</li>
   </ol>
 
