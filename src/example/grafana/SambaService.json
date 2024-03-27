@@ -12,7 +12,7 @@
       "name": "SAMBA_SERVER",
       "type": "constant",
       "label": "prefix",
-      "value": "server.local",
+      "value": "server.local:9922",
       "description": ""
     }
   ],
