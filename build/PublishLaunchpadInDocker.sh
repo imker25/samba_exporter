@@ -186,25 +186,58 @@ fi
 cp -v "$BRANCH_ROOT/tmp/commit_logs" "$DEB_PACKAGE_DIR"
 
 dockerError="false"
-echo "Publish tag $tag on launchpad within a docker cotainer for focal"
-echo "# ###################################################################"
-buildAndRunDocker "focal"
-if [ "$?" != "0" ]; then
-    dockerError="true"
-    echo "Error while publish package for focal"
-fi
-echo "# ###################################################################"
-echo "Delete the container image when done" 
-docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
-docker builder prune --all --force
+# echo "Publish tag $tag on launchpad within a docker cotainer for focal"
+# echo "# ###################################################################"
+# buildAndRunDocker "focal"
+# if [ "$?" != "0" ]; then
+#     dockerError="true"
+#     echo "Error while publish package for focal"
+# fi
+# echo "# ###################################################################"
+# echo "Delete the container image when done" 
+# docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+# docker builder prune --all --force
+
+# if [ "$dockerError" == "false" ];then 
+#     echo "Publish tag $tag on launchpad within a docker cotainer for jammy"
+#     echo "# ###################################################################"
+#     buildAndRunDocker "jammy"
+#     if [ "$?" != "0" ]; then
+#         dockerError="true"
+#         echo "Error while publish package for jammy"
+#     fi
+# fi
+# echo "# ###################################################################"
+# echo "Delete the container image when done" 
+# docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+# docker builder prune --all --force
+
+# if [ "$dockerError" == "false" ];then 
+#     echo "Publish tag $tag on launchpad within a docker cotainer for mantic"
+#     echo "# ###################################################################"
+#     buildAndRunDocker "mantic"
+#     if [ "$?" != "0" ]; then
+#         dockerError="true"
+#         echo "Error while publish package for mantic"
+#     fi
+# fi
+# echo "# ###################################################################"
+# echo "Delete the container image when done" 
+# docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+# docker builder prune --all --force
+
+# echo "# ###################################################################"
+# echo "Delete the container image when done" 
+# docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+# docker builder prune --all --force
 
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for jammy"
+    echo "Publish tag $tag on launchpad within a docker cotainer for nobel"
     echo "# ###################################################################"
-    buildAndRunDocker "jammy"
+    buildAndRunDocker "nobel"
     if [ "$?" != "0" ]; then
         dockerError="true"
-        echo "Error while publish package for jammy"
+        echo "Error while publish package for nobel"
     fi
 fi
 echo "# ###################################################################"
@@ -212,48 +245,34 @@ echo "Delete the container image when done"
 docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
 docker builder prune --all --force
 
-if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for mantic"
-    echo "# ###################################################################"
-    buildAndRunDocker "mantic"
-    if [ "$?" != "0" ]; then
-        dockerError="true"
-        echo "Error while publish package for mantic"
-    fi
-fi
-echo "# ###################################################################"
-echo "Delete the container image when done" 
-docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
-docker builder prune --all --force
+# if [ "$dockerError" == "false" ];then 
+#     echo "Publish tag $tag on launchpad within a docker cotainer for bullseye"
+#     echo "# ###################################################################"
+#     buildAndRunDocker "bullseye"
+#     if [ "$?" != "0" ]; then
+#         dockerError="true"
+#         echo "Error while publish package for bullseye"
+#     fi
+# fi
+# echo "# ###################################################################"
+# echo "Delete the container image when done" 
+# docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+# docker builder prune --all --force
 
-if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for bullseye"
-    echo "# ###################################################################"
-    buildAndRunDocker "bullseye"
-    if [ "$?" != "0" ]; then
-        dockerError="true"
-        echo "Error while publish package for bullseye"
-    fi
-fi
-echo "# ###################################################################"
-echo "Delete the container image when done" 
-docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
-docker builder prune --all --force
+# if [ "$dockerError" == "false" ];then 
+#     echo "Publish tag $tag on launchpad within a docker cotainer for bookworm"
+#     echo "# ###################################################################"
+#     buildAndRunDocker "bookworm"
+#     if [ "$?" != "0" ]; then
+#         dockerError="true"
+#         echo "Error while publish package for bookworm"
+#     fi
+# fi
 
-if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for bookworm"
-    echo "# ###################################################################"
-    buildAndRunDocker "bookworm"
-    if [ "$?" != "0" ]; then
-        dockerError="true"
-        echo "Error while publish package for bookworm"
-    fi
-fi
-
-echo "# ###################################################################"
-echo "Delete the container image when done"    
-docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
-docker builder prune --all --force
+# echo "# ###################################################################"
+# echo "Delete the container image when done"    
+# docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+# docker builder prune --all --force
 
 popd
 
