@@ -6,14 +6,15 @@
 
 | Version | Code Name | Supported |
 |---------|-----------|-----------|
-| Ubnutu 20.04   | Focal Fossa | yes |
+| Ubnutu 20.04   | Focal Fossa | no |
 | Ubnutu 21.04   | Hirsute Hippo | no |
 | Ubnutu 21.10   | Impish Indri | no |
 | Ubnutu 22.04   | Jammy Jellyfish | yes |
 | Ubnutu 22.10  | Kinetic Kudu | no |
 | Ubnutu 23.04  | Lunar Lobster | no |
 | Ubnutu 23.10  | Mantic Minotaur | yes |
-| Ubnutu 24.04  | -| planed |
+| Ubnutu 24.04  | Noble Numbat | yes |
+| Ubnuntu 24.10 | - | planed |
 
 ---
 
@@ -43,9 +44,10 @@
 | Fedora 35  | 2021-11-02 | yes |
 | Fedora 36   | 2022-04-19 | no |
 | Fedora 37   | 2022-11-15 | no |
-| Fedora 38   | 2023-04-25 | yes |
+| Fedora 38   | 2023-04-25 | no |
 | Fedora 39   | 2023-10-24 | yes |
-| Fedora 20   | xxx | planed |
+| Fedora 40   | 2024-04-23 | yes |
+| Fedora 41   | XXX | planed |
 
 ---
 
