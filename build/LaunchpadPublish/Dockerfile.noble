@@ -9,7 +9,7 @@
 # ######################################################################################
 
 # Use the packages target version (noble = ubuntu 24.04) as base image
-FROM ubuntu:nobel
+FROM ubuntu:noble
 
 # Setup the system and install needed packages
 ENV DEBIAN_FRONTEND="noninteractive"

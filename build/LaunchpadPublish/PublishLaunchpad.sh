@@ -130,6 +130,7 @@ echo "# ###################################################################"
 
 echo "Prepare for operation"
 mkdir -p $HOME/.ssh
+chmod 700 $HOME/.ssh
 echo "$LAUNCHPAD_SSH_ID_PUB" > $HOME/.ssh/id_rsa.pub
 chmod 600 $HOME/.ssh/id_rsa.pub
 echo "$LAUNCHPAD_SSH_ID_PRV" > $HOME/.ssh/id_rsa
@@ -144,6 +145,8 @@ gpg --list-keys --batch --no-tty
 
 mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
+# touch ~/.ssh/known_hosts
+# ssh-keyscan -t rsa git.launchpad.net 
 ssh-keyscan -t rsa git.launchpad.net >> ~/.ssh/known_hosts
 git clone "$LAUNCHPAD_GIT_REPO"
 if [ "$?" != "0" ]; then 
@@ -278,7 +281,7 @@ else
 fi
 
 if [ "$distVersionNumber" == "24.04" ] && [ "$distribution" == "Ubuntu" ]; then
-    sed -i "s/focal;/nobel;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/focal;/noble;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/ubuntu24.04/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.22,/g" $WORK_DIR/install/debian/control 
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
