@@ -145,8 +145,6 @@ gpg --list-keys --batch --no-tty
 
 mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
-# touch ~/.ssh/known_hosts
-# ssh-keyscan -t rsa git.launchpad.net 
 ssh-keyscan -t rsa git.launchpad.net >> ~/.ssh/known_hosts
 git clone "$LAUNCHPAD_GIT_REPO"
 if [ "$?" != "0" ]; then 
