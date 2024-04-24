@@ -213,14 +213,18 @@ docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q)
 docker builder prune --all --force
 
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on corp within a docker cotainer for fedora 38"
+    echo "Publish tag $tag on corp within a docker cotainer for fedora 40"
     echo "# ###################################################################"
-    buildAndRunDocker "fedora38"
+    buildAndRunDocker "fedora40"
     if [ "$?" != "0" ]; then
         dockerError="true"
-         echo "Error while publish for fedora 38"
+         echo "Error while publish for fedora 40"
     fi
 fi
+echo "# ###################################################################"
+echo "Delete the container image when done" 
+docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+docker builder prune --all --force
 
 # Whenever adding a new fedora version, ensure to enable this 
 # fedora version on copr before the first release
