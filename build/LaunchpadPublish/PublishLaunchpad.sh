@@ -255,6 +255,8 @@ fi
 if [ "$distVersionNumber" == "22.10" ] && [ "$distribution" == "Ubuntu" ]; then
     sed -i "s/focal;/kinetic;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/ubuntu22.10/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/jammy;/kinetic;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu22.04/ubuntu22.10/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.19,/g" $WORK_DIR/install/debian/control    
 else 
     echo "Not running on ubuntu 22.10 (kinetic)"
@@ -263,6 +265,8 @@ fi
 if [ "$distVersionNumber" == "23.04" ] && [ "$distribution" == "Ubuntu" ]; then
     sed -i "s/focal;/lunar;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/ubuntu23.04/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/jammy;/lunar;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu22.04/ubuntu23.04/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.20,/g" $WORK_DIR/install/debian/control 
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
 else 
@@ -272,6 +276,8 @@ fi
 if [ "$distVersionNumber" == "23.10" ] && [ "$distribution" == "Ubuntu" ]; then
     sed -i "s/focal;/mantic;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/ubuntu23.10/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/jammy;/mantic;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu22.04/ubuntu23.10/g" $WORK_DIR/install/debian/changelog    
     sed -i "s/golang-1.16,/golang-1.21,/g" $WORK_DIR/install/debian/control 
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
 else 
@@ -281,6 +287,8 @@ fi
 if [ "$distVersionNumber" == "24.04" ] && [ "$distribution" == "Ubuntu" ]; then
     sed -i "s/focal;/noble;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/ubuntu24.04/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/jammy;/noble;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu22.04/ubuntu24.04/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.22,/g" $WORK_DIR/install/debian/control 
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
 else 
@@ -290,6 +298,8 @@ fi
 if [ "$distVersionNumber" == "12" ] && [ "$distribution" == "Debian" ]; then
     sed -i "s/focal;/bookworm;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/debian12/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/jammy;/bookworm;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu22.04/debian12/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.19,/g" $WORK_DIR/install/debian/control 
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
 else 
@@ -299,6 +309,8 @@ fi
 if [ "$distVersionNumber" == "11" ] && [ "$distribution" == "Debian" ]; then
     sed -i "s/focal;/bullseye;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/debian11/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/jammy;/bullseye;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu22.04/debian11/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.15,/g" $WORK_DIR/install/debian/control
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
     mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod.gopsutil-v3"
@@ -316,6 +328,8 @@ fi
 if [ "$distVersionNumber" == "10" ] && [ "$distribution" == "Debian" ]; then
     sed -i "s/focal;/buster;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/debian10/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/jammy;/buster;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu22.04/debian10/g" $WORK_DIR/install/debian/changelog    
     sed -i "s/golang-1.16,/golang-1.15,/g" $WORK_DIR/install/debian/control
     sed -i "s/gzip (>=1.10)/gzip (>=1.9)/g" $WORK_DIR/install/debian/control
     sed -i "s/golang-any/man-db/g" $WORK_DIR/install/debian/control
