@@ -164,7 +164,7 @@
           "exemplar": true,
           "expr": "samba_locks_per_share_count{instance=\"${SAMBA_SERVER}\"}",
           "interval": "",
-          "legendFormat": "Loks on  {{share}}",
+          "legendFormat": "Locks on  {{share}}",
           "refId": "A"
         }
       ],
