@@ -34,25 +34,25 @@ jobs:
     - name: 'Get Package name and version from logs/ to GITHUB_ENVIRONMENT'
       run: ./build/GithubEnv.sh           
     - name: 'Upload Artifact samba_exporter'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: samba_exporter-${{ matrix.os }}
         path: bin/samba_exporter
         retention-days: 1
     - name: 'Upload Artifact samba_statusd'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: samba_statusd-${{ matrix.os }}
         path: bin/samba_statusd
         retention-days: 1
     - name: 'Upload Artifact PackageName.txt'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: PackageName-${{ matrix.os }}.txt
         path: logs/PackageName.txt
         retention-days: 1 
     - name: 'Upload Artifact ShortVersion.txt'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ShortVersion-${{ matrix.os }}.txt
         path: logs/ShortVersion.txt
@@ -74,7 +74,7 @@ jobs:
         depends: ${{ env.SAMBA_EXPORTER_PACKAGE_DEPENDS }}
         desc: ${{ env.SAMBA_EXPORTER_PACKAGE_DESCRIPTION }} 
     - name: "Upload Artifact samba_exporter*.deb"
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: samba_exporter-${{ matrix.os }}.deb
         path: ${{ env.SAMBA_EXPORTER_PACKAGE_NAME }}_amd64.deb
@@ -92,7 +92,7 @@ jobs:
           requirements: 'build/pages/requirements.txt' 
           configfile: 'build/pages/mkdocs.yml' 
       - name: "Upload Artifact docs pages"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: docs-pages
           path: build/pages/site/**
@@ -110,20 +110,20 @@ jobs:
                 ./build/CreateRpmPackage.sh
                 build/GithubEnv.sh
       - name: "Upload Artifact - RPM"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: samba_exporter-rpm
           path: bin/samba-exporter-${{ env.SAMBA_EXPORTER_RPM_VERSION }}-1.x86_64.rpm 
           retention-days: 1    
       - name: "Upload Artifact - Docker build log"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: docker-build-fedora-log
           path: logs/docker-build-fedora.log
           retention-days: 1   
       - name: "Upload Artifact - Unit Test log"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: unit-test-fedora-log
@@ -139,12 +139,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Download samba_exporter artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: samba_exporter-${{ matrix.os }}
           path: bin/samba_exporter  
       - name: Download samba_statusd artifact
-        uses: actions/download-artifact@v3  
+        uses: actions/download-artifact@v4  
         with:
           name: samba_statusd-${{ matrix.os }}
           path: bin/samba_statusd
@@ -164,12 +164,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Download samba_exporter artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: samba_exporter-${{ matrix.os }}
           path: bin/samba_exporter  
       - name: Download samba_statusd artifact
-        uses: actions/download-artifact@v3  
+        uses: actions/download-artifact@v4  
         with:
           name: samba_statusd-${{ matrix.os }}
           path: bin/samba_statusd
@@ -189,12 +189,12 @@ jobs:
   #   steps: 
   #   - uses: actions/checkout@v3
   #   - name: Download PackageName.txt artifact
-  #     uses: actions/download-artifact@v3
+  #     uses: actions/download-artifact@v4
   #     with:
   #       name: PackageName-${{ matrix.os }}.txt   
   #       path: logs/ 
   #   - name: Download samba_exporter package artifact
-  #     uses: actions/download-artifact@v3
+  #     uses: actions/download-artifact@v4
   #     with:
   #       name: samba_exporter-${{ matrix.os }}.deb  
   #       path: .           
@@ -212,17 +212,17 @@ jobs:
     steps: 
     - uses: actions/checkout@v3      
     - name: Download samba_exporter package artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: samba_exporter-ubuntu-22.04.deb  
         path: . 
     - name: Download PackageName.txt artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: PackageName-ubuntu-22.04.txt   
         path: logs/ubuntu-22.04/         
     - name: Download ShortVersion.txt artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: ShortVersion-ubuntu-22.04.txt   
         path: logs/  
