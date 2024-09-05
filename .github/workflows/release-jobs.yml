@@ -263,17 +263,17 @@ jobs:
               echo "Publish pages"
             fi  
     - name: Download samba_exporter deb-package artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: samba-exporter_deb-packages 
         path: ./bin/deb-packages/binary/    
     - name: Download samba_exporter rpm-package artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: samba-exporter_rpm-packages 
         path: ./bin/rpm-packages/  
     - name: Download samba_exporter man-pages artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: samba-exporter_man-pages 
         path: ./bin/deb-packages/man/                             
