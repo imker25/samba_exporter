@@ -94,16 +94,15 @@ jobs:
         asset_path: ./bin/deb-packages/binary/samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu24.04_amd64.deb
         asset_name: samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu24.04_amd64.deb
         asset_content_type: application/zip  
-    # This section will be used for  Ubuntu 24.10 packages
-    # - name: Upload Release Asset for Ubuntu 23.10
-    #   uses: actions/upload-release-asset@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
-    #     asset_path: ./bin/deb-packages/binary/samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu23.10_amd64.deb
-    #     asset_name: samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu23.10_amd64.deb
-    #     asset_content_type: application/zip      
+    - name: Upload Release Asset for Ubuntu 24.10
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
+        asset_path: ./bin/deb-packages/binary/samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu24.10_amd64.deb
+        asset_name: samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~ubuntu24.10_amd64.deb
+        asset_content_type: application/zip      
     - name: Upload Release Asset for Debian 12
       uses: actions/upload-release-asset@v1
       env:
@@ -212,14 +211,14 @@ jobs:
         asset_path: bin/rpm-packages/Fedora-35/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc35.x86_64.rpm 
         asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc35.x86_64.rpm 
         asset_content_type: application/zip                   
-    - name: Upload Release Asset for Fedora 39
+    - name: Upload Release Asset for Fedora 41
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
-        asset_path: bin/rpm-packages/Fedora-39/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc39.x86_64.rpm 
-        asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc39.x86_64.rpm 
+        asset_path: bin/rpm-packages/Fedora-41/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc41.x86_64.rpm 
+        asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc41.x86_64.rpm 
         asset_content_type: application/zip  
     - name: Upload Release Asset for Fedora 40
       uses: actions/upload-release-asset@v1

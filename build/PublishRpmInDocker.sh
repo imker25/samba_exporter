@@ -199,12 +199,12 @@ docker builder prune --all --force
 
 
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on corp within a docker cotainer for fedora 39"
+    echo "Publish tag $tag on corp within a docker cotainer for fedora 41"
     echo "# ###################################################################"
-    buildAndRunDocker "fedora39"
+    buildAndRunDocker "fedora41"
     if [ "$?" != "0" ]; then
         dockerError="true"
-         echo "Error while publish for fedora 39"
+         echo "Error while publish for fedora 41"
     fi
 fi
 echo "# ###################################################################"

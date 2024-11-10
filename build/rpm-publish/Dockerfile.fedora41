@@ -1,0 +1,51 @@
+# ######################################################################################
+# Copyright 2021 by tobi@backfrak.de. All
+# rights reserved. Use of this source code is governed
+# by a BSD-style license that can be found in the
+# LICENSE file.
+# ######################################################################################
+# Container image used by ./../PublishRpmInDocker.sh to transfer the sources to the launchpad-ppa
+# The actual transformation is done by ./RpmPublish.sh when this container get started
+# ######################################################################################
+
+FROM fedora:41
+
+RUN dnf -y update && \
+    dnf install -y 'dnf-command(builddep)' \
+        redhat-lsb \
+        rubygem-ronn-ng \
+        rpmdevtools \
+        rpmlint \
+        rpm-build \
+        rpm-sign \
+        gzip \
+        curl \
+        man-db \
+        binutils \
+        wget \
+        git \
+        go-rpm-macros \                                        
+        openssh-clients \
+        copr-cli \
+        procps-ng \
+        gnupg && \
+    dnf clean all
+
+COPY samba-exporter.from_source.spec /samba-exporter.from_source.spec
+
+RUN dnf builddep /samba-exporter.from_source.spec -y && \
+    dnf clean all
+
+ARG USER
+ARG UID
+ARG GID
+
+# Add publish script
+COPY RpmPublish.sh /RpmPublish.sh
+RUN chmod 777 /RpmPublish.sh
+
+RUN mkdir -p /home/${USER} &&\
+    chmod 770 /home/${USER} && \
+    chown ${UID}:${GID} /home/${USER} && \
+    chmod 777 /var/lib/rpm/
+
