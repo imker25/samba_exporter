@@ -4,30 +4,30 @@ Hash: SHA512
 Origin: imker25.github.io/samba_exporter/
 Label: imker25.github.io/samba_exporter/
 Codename: bookworm
-Date: Tue, 09 Jul 2024 20:09:38 UTC
+Date: Sun, 10 Nov 2024 20:19:52 UTC
 Architectures: amd64
 Components: main
 Description: Personal repository for samba-exporter packages
 MD5Sum:
- 94daf69663482c2e8762250f91384097 989 main/binary-amd64/Packages
- 83812e1ef35ab9f899f8bda454de9778 595 main/binary-amd64/Packages.gz
+ 19a73865d1f8aae0e213ee9332d13e4a 989 main/binary-amd64/Packages
+ 71686033db1840119dff59bda09b25a2 596 main/binary-amd64/Packages.gz
  de839c73b53c7e1faf2f9d3d248bc3cd 180 main/binary-amd64/Release
 SHA1:
- e6798ce608bcc9daf23db65d605623694a5a7710 989 main/binary-amd64/Packages
- 0b1b0032efe1906c445fcf1bc3dd23657c35d9eb 595 main/binary-amd64/Packages.gz
+ 1fb871b444a385aed0b45419323ee968d72c49ff 989 main/binary-amd64/Packages
+ 45bd7e0578a3b8c1ed13a2d3fc16291e23f97d72 596 main/binary-amd64/Packages.gz
  64634860d65a043f07360b0de9a2dd2c60fe9d16 180 main/binary-amd64/Release
 SHA256:
- 6bf1664a7c54d4ddbb986d741ccc17c3a641aeee20d1b8f9762b1d780b5d5390 989 main/binary-amd64/Packages
- 2eb6476fa98b160423238d08a35f2c1ce7b167bcbeb7a947a18ed1c9a44ca4f5 595 main/binary-amd64/Packages.gz
+ bd4d28b3caf4a71fcb78d69d84a8697b0f440789a1d28a827c0728472c4d8dc6 989 main/binary-amd64/Packages
+ 428e384c80a1b1955f78f3b9e265abdbf35460653a496442012686d8dc4f912f 596 main/binary-amd64/Packages.gz
  d863fc2fbffb928988032b869897f10697f2d98909508b92fc74fafc7f334798 180 main/binary-amd64/Release
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEy26Q6ewyOFCxbBwUo4oQkcAYrmgFAmaNmQIACgkQo4oQkcAY
-rmi4Zgf/d4f4iatlTmerOLLwRijUYYd+MXkxaqgT/nm577WC/7g0mBDlN01+Bdp8
-xyTZX+sklyoWvatzF8O21ZUlk2Q8Sj+goFOcT5AYSoUfH+dTQiy1Hq4B9Zp29wMM
-a/UMWLoUuPbogI9lluQObER9RxyQiW89i2CrSnDJN7i5ObEb0uZPwM6U6V8I6jAq
-dZMAysEw/S1qCsgs+Yk/XwDLeSF2tZz4jPrv4XyF4mQXJK7EHwRUhreAkNB3p7aN
-M+k7XnhJflTvQstrRB3PoCSmP4Q7pJ73LOkDUReROC3NF9YDSCx6q5S0fdeXUM2x
-xuaq76O4H8YibIZgynPq+5B4J9RvpQ==
-=tqzB
+iQEzBAEBCgAdFiEEy26Q6ewyOFCxbBwUo4oQkcAYrmgFAmcxFWgACgkQo4oQkcAY
+rmjLUQgAwWXKs7hCDZrO52QIEApwTPVPzbXyQEaifmDZ5yqBtCI6pvMlORn/5WVn
+YGIndf9smgDiLNXPqpZWAe8tCAXiIiN7DlcdfQTPsf6/6//0uU5pTkSCHFaXVBEa
+g8GJb30sxuGqtJJb2omhRfOZ0HrhvfC40Gl8mPkU9i6cfjuWk0s7zInN/za/Br6J
+n9BAbnzS6eKnMUY9g4w3Oape8V8Hdy1w6ApOcH4kIvCjF9y5BmqlcQ/Sy3wbhEo/
+59ML6xwvEQ3aGDBzT8m/mYKAYphUb/po5X+LtKlzVhZGFhxRFk1Cq7UenjHYUhMw
+8T88HccO+1/VjFrM3O9AzyhVKmqNTQ==
+=4D4F
 -----END PGP SIGNATURE-----
