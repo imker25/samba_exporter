@@ -12,9 +12,10 @@
 | Ubnutu 22.04   | Jammy Jellyfish | yes |
 | Ubnutu 22.10  | Kinetic Kudu | no |
 | Ubnutu 23.04  | Lunar Lobster | no |
-| Ubnutu 23.10  | Mantic Minotaur | yes |
+| Ubnutu 23.10  | Mantic Minotaur | no |
 | Ubnutu 24.04  | Noble Numbat | yes |
-| Ubnuntu 24.10 | - | planed |
+| Ubnuntu 24.10 | Oracular Oriole | yes |
+| Ubnuntu 25.04 | - | planed |
 
 ---
 
@@ -45,9 +46,10 @@
 | Fedora 36   | 2022-04-19 | no |
 | Fedora 37   | 2022-11-15 | no |
 | Fedora 38   | 2023-04-25 | no |
-| Fedora 39   | 2023-10-24 | yes |
+| Fedora 39   | 2023-10-24 | no |
 | Fedora 40   | 2024-04-23 | yes |
-| Fedora 41   | XXX | planed |
+| Fedora 41   | 2024-10-29 | yes |
+| Fedora 42   | XXX | planed |
 
 ---
 
