@@ -55,6 +55,9 @@ function buildAndRunDocker() {
     if [ "${distVersion}" == "noble" ] && [ "$(id -u)" == "1000" ]; then
         userName="ubuntu"
     fi
+    if [ "${distVersion}" == "oracular" ] && [ "$(id -u)" == "1000" ]; then
+        userName="ubuntu"
+    fi
     if [ "$dryRun" == "false" ]; then
         docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
             --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
@@ -210,6 +213,20 @@ if [ "$dockerError" == "false" ];then
     if [ "$?" != "0" ]; then
         dockerError="true"
         echo "Error while publish package for noble"
+    fi
+fi
+echo "# ###################################################################"
+echo "Delete the container image when done" 
+docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+docker builder prune --all --force
+
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on launchpad within a docker cotainer for oracular"
+    echo "# ###################################################################"
+    buildAndRunDocker "oracular"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+        echo "Error while publish package for oracular"
     fi
 fi
 echo "# ###################################################################"
