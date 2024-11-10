@@ -212,16 +212,16 @@ jobs:
         asset_path: bin/rpm-packages/Fedora-35/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc35.x86_64.rpm 
         asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc35.x86_64.rpm 
         asset_content_type: application/zip                   
-    - name: Upload Release Asset for Fedora 39
+    - name: Upload Release Asset for Fedora 41
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
-        asset_path: bin/rpm-packages/Fedora-39/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc41.x86_64.rpm 
+        asset_path: bin/rpm-packages/Fedora-41/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc41.x86_64.rpm 
         asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc41.x86_64.rpm 
         asset_content_type: application/zip  
-    - name: Upload Release Asset for Fedora 41
+    - name: Upload Release Asset for Fedora 40
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
