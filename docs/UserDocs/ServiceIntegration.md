@@ -15,6 +15,8 @@ To add this exporter to your [prometheus database](https://prometheus.io/) you h
 
 Replace `server.local` with the network name of your samba server.
 
+**Attention** When prometheus and samba-exporter are running on different instances you need to configure the *samba-exporter service* so it exposes the data on another interface then the loopback device. Therefore change the **-web.listen-address** in `/etc/default/samba_exporter`.
+
 ## Grafana
 
 For [grafana](https://grafana.com) an example dashboard is installed with the debian package and can be found at `/usr/share/doc/samba-exporter/grafana/SambaService.json`
