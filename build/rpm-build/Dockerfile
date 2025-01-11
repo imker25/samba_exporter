@@ -1,4 +1,4 @@
-FROM fedora:40
+FROM fedora:41
 
 RUN yum -y update && \
     yum clean all
