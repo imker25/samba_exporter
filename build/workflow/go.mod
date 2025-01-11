@@ -1,6 +1,6 @@
 module tobi.backfrak.de/samba-exporter-build
 
-go 1.18
+go 1.23
 
 require github.com/magefile/mage v1.14.0
 
