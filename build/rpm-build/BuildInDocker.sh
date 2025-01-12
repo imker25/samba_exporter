@@ -77,11 +77,11 @@ if [ "$fullVersion" == "" ]; then
     echo "Error: Can not read the full version from './logs/PackageName.txt'"
 fi
 echo "RPM Version will be: '$rpmVersion'"
-mkdir -pv "$HOME/rpmbuild/BUILDROOT/"
-mv -v "./tmp/${fullVersion}/"* "$HOME/rpmbuild/BUILDROOT/"
+mkdir -pv "$HOME/rpmbuild/PREBINROOT/"
+mv -v "./tmp/${fullVersion}/"* "$HOME/rpmbuild/PREBINROOT/"
 pushd "$HOME/rpmbuild/"
-sed -i "s/Version: x.x.x/Version: $rpmVersion/g" ./BUILDROOT/samba-exporter.spec
-mv -v ./BUILDROOT/samba-exporter.spec ./SPECS/samba-exporter.spec
+sed -i "s/Version: x.x.x/Version: $rpmVersion/g" ./PREBINROOT/samba-exporter.spec
+mv -v ./PREBINROOT/samba-exporter.spec ./SPECS/samba-exporter.spec
 
 echo ""
 echo "# ###################################################################"

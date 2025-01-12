@@ -79,7 +79,7 @@ fi
 
 %install
 rm -rf %{buildroot}
-mv -v %{_topdir}/BUILDROOT/ %{buildroot}
+mv -v %{_topdir}/PREBINROOT/ %{buildroot}
 
 
 %files

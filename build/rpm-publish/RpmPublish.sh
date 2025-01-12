@@ -473,12 +473,14 @@ if [  "$buildSystem" == "mage" ]; then
     echo "# ###################################################################"
     echo "Build the binary package"
     echo "# ###################################################################"
-    mkdir -pv "/home/${USER}/rpmbuild/BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/"
-    mv -v "./tmp/${fullVersion}/"* "/home/${USER}/rpmbuild/BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/"
+    rpmdev-setuptree
+    mkdir -pv "/home/${USER}/rpmbuild/PREBINROOT/"
+    mv -v "./tmp/${fullVersion}/"* "/home/${USER}/rpmbuild/PREBINROOT/"
+    mv -v "/home/${USER}/rpmbuild/PREBINROOT/samba-exporter.spec" "/home/${USER}/rpmbuild/SPECS/samba-exporter.spec"
     popd
     pushd "/home/${USER}/rpmbuild/"
-    echo "rpmbuild -bb ./BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/samba-exporter.spec"
-    rpmbuild -bb ./BUILDROOT/samba-exporter-${rpmVersion}-1.x86_64/samba-exporter.spec
+    echo "rpmbuild -bb ./SPECS/samba-exporter.spec"
+    rpmbuild -bb ./SPECS/samba-exporter.spec
     if [ "$?" != "0" ]; then 
         echo "Error: RPM creation failed"
         exit 1
