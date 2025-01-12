@@ -77,6 +77,10 @@ fi
  using a http client. Or a prometheus database sever can be configured
  to collect the data by scraping port 9922 on the samba server.
 
+%install
+rm -rf %{buildroot}
+mv -v %{_topdir}/BUILDROOT/ %{buildroot}
+
 
 %files
 %config(noreplace) "/etc/default/samba_exporter"

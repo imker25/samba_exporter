@@ -10,8 +10,8 @@ jobs:
   build-unit_test:
     strategy:
       matrix:
-        go-version: [1.21.x]
-        os: [ubuntu-22.04]
+        go-version: [1.23.x]
+        os: [ubuntu-24.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -81,7 +81,7 @@ jobs:
         retention-days: 1 
   build-pages:   
     name: Create docs for GitHub Pages
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 
         uses: actions/checkout@v3
@@ -99,7 +99,7 @@ jobs:
           retention-days: 1   
   build-rpm-package:   
     name: Create rpm package
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout 
         uses: actions/checkout@v3   
@@ -133,7 +133,7 @@ jobs:
     needs: build-unit_test
     strategy:
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-24.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -158,7 +158,7 @@ jobs:
     needs: build-unit_test
     strategy:
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-24.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -183,7 +183,7 @@ jobs:
   #   needs: build-unit_test
   #   strategy:
   #     matrix:
-  #       os: [ubuntu-22.04]
+  #       os: [ubuntu-24.04]
   #   runs-on: ${{ matrix.os }}
   #   timeout-minutes: 10
   #   steps: 
@@ -206,7 +206,7 @@ jobs:
   #     run: test/installationTest/RunInstallationTest.sh
   release-to-github:
     needs: [ integration-test-ubuntu, integration-test-bookworm, build-pages, build-rpm-package ]
-    runs-on: "ubuntu-22.04"
+    runs-on: "ubuntu-24.04"
     if: ((github.ref == 'refs/heads/main') || contains(github.ref, 'release'))
     timeout-minutes: 10
     steps: 

@@ -1,6 +1,6 @@
 module tobi.backfrak.de/cmd/samba_statusd
 
-go 1.21
+go 1.23
 
 require tobi.backfrak.de/internal/commonbl v0.0.0
 
