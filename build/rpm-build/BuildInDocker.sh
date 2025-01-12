@@ -67,6 +67,7 @@ echo ""
 echo "# ###################################################################"
 echo "Prepare for rpm packaging"
 echo "# ###################################################################"
+rpmdev-setuptree
 rpmVersion=$(cat ./logs/ShortVersion.txt)
 fullVersion=$(cat ./logs/PackageName.txt)
 if [ "$rpmVersion" == "" ]; then
@@ -76,16 +77,17 @@ if [ "$fullVersion" == "" ]; then
     echo "Error: Can not read the full version from './logs/PackageName.txt'"
 fi
 echo "RPM Version will be: '$rpmVersion'"
-mkdir -pv "$HOME/rpmbuild/BUILD/samba-exporter-${rpmVersion}-build/BUILDROOT/"
-mv -v "./tmp/${fullVersion}/"* "$HOME/rpmbuild/BUILD/samba-exporter-${rpmVersion}-build/BUILDROOT/"
+mkdir -pv "$HOME/rpmbuild/BUILDROOT/"
+mv -v "./tmp/${fullVersion}/"* "$HOME/rpmbuild/BUILDROOT/"
 pushd "$HOME/rpmbuild/"
-sed -i "s/Version: x.x.x/Version: $rpmVersion/g" ./BUILD/samba-exporter-${rpmVersion}-build/BUILDROOT/samba-exporter.spec
+sed -i "s/Version: x.x.x/Version: $rpmVersion/g" ./BUILDROOT/samba-exporter.spec
+mv -v ./BUILDROOT/samba-exporter.spec ./SPECS/samba-exporter.spec
 
 echo ""
 echo "# ###################################################################"
 echo "Run rpm packaging"
 echo "# ###################################################################"
-rpmbuild -bb ./BUILD/samba-exporter-${rpmVersion}-build/BUILDROOT/samba-exporter.spec
+rpmbuild -bb ./SPECS/samba-exporter.spec
 if [ "$?" != "0" ]; then 
     echo "Error: RPM creation failed"
     popd
