@@ -58,6 +58,10 @@ function buildAndRunDocker() {
     if [ "${distVersion}" == "oracular" ] && [ "$(id -u)" == "1000" ]; then
         userName="ubuntu"
     fi
+    if [ "${distVersion}" == "plucky" ] && [ "$(id -u)" == "1000" ]; then
+        userName="ubuntu"
+    fi
+
     if [ "$dryRun" == "false" ]; then
         docker run --env LAUNCHPAD_SSH_ID_PUB="$LAUNCHPAD_SSH_ID_PUB" \
             --env LAUNCHPAD_SSH_ID_PRV="$LAUNCHPAD_SSH_ID_PRV"  \
@@ -221,12 +225,12 @@ docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q)
 docker builder prune --all --force
 
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for oracular"
+    echo "Publish tag $tag on launchpad within a docker cotainer for plucky"
     echo "# ###################################################################"
-    buildAndRunDocker "oracular"
+    buildAndRunDocker "plucky"
     if [ "$?" != "0" ]; then
         dockerError="true"
-        echo "Error while publish package for oracular"
+        echo "Error while publish package for plucky"
     fi
 fi
 echo "# ###################################################################"
