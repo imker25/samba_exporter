@@ -197,14 +197,13 @@ echo "Delete the container image when done"
 docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
 docker builder prune --all --force
 
-
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on corp within a docker cotainer for fedora 41"
+    echo "Publish tag $tag on corp within a docker cotainer for fedora 40"
     echo "# ###################################################################"
-    buildAndRunDocker "fedora41"
+    buildAndRunDocker "fedora40"
     if [ "$?" != "0" ]; then
         dockerError="true"
-         echo "Error while publish for fedora 41"
+         echo "Error while publish for fedora 40"
     fi
 fi
 echo "# ###################################################################"
@@ -213,12 +212,12 @@ docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q)
 docker builder prune --all --force
 
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on corp within a docker cotainer for fedora 40"
+    echo "Publish tag $tag on corp within a docker cotainer for fedora 42"
     echo "# ###################################################################"
-    buildAndRunDocker "fedora40"
+    buildAndRunDocker "fedora42"
     if [ "$?" != "0" ]; then
         dockerError="true"
-         echo "Error while publish for fedora 40"
+         echo "Error while publish for fedora 42"
     fi
 fi
 echo "# ###################################################################"
