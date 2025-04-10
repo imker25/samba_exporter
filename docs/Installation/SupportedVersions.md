@@ -14,8 +14,9 @@
 | Ubnutu 23.04  | Lunar Lobster | no |
 | Ubnutu 23.10  | Mantic Minotaur | no |
 | Ubnutu 24.04  | Noble Numbat | yes |
-| Ubnuntu 24.10 | Oracular Oriole | yes |
-| Ubnuntu 25.04 | - | planed |
+| Ubnuntu 24.10 | Oracular Oriole | no |
+| Ubnuntu 25.04 | Plucky Puffin | yes |
+| Ubnuntu 25.10 | - | planed |
 
 ---
 
@@ -50,6 +51,7 @@
 | Fedora 40   | 2024-04-23 | yes |
 | Fedora 41   | 2024-10-29 | yes |
 | Fedora 42   | XXX | planed |
+| Fedora 43   | XXX | planed |
 
 ---
 
