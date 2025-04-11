@@ -516,7 +516,7 @@ if [  "$buildSystem" == "mage" ]; then
 fi
 
 if [  "$buildSystem" == "none" ]; then
-    echo "Running on unkown distribution '$distributio' or version '$distVersionNumber'" 
+    echo "Error: Running on unkown distribution '$distributio' or version '$distVersionNumber'." 
     exit 1
 fi
 
