@@ -307,10 +307,10 @@ else
 fi
 
 if [ "$distVersionNumber" == "25.04" ] && [ "$distribution" == "Ubuntu" ]; then
-    sed -i "s/focal;/oracular;/g" $WORK_DIR/install/debian/changelog
-    sed -i "s/ubuntu20.04/ubuntu24.10/g" $WORK_DIR/install/debian/changelog
-    sed -i "s/jammy;/oracular;/g" $WORK_DIR/install/debian/changelog
-    sed -i "s/ubuntu22.04/ubuntu24.10/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/focal;/plucky;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu20.04/ubuntu25.04/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/jammy;/plucky;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu22.04/ubuntu25.04/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.24,/g" $WORK_DIR/install/debian/control 
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
 else 
