@@ -97,6 +97,8 @@ func realMain() int {
 			logger.WriteErrorMessage("Can not find \"smbstatus\" executable. Please install the needed package.")
 			return -3
 		} else {
+			// Set the output language to English
+			smbstatusPath = "LANG=en_US.UTF-8 " + smbstatusPath
 			logger.WriteVerbose(fmt.Sprintf("Use %s to get samba status.", smbstatusPath))
 		}
 
