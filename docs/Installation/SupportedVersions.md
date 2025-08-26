@@ -16,7 +16,8 @@
 | Ubnutu 24.04  | Noble Numbat | yes |
 | Ubnuntu 24.10 | Oracular Oriole | no |
 | Ubnuntu 25.04 | Plucky Puffin | yes |
-| Ubnuntu 25.10 | - | planed |
+| Ubnuntu 25.10 | Questing Quokka | planed |
+| Ubnuntu 26.04 | - | planed |
 
 ---
 
@@ -28,7 +29,8 @@
 | Debian 11   | Bullseye | yes |
 | Debian 12  | Bookworm | yes |
 | Debian 13  | Trixie | planed |
-| Debian testing  | Forky | no |
+| Debian 14  | Forky | planed |
+| Debian testing  | Duke | no |
 
 ## RPM based
 
@@ -52,6 +54,7 @@
 | Fedora 41   | 2024-10-29 | yes |
 | Fedora 42   | 2025-04-22 | yes |
 | Fedora 43   | XXX | planed |
+| Fedora 44   | XXX | planed |
 
 ---
 
