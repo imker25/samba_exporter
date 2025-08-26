@@ -26,9 +26,9 @@
 | Version | Code Name | Supported |
 |---------|-----------|-----------|
 | Debian 10  | Buster | no |
-| Debian 11   | Bullseye | yes |
+| Debian 11   | Bullseye | no |
 | Debian 12  | Bookworm | yes |
-| Debian 13  | Trixie | planed |
+| Debian 13  | Trixie | yes |
 | Debian 14  | Forky | planed |
 | Debian testing  | Duke | no |
 
