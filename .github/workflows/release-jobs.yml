@@ -112,14 +112,14 @@ jobs:
         asset_path: ./bin/deb-packages/binary/samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~debian12_amd64.deb
         asset_name: samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~debian12_amd64.deb
         asset_content_type: application/zip               
-    - name: Upload Release Asset for Debian 11
+    - name: Upload Release Asset for Debian 13
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
-        asset_path: ./bin/deb-packages/binary/samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~debian11_amd64.deb
-        asset_name: samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~debian11_amd64.deb
+        asset_path: ./bin/deb-packages/binary/samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~debian13_amd64.deb
+        asset_name: samba-exporter_${{ env.SAMBA_EXPORTER_RELEASE_TAG }}~ppa1~debian13_amd64.deb
         asset_content_type: application/zip                                
 
   publish-copr:

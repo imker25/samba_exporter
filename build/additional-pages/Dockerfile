@@ -4,12 +4,11 @@
 # by a BSD-style license that can be found in the
 # LICENSE file.
 # ######################################################################################
-# Container image used by ./../PublishLaunchpadInDocker.sh to transfer the sources to the launchpad-ppa
-# The actual transformation is done by ./PublishLaunchpad.sh when this container get started
+# Container image used by ./../PatchPagesContent.sh to transfer the sources to the launchpad-ppa
+# The actual transformation is done by ./PatchPagesContent.sh when this container get started
 # ######################################################################################
 
-# Use the packages target version (focal = ubuntu 20.04) as base image
-FROM debian:bookworm
+FROM debian:trixie
 
 # Setup the system and install needed packages
 ENV DEBIAN_FRONTEND="noninteractive"
