@@ -1,0 +1,33 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: imker25.github.io/samba_exporter/
+Label: imker25.github.io/samba_exporter/
+Codename: trixie
+Date: Wed, 27 Aug 2025 20:24:46 UTC
+Architectures: amd64
+Components: main
+Description: Personal repository for samba-exporter packages
+MD5Sum:
+ 40dfd21730bd112939dbeba297c25260 989 main/binary-amd64/Packages
+ 1c486f74b76d1101a3b6efef97952f58 596 main/binary-amd64/Packages.gz
+ de839c73b53c7e1faf2f9d3d248bc3cd 180 main/binary-amd64/Release
+SHA1:
+ eea8824cbd7cd734113034b1f2110c0965ac61bf 989 main/binary-amd64/Packages
+ 651443ed64f203767cda424f2efeb771afe41c5d 596 main/binary-amd64/Packages.gz
+ 64634860d65a043f07360b0de9a2dd2c60fe9d16 180 main/binary-amd64/Release
+SHA256:
+ 958cbd4b089e4daa33f36bb33cb97f145909c9e1bf724c99be346fe70c1f4e27 989 main/binary-amd64/Packages
+ de2bd4a7699b91b00ef5deece25cbb7092834a1e3293f9b35f66ecc83c9f8e33 596 main/binary-amd64/Packages.gz
+ d863fc2fbffb928988032b869897f10697f2d98909508b92fc74fafc7f334798 180 main/binary-amd64/Release
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEy26Q6ewyOFCxbBwUo4oQkcAYrmgFAmivaY4ACgkQo4oQkcAY
+rmgO2ggA4Xm00p58KUE/TXWcaJaH1Oy1wCmFxNOyWyrf6f+3CgrC2Z8KfZ3SUL52
+TFmDw5/T25eyOuC7AAUODzsr9WwBqZr2vgeAt6eMI4RlYnfRMJWme2tJ72KCcm95
+AKePOyl4UkvYh9JSeqLSk77BXVAoBi78SeO9fCPpJc1vIqzsci5O1bUh9O0ZSoXX
+W9HMSCRl2I8C1/ZmzMB0985C72kVE2hGdkZ/2TtehLe1cfDOfyTVxcu3Upmpfb8i
+r8KzA4H2DnSAoPJg7i2YUbH19+OQuqwJv1pbVOC9uoVGLz4WGeSqv2ekvOFGfJCu
+LKkYF7ATh/9PrTZyCs62O3mSls/jwA==
+=zIt1
+-----END PGP SIGNATURE-----
