@@ -8,7 +8,7 @@
 # The actual transformation is done by ./PublishLaunchpad.sh when this container get started
 # ######################################################################################
 
-# Use the packages target version (bookworm = debian 12) as base image
+# Use the packages target version (trixie = debian 13) as base image
 FROM debian:trixie
 
 # Setup the system and install needed packages

@@ -18,12 +18,12 @@ The **samba exporter** package for Debian is published on the projects GitHub Pa
 
 ```bash
 wget -qO - https://imker25.github.io/samba_exporter/repos/debian/archive.key | sudo apt-key add -
-echo "deb https://imker25.github.io/samba_exporter/repos/debian bullseye main" > /etc/apt/sources.list.d/samba-exporter.list
+echo "deb https://imker25.github.io/samba_exporter/repos/debian trixie main" > /etc/apt/sources.list.d/samba-exporter.list
 apt-get update
 apt-get install samba-exporter
 ```
 
-**Hint:** Change `bullseye` to `bookworm` in case you use Debian 12.
+**Hint:** Change `trixie` to `bookworm` in case you use Debian 12.
 
 ## Fedora 35 and later
 
