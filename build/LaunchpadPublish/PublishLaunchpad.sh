@@ -317,6 +317,17 @@ else
     echo "Not running on lunar 25.04 (plucky)"
 fi
 
+if [ "$distVersionNumber" == "25.10" ] && [ "$distribution" == "Ubuntu" ]; then
+    sed -i "s/focal;/questing;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu20.04/ubuntu25.10/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/jammy;/questing;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu22.04/ubuntu25.10/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/golang-1.16,/golang-1.24,/g" $WORK_DIR/install/debian/control 
+    find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
+else 
+    echo "Not running on lunar 25.10 (questing)"
+fi
+
 if [ "$distVersionNumber" == "13" ] && [ "$distribution" == "Debian" ]; then
     sed -i "s/focal;/trixie;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/debian13/g" $WORK_DIR/install/debian/changelog
