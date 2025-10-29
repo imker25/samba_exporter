@@ -15,9 +15,10 @@
 | Ubnutu 23.10  | Mantic Minotaur | no |
 | Ubnutu 24.04  | Noble Numbat | yes |
 | Ubnuntu 24.10 | Oracular Oriole | no |
-| Ubnuntu 25.04 | Plucky Puffin | yes |
-| Ubnuntu 25.10 | Questing Quokka | planed |
-| Ubnuntu 26.04 | - | planed |
+| Ubnuntu 25.04 | Plucky Puffin | no |
+| Ubnuntu 25.10 | Questing Quokka | yes |
+| Ubnuntu 26.04 | Resolute Raccoon | planed |
+| Ubnuntu 26.10 | - | planed |
 
 ---
 

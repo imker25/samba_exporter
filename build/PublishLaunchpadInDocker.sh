@@ -58,7 +58,7 @@ function buildAndRunDocker() {
     if [ "${distVersion}" == "oracular" ] && [ "$(id -u)" == "1000" ]; then
         userName="ubuntu"
     fi
-    if [ "${distVersion}" == "plucky" ] && [ "$(id -u)" == "1000" ]; then
+    if [ "${distVersion}" == "questing" ] && [ "$(id -u)" == "1000" ]; then
         userName="ubuntu"
     fi
 
@@ -225,12 +225,12 @@ docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q)
 docker builder prune --all --force
 
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for plucky"
+    echo "Publish tag $tag on launchpad within a docker cotainer for questing"
     echo "# ###################################################################"
-    buildAndRunDocker "plucky"
+    buildAndRunDocker "questing"
     if [ "$?" != "0" ]; then
         dockerError="true"
-        echo "Error while publish package for plucky"
+        echo "Error while publish package for questing"
     fi
 fi
 echo "# ###################################################################"
