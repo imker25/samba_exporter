@@ -1,5 +1,5 @@
 Package: samba-exporter
-Version: 1.37.4~ppa1~debian12
+Version: 1.38.5~ppa1~debian12
 Architecture: amd64
 Maintainer: Tobias Zellner <tobi@backfrak.de>
 Installed-Size: 10673
@@ -8,11 +8,11 @@ Enhances: samba
 Homepage: https://imker25.github.io/samba_exporter/
 Priority: optional
 Section: utils
-Filename: pool/main/s/samba-exporter/samba-exporter_1.37.4~ppa1~debian12_amd64.deb
-Size: 3284016
-SHA256: 94ecfedeff5bb204e61b71537afaadfab4e54734dc79f06e80247c82c306ca9a
-SHA1: a59a371e58c5884584746bc31f3420809a295920
-MD5sum: c44e00e54c96fef78a29ceb890611922
+Filename: pool/main/s/samba-exporter/samba-exporter_1.38.5~ppa1~debian12_amd64.deb
+Size: 3284364
+SHA256: aa961e23143c90c1dd905a0e6da68ede704667f03ad66c9cc2a1660ea6d02353
+SHA1: d651eb3520012599ebd2b58a8f2e7d5a78920db2
+MD5sum: 63c8fb3c981c5d0cf1b23a4aa301e52c
 Description: Prometheus exporter to get metrics of a samba server
   This is a prometheus exporter to get metrics of a samba server.
   It uses smbstatus to collect the data and converts the result into

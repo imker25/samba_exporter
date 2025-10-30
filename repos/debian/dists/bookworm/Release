@@ -1,19 +1,19 @@
 Origin: imker25.github.io/samba_exporter/
 Label: imker25.github.io/samba_exporter/
 Codename: bookworm
-Date: Wed, 27 Aug 2025 20:24:46 UTC
+Date: Thu, 30 Oct 2025 20:49:36 UTC
 Architectures: amd64
 Components: main
 Description: Personal repository for samba-exporter packages
 MD5Sum:
- 3ccffb708d22346a0a34d83f33d06584 989 main/binary-amd64/Packages
- 1ad30dcf448c69d2ac137f70d7e8551a 595 main/binary-amd64/Packages.gz
+ 2e08fdaf74f62724b1747492809678b7 989 main/binary-amd64/Packages
+ 4800e8b040e33499f072e409c2b1cab6 595 main/binary-amd64/Packages.gz
  de839c73b53c7e1faf2f9d3d248bc3cd 180 main/binary-amd64/Release
 SHA1:
- 4d75e848ad4d121d71e0380501058553f731faad 989 main/binary-amd64/Packages
- fa52aa0c262853929898bf6deaecc2b2f89ef5d1 595 main/binary-amd64/Packages.gz
+ 6e84f071974b85c52de0b9257bbd02130747d864 989 main/binary-amd64/Packages
+ f72f32dda0bf8df84f075aa1ea72ce001f3bcf69 595 main/binary-amd64/Packages.gz
  64634860d65a043f07360b0de9a2dd2c60fe9d16 180 main/binary-amd64/Release
 SHA256:
- 513e5810684bea2aff94bc2532aa0aa2f071d634a5ae30a214360a56a9fe664b 989 main/binary-amd64/Packages
- eee212f2c012f1660c9cf82547c5296d7c3f9739de626c6971cfad239799faf0 595 main/binary-amd64/Packages.gz
+ 414f2d8fcb0f3e7053cf75fcc19033241555c9a37be6f91abefa5afd43c96b7a 989 main/binary-amd64/Packages
+ e62b858d64476972c8c199a09da949c972c74e167a27082b3f97e1ec1daa4c93 595 main/binary-amd64/Packages.gz
  d863fc2fbffb928988032b869897f10697f2d98909508b92fc74fafc7f334798 180 main/binary-amd64/Release
