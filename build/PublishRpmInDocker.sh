@@ -198,12 +198,12 @@ docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q)
 docker builder prune --all --force
 
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on corp within a docker cotainer for fedora 41"
+    echo "Publish tag $tag on corp within a docker cotainer for fedora 43"
     echo "# ###################################################################"
-    buildAndRunDocker "fedora41"
+    buildAndRunDocker "fedora43"
     if [ "$?" != "0" ]; then
         dockerError="true"
-         echo "Error while publish for fedora 41"
+         echo "Error while publish for fedora 43"
     fi
 fi
 echo "# ###################################################################"
