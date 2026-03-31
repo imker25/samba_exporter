@@ -2,6 +2,31 @@ package commonbl
 
 import "strings"
 
+type LogLevel int
+
+const (
+	ErrorOnly LogLevel = iota
+	Warning
+	Information
+	Verbose
+)
+
+var validLogLevelSettings = map[LogLevel]string{
+	ErrorOnly:   "ErrorOnly",
+	Warning:     "Warning",
+	Information: "Information",
+	Verbose:     "Verbose",
+}
+
+func GetValidLogLevels() []string {
+	var ret []string
+	for _, level := range validLogLevelSettings {
+		ret = append(ret, level)
+	}
+
+	return ret
+}
+
 // Logger - Interface for logger implementations
 type Logger interface {
 	// GetVerbose - Tell if logger is verbose or not

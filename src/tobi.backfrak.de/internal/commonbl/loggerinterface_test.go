@@ -77,3 +77,14 @@ func TestGetLoggerForConsoleLogger(t *testing.T) {
 		t.Errorf("The logger is not the expected ConsoleLogger")
 	}
 }
+
+func TestGetValidLogLevels(t *testing.T) {
+	validLevels := GetValidLogLevels()
+	if validLevels[0] != validLogLevelSettings[ErrorOnly] {
+		t.Errorf("GetValidLogLevels()[0] is '%s', but '%s' is expected", validLevels[0], validLogLevelSettings[ErrorOnly])
+	}
+
+	if validLevels[3] != validLogLevelSettings[Verbose] {
+		t.Errorf("GetValidLogLevels()[0] is '%s', but '%s' is expected", validLevels[3], validLogLevelSettings[Verbose])
+	}
+}
