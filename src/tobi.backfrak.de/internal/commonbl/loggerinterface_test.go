@@ -92,8 +92,8 @@ func TestGetValidLogLevels(t *testing.T) {
 		t.Errorf("The valid levels '%s' does not contain '%s'", validLevelsStr, "Information")
 	}
 
-	if !strings.Contains(validLevelsStr, "ErrorOnly") {
-		t.Errorf("The valid levels '%s' does not contain '%s'", validLevelsStr, "ErrorOnly")
+	if !strings.Contains(validLevelsStr, "Error") {
+		t.Errorf("The valid levels '%s' does not contain '%s'", validLevelsStr, "Error")
 	}
 
 	if !strings.Contains(validLevelsStr, "Verbose") {
@@ -104,12 +104,12 @@ func TestGetValidLogLevels(t *testing.T) {
 		t.Errorf("The valid levels '%s' does not contain '%s'", validLevelsStr, "Warning")
 	}
 
-	if "ErrorOnly" != validLogLevelSettings[0] {
-		t.Errorf("validLogLevelSettings[0] is '%s', but '%s' is expected. ", "ErrorOnly", validLogLevelSettings[0])
+	if "Error" != validLogLevelSettings[0] {
+		t.Errorf("validLogLevelSettings[0] is '%s', but '%s' is expected. ", "Error", validLogLevelSettings[0])
 	}
 
-	if "ErrorOnly" != validLogLevelSettings[ErrorOnly] {
-		t.Errorf("validLogLevelSettings[ErrorOnly] is '%s', but '%s' is expected. ", "ErrorOnly", validLogLevelSettings[ErrorOnly])
+	if "Error" != validLogLevelSettings[Error] {
+		t.Errorf("validLogLevelSettings[Error] is '%s', but '%s' is expected. ", "Error", validLogLevelSettings[Error])
 	}
 
 	if "Warning" != validLogLevelSettings[1] {
@@ -134,5 +134,23 @@ func TestGetValidLogLevels(t *testing.T) {
 
 	if "Verbose" != validLogLevelSettings[Verbose] {
 		t.Errorf("validLogLevelSettings[Verbose] is '%s', but '%s' is expected", "Verbose", validLogLevelSettings[Verbose])
+	}
+}
+
+func TestFilterMessage(t *testing.T) {
+	if FilterMessage(Error, Verbose) != true {
+		t.Errorf("'FilterMessage(Error, Verbose)' returns '%t', but '%t' is expected", FilterMessage(Error, Verbose), true)
+	}
+
+	if FilterMessage(Verbose, Error) != false {
+		t.Errorf("'FilterMessage(Verbose, Error)' returns '%t', but '%t' is expected", FilterMessage(Verbose, Error), false)
+	}
+
+	if FilterMessage(Warning, Information) != true {
+		t.Errorf("'FilterMessage(Warning, Information)' returns '%t', but '%t' is expected", FilterMessage(Warning, Information), true)
+	}
+
+	if FilterMessage(Information, Warning) != false {
+		t.Errorf("'FilterMessage(Information, Warning)' returns '%t', but '%t' is expected", FilterMessage(Information, Warning), false)
 	}
 }

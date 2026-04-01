@@ -1,18 +1,20 @@
 package commonbl
 
-import "strings"
+import (
+	"strings"
+)
 
 type LogLevel int
 
 const (
-	ErrorOnly LogLevel = iota
+	Error LogLevel = iota
 	Warning
 	Information
 	Verbose
 )
 
 var validLogLevelSettings = map[LogLevel]string{
-	ErrorOnly:   "ErrorOnly",
+	Error:   "Error",
 	Warning:     "Warning",
 	Information: "Information",
 	Verbose:     "Verbose",
@@ -58,4 +60,13 @@ func GetLogger(logFilePath string, verbose bool) (Logger, error) {
 
 	return NewConsoleLogger(verbose), nil
 
+}
+
+func FilterMessage(messageLogLevel, settingsLogLevel LogLevel) bool {
+
+	if messageLogLevel <= settingsLogLevel {
+		return true
+	}
+
+	return false
 }

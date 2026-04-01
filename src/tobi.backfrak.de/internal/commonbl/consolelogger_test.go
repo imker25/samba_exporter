@@ -11,13 +11,15 @@ import (
 
 func TestNewConsoleLogger(t *testing.T) {
 	logger := NewConsoleLogger(false)
-	if logger.Verbose == true {
-		t.Errorf("Logger is verbose but should not")
+
+	if logger.LogLevelSetting != Information {
+		t.Errorf("The logger.LogLevelSetting is %s but %s is expected", validLogLevelSettings[logger.LogLevelSetting], validLogLevelSettings[Information])
 	}
 
 	logger = NewConsoleLogger(true)
-	if logger.Verbose == false {
-		t.Errorf("Logger is not verbose but should")
+
+	if logger.LogLevelSetting != Verbose {
+		t.Errorf("The logger.LogLevelSetting is %s but %s is expected", validLogLevelSettings[logger.LogLevelSetting], validLogLevelSettings[Verbose])
 	}
 
 	iLogger := Logger(logger)
@@ -26,7 +28,30 @@ func TestNewConsoleLogger(t *testing.T) {
 		t.Errorf("Logger is not verbose but should")
 	}
 
-	logger.Verbose = false
+	logger.LogLevelSetting = Information
+	if iLogger.GetVerbose() == true {
+		t.Errorf("Logger is verbose but not should")
+	}
+}
+
+func TestNewConsoleLogger2(t *testing.T) {
+	logger := NewConsoleLogger2(Information)
+	if logger.LogLevelSetting != Information {
+		t.Errorf("The logger.LogLevelSetting is %s but %s is expected", validLogLevelSettings[logger.LogLevelSetting], validLogLevelSettings[Information])
+	}
+
+	logger = NewConsoleLogger2(Verbose)
+	if logger.LogLevelSetting != Verbose {
+		t.Errorf("The logger.LogLevelSetting is %s but %s is expected", validLogLevelSettings[logger.LogLevelSetting], validLogLevelSettings[Verbose])
+	}
+
+	iLogger := Logger(logger)
+
+	if iLogger.GetVerbose() == false {
+		t.Errorf("Logger is not verbose but should")
+	}
+
+	logger.LogLevelSetting = Information
 	if iLogger.GetVerbose() == true {
 		t.Errorf("Logger is verbose but not should")
 	}
@@ -40,6 +65,11 @@ func TestWriteInformation(t *testing.T) {
 func TestWriteErrorMessage(t *testing.T) {
 	logger := NewConsoleLogger(false)
 	logger.WriteErrorMessage("My message")
+}
+
+func TestWriteWarningMessage(t *testing.T) {
+	logger := NewConsoleLogger(false)
+	logger.WriteWarning("My message")
 }
 
 func TestWriteVerbose(t *testing.T) {
