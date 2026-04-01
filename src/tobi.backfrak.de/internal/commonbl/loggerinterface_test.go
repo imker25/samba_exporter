@@ -2,6 +2,7 @@ package commonbl
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -80,11 +81,58 @@ func TestGetLoggerForConsoleLogger(t *testing.T) {
 
 func TestGetValidLogLevels(t *testing.T) {
 	validLevels := GetValidLogLevels()
-	if validLevels[0] != validLogLevelSettings[ErrorOnly] {
-		t.Errorf("GetValidLogLevels()[0] is '%s', but '%s' is expected", validLevels[0], validLogLevelSettings[ErrorOnly])
+
+	validLevelsStr := fmt.Sprintf("%s", validLevels)
+
+	if len(validLevels) != 4 {
+		t.Errorf("The number of valid levels %d is not the expected number %d", len(validLevels), 4)
 	}
 
-	if validLevels[3] != validLogLevelSettings[Verbose] {
-		t.Errorf("GetValidLogLevels()[0] is '%s', but '%s' is expected", validLevels[3], validLogLevelSettings[Verbose])
+	if !strings.Contains(validLevelsStr, "Information") {
+		t.Errorf("The valid levels '%s' does not contain '%s'", validLevelsStr, "Information")
+	}
+
+	if !strings.Contains(validLevelsStr, "ErrorOnly") {
+		t.Errorf("The valid levels '%s' does not contain '%s'", validLevelsStr, "ErrorOnly")
+	}
+
+	if !strings.Contains(validLevelsStr, "Verbose") {
+		t.Errorf("The valid levels '%s' does not contain '%s'", validLevelsStr, "Verbose")
+	}
+
+	if !strings.Contains(validLevelsStr, "Warning") {
+		t.Errorf("The valid levels '%s' does not contain '%s'", validLevelsStr, "Warning")
+	}
+
+	if "ErrorOnly" != validLogLevelSettings[0] {
+		t.Errorf("validLogLevelSettings[0] is '%s', but '%s' is expected. ", "ErrorOnly", validLogLevelSettings[0])
+	}
+
+	if "ErrorOnly" != validLogLevelSettings[ErrorOnly] {
+		t.Errorf("validLogLevelSettings[ErrorOnly] is '%s', but '%s' is expected. ", "ErrorOnly", validLogLevelSettings[ErrorOnly])
+	}
+
+	if "Warning" != validLogLevelSettings[1] {
+		t.Errorf("validLogLevelSettings[1] is '%s', but '%s' is expected. ", "Warning", validLogLevelSettings[1])
+	}
+
+	if "Warning" != validLogLevelSettings[Warning] {
+		t.Errorf("validLogLevelSettings[Warning] is '%s', but '%s' is expected. ", "Warning", validLogLevelSettings[Warning])
+	}
+
+	if "Information" != validLogLevelSettings[2] {
+		t.Errorf("validLogLevelSettings[2] is '%s', but '%s' is expected. ", "Information", validLogLevelSettings[2])
+	}
+
+	if "Information" != validLogLevelSettings[Information] {
+		t.Errorf("validLogLevelSettings[Information] is '%s', but '%s' is expected. ", "Information", validLogLevelSettings[Information])
+	}
+
+	if "Verbose" != validLogLevelSettings[3] {
+		t.Errorf("validLogLevelSettings[3] is '%s', but '%s' is expected", "Verbose", validLogLevelSettings[3])
+	}
+
+	if "Verbose" != validLogLevelSettings[Verbose] {
+		t.Errorf("validLogLevelSettings[Verbose] is '%s', but '%s' is expected", "Verbose", validLogLevelSettings[Verbose])
 	}
 }
