@@ -10,14 +10,18 @@ type TestError struct {
 	message string
 }
 
-func (e *TestError) Error() string { // Implement the Error Interface for the TestError struct 
+func (e *TestError) Error() string { // Implement the Error Interface for the TestError struct
 	return e.message
 }
 
 func TestNewTestLogger(t *testing.T) {
 	logger := NewTestLogger(true)
 
-	if !logger.Verbose {
+	if logger.LogLevelSetting != commonbl.Verbose {
+		t.Errorf("Logger is not verbose but should")
+	}
+
+	if logger.GetLogLevelSetting() != commonbl.Verbose {
 		t.Errorf("Logger is not verbose but should")
 	}
 
@@ -38,7 +42,41 @@ func TestNewTestLogger(t *testing.T) {
 		t.Errorf("Logger is not verbose but should")
 	}
 
-	logger.Verbose = false
+	logger.LogLevelSetting = commonbl.Information
+	if iLogger.GetVerbose() == true {
+		t.Errorf("Logger is verbose but not should")
+	}
+}
+
+func TestNewTestLogger2(t *testing.T) {
+	logger := NewTestLogger2(commonbl.Verbose)
+
+	if logger.LogLevelSetting != commonbl.Verbose {
+		t.Errorf("Logger is not verbose but should")
+	}
+
+	if logger.GetLogLevelSetting() != commonbl.Verbose {
+		t.Errorf("Logger is not verbose but should")
+	}
+
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("Logger has ErrorCount '%d', but '0' is expected", logger.GetErrorCount())
+	}
+
+	if logger.GetMessageCount() != 0 {
+		t.Errorf("Logger has MessageCount '%d', but '0' is expected", logger.GetMessageCount())
+	}
+
+	if logger.GetOutputCount() != 0 {
+		t.Errorf("Logger has OutputCount '%d', but '0' is expected", logger.GetOutputCount())
+	}
+
+	iLogger := commonbl.Logger(logger)
+	if iLogger.GetVerbose() == false {
+		t.Errorf("Logger is not verbose but should")
+	}
+
+	logger.LogLevelSetting = commonbl.Information
 	if iLogger.GetVerbose() == true {
 		t.Errorf("Logger is verbose but not should")
 	}
@@ -47,7 +85,7 @@ func TestNewTestLogger(t *testing.T) {
 func TestWriteVerbose(t *testing.T) {
 	logger := NewTestLogger(true)
 
-	if !logger.Verbose {
+	if !logger.GetVerbose() {
 		t.Errorf("Logger is not verbose but should")
 	}
 
@@ -79,7 +117,7 @@ func TestWriteVerbose(t *testing.T) {
 		t.Errorf("Logger has OutputCount '%d', but '2' is expected", logger.GetOutputCount())
 	}
 
-	logger.Verbose = false
+	logger.LogLevelSetting = commonbl.Information
 	iLogger.WriteVerbose("just a message - 3")
 	if logger.GetErrorCount() != 0 {
 		t.Errorf("Logger has ErrorCount '%d', but '0' is expected", logger.GetErrorCount())
@@ -101,7 +139,7 @@ func TestWriteVerbose(t *testing.T) {
 func TestWriteInformation(t *testing.T) {
 	logger := NewTestLogger(true)
 
-	if !logger.Verbose {
+	if !logger.GetVerbose() {
 		t.Errorf("Logger is not verbose but should")
 	}
 	iLogger := commonbl.Logger(logger)
@@ -137,10 +175,48 @@ func TestWriteInformation(t *testing.T) {
 	}
 }
 
+func TestWriteWarning(t *testing.T) {
+	logger := NewTestLogger(true)
+
+	if !logger.GetVerbose() {
+		t.Errorf("Logger is not verbose but should")
+	}
+
+	logger.WriteWarning("just a message - 1")
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("Logger has ErrorCount '%d', but '0' is expected", logger.GetErrorCount())
+	}
+
+	if logger.GetMessageCount() != 1 {
+		t.Errorf("Logger has MessageCount '%d', but '1' is expected", logger.GetMessageCount())
+	}
+
+	if logger.GetOutputCount() != 1 {
+		t.Errorf("Logger has OutputCount '%d', but '1' is expected", logger.GetOutputCount())
+	}
+
+	logger.WriteWarning("just a message - 2")
+	if logger.GetErrorCount() != 0 {
+		t.Errorf("Logger has ErrorCount '%d', but '0' is expected", logger.GetErrorCount())
+	}
+
+	if logger.GetMessageCount() != 2 {
+		t.Errorf("Logger has MessageCount '%d', but '2' is expected", logger.GetMessageCount())
+	}
+
+	if logger.GetOutputCount() != 2 {
+		t.Errorf("Logger has OutputCount '%d', but '2' is expected", logger.GetOutputCount())
+	}
+
+	if logger.WrittenMessages[1] != "Warning: just a message - 2" {
+		t.Errorf("The message '%s' is not the expected 'Warning: just a message - 2'", logger.WrittenMessages[1])
+	}
+}
+
 func TestWriteErrorMessage(t *testing.T) {
 	logger := NewTestLogger(true)
 
-	if !logger.Verbose {
+	if !logger.GetVerbose() {
 		t.Errorf("Logger is not verbose but should")
 	}
 	iLogger := commonbl.Logger(logger)
@@ -179,7 +255,7 @@ func TestWriteErrorMessage(t *testing.T) {
 func TestWriteError(t *testing.T) {
 	logger := NewTestLogger(true)
 
-	if !logger.Verbose {
+	if !logger.GetVerbose() {
 		t.Errorf("Logger is not verbose but should")
 	}
 	iLogger := commonbl.Logger(logger)
@@ -212,15 +288,15 @@ func TestWriteError(t *testing.T) {
 		t.Errorf("Logger has OutputCount '%d', but '2' is expected", logger.GetOutputCount())
 	}
 
-	if logger.WrittenErrors[1] != "just error 2" {
-		t.Errorf("The message '%s' is not the expected 'just error 2'", logger.WrittenErrors[1])
+	if logger.WrittenErrors[1] != "Error: just error 2" {
+		t.Errorf("The message '%s' is not the expected 'Error: just error 2'", logger.WrittenErrors[1])
 	}
 }
 
 func TestWriteErrorWithAddition(t *testing.T) {
 	logger := NewTestLogger(true)
 
-	if !logger.Verbose {
+	if !logger.GetVerbose() {
 		t.Errorf("Logger is not verbose but should")
 	}
 	iLogger := commonbl.Logger(logger)
@@ -253,15 +329,15 @@ func TestWriteErrorWithAddition(t *testing.T) {
 		t.Errorf("Logger has OutputCount '%d', but '2' is expected", logger.GetOutputCount())
 	}
 
-	if logger.WrittenErrors[1] != "just error 2 - additional message 2" {
-		t.Errorf("The message '%s' is not the expected 'just error 2 - additional message 2'", logger.WrittenErrors[1])
+	if logger.WrittenErrors[1] != "Error: just error 2 - additional message 2" {
+		t.Errorf("The message '%s' is not the expected 'Error: just error 2 - additional message 2'", logger.WrittenErrors[1])
 	}
 }
 
 func TestOutPutCount(t *testing.T) {
 	logger := NewTestLogger(true)
 
-	if !logger.Verbose {
+	if !logger.GetVerbose() {
 		t.Errorf("Logger is not verbose but should")
 	}
 	iLogger := commonbl.Logger(logger)

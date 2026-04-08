@@ -95,5 +95,5 @@ func (logger *ConsoleLogger) writeMessageToStream(message string, messageLogLeve
 		trimmedMsg = message
 	}
 
-	fmt.Fprintln(outstream, fmt.Sprintf("%s: %s", validLogLevelSettings[messageLogLevel], trimmedMsg))
+	fmt.Fprintln(outstream, fmt.Sprintf("%s: %s", ValidLogLevelSettings[messageLogLevel], trimmedMsg))
 }

@@ -13,8 +13,8 @@ const (
 	Verbose
 )
 
-var validLogLevelSettings = map[LogLevel]string{
-	Error:   "Error",
+var ValidLogLevelSettings = map[LogLevel]string{
+	Error:       "Error",
 	Warning:     "Warning",
 	Information: "Information",
 	Verbose:     "Verbose",
@@ -22,7 +22,7 @@ var validLogLevelSettings = map[LogLevel]string{
 
 func GetValidLogLevels() []string {
 	var ret []string
-	for _, level := range validLogLevelSettings {
+	for _, level := range ValidLogLevelSettings {
 		ret = append(ret, level)
 	}
 

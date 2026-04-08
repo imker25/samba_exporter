@@ -13,13 +13,13 @@ func TestNewConsoleLogger(t *testing.T) {
 	logger := NewConsoleLogger(false)
 
 	if logger.LogLevelSetting != Information {
-		t.Errorf("The logger.LogLevelSetting is %s but %s is expected", validLogLevelSettings[logger.LogLevelSetting], validLogLevelSettings[Information])
+		t.Errorf("The logger.LogLevelSetting is %s but %s is expected", ValidLogLevelSettings[logger.LogLevelSetting], ValidLogLevelSettings[Information])
 	}
 
 	logger = NewConsoleLogger(true)
 
 	if logger.LogLevelSetting != Verbose {
-		t.Errorf("The logger.LogLevelSetting is %s but %s is expected", validLogLevelSettings[logger.LogLevelSetting], validLogLevelSettings[Verbose])
+		t.Errorf("The logger.LogLevelSetting is %s but %s is expected", ValidLogLevelSettings[logger.LogLevelSetting], ValidLogLevelSettings[Verbose])
 	}
 
 	iLogger := Logger(logger)
@@ -37,12 +37,12 @@ func TestNewConsoleLogger(t *testing.T) {
 func TestNewConsoleLogger2(t *testing.T) {
 	logger := NewConsoleLogger2(Information)
 	if logger.LogLevelSetting != Information {
-		t.Errorf("The logger.LogLevelSetting is %s but %s is expected", validLogLevelSettings[logger.LogLevelSetting], validLogLevelSettings[Information])
+		t.Errorf("The logger.LogLevelSetting is %s but %s is expected", ValidLogLevelSettings[logger.LogLevelSetting], ValidLogLevelSettings[Information])
 	}
 
 	logger = NewConsoleLogger2(Verbose)
 	if logger.LogLevelSetting != Verbose {
-		t.Errorf("The logger.LogLevelSetting is %s but %s is expected", validLogLevelSettings[logger.LogLevelSetting], validLogLevelSettings[Verbose])
+		t.Errorf("The logger.LogLevelSetting is %s but %s is expected", ValidLogLevelSettings[logger.LogLevelSetting], ValidLogLevelSettings[Verbose])
 	}
 
 	iLogger := Logger(logger)

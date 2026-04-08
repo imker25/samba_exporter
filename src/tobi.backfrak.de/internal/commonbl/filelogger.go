@@ -46,10 +46,10 @@ func NewFileLogger2(logLevelSetting LogLevel, fullFilePath string) (*FileLogger,
 		return nil, err
 	}
 	internalLoggers := make(map[LogLevel]*log.Logger)
-	internalLoggers[Information] = log.New(file, fmt.Sprintf("%s: ", validLogLevelSettings[Information]), log.LstdFlags|log.Lmsgprefix)
-	internalLoggers[Verbose] = log.New(file, fmt.Sprintf("%s: ", validLogLevelSettings[Verbose]), log.LstdFlags|log.Lmsgprefix)
-	internalLoggers[Error] = log.New(file, fmt.Sprintf("%s: ", validLogLevelSettings[Error]), log.LstdFlags|log.Lmsgprefix)
-	internalLoggers[Warning] = log.New(file, fmt.Sprintf("%s: ", validLogLevelSettings[Warning]), log.LstdFlags|log.Lmsgprefix)
+	internalLoggers[Information] = log.New(file, fmt.Sprintf("%s: ", ValidLogLevelSettings[Information]), log.LstdFlags|log.Lmsgprefix)
+	internalLoggers[Verbose] = log.New(file, fmt.Sprintf("%s: ", ValidLogLevelSettings[Verbose]), log.LstdFlags|log.Lmsgprefix)
+	internalLoggers[Error] = log.New(file, fmt.Sprintf("%s: ", ValidLogLevelSettings[Error]), log.LstdFlags|log.Lmsgprefix)
+	internalLoggers[Warning] = log.New(file, fmt.Sprintf("%s: ", ValidLogLevelSettings[Warning]), log.LstdFlags|log.Lmsgprefix)
 
 	ret := FileLogger{logLevelSetting, fullFilePath, internalLoggers}
 
