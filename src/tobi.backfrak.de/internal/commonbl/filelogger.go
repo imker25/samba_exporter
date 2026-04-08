@@ -15,16 +15,26 @@ import (
 
 // FileLogger - A "class" with log functions
 type FileLogger struct {
-	Verbose       bool
-	FullFilePath  string
-	infoLogger    *log.Logger
-	verboseLogger *log.Logger
-	errorLogger   *log.Logger
+	LogLevelSetting LogLevel
+	FullFilePath    string
+	internalLoggers map[LogLevel]*log.Logger
 }
 
 // Get a new instance of the Logger
 func NewFileLogger(verbose bool, fullFilePath string) (*FileLogger, error) {
 
+	logLevelSetting := Information
+	if verbose {
+		logLevelSetting = Verbose
+	}
+
+	ret, err := NewFileLogger2(logLevelSetting, fullFilePath)
+
+	return ret, err
+}
+
+// Get a new instance of the Logger
+func NewFileLogger2(logLevelSetting LogLevel, fullFilePath string) (*FileLogger, error) {
 	logFileDir := filepath.Dir(fullFilePath)
 	if !directoryExists(logFileDir) {
 		return nil, NewDirectoryNotExistError(logFileDir)
@@ -35,44 +45,55 @@ func NewFileLogger(verbose bool, fullFilePath string) (*FileLogger, error) {
 	if err != nil {
 		return nil, err
 	}
-	infoLogger := log.New(file, "Information: ", log.LstdFlags|log.Lmsgprefix /*|log.Lmicroseconds*/)
-	verboseLogger := log.New(file, "Verbose: ", log.LstdFlags|log.Lmsgprefix /*|log.Lmicroseconds*/)
-	errorLogger := log.New(file, "Error: ", log.LstdFlags|log.Lmsgprefix /*|log.Lmicroseconds*/)
+	internalLoggers := make(map[LogLevel]*log.Logger)
+	internalLoggers[Information] = log.New(file, fmt.Sprintf("%s: ", validLogLevelSettings[Information]), log.LstdFlags|log.Lmsgprefix)
+	internalLoggers[Verbose] = log.New(file, fmt.Sprintf("%s: ", validLogLevelSettings[Verbose]), log.LstdFlags|log.Lmsgprefix)
+	internalLoggers[Error] = log.New(file, fmt.Sprintf("%s: ", validLogLevelSettings[Error]), log.LstdFlags|log.Lmsgprefix)
+	internalLoggers[Warning] = log.New(file, fmt.Sprintf("%s: ", validLogLevelSettings[Warning]), log.LstdFlags|log.Lmsgprefix)
 
-	ret := FileLogger{verbose, fullFilePath, infoLogger, verboseLogger, errorLogger}
+	ret := FileLogger{logLevelSetting, fullFilePath, internalLoggers}
 
 	return &ret, nil
 }
 
 // GetVerbose - Tell if logger is verbose or not
 func (logger *FileLogger) GetVerbose() bool {
-	return logger.Verbose
+	if logger.LogLevelSetting == Verbose {
+		return true
+	}
+
+	return false
+}
+
+// Get the current log level setting of a logger instance
+func (logger *FileLogger) GetLogLevelSetting() LogLevel {
+	return logger.LogLevelSetting
 }
 
 // WriteInformation - Write a Info message to Stdout, will be prefixed with "Information: "
 func (logger *FileLogger) WriteInformation(message string) {
-	logger.infoLogger.Println(message)
+	logger.writeLogMessage(message, Information)
+}
+
+// WriteWarning - Write a Warning message to Stdout, will be prefixed with "Information: "
+func (logger *FileLogger) WriteWarning(message string) {
+	logger.writeLogMessage(message, Warning)
 }
 
 // WriteVerbose - Write a Verbose message to Stdout. Message will be written only if logger.Verbose is true.
 // The message will be prefixed with "Verbose :"
 func (logger *FileLogger) WriteVerbose(message string) {
-	if logger.Verbose {
-		logger.verboseLogger.Println(message)
-	}
-
+	logger.writeLogMessage(message, Verbose)
 }
 
 // WriteErrorMessage - Write the message to Stderr. The Message will be prefixed with "Error: "
 func (logger *FileLogger) WriteErrorMessage(message string) {
-	trimedMsg := strings.TrimPrefix(message, "Error: ")
-	logger.errorLogger.Println(trimedMsg)
+	logger.writeLogMessage(message, Error)
 }
 
 // WriteError - Writes the err.Error() output to Stderr
 func (logger *FileLogger) WriteError(err error) {
-	trimedMsg := strings.TrimPrefix(err.Error(), "Error: ")
-	logger.errorLogger.Println(trimedMsg)
+	logger.WriteErrorMessage(err.Error())
 }
 
 // WriteError - Writes the 'err.Error() - addition' output to Stderr
@@ -86,4 +107,20 @@ func directoryExists(path string) bool {
 	}
 
 	return false
+}
+
+func (logger *FileLogger) writeLogMessage(message string, messageLogLevel LogLevel) {
+	if !FilterMessage(messageLogLevel, logger.LogLevelSetting) {
+		return
+	}
+
+	var trimmedMsg string
+	if messageLogLevel == Error {
+		trimmedMsg = strings.TrimPrefix(message, "Error: ")
+	} else {
+		trimmedMsg = message
+	}
+
+	logWriter := logger.internalLoggers[messageLogLevel]
+	logWriter.Println(trimmedMsg)
 }
