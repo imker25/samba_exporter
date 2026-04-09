@@ -36,16 +36,6 @@ func TestNewTestLogger(t *testing.T) {
 	if logger.GetOutputCount() != 0 {
 		t.Errorf("Logger has OutputCount '%d', but '0' is expected", logger.GetOutputCount())
 	}
-
-	iLogger := commonbl.Logger(logger)
-	if iLogger.GetVerbose() == false {
-		t.Errorf("Logger is not verbose but should")
-	}
-
-	logger.LogLevelSetting = commonbl.Information
-	if iLogger.GetVerbose() == true {
-		t.Errorf("Logger is verbose but not should")
-	}
 }
 
 func TestNewTestLogger2(t *testing.T) {
@@ -69,16 +59,6 @@ func TestNewTestLogger2(t *testing.T) {
 
 	if logger.GetOutputCount() != 0 {
 		t.Errorf("Logger has OutputCount '%d', but '0' is expected", logger.GetOutputCount())
-	}
-
-	iLogger := commonbl.Logger(logger)
-	if iLogger.GetVerbose() == false {
-		t.Errorf("Logger is not verbose but should")
-	}
-
-	logger.LogLevelSetting = commonbl.Information
-	if iLogger.GetVerbose() == true {
-		t.Errorf("Logger is verbose but not should")
 	}
 }
 

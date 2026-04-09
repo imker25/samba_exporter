@@ -31,15 +31,19 @@ func GetValidLogLevels() []string {
 
 // Logger - Interface for logger implementations
 type Logger interface {
-	// GetVerbose - Tell if logger is verbose or not
-	GetVerbose() bool
+	// Get the current log level setting of a logger instance
+	GetLogLevelSetting() LogLevel
 
 	// WriteInformation - Write a Info message to Stdout, will be prefixed with "Information: "
 	WriteInformation(message string)
 
-	// WriteVerbose - Write a Verbose message to Stdout. Message will be written only if logger.Verbose is true.
+	// WriteVerbose - Write a Verbose message to Stdout
 	// The message will be prefixed with "Verbose :"
 	WriteVerbose(message string)
+
+	// WriteWarning - Write a Warning message to Stdout
+	// The message will be prefixed with "Warning :"
+	WriteWarning(message string)
 
 	// WriteErrorMessage - Write the message to Stderr. The Message will be prefixed with "Error: "
 	WriteErrorMessage(message string)
@@ -59,6 +63,17 @@ func GetLogger(logFilePath string, verbose bool) (Logger, error) {
 	}
 
 	return NewConsoleLogger(verbose), nil
+
+}
+
+// Get the right logger depending on the input parameters
+func GetLogger2(logFilePath string, logLevelSetting LogLevel) (Logger, error) {
+	trimmedPath := strings.TrimSpace(logFilePath)
+	if trimmedPath != "" {
+		return NewFileLogger2(logLevelSetting, trimmedPath)
+	}
+
+	return NewConsoleLogger2(logLevelSetting), nil
 
 }
 

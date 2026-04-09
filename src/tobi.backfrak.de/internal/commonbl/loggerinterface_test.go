@@ -16,10 +16,6 @@ func TestGetLoggerForFileLogger(t *testing.T) {
 		t.Errorf("Got error '%s' but expected none", err.Error())
 	}
 
-	if logger.GetVerbose() == true {
-		t.Errorf("The logger is verbose, but should not")
-	}
-
 	switch logger.(type) {
 	case *FileLogger:
 		fmt.Println("OK")
@@ -32,10 +28,6 @@ func TestGetLoggerForFileLogger(t *testing.T) {
 		t.Errorf("Got error '%s' but expected none", err2.Error())
 	}
 
-	if logger2.GetVerbose() == false {
-		t.Errorf("The logger is not verbose, but should ")
-	}
-
 	switch logger2.(type) {
 	case *FileLogger:
 		fmt.Println("OK")
@@ -44,15 +36,49 @@ func TestGetLoggerForFileLogger(t *testing.T) {
 	}
 }
 
+func TestGetLoggerForFileLogger2(t *testing.T) {
+	mutex.Lock()
+	defer mutex.Unlock()
+	ensureLogFileDirExists()
+	logger, err := GetLogger2(logfile_path, Error)
+
+	if err != nil {
+		t.Errorf("Got error '%s' but expected none", err.Error())
+	}
+
+	switch logger.(type) {
+	case *FileLogger:
+		fmt.Println("OK")
+	default:
+		t.Errorf("The logger is not the expected FileLogger")
+	}
+
+	if logger.GetLogLevelSetting() != Error {
+		t.Errorf("The loglevel setting of the logger '%d' is not the expected '%d'", logger.GetLogLevelSetting(), Error)
+	}
+
+	logger2, err2 := GetLogger2(logfile_path, Verbose)
+	if err2 != nil {
+		t.Errorf("Got error '%s' but expected none", err2.Error())
+	}
+
+	switch logger2.(type) {
+	case *FileLogger:
+		fmt.Println("OK")
+	default:
+		t.Errorf("The logger is not the expected FileLogger")
+	}
+
+	if logger2.GetLogLevelSetting() != Verbose {
+		t.Errorf("The loglevel setting of the logger '%d' is not the expected '%d'", logger2.GetLogLevelSetting(), Verbose)
+	}
+}
+
 func TestGetLoggerForConsoleLogger(t *testing.T) {
 	logger1, err1 := GetLogger(" ", false)
 
 	if err1 != nil {
 		t.Errorf("Got error '%s' but expected none", err1.Error())
-	}
-
-	if logger1.GetVerbose() == true {
-		t.Errorf("The logger is verbose, but should not")
 	}
 
 	switch logger1.(type) {
@@ -67,8 +93,35 @@ func TestGetLoggerForConsoleLogger(t *testing.T) {
 		t.Errorf("Got error '%s' but expected none", err2.Error())
 	}
 
-	if logger2.GetVerbose() == false {
-		t.Errorf("The logger is not verbose, but should ")
+	switch logger2.(type) {
+	case *ConsoleLogger:
+		fmt.Println("OK")
+	default:
+		t.Errorf("The logger is not the expected ConsoleLogger")
+	}
+}
+
+func TestGetLoggerForConsoleLogger2(t *testing.T) {
+	logger1, err1 := GetLogger2(" ", Warning)
+
+	if err1 != nil {
+		t.Errorf("Got error '%s' but expected none", err1.Error())
+	}
+
+	switch logger1.(type) {
+	case *ConsoleLogger:
+		fmt.Println("OK")
+	default:
+		t.Errorf("The logger is not the expected ConsoleLogger")
+	}
+
+	if logger1.GetLogLevelSetting() != Warning {
+		t.Errorf("The loglevel setting of the logger '%d' is not the expected '%d'", logger1.GetLogLevelSetting(), Warning)
+	}
+
+	logger2, err2 := GetLogger2(" ", Information)
+	if err2 != nil {
+		t.Errorf("Got error '%s' but expected none", err2.Error())
 	}
 
 	switch logger2.(type) {
@@ -76,6 +129,10 @@ func TestGetLoggerForConsoleLogger(t *testing.T) {
 		fmt.Println("OK")
 	default:
 		t.Errorf("The logger is not the expected ConsoleLogger")
+	}
+
+	if logger2.GetLogLevelSetting() != Information {
+		t.Errorf("The loglevel setting of the logger '%d' is not the expected '%d'", logger1.GetLogLevelSetting(), Information)
 	}
 }
 

@@ -42,11 +42,6 @@ func TestNewFileLogger(t *testing.T) {
 		t.Errorf("The FileLoggers FullFilePath is '%s' but should be '%s'", sut.FullFilePath, logfile_path)
 	}
 
-	iut := Logger(sut)
-	if iut.GetVerbose() != true {
-		t.Errorf("FileLogger is not verbose, but should")
-	}
-
 	if sut.internalLoggers[Information].Prefix() != "Information: " {
 		t.Errorf("Infologger has prefix '%s', but 'Information: ' is expected", sut.internalLoggers[Information].Prefix())
 	}
@@ -94,11 +89,6 @@ func TestNewFileLogger2Verbose(t *testing.T) {
 
 	if sut.FullFilePath != logfile_path {
 		t.Errorf("The FileLoggers FullFilePath is '%s' but should be '%s'", sut.FullFilePath, logfile_path)
-	}
-
-	iut := Logger(sut)
-	if iut.GetVerbose() != true {
-		t.Errorf("FileLogger is not verbose, but should")
 	}
 
 	if sut.internalLoggers[Information].Prefix() != "Information: " {
@@ -152,11 +142,6 @@ func TestNewFileLogger2Information(t *testing.T) {
 
 	if sut.FullFilePath != logfile_path {
 		t.Errorf("The FileLoggers FullFilePath is '%s' but should be '%s'", sut.FullFilePath, logfile_path)
-	}
-
-	iut := Logger(sut)
-	if iut.GetVerbose() != false {
-		t.Errorf("FileLogger is not verbose, but should")
 	}
 
 	if sut.internalLoggers[Information].Prefix() != "Information: " {
@@ -357,9 +342,6 @@ func TestFileLoggerWriteVerbose(t *testing.T) {
 	}
 
 	sut.LogLevelSetting = Verbose
-	if iut.GetVerbose() == false {
-		t.Errorf("FileLogger is not verbose, but should")
-	}
 	sut.WriteVerbose(verboseMsg2)
 	iut.WriteVerbose(verboseMsg3)
 
@@ -482,9 +464,6 @@ func TestFileLoggerWriteMixed(t *testing.T) {
 	}
 
 	sut.LogLevelSetting = Verbose
-	if iut.GetVerbose() == false {
-		t.Errorf("FileLogger is not verbose, but should")
-	}
 	iut.WriteVerbose(verboseMsg2)
 	iut.WriteErrorMessage(errorMsg3)
 
