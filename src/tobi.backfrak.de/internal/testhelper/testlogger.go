@@ -105,11 +105,10 @@ func (logger *TestLogger) writeLogMessage(message string, messageLogLevel common
 	defer logger.mutex.Unlock()
 
 	if messageLogLevel == commonbl.Error {
-		trimmedMsg := strings.TrimPrefix(message, "Error: ")
+		trimmedMsg := strings.TrimPrefix(message, fmt.Sprintf("%s: ", commonbl.ValidLogLevelSettings[commonbl.Error]))
 		logger.WrittenErrors = append(logger.WrittenErrors, fmt.Sprintf("%s: %s", commonbl.ValidLogLevelSettings[messageLogLevel], trimmedMsg))
 		return
 	}
 
 	logger.WrittenMessages = append(logger.WrittenMessages, fmt.Sprintf("%s: %s", commonbl.ValidLogLevelSettings[messageLogLevel], message))
-	return
 }

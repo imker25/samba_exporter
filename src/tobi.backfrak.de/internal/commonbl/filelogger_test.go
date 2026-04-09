@@ -531,6 +531,47 @@ func TestDirectoryExists(t *testing.T) {
 
 }
 
+func TestErrorLogLevel(t *testing.T) {
+	testLogLevels(t, Error)
+}
+
+func TestWarningLogLevel(t *testing.T) {
+	testLogLevels(t, Warning)
+}
+
+func TestInformationLogLevel(t *testing.T) {
+	testLogLevels(t, Information)
+}
+
+func TestVerboseLogLevel(t *testing.T) {
+	testLogLevels(t, Verbose)
+}
+
+func testLogLevels(t *testing.T, logLevelSetting LogLevel) {
+
+	mutex.Lock()
+	defer mutex.Unlock()
+	ensureLogFileDirExists()
+	if logFileExists() {
+		deleteTestsLogFile(t)
+	}
+
+	sut, _ := NewFileLogger2(logLevelSetting, logfile_path)
+	infoMsg1 := "Some info message - 1"
+	verboseMsg2 := "Some verbose message - 2"
+	errorMsg3 := "Some error message - 3"
+	warningMsg4 := "Some Warning message - 4"
+	sut.WriteInformation(infoMsg1)
+	sut.WriteVerbose(verboseMsg2)
+	sut.WriteErrorMessage(errorMsg3)
+	sut.WriteWarning(warningMsg4)
+
+	fileLines := readLogFileLines()
+	if len(fileLines) != int(sut.GetLogLevelSetting())+1 {
+		t.Errorf("The number of logged messages '%d' is not the expected '%d'", len(fileLines), sut.GetLogLevelSetting())
+	}
+}
+
 func deleteTestsLogFile(t *testing.T) {
 	if !logFileExists() {
 		return

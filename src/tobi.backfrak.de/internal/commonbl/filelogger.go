@@ -116,7 +116,7 @@ func (logger *FileLogger) writeLogMessage(message string, messageLogLevel LogLev
 
 	var trimmedMsg string
 	if messageLogLevel == Error {
-		trimmedMsg = strings.TrimPrefix(message, "Error: ")
+		trimmedMsg = strings.TrimPrefix(message, fmt.Sprintf("%s: ", ValidLogLevelSettings[Error]))
 	} else {
 		trimmedMsg = message
 	}

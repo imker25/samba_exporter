@@ -89,7 +89,7 @@ func (logger *ConsoleLogger) writeMessageToStream(message string, messageLogLeve
 	var trimmedMsg string
 	if messageLogLevel == Error {
 		outstream = os.Stderr
-		trimmedMsg = strings.TrimPrefix(message, "Error: ")
+		trimmedMsg = strings.TrimPrefix(message, fmt.Sprintf("%s: ", ValidLogLevelSettings[Error]))
 	} else {
 		outstream = os.Stdout
 		trimmedMsg = message
