@@ -20,6 +20,16 @@ var ValidLogLevelSettings = map[LogLevel]string{
 	Verbose:     "Verbose",
 }
 
+func StringToLogLevel(logLEvelStr string) (LogLevel, bool) {
+	for logLevel, str := range ValidLogLevelSettings {
+		if str == logLEvelStr {
+			return logLevel, true
+		}
+	}
+
+	return -1, false
+}
+
 func GetValidLogLevels() []string {
 	var ret []string
 	for _, level := range ValidLogLevelSettings {
@@ -56,24 +66,13 @@ type Logger interface {
 }
 
 // Get the right logger depending on the input parameters
-func GetLogger(logFilePath string, verbose bool) (Logger, error) {
+func GetLogger(logFilePath string, logLevelSetting LogLevel) (Logger, error) {
 	trimmedPath := strings.TrimSpace(logFilePath)
 	if trimmedPath != "" {
-		return NewFileLogger(verbose, trimmedPath)
+		return NewFileLogger(logLevelSetting, trimmedPath)
 	}
 
-	return NewConsoleLogger(verbose), nil
-
-}
-
-// Get the right logger depending on the input parameters
-func GetLogger2(logFilePath string, logLevelSetting LogLevel) (Logger, error) {
-	trimmedPath := strings.TrimSpace(logFilePath)
-	if trimmedPath != "" {
-		return NewFileLogger2(logLevelSetting, trimmedPath)
-	}
-
-	return NewConsoleLogger2(logLevelSetting), nil
+	return NewConsoleLogger(logLevelSetting), nil
 
 }
 

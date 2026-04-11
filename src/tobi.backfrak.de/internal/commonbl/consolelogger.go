@@ -17,18 +17,7 @@ type ConsoleLogger struct {
 }
 
 // Get a new instance of the Logger
-func NewConsoleLogger(verbose bool) *ConsoleLogger {
-	ret := ConsoleLogger{}
-	if verbose {
-		ret.LogLevelSetting = Verbose
-	} else {
-		ret.LogLevelSetting = Information
-	}
-
-	return &ret
-}
-
-func NewConsoleLogger2(logLevelSetting LogLevel) *ConsoleLogger {
+func NewConsoleLogger(logLevelSetting LogLevel) *ConsoleLogger {
 	ret := ConsoleLogger{}
 	ret.LogLevelSetting = logLevelSetting
 

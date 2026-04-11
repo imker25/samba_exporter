@@ -99,3 +99,17 @@ func NewDirectoryNotExistError(directoryPath string) *DirectoryNotExistError {
 func (e *DirectoryNotExistError) Error() string { // Implement the Error Interface for the DirectoryNotExistError struct
 	return fmt.Sprintf("Error: %s", e.err)
 }
+
+// LogLevelNotDefinedError - Error when the -log-level parameter can not be converted into a LogLevel
+type LogLevelNotDefinedError struct {
+	err             string
+	LogLevelSetting string
+}
+
+func NewLogLevelNotDefinedError(logLevelSetting string) *LogLevelNotDefinedError {
+	return &LogLevelNotDefinedError{fmt.Sprintf("The LogLEvel '%s' does not exist.", logLevelSetting), logLevelSetting}
+}
+
+func (e *LogLevelNotDefinedError) Error() string { // Implement the Error Interface for the DirectoryNotExistError struct
+	return fmt.Sprintf("Error: %s", e.err)
+}

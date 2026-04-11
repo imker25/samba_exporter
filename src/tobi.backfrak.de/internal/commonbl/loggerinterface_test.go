@@ -10,7 +10,7 @@ func TestGetLoggerForFileLogger(t *testing.T) {
 	mutex.Lock()
 	defer mutex.Unlock()
 	ensureLogFileDirExists()
-	logger, err := GetLogger(logfile_path, false)
+	logger, err := GetLogger(logfile_path, Information)
 
 	if err != nil {
 		t.Errorf("Got error '%s' but expected none", err.Error())
@@ -23,7 +23,7 @@ func TestGetLoggerForFileLogger(t *testing.T) {
 		t.Errorf("The logger is not the expected FileLogger")
 	}
 
-	logger2, err2 := GetLogger(logfile_path, true)
+	logger2, err2 := GetLogger(logfile_path, Verbose)
 	if err2 != nil {
 		t.Errorf("Got error '%s' but expected none", err2.Error())
 	}
@@ -40,7 +40,7 @@ func TestGetLoggerForFileLogger2(t *testing.T) {
 	mutex.Lock()
 	defer mutex.Unlock()
 	ensureLogFileDirExists()
-	logger, err := GetLogger2(logfile_path, Error)
+	logger, err := GetLogger(logfile_path, Error)
 
 	if err != nil {
 		t.Errorf("Got error '%s' but expected none", err.Error())
@@ -57,7 +57,7 @@ func TestGetLoggerForFileLogger2(t *testing.T) {
 		t.Errorf("The loglevel setting of the logger '%d' is not the expected '%d'", logger.GetLogLevelSetting(), Error)
 	}
 
-	logger2, err2 := GetLogger2(logfile_path, Verbose)
+	logger2, err2 := GetLogger(logfile_path, Verbose)
 	if err2 != nil {
 		t.Errorf("Got error '%s' but expected none", err2.Error())
 	}
@@ -75,7 +75,7 @@ func TestGetLoggerForFileLogger2(t *testing.T) {
 }
 
 func TestGetLoggerForConsoleLogger(t *testing.T) {
-	logger1, err1 := GetLogger(" ", false)
+	logger1, err1 := GetLogger(" ", Information)
 
 	if err1 != nil {
 		t.Errorf("Got error '%s' but expected none", err1.Error())
@@ -88,7 +88,7 @@ func TestGetLoggerForConsoleLogger(t *testing.T) {
 		t.Errorf("The logger is not the expected ConsoleLogger")
 	}
 
-	logger2, err2 := GetLogger(" ", true)
+	logger2, err2 := GetLogger(" ", Error)
 	if err2 != nil {
 		t.Errorf("Got error '%s' but expected none", err2.Error())
 	}
@@ -102,7 +102,7 @@ func TestGetLoggerForConsoleLogger(t *testing.T) {
 }
 
 func TestGetLoggerForConsoleLogger2(t *testing.T) {
-	logger1, err1 := GetLogger2(" ", Warning)
+	logger1, err1 := GetLogger(" ", Warning)
 
 	if err1 != nil {
 		t.Errorf("Got error '%s' but expected none", err1.Error())
@@ -119,7 +119,7 @@ func TestGetLoggerForConsoleLogger2(t *testing.T) {
 		t.Errorf("The loglevel setting of the logger '%d' is not the expected '%d'", logger1.GetLogLevelSetting(), Warning)
 	}
 
-	logger2, err2 := GetLogger2(" ", Information)
+	logger2, err2 := GetLogger(" ", Information)
 	if err2 != nil {
 		t.Errorf("Got error '%s' but expected none", err2.Error())
 	}
@@ -209,5 +209,47 @@ func TestFilterMessage(t *testing.T) {
 
 	if FilterMessage(Information, Warning) != false {
 		t.Errorf("'FilterMessage(Information, Warning)' returns '%t', but '%t' is expected", FilterMessage(Information, Warning), false)
+	}
+}
+
+func TestStringToLogLevel(t *testing.T) {
+	logLevel, result := StringToLogLevel("Error")
+	if !result {
+		t.Errorf("The string 'Error' could not be converted into a LogLevel")
+	}
+	if logLevel != Error {
+		t.Errorf("The string 'Error' is converted into log Level '%d'", logLevel)
+	}
+
+	logLevel, result = StringToLogLevel("Warning")
+	if !result {
+		t.Errorf("The string 'Warning' could not be converted into a LogLevel")
+	}
+	if logLevel != Warning {
+		t.Errorf("The string 'Warning' is converted into log Level '%d'", logLevel)
+	}
+
+	logLevel, result = StringToLogLevel("Information")
+	if !result {
+		t.Errorf("The string 'Information' could not be converted into a LogLevel")
+	}
+	if logLevel != Information {
+		t.Errorf("The string 'Information' is converted into log Level '%d'", logLevel)
+	}
+
+	logLevel, result = StringToLogLevel("Verbose")
+	if !result {
+		t.Errorf("The string 'Verbose' could not be converted into a LogLevel")
+	}
+	if logLevel != Verbose {
+		t.Errorf("The string 'Verbose' is converted into log Level '%d'", logLevel)
+	}
+
+	logLevel, result = StringToLogLevel("Bla")
+	if result {
+		t.Errorf("The string 'Bla' could be converted into a LogLevel")
+	}
+	if logLevel != -1 {
+		t.Errorf("The string 'Bla' is converted into log Level '%d' but should be '-1'", logLevel)
 	}
 }

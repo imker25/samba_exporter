@@ -21,20 +21,7 @@ type FileLogger struct {
 }
 
 // Get a new instance of the Logger
-func NewFileLogger(verbose bool, fullFilePath string) (*FileLogger, error) {
-
-	logLevelSetting := Information
-	if verbose {
-		logLevelSetting = Verbose
-	}
-
-	ret, err := NewFileLogger2(logLevelSetting, fullFilePath)
-
-	return ret, err
-}
-
-// Get a new instance of the Logger
-func NewFileLogger2(logLevelSetting LogLevel, fullFilePath string) (*FileLogger, error) {
+func NewFileLogger(logLevelSetting LogLevel, fullFilePath string) (*FileLogger, error) {
 	logFileDir := filepath.Dir(fullFilePath)
 	if !directoryExists(logFileDir) {
 		return nil, NewDirectoryNotExistError(logFileDir)

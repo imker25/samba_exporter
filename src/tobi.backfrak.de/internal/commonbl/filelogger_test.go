@@ -24,7 +24,7 @@ func TestNewFileLogger(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(Verbose, logfile_path)
 
 	if sut.LogLevelSetting != Verbose {
 		t.Errorf("FileLogger is not verbose, but should")
@@ -77,7 +77,7 @@ func TestNewFileLogger2Verbose(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger2(Verbose, logfile_path)
+	sut, _ := NewFileLogger(Verbose, logfile_path)
 
 	if sut.LogLevelSetting != Verbose {
 		t.Errorf("FileLogger is not verbose, but should")
@@ -126,7 +126,7 @@ func TestNewFileLogger2Information(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger2(Information, logfile_path)
+	sut, _ := NewFileLogger(Information, logfile_path)
 
 	if sut.LogLevelSetting != Information {
 		t.Errorf("FileLogger is not verbose, but should")
@@ -171,7 +171,7 @@ func TestNewFileLogger2Information(t *testing.T) {
 }
 
 func TestNewFileLoggerNotExistingDir(t *testing.T) {
-	sut, err := NewFileLogger(true, "/dev/shm/not/existing/path/file.log")
+	sut, err := NewFileLogger(Information, "/dev/shm/not/existing/path/file.log")
 
 	if sut != nil {
 		t.Errorf("The 'FileLogger' should be nil, but is not")
@@ -201,7 +201,7 @@ func TestFileLoggerWriteInformation(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(Verbose, logfile_path)
 	infoMsg1 := "Some info message - 1"
 	infoMsg2 := "Some info message - 2"
 	infoMsg3 := "Some info message - 3"
@@ -255,7 +255,7 @@ func TestFileLoggerWriteWarning(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(Verbose, logfile_path)
 	warnMsg1 := "Some warning message - 1"
 	warnMsg2 := "Some warning message - 2"
 	// warnMsg3 := "Some warning message - 3"
@@ -309,7 +309,7 @@ func TestFileLoggerWriteVerbose(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(Verbose, logfile_path)
 	verboseMsg1 := "Some verbose message - 1"
 	verboseMsg2 := "Some verbose message - 2"
 	verboseMsg3 := "Some verbose message - 3"
@@ -376,7 +376,7 @@ func TestFileLoggerWriteInError(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(Verbose, logfile_path)
 	errorMsg1 := "Some error message - 1"
 	errorMsg2 := "Some error message - 2"
 	errorMsg3 := "Some error message - 3"
@@ -431,7 +431,7 @@ func TestFileLoggerWriteMixed(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(Verbose, logfile_path)
 	infoMsg1 := "Some info message - 1"
 	verboseMsg2 := "Some verbose message - 2"
 	errorMsg3 := "Some error message - 3"
@@ -535,7 +535,7 @@ func testLogLevels(t *testing.T, logLevelSetting LogLevel) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger2(logLevelSetting, logfile_path)
+	sut, _ := NewFileLogger(logLevelSetting, logfile_path)
 	infoMsg1 := "Some info message - 1"
 	verboseMsg2 := "Some verbose message - 2"
 	errorMsg3 := "Some error message - 3"

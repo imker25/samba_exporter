@@ -25,13 +25,14 @@ func handleComandlineOptions() {
 
 	// Setup the usabel parametes
 	flag.BoolVar(&params.PrintVersion, "print-version", false, "With this flag the program will only print it's version and exit")
-	flag.BoolVar(&params.Verbose, "verbose", false, "With this flag the program will print verbose output")
+	flag.BoolVar(&params.Verbose, "verbose", false, "With this flag the program will print verbose output. Equivalent to '-log-level=Verbose'")
 	flag.BoolVar(&params.Test, "test-mode", false,
 		"Run the program in test mode. In this mode the program will always return the same test data. To work with samba_exporter both programs needs to run in test mode or not.")
 	flag.BoolVar(&params.Help, "help", false, "Print this help message")
 	flag.StringVar(&params.LogFilePath, "log-file-path", " ",
 		"Give the full file path for a log file. When parameter is not set (as by default), logs will be written to stdout and stderr")
-
+	flag.StringVar(&params.LogLevelSetting, "log-level", "Information",
+		fmt.Sprintf("Tell how verbose the log output should be. Possible values are: %s. Any given value will be overwritten in case the '-verbose' switch is used", commonbl.GetValidLogLevels()))
 	// Overwrite the std Usage function with some custom stuff
 	flag.Usage = customHelpMessage
 
