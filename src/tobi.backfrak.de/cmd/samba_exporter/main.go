@@ -38,7 +38,7 @@ func main() {
 }
 
 func realMain() int {
-	var newLoggerErrror error
+	var newLoggerError error
 	requestHandler := *commonbl.NewPipeHandler(params.Test, commonbl.RequestPipe)
 	responseHandler := *commonbl.NewPipeHandler(params.Test, commonbl.ResposePipe)
 	logLevelSetting, logLevelError := params.GetLogLevelSetting()
@@ -47,9 +47,9 @@ func realMain() int {
 		return -9
 	}
 
-	logger, newLoggerError := commonbl.GetLogger(params.LogFilePath, logLevelSetting)
+	logger, newLoggerError = commonbl.GetLogger(params.LogFilePath, logLevelSetting)
 	if newLoggerError != nil {
-		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error when creating the logger: %s", newLoggerErrror.Error()))
+		fmt.Fprintln(os.Stderr, fmt.Sprintf("Error when creating the logger: %s", newLoggerError.Error()))
 		return -9
 	}
 

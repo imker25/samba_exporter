@@ -107,10 +107,37 @@ func TestMainWithVerbose(t *testing.T) {
 	params.Test = true
 	params.Help = true
 	params.Verbose = true
+	params.LogLevelSetting = "Information"
 
 	res := realMain()
 	if res != 0 {
 		t.Errorf("Got %d from main, but expected 0", res)
+	}
+
+	if logger.GetLogLevelSetting() != commonbl.Verbose {
+		t.Errorf("The LogLevel is '%d' but 'Verbose' is expected", logger.GetLogLevelSetting())
+	}
+
+}
+
+func TestMainWithErrorLogging(t *testing.T) {
+	mMutext.Lock()
+	defer mMutext.Unlock()
+
+	oldParmas := params
+	defer func() { params = oldParmas }()
+
+	params.Test = true
+	params.Help = true
+	params.LogLevelSetting = "Error"
+
+	res := realMain()
+	if res != 0 {
+		t.Errorf("Got %d from main, but expected 0", res)
+	}
+
+	if logger.GetLogLevelSetting() != commonbl.Error {
+		t.Errorf("The LogLevel is '%d' but 'Error' is expected", logger.GetLogLevelSetting())
 	}
 
 }
