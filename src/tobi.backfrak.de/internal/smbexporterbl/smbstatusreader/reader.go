@@ -50,7 +50,7 @@ func GetLockData(data string, logger commonbl.Logger) []LockData {
 	}
 
 	if strings.TrimSpace(data) == "" {
-		logger.WriteInformation("Got an empty string from 'smbstatus -L -n'")
+		logger.WriteWarning("Got an empty string from 'smbstatus -L -n'")
 		return ret
 	}
 
@@ -172,7 +172,7 @@ func GetShareData(data string, logger commonbl.Logger) []ShareData {
 	var ret []ShareData
 
 	if strings.TrimSpace(data) == "" {
-		logger.WriteInformation("Got an empty string from 'smbstatus -S -n'")
+		logger.WriteWarning("Got an empty string from 'smbstatus -S -n'")
 		return ret
 	}
 
@@ -356,7 +356,7 @@ func GetProcessData(data string, logger commonbl.Logger) []ProcessData {
 	var ret []ProcessData
 
 	if strings.TrimSpace(data) == "" {
-		logger.WriteInformation("Got an empty string from 'smbstatus -p -n'")
+		logger.WriteWarning("Got an empty string from 'smbstatus -p -n'")
 		return ret
 	}
 
