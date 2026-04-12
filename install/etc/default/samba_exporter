@@ -22,6 +22,9 @@ ARGS='-web.listen-address=127.0.0.1:9922'
 #         Print this help message
 #   -log-file-path string
 #         Give the full file path for a log file. When parameter is not set (as by default), logs will be written to stdout and stderr (default " ")
+#  -log-level string
+#        Tell how verbose the log output should be. Possible values are: [Verbose Error Warning Information]. Any given value will be overwritten in case
+#        the '-verbose' switch is used (default "Information")
 #   -not-expose-client-data
 #         Set to 'true', no details about the connected clients will be exported
 #   -not-expose-encryption-data
@@ -42,7 +45,7 @@ ARGS='-web.listen-address=127.0.0.1:9922'
 #   -test-pipe
 #         Requests status from samba_statusd and exits. May be combined with -test-mode.
 #   -verbose
-#         With this flag the program will print verbose output
+#         With this flag the program will print verbose output. Equivalent to '-log-level=Verbose'
 #   -web.listen-address string
 #         Address to listen on for web interface and telemetry. (default ":9922")
 #   -web.telemetry-path string

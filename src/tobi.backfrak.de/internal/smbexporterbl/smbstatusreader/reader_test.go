@@ -451,8 +451,8 @@ func TestGetShareDataInvlaideResponse(t *testing.T) {
 		t.Errorf("The ErrorCount '%d' is not the expected '1'", logger.GetErrorCount())
 	}
 
-	if logger.WrittenErrors[0] != "strconv.Atoi: parsing \"zyx\": invalid syntax - while getting ShareData PID (normal without :)" {
-		t.Errorf("The error message '%s' is not the expected 'strconv.Atoi: parsing \"zyx\": invalid syntax - while getting ShareData PID (normal without :)'", logger.WrittenErrors[0])
+	if logger.WrittenErrors[0] != "Error: strconv.Atoi: parsing \"zyx\": invalid syntax - while getting ShareData PID (normal without :)" {
+		t.Errorf("The error message '%s' is not the expected 'Error: strconv.Atoi: parsing \"zyx\": invalid syntax - while getting ShareData PID (normal without :)'", logger.WrittenErrors[0])
 	}
 }
 
@@ -716,8 +716,8 @@ func TestGetPsData0Input(t *testing.T) {
 		t.Errorf("The ErrorCount '%d' is not the expected '1'", logger.GetErrorCount())
 	}
 
-	if logger.WrittenErrors[0] != "unexpected end of JSON input - while converting PsData json" {
-		t.Errorf("The error message '%s' is not the expected 'unexpected end of JSON input - while converting PsData json'", logger.WrittenErrors[0])
+	if logger.WrittenErrors[0] != "Error: unexpected end of JSON input - while converting PsData json" {
+		t.Errorf("The error message '%s' is not the expected 'Error: unexpected end of JSON input - while converting PsData json'", logger.WrittenErrors[0])
 	}
 }
 

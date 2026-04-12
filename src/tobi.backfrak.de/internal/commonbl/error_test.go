@@ -80,3 +80,16 @@ func TestDirectoryNotExistError(t *testing.T) {
 		t.Errorf("The error message of DirectoryNotExistError does not contain the expected data")
 	}
 }
+
+func TestLogLevelNotDefinedError(t *testing.T) {
+	logLevelStr := "bla"
+	err := NewLogLevelNotDefinedError(logLevelStr)
+
+	if err.LogLevelSetting != logLevelStr {
+		t.Errorf("LogLevelNotDefinedError LogLevelSetting value is '%s', but '%s' is expected", err.LogLevelSetting, logLevelStr)
+	}
+
+	if strings.Contains(err.Error(), logLevelStr) == false {
+		t.Errorf("The error message of LogLevelNotDefinedError does not contain the expected data")
+	}
+}

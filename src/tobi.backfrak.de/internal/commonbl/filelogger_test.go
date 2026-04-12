@@ -24,9 +24,62 @@ func TestNewFileLogger(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(Verbose, logfile_path)
 
-	if sut.Verbose != true {
+	if sut.LogLevelSetting != Verbose {
+		t.Errorf("FileLogger is not verbose, but should")
+	}
+
+	if sut.GetVerbose() != true {
+		t.Errorf("FileLogger is not verbose, but should")
+	}
+
+	if sut.GetLogLevelSetting() != Verbose {
+		t.Errorf("FileLogger is not verbose, but should")
+	}
+
+	if sut.FullFilePath != logfile_path {
+		t.Errorf("The FileLoggers FullFilePath is '%s' but should be '%s'", sut.FullFilePath, logfile_path)
+	}
+
+	if sut.internalLoggers[Information].Prefix() != "Information: " {
+		t.Errorf("Infologger has prefix '%s', but 'Information: ' is expected", sut.internalLoggers[Information].Prefix())
+	}
+
+	if sut.internalLoggers[Error].Prefix() != "Error: " {
+		t.Errorf("Infologger has prefix '%s', but 'Error: ' is expected", sut.internalLoggers[Error].Prefix())
+	}
+
+	if sut.internalLoggers[Verbose].Prefix() != "Verbose: " {
+		t.Errorf("Infologger has prefix '%s', but 'Verbose: ' is expected", sut.internalLoggers[Verbose].Prefix())
+	}
+
+	if sut.internalLoggers[Warning].Prefix() != "Warning: " {
+		t.Errorf("Infologger has prefix '%s', but 'Warning: ' is expected", sut.internalLoggers[Warning].Prefix())
+	}
+
+	if !logFileExists() {
+		t.Errorf("Log file does not exist, but should after test was running")
+	}
+
+	fileLines := readLogFileLines()
+	if len(fileLines) != 0 {
+		t.Errorf("The log file has '%d' lines but '0' lines is expected", len(fileLines))
+	}
+}
+
+func TestNewFileLogger2Verbose(t *testing.T) {
+
+	mutex.Lock()
+	defer mutex.Unlock()
+	ensureLogFileDirExists()
+	if logFileExists() {
+		deleteTestsLogFile(t)
+	}
+
+	sut, _ := NewFileLogger(Verbose, logfile_path)
+
+	if sut.LogLevelSetting != Verbose {
 		t.Errorf("FileLogger is not verbose, but should")
 	}
 
@@ -38,21 +91,73 @@ func TestNewFileLogger(t *testing.T) {
 		t.Errorf("The FileLoggers FullFilePath is '%s' but should be '%s'", sut.FullFilePath, logfile_path)
 	}
 
-	iut := Logger(sut)
-	if iut.GetVerbose() != true {
+	if sut.internalLoggers[Information].Prefix() != "Information: " {
+		t.Errorf("Infologger has prefix '%s', but 'Information: ' is expected", sut.internalLoggers[Information].Prefix())
+	}
+
+	if sut.internalLoggers[Error].Prefix() != "Error: " {
+		t.Errorf("Infologger has prefix '%s', but 'Error: ' is expected", sut.internalLoggers[Error].Prefix())
+	}
+
+	if sut.internalLoggers[Verbose].Prefix() != "Verbose: " {
+		t.Errorf("Infologger has prefix '%s', but 'Verbose: ' is expected", sut.internalLoggers[Verbose].Prefix())
+	}
+
+	if sut.internalLoggers[Warning].Prefix() != "Warning: " {
+		t.Errorf("Infologger has prefix '%s', but 'Warning: ' is expected", sut.internalLoggers[Warning].Prefix())
+	}
+
+	if !logFileExists() {
+		t.Errorf("Log file does not exist, but should after test was running")
+	}
+
+	fileLines := readLogFileLines()
+	if len(fileLines) != 0 {
+		t.Errorf("The log file has '%d' lines but '0' lines is expected", len(fileLines))
+	}
+}
+
+func TestNewFileLogger2Information(t *testing.T) {
+
+	mutex.Lock()
+	defer mutex.Unlock()
+	ensureLogFileDirExists()
+	if logFileExists() {
+		deleteTestsLogFile(t)
+	}
+
+	sut, _ := NewFileLogger(Information, logfile_path)
+
+	if sut.LogLevelSetting != Information {
 		t.Errorf("FileLogger is not verbose, but should")
 	}
 
-	if sut.infoLogger.Prefix() != "Information: " {
-		t.Errorf("Infologger has prefix '%s', but 'Information: ' is expected", sut.infoLogger.Prefix())
+	if sut.GetLogLevelSetting() != Information {
+		t.Errorf("FileLogger is not verbose, but should")
 	}
 
-	if sut.errorLogger.Prefix() != "Error: " {
-		t.Errorf("Infologger has prefix '%s', but 'Error: ' is expected", sut.errorLogger.Prefix())
+	if sut.GetVerbose() != false {
+		t.Errorf("FileLogger is not verbose, but should")
 	}
 
-	if sut.verboseLogger.Prefix() != "Verbose: " {
-		t.Errorf("Infologger has prefix '%s', but 'Verbose: ' is expected", sut.verboseLogger.Prefix())
+	if sut.FullFilePath != logfile_path {
+		t.Errorf("The FileLoggers FullFilePath is '%s' but should be '%s'", sut.FullFilePath, logfile_path)
+	}
+
+	if sut.internalLoggers[Information].Prefix() != "Information: " {
+		t.Errorf("Infologger has prefix '%s', but 'Information: ' is expected", sut.internalLoggers[Information].Prefix())
+	}
+
+	if sut.internalLoggers[Error].Prefix() != "Error: " {
+		t.Errorf("Infologger has prefix '%s', but 'Error: ' is expected", sut.internalLoggers[Error].Prefix())
+	}
+
+	if sut.internalLoggers[Verbose].Prefix() != "Verbose: " {
+		t.Errorf("Infologger has prefix '%s', but 'Verbose: ' is expected", sut.internalLoggers[Verbose].Prefix())
+	}
+
+	if sut.internalLoggers[Warning].Prefix() != "Warning: " {
+		t.Errorf("Infologger has prefix '%s', but 'Warning: ' is expected", sut.internalLoggers[Warning].Prefix())
 	}
 
 	if !logFileExists() {
@@ -66,7 +171,7 @@ func TestNewFileLogger(t *testing.T) {
 }
 
 func TestNewFileLoggerNotExistingDir(t *testing.T) {
-	sut, err := NewFileLogger(true, "/dev/shm/not/existing/path/file.log")
+	sut, err := NewFileLogger(Information, "/dev/shm/not/existing/path/file.log")
 
 	if sut != nil {
 		t.Errorf("The 'FileLogger' should be nil, but is not")
@@ -96,18 +201,18 @@ func TestFileLoggerWriteInformation(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(Verbose, logfile_path)
 	infoMsg1 := "Some info message - 1"
 	infoMsg2 := "Some info message - 2"
 	infoMsg3 := "Some info message - 3"
 	sut.WriteInformation(infoMsg1)
 
-	if sut.Verbose != true {
+	if sut.GetVerbose() != true {
 		t.Errorf("FileLogger is not verbose, but should")
 	}
 
-	sut.Verbose = false
-	if sut.Verbose != false {
+	sut.LogLevelSetting = Information
+	if sut.GetVerbose() != false {
 		t.Errorf("FileLogger is verbose, but should not")
 	}
 
@@ -142,6 +247,60 @@ func TestFileLoggerWriteInformation(t *testing.T) {
 	}
 }
 
+func TestFileLoggerWriteWarning(t *testing.T) {
+	mutex.Lock()
+	defer mutex.Unlock()
+	ensureLogFileDirExists()
+	if logFileExists() {
+		deleteTestsLogFile(t)
+	}
+
+	sut, _ := NewFileLogger(Verbose, logfile_path)
+	warnMsg1 := "Some warning message - 1"
+	warnMsg2 := "Some warning message - 2"
+	// warnMsg3 := "Some warning message - 3"
+	sut.WriteWarning(warnMsg1)
+
+	if sut.GetVerbose() != true {
+		t.Errorf("FileLogger is not verbose, but should")
+	}
+
+	sut.LogLevelSetting = Information
+	if sut.GetVerbose() != false {
+		t.Errorf("FileLogger is verbose, but should not")
+	}
+
+	sut.WriteWarning(warnMsg2)
+	// iut := Logger(sut)
+	// iut.WriteInformation(warnMsg3)
+
+	if !logFileExists() {
+		t.Errorf("Log file does not exist, but should after test was running")
+	}
+
+	fileLines := readLogFileLines()
+	if len(fileLines) != 2 {
+		t.Errorf("The log file has '%d' lines but '2' lines is expected", len(fileLines))
+	}
+
+	if !runningOnUbuntuFocal() {
+		expectedMsg1 := fmt.Sprintf("Warning: %s", warnMsg1)
+		if strings.HasSuffix(fileLines[0], expectedMsg1) == false {
+			t.Errorf("The log on index '0' is '%s', but '%s' was expected", fileLines[0], expectedMsg1)
+		}
+
+		expectedMsg2 := fmt.Sprintf("Warning: %s", warnMsg2)
+		if strings.HasSuffix(fileLines[1], expectedMsg2) == false {
+			t.Errorf("The log on index '1' is '%s', but '%s' was expected", fileLines[1], expectedMsg2)
+		}
+
+		// expectedMsg3 := fmt.Sprintf("Warning: %s", warnMsg3)
+		// if strings.HasSuffix(fileLines[2], expectedMsg3) == false {
+		// 	t.Errorf("The log on index '2' is '%s', but '%s' was expected", fileLines[2], expectedMsg3)
+		// }
+	}
+}
+
 func TestFileLoggerWriteVerbose(t *testing.T) {
 	mutex.Lock()
 	defer mutex.Unlock()
@@ -150,18 +309,18 @@ func TestFileLoggerWriteVerbose(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(Verbose, logfile_path)
 	verboseMsg1 := "Some verbose message - 1"
 	verboseMsg2 := "Some verbose message - 2"
 	verboseMsg3 := "Some verbose message - 3"
 	sut.WriteVerbose(verboseMsg1)
 
-	if sut.Verbose != true {
+	if sut.GetVerbose() != true {
 		t.Errorf("FileLogger is not verbose, but should")
 	}
 
-	sut.Verbose = false
-	if sut.Verbose != false {
+	sut.LogLevelSetting = Information
+	if sut.GetVerbose() != false {
 		t.Errorf("FileLogger is verbose, but should not")
 	}
 
@@ -182,10 +341,7 @@ func TestFileLoggerWriteVerbose(t *testing.T) {
 		t.Errorf("The log file has '%d' lines but '1' lines is expected", len(fileLines))
 	}
 
-	sut.Verbose = true
-	if iut.GetVerbose() == false {
-		t.Errorf("FileLogger is not verbose, but should")
-	}
+	sut.LogLevelSetting = Verbose
 	sut.WriteVerbose(verboseMsg2)
 	iut.WriteVerbose(verboseMsg3)
 
@@ -220,19 +376,19 @@ func TestFileLoggerWriteInError(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(Verbose, logfile_path)
 	errorMsg1 := "Some error message - 1"
 	errorMsg2 := "Some error message - 2"
 	errorMsg3 := "Some error message - 3"
 	additionalMsg := "More info on error"
 	sut.WriteErrorMessage(errorMsg1)
 
-	if sut.Verbose != true {
+	if sut.GetVerbose() != true {
 		t.Errorf("FileLogger is not verbose, but should")
 	}
 
-	sut.Verbose = false
-	if sut.Verbose != false {
+	sut.LogLevelSetting = Information
+	if sut.GetVerbose() != false {
 		t.Errorf("FileLogger is verbose, but should not")
 	}
 
@@ -275,18 +431,18 @@ func TestFileLoggerWriteMixed(t *testing.T) {
 		deleteTestsLogFile(t)
 	}
 
-	sut, _ := NewFileLogger(true, logfile_path)
+	sut, _ := NewFileLogger(Verbose, logfile_path)
 	infoMsg1 := "Some info message - 1"
 	verboseMsg2 := "Some verbose message - 2"
 	errorMsg3 := "Some error message - 3"
 	sut.WriteInformation(infoMsg1)
 
-	if sut.Verbose != true {
+	if sut.GetVerbose() != true {
 		t.Errorf("FileLogger is not verbose, but should")
 	}
 
-	sut.Verbose = false
-	if sut.Verbose != false {
+	sut.LogLevelSetting = Information
+	if sut.GetVerbose() != false {
 		t.Errorf("FileLogger is verbose, but should not")
 	}
 
@@ -307,10 +463,7 @@ func TestFileLoggerWriteMixed(t *testing.T) {
 		t.Errorf("The log file has '%d' lines but '1' lines is expected", len(fileLines))
 	}
 
-	sut.Verbose = true
-	if iut.GetVerbose() == false {
-		t.Errorf("FileLogger is not verbose, but should")
-	}
+	sut.LogLevelSetting = Verbose
 	iut.WriteVerbose(verboseMsg2)
 	iut.WriteErrorMessage(errorMsg3)
 
@@ -355,6 +508,47 @@ func TestDirectoryExists(t *testing.T) {
 		t.Errorf("'directoryExists' tells '%s' does exist but it is a file!", logfile_path)
 	}
 
+}
+
+func TestErrorLogLevel(t *testing.T) {
+	testLogLevels(t, Error)
+}
+
+func TestWarningLogLevel(t *testing.T) {
+	testLogLevels(t, Warning)
+}
+
+func TestInformationLogLevel(t *testing.T) {
+	testLogLevels(t, Information)
+}
+
+func TestVerboseLogLevel(t *testing.T) {
+	testLogLevels(t, Verbose)
+}
+
+func testLogLevels(t *testing.T, logLevelSetting LogLevel) {
+
+	mutex.Lock()
+	defer mutex.Unlock()
+	ensureLogFileDirExists()
+	if logFileExists() {
+		deleteTestsLogFile(t)
+	}
+
+	sut, _ := NewFileLogger(logLevelSetting, logfile_path)
+	infoMsg1 := "Some info message - 1"
+	verboseMsg2 := "Some verbose message - 2"
+	errorMsg3 := "Some error message - 3"
+	warningMsg4 := "Some Warning message - 4"
+	sut.WriteInformation(infoMsg1)
+	sut.WriteVerbose(verboseMsg2)
+	sut.WriteErrorMessage(errorMsg3)
+	sut.WriteWarning(warningMsg4)
+
+	fileLines := readLogFileLines()
+	if len(fileLines) != int(sut.GetLogLevelSetting())+1 {
+		t.Errorf("The number of logged messages '%d' is not the expected '%d'", len(fileLines), sut.GetLogLevelSetting())
+	}
 }
 
 func deleteTestsLogFile(t *testing.T) {
