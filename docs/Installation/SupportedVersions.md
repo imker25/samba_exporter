@@ -9,7 +9,7 @@
 | Ubnutu 20.04   | Focal Fossa | no |
 | Ubnutu 21.04   | Hirsute Hippo | no |
 | Ubnutu 21.10   | Impish Indri | no |
-| Ubnutu 22.04   | Jammy Jellyfish | yes |
+| Ubnutu 22.04   | Jammy Jellyfish | no |
 | Ubnutu 22.10  | Kinetic Kudu | no |
 | Ubnutu 23.04  | Lunar Lobster | no |
 | Ubnutu 23.10  | Mantic Minotaur | no |
@@ -17,7 +17,7 @@
 | Ubnuntu 24.10 | Oracular Oriole | no |
 | Ubnuntu 25.04 | Plucky Puffin | no |
 | Ubnuntu 25.10 | Questing Quokka | yes |
-| Ubnuntu 26.04 | Resolute Raccoon | planed |
+| Ubnuntu 26.04 | Resolute Raccoon | yes |
 | Ubnuntu 26.10 | - | planed |
 
 ---

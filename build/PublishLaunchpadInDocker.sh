@@ -46,19 +46,8 @@ function buildAndRunDocker() {
     echo "# ###################################################################"
     echo "Run the container"
     userName="${USER}"
-    if [ "${distVersion}" == "lunar" ] && [ "$(id -u)" == "1000" ]; then
-        userName="ubuntu"
-    fi
-    if [ "${distVersion}" == "mantic" ] && [ "$(id -u)" == "1000" ]; then
-        userName="ubuntu"
-    fi
-    if [ "${distVersion}" == "noble" ] && [ "$(id -u)" == "1000" ]; then
-        userName="ubuntu"
-    fi
-    if [ "${distVersion}" == "oracular" ] && [ "$(id -u)" == "1000" ]; then
-        userName="ubuntu"
-    fi
-    if [ "${distVersion}" == "questing" ] && [ "$(id -u)" == "1000" ]; then
+
+    if [ "$(id -u)" == "1000" ]; then
         userName="ubuntu"
     fi
 
@@ -197,12 +186,12 @@ cp -v "$BRANCH_ROOT/tmp/commit_logs" "$DEB_PACKAGE_DIR"
 
 dockerError="false"
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for jammy"
+    echo "Publish tag $tag on launchpad within a docker cotainer for resolute"
     echo "# ###################################################################"
-    buildAndRunDocker "jammy"
+    buildAndRunDocker "resolute"
     if [ "$?" != "0" ]; then
         dockerError="true"
-        echo "Error while publish package for jammy"
+        echo "Error while publish package for resolute"
     fi
 fi
 echo "# ###################################################################"
@@ -237,9 +226,6 @@ echo "# ###################################################################"
 echo "Delete the container image when done" 
 docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
 docker builder prune --all --force
-
-# Remember new ubuntu docker containers need user rewrite. See  buildAndRunDocker function first half
-
 
 if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on launchpad within a docker cotainer for trixie"
