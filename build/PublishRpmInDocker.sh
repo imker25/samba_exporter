@@ -170,7 +170,7 @@ cp -v "$BRANCH_ROOT/install/fedora/samba-exporter.from_source.spec" "$WORK_DIR/s
 
 dockerError="false"
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on corp within a docker container for fedora 28"
+    echo "Publish tag $tag on corp within a docker cotainer for fedora 28"
     echo "# ###################################################################"
     buildAndRunDocker "fedora28"
     if [ "$?" != "0" ]; then
@@ -184,7 +184,7 @@ docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q)
 docker builder prune --all --force
 
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on corp within a docker container for fedora 35"
+    echo "Publish tag $tag on corp within a docker cotainer for fedora 35"
     echo "# ###################################################################"
     buildAndRunDocker "fedora35"
     if [ "$?" != "0" ]; then
@@ -198,7 +198,7 @@ docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q)
 docker builder prune --all --force
 
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on corp within a docker container for fedora 43"
+    echo "Publish tag $tag on corp within a docker cotainer for fedora 43"
     echo "# ###################################################################"
     buildAndRunDocker "fedora43"
     if [ "$?" != "0" ]; then
@@ -212,12 +212,12 @@ docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q)
 docker builder prune --all --force
 
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on corp within a docker container for fedora 44"
+    echo "Publish tag $tag on corp within a docker cotainer for fedora 42"
     echo "# ###################################################################"
-    buildAndRunDocker "fedora44"
+    buildAndRunDocker "fedora42"
     if [ "$?" != "0" ]; then
         dockerError="true"
-         echo "Error while publish for fedora 44"
+         echo "Error while publish for fedora 42"
     fi
 fi
 echo "# ###################################################################"
