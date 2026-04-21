@@ -43,6 +43,7 @@ debian/samba_exporter.1
 debian/debhelper-build-stamp
 
 build/rpm-publish/samba-exporter.from_source.spec
+build/rpm-publish/samba-exporter.from_go-vendor.spec
 
 build/pages/site/**
 build/pages/__pycache__

@@ -30,9 +30,9 @@ RUN dnf -y update && \
         gnupg && \
     dnf clean all
 
-COPY samba-exporter.from_source.spec /samba-exporter.from_source.spec
+COPY samba-exporter.from_go-vendor.spec /samba-exporter.from_go-vendor.spec
 
-RUN dnf builddep /samba-exporter.from_source.spec -y && \
+RUN dnf builddep /samba-exporter.from_go-vendor.spec -y && \
     dnf clean all
 
 ARG USER
