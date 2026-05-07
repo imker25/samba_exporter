@@ -186,20 +186,6 @@ cp -v "$BRANCH_ROOT/tmp/commit_logs" "$DEB_PACKAGE_DIR"
 
 dockerError="false"
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for resolute"
-    echo "# ###################################################################"
-    buildAndRunDocker "resolute"
-    if [ "$?" != "0" ]; then
-        dockerError="true"
-        echo "Error while publish package for resolute"
-    fi
-fi
-echo "# ###################################################################"
-echo "Delete the container image when done" 
-docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
-docker builder prune --all --force
-
-if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on launchpad within a docker cotainer for noble"
     echo "# ###################################################################"
     buildAndRunDocker "noble"
@@ -220,6 +206,20 @@ if [ "$dockerError" == "false" ];then
     if [ "$?" != "0" ]; then
         dockerError="true"
         echo "Error while publish package for questing"
+    fi
+fi
+echo "# ###################################################################"
+echo "Delete the container image when done" 
+docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+docker builder prune --all --force
+
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on launchpad within a docker cotainer for resolute"
+    echo "# ###################################################################"
+    buildAndRunDocker "resolute"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+        echo "Error while publish package for resolute"
     fi
 fi
 echo "# ###################################################################"
