@@ -479,7 +479,7 @@ else
     echo "# ###################################################################"
     echo "# Build source package for upload"
 
-    gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S" --git-tag --git-debian-branch="${distribution,,}-${distVersionNumber}/v${tag}"
+    gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S" --git-tag --git-debian-tag=debian/${tag}_ppa1_${distribution,,}${distVersionNumber} --git-retag --git-debian-branch="${distribution,,}-${distVersionNumber}/v${tag}"
     if [ "$?" != "0" ]; then 
         echo "Error: Can not build the source package for upload"
         exit 1
