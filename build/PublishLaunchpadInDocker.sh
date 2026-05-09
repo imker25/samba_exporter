@@ -185,20 +185,12 @@ fi
 cp -v "$BRANCH_ROOT/tmp/commit_logs" "$DEB_PACKAGE_DIR"
 
 dockerError="false"
-if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for resolute"
-    echo "# ###################################################################"
-    buildAndRunDocker "resolute"
-    if [ "$?" != "0" ]; then
-        dockerError="true"
-        echo "Error while publish package for resolute"
-    fi
-fi
-echo "# ###################################################################"
-echo "Delete the container image when done" 
-docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
-docker builder prune --all --force
 
+# !!! Attention !!!
+# When the build for nobel (24.04) gests removed, then resolute (26.04) is the latestet LTS Version that is used
+# This means that we need to adapt the changelog rewrites for all distributions newer then 
+# resolute. This to see the needed changes you may want to have a look at 
+# https://github.com/imker25/samba_exporter/commit/c0b2ca9ed21fab43d66959731912479cd466ff7b
 if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on launchpad within a docker cotainer for noble"
     echo "# ###################################################################"
@@ -220,6 +212,20 @@ if [ "$dockerError" == "false" ];then
     if [ "$?" != "0" ]; then
         dockerError="true"
         echo "Error while publish package for questing"
+    fi
+fi
+echo "# ###################################################################"
+echo "Delete the container image when done" 
+docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+docker builder prune --all --force
+
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on launchpad within a docker cotainer for resolute"
+    echo "# ###################################################################"
+    buildAndRunDocker "resolute"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+        echo "Error while publish package for resolute"
     fi
 fi
 echo "# ###################################################################"
