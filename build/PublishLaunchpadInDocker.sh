@@ -185,6 +185,12 @@ fi
 cp -v "$BRANCH_ROOT/tmp/commit_logs" "$DEB_PACKAGE_DIR"
 
 dockerError="false"
+
+# !!! Attention !!!
+# When the build for nobel (24.04) gests removed, then resolute (26.04) is the latestet LTS Version that is used
+# This means that we need to adapt the changelog rewrites for all distributions newer then 
+# resolute. This to see the needed changes you may want to have a look at 
+# https://github.com/imker25/samba_exporter/commit/c0b2ca9ed21fab43d66959731912479cd466ff7b
 if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on launchpad within a docker cotainer for noble"
     echo "# ###################################################################"
