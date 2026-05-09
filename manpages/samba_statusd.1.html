@@ -102,6 +102,10 @@ Print the programs help message and exit</p>
 Give the full file path for a log file. When parameter is not set (as by default), logs will be written to stdout and stderr (default " ")</p>
   </li>
   <li>
+    <p><code>-log-level string</code>
+    Tell how verbose the log output should be. Possible values are: [Error Warning Information Verbose]. Any given value will be overwritten in case the '-verbose' switch is used (default "Information")</p>
+  </li>
+  <li>
     <p><code>-print-version</code>:
 With this flag the program will only print it's version and exit</p>
   </li>
@@ -112,7 +116,7 @@ With this flag the program will only print it's version and exit</p>
   </li>
   <li>
     <p><code>-verbose</code>:
-    With this flag the program will print verbose output</p>
+    With this flag the program will print verbose output. Equivalent to '-log-level=Verbose'</p>
   </li>
 </ul>
 
@@ -158,7 +162,7 @@ In case you found a new bug please also report as github issue on the projects p
 
   <ol class='man-decor man-foot man foot'>
     <li class='tl'></li>
-    <li class='tc'>October 2025</li>
+    <li class='tc'>May 2026</li>
     <li class='tr'>samba_statusd(1)</li>
   </ol>
 

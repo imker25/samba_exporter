@@ -1,19 +1,19 @@
 Origin: imker25.github.io/samba_exporter/
 Label: imker25.github.io/samba_exporter/
 Codename: trixie
-Date: Thu, 30 Oct 2025 20:49:36 UTC
+Date: Sat, 09 May 2026 17:38:21 UTC
 Architectures: amd64
 Components: main
 Description: Personal repository for samba-exporter packages
 MD5Sum:
- 8ed9b5b06a83358f534be20201ca9610 989 main/binary-amd64/Packages
- f3795c7df76d6685c5a8523f6c98b877 595 main/binary-amd64/Packages.gz
+ 3977b39c15c90198f18a823d6229768e 989 main/binary-amd64/Packages
+ eb64c751746b5cb6f3c53a7e72faa2b6 595 main/binary-amd64/Packages.gz
  de839c73b53c7e1faf2f9d3d248bc3cd 180 main/binary-amd64/Release
 SHA1:
- 888dbc6648671ffef5e62ce50ba2359764d3b060 989 main/binary-amd64/Packages
- 22017cb8f5cc0ac6ecde1313ccbd1d1142fd8ea1 595 main/binary-amd64/Packages.gz
+ 0655265740f85125f9bbc51f4dc9362aa2ce026c 989 main/binary-amd64/Packages
+ 34b1c906b29f2009cfb7d1720540ea5688f1bd67 595 main/binary-amd64/Packages.gz
  64634860d65a043f07360b0de9a2dd2c60fe9d16 180 main/binary-amd64/Release
 SHA256:
- 237aa4e15683ca4174c519adda46d317f21c8df76badabe6a02c655bfab300d3 989 main/binary-amd64/Packages
- c01152c18460859527eb6c286bfe1ad8699de0e76a35f8aa524270e8d5b42686 595 main/binary-amd64/Packages.gz
+ bcc1a716ec26cbae1724dbf8d92deeadee2b28af26a6c73d6abf80c7456def4f 989 main/binary-amd64/Packages
+ 9dc5da100a4092482de57c9c614bf209364dda6dd7868b706a2221710bd93be4 595 main/binary-amd64/Packages.gz
  d863fc2fbffb928988032b869897f10697f2d98909508b92fc74fafc7f334798 180 main/binary-amd64/Release
