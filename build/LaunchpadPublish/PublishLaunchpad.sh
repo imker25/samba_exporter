@@ -296,10 +296,13 @@ else
 fi
 
 if [ "$distVersionNumber" == "24.10" ] && [ "$distribution" == "Ubuntu" ]; then
+    # Remember: The the we always need to replace the version of the oldest supported LTS
     sed -i "s/focal;/oracular;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/ubuntu24.10/g" $WORK_DIR/install/debian/changelog
     sed -i "s/jammy;/oracular;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu22.04/ubuntu24.10/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/noble;/oracular;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu24.04/ubuntu24.10/g" $WORK_DIR/install/debian/changelog
     sed -i "s/golang-1.16,/golang-1.23,/g" $WORK_DIR/install/debian/control 
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
 else 
@@ -307,10 +310,13 @@ else
 fi
 
 if [ "$distVersionNumber" == "25.04" ] && [ "$distribution" == "Ubuntu" ]; then
+    # Remember: The the we always need to replace the version of the oldest supported LTS
     sed -i "s/focal;/plucky;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/ubuntu25.04/g" $WORK_DIR/install/debian/changelog
     sed -i "s/jammy;/plucky;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu22.04/ubuntu25.04/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/noble;/plucky;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu24.04/ubuntu25.04/g" $WORK_DIR/install/debian/changelog    
     sed -i "s/golang-1.16,/golang-1.24,/g" $WORK_DIR/install/debian/control 
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
 else 
@@ -318,10 +324,13 @@ else
 fi
 
 if [ "$distVersionNumber" == "25.10" ] && [ "$distribution" == "Ubuntu" ]; then
+    # Remember: The the we always need to replace the version of the oldest supported LTS
     sed -i "s/focal;/questing;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/ubuntu25.10/g" $WORK_DIR/install/debian/changelog
     sed -i "s/jammy;/questing;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu22.04/ubuntu25.10/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/noble;/questing;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu24.04/ubuntu25.10/g" $WORK_DIR/install/debian/changelog      
     sed -i "s/golang-1.16,/golang-1.24,/g" $WORK_DIR/install/debian/control 
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
 else 
@@ -329,10 +338,13 @@ else
 fi
 
 if [ "$distVersionNumber" == "26.04" ] && [ "$distribution" == "Ubuntu" ]; then
-    sed -i "s/focal;/questing;/g" $WORK_DIR/install/debian/changelog
+    # Remember: The the we always need to replace the version of the oldest supported LTS
+    sed -i "s/focal;/resolute;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/ubuntu26.04/g" $WORK_DIR/install/debian/changelog
-    sed -i "s/jammy;/questing;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/jammy;/resolute;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu22.04/ubuntu26.04/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/noble;/resolute;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu24.04/ubuntu26.04/g" $WORK_DIR/install/debian/changelog       
     sed -i "s/golang-1.16,/golang-1.26,/g" $WORK_DIR/install/debian/control 
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
 else 
@@ -340,10 +352,13 @@ else
 fi
 
 if [ "$distVersionNumber" == "13" ] && [ "$distribution" == "Debian" ]; then
+    # Remember: The the we always need to replace the version of the oldest supported LTS
     sed -i "s/focal;/trixie;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/debian13/g" $WORK_DIR/install/debian/changelog
     sed -i "s/jammy;/trixie;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu22.04/debian13/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/noble;/trixie;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu24.04/debian13/g" $WORK_DIR/install/debian/changelog 
     sed -i "s/golang-1.16,/golang-1.24,/g" $WORK_DIR/install/debian/control 
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
 else 
@@ -351,10 +366,13 @@ else
 fi
 
 if [ "$distVersionNumber" == "12" ] && [ "$distribution" == "Debian" ]; then
+    # Remember: The the we always need to replace the version of the oldest supported LTS
     sed -i "s/focal;/bookworm;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu20.04/debian12/g" $WORK_DIR/install/debian/changelog
     sed -i "s/jammy;/bookworm;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu22.04/debian12/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/noble;/bookworm;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu24.04/debian12/g" $WORK_DIR/install/debian/changelog 
     sed -i "s/golang-1.16,/golang-1.19,/g" $WORK_DIR/install/debian/control 
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
 else 
@@ -366,6 +384,8 @@ if [ "$distVersionNumber" == "11" ] && [ "$distribution" == "Debian" ]; then
     sed -i "s/ubuntu20.04/debian11/g" $WORK_DIR/install/debian/changelog
     sed -i "s/jammy;/bullseye;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu22.04/debian11/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/noble;/bullseye;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu24.04/debian11/g" $WORK_DIR/install/debian/changelog     
     sed -i "s/golang-1.16,/golang-1.15,/g" $WORK_DIR/install/debian/control
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
     mv -v "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod" "$WORK_DIR/src/tobi.backfrak.de/cmd/samba_statusd/go.mod.gopsutil-v3"
@@ -386,6 +406,8 @@ if [ "$distVersionNumber" == "10" ] && [ "$distribution" == "Debian" ]; then
     sed -i "s/jammy;/buster;/g" $WORK_DIR/install/debian/changelog
     sed -i "s/ubuntu22.04/debian10/g" $WORK_DIR/install/debian/changelog    
     sed -i "s/golang-1.16,/golang-1.15,/g" $WORK_DIR/install/debian/control
+    sed -i "s/noble;/buster;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu24.04/debian10/g" $WORK_DIR/install/debian/changelog       
     sed -i "s/gzip (>=1.10)/gzip (>=1.9)/g" $WORK_DIR/install/debian/control
     sed -i "s/golang-any/man-db/g" $WORK_DIR/install/debian/control
     find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
@@ -479,7 +501,7 @@ else
     echo "# ###################################################################"
     echo "# Build source package for upload"
 
-    gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S" --git-tag --git-debian-branch="${distribution,,}-${distVersionNumber}/v${tag}"
+    gbp buildpackage -kimker@bienenkaefig.de --git-builder="debuild -i -I -S" --git-tag --git-debian-tag=debian/${tag}_ppa1_${distribution,,}${distVersionNumber} --git-retag --git-debian-branch="${distribution,,}-${distVersionNumber}/v${tag}"
     if [ "$?" != "0" ]; then 
         echo "Error: Can not build the source package for upload"
         exit 1
