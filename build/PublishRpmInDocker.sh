@@ -232,15 +232,15 @@ fi
 
 popd
 
-echo "# ###################################################################"
-echo "Delete the container image when done"    
-docker rmi -f $(docker images --filter=reference="rpm-publish*" -q) 
-docker builder prune --all --force
+# echo "# ###################################################################"
+# echo "Delete the container image when done"    
+# docker rmi -f $(docker images --filter=reference="rpm-publish*" -q) 
+# docker builder prune --all --force
 
-if [ "$dockerError" == "true" ];then 
-    echo "Error detected"
-    exit 1
-fi
+# if [ "$dockerError" == "true" ];then 
+#     echo "Error detected"
+#     exit 1
+# fi
 
 exit 0
 

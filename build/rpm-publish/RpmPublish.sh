@@ -105,6 +105,19 @@ else
 fi 
 echo "# ###################################################################"
 echo "Prepare for operation"
+specfileName="samba-exporter.from_source.spec"
+if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" -gt "43" ]; then
+    specfileName="samba-exporter.from_go-vendor.spec"
+fi
+echo "Uising the *.spec file with name '$specfileName'"
+
+if [ -f "/${specfileName}" ]; then 
+    echo "Use '/${specfileName}' as fallback spec file"
+else
+    echo "Error: The expected fallback spec file '/${specfileName}' does not exist"
+    exit -1
+fi
+
 mkdir -p ~/.gnupg
 chmod 700 ~/.gnupg
 echo "$COPR_GPG_KEY_PUB" > ~/.gnupg/imker-bienenkaefig.pub.asc
@@ -180,8 +193,15 @@ popd
 echo "# ###################################################################"
 echo "Prepare for build"
 pushd ~/rpmbuild/SOURCES
-tar -zxvf ~/rpmbuild/SOURCES/${tag}.tar.gz samba_exporter-${tag}/install/fedora/samba-exporter.from_source.spec
-cp -v samba_exporter-${tag}/install/fedora/samba-exporter.from_source.spec ~/rpmbuild/SPECS/samba-exporter.spec
+
+tar -zxvf ~/rpmbuild/SOURCES/${tag}.tar.gz samba_exporter-${tag}/install/fedora/${specfileName}
+if [ -f samba_exporter-${tag}/install/fedora/${specfileName} ]; then
+    echo "Use specfile from archive"
+    cp -v samba_exporter-${tag}/install/fedora/${specfileName} ~/rpmbuild/SPECS/samba-exporter.spec
+else
+    echo "Use fallback specfile"
+    cp -v "/$specfileName" ~/rpmbuild/SPECS/samba-exporter.spec
+fi
 popd
 
 if [ ! -f ~/rpmbuild/SPECS/samba-exporter.spec ]; then
