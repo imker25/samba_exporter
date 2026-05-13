@@ -23,6 +23,7 @@ BuildRequires:  go-rpm-macros
 BuildRequires:  go-vendor-tools
 BuildRequires:  rubygem-ronn-ng
 BuildRequires:  procps-ng
+BuildRequires:  go2rpm+vendor
 
 %define _rpmfilename %%{NAME}-%%{VERSION}-%%{RELEASE}.%%{ARCH}.rpm
 %define _unpackaged_files_terminate_build 0
