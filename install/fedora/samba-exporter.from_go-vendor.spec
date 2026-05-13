@@ -30,12 +30,18 @@ BuildRequires:  procps-ng
 %gopkg
 
 %prep
-%goprep
+%goprep -p1
 mkdir -p "%{gobuilddir}/src"
 cp -rpv "%{gobuilddir}/src/tobi.backfrak.de/cmd/samba_exporter/samba_exporter-%{tag}/"* "%{gobuilddir}/src/"
 echo "%{tag}-fedora" > "%{gobuilddir}/src/VersionMaster.txt"
-	
+
+%generate_buildrequires
+# Install license scanner dependencies.
+%go_vendor_license_buildrequires -c %{S:2}
+
+
 %build
+%global gomodulesmode GO111MODULE=on
 GOPATH="$GOPATH:%{gobuilddir}/src/"
 export BUILDTAGS="netgo osusergo static_build"
 LDFLAGS="-X main.version=%{tag}" \
