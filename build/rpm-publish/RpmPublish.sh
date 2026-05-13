@@ -105,9 +105,11 @@ else
 fi 
 echo "# ###################################################################"
 echo "Prepare for operation"
+runWithVendorTools="false"
 specfileName="samba-exporter.from_source.spec"
 if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" -gt "43" ]; then
     specfileName="samba-exporter.from_go-vendor.spec"
+    runWithVendorTools="true"
 fi
 echo "Uising the *.spec file with name '$specfileName'"
 
@@ -383,6 +385,12 @@ cat ~/rpmbuild/SPECS/samba-exporter.spec
 echo "# ###################################################################"
 
 if [  "$buildSystem" == "rpm" ]; then
+
+    # In case runWithVendorTools=true, the expected vendor.tar.bz2 should be created in ~/rpmbuild/SOURCES/
+    # There will be two of them, one for exporter one for statusd
+    # Both should be added to the install/fedora/samba-exporter.from_go-vendor.spec as seperate sources
+    # exmpale to create the file 'go_vendor_archive create ./src/tobi.backfrak.de/cmd/samba_exporter/ --output ./samba_exporter.vendor.tar.bz2'
+
     echo "Build the source package"
     echo "# ###################################################################"
     echo "rpmbuild -bs ~/rpmbuild/SPECS/samba-exporter.spec"
