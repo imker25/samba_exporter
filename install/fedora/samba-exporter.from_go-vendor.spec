@@ -9,6 +9,7 @@ Source0: https://github.com/imker25/samba_exporter/archive/refs/tags/X.X.X-pre.t
 
 Source1: samba_exporter.vendor.tar.bz2
 Source2: samba_statusd.vendor.tar.bz2
+Source3: go-vendor-tools.toml
 
 %gometa
 %global debug_package %{nil}
@@ -41,7 +42,7 @@ echo "%{tag}-fedora" > "%{gobuilddir}/src/VersionMaster.txt"
 
 %generate_buildrequires
 # Install license scanner dependencies.
-%go_vendor_license_buildrequires -c %{S:2}
+%go_vendor_license_buildrequires -c %{S:3}
 
 
 %build
@@ -49,9 +50,9 @@ echo "%{tag}-fedora" > "%{gobuilddir}/src/VersionMaster.txt"
 GOPATH="$GOPATH:%{gobuilddir}/src/"
 export BUILDTAGS="netgo osusergo static_build"
 LDFLAGS="-X main.version=%{tag}" \
-%gobuild -o %{gobuilddir}/bin/samba_exporter src/tobi.backfrak.de/cmd/samba_exporter
-LDFLAGS="-X main.version=%{tag}-fedora" \
-%gobuild -o %{gobuilddir}/bin/samba_statusd src/tobi.backfrak.de/cmd/samba_statusd
+%gobuild -o %{gobuilddir}/bin/samba_exporter %{gobuilddir}/src/tobi.backfrak.de/cmd/samba_exporter
+LDFLAGS="-X main.version=%{tag}" \
+%gobuild -o %{gobuilddir}/bin/samba_statusd %{gobuilddir}/src/tobi.backfrak.de/cmd/samba_statusd
 "%{gobuilddir}/src/build/CreateManPage.sh"
 
 

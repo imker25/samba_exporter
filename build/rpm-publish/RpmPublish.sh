@@ -409,7 +409,13 @@ if [  "$buildSystem" == "rpm" ]; then
             echo "Error during packing the '~/rpmbuild/SOURCES/samba_statusd.vendor.tar.bz2'"
             exit 1
         fi
-        # TODO: The go-vendor-tools.toml needs to be created here!
+        
+        echo "Copy 'go-vendor-tools.toml'"
+        cp -v /go-vendor-tools.toml ~/rpmbuild/SOURCES/go-vendor-tools.toml
+        if [ ! -f ~/rpmbuild/SOURCES/go-vendor-tools.toml ]; then
+            echo "Error when copy 'go-vendor-tools.toml'"
+            exit 1
+        fi 
         
         echo "# ###################################################################"
     fi 

@@ -168,6 +168,7 @@ fi
 cp -v "$BRANCH_ROOT/tmp/commit_logs" "$RPM_PACKAGE_DIR"
 cp -v "$BRANCH_ROOT/install/fedora/samba-exporter.from_source.spec" "$WORK_DIR/samba-exporter.from_source.spec"
 cp -v "$BRANCH_ROOT/install/fedora/samba-exporter.from_go-vendor.spec" "$WORK_DIR/samba-exporter.from_go-vendor.spec"
+cp -v "$BRANCH_ROOT/install/fedora/go-vendor-tools.toml" "$WORK_DIR/go-vendor-tools.toml"
 
 dockerError="false"
 # if [ "$dockerError" == "false" ];then 

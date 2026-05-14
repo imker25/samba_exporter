@@ -41,6 +41,7 @@ ARG GID
 
 # Add publish script
 COPY RpmPublish.sh /RpmPublish.sh
+COPY go-vendor-tools.toml /go-vendor-tools.toml
 RUN chmod 777 /RpmPublish.sh
 
 RUN mkdir -p /home/${USER} &&\
