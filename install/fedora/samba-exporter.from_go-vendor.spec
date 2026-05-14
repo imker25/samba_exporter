@@ -7,6 +7,9 @@ Version: x.x.x
 Source0: https://github.com/imker25/samba_exporter/archive/refs/tags/X.X.X-pre.tar.gz
 %global tag x.x.x-pre
 
+Source1: samba_exporter.vendor.tar.bz2
+Source2: samba_statusd.vendor.tar.bz2
+
 %gometa
 %global debug_package %{nil}
 

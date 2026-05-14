@@ -270,7 +270,6 @@ sed -i "s/x.x.x/${rpmVersion}/g" ~/rpmbuild/SPECS/samba-exporter.spec
 buildSystem="none"
 coprUpload="false"
 
-# A Fedora 36 pretends to be a V37, may this is a prerelease bug
 if [ "$distribution" == "Fedora" ] && [ "$distVersionNumber" == "28" ]; then
     echo "Do modifications for 'Fedora 28'"
     sed -i "s/Release: 1/Release: 1.fc28/g" ~/rpmbuild/SPECS/samba-exporter.spec
@@ -386,10 +385,34 @@ echo "# ###################################################################"
 
 if [  "$buildSystem" == "rpm" ]; then
 
-    # In case runWithVendorTools=true, the expected vendor.tar.bz2 should be created in ~/rpmbuild/SOURCES/
-    # There will be two of them, one for exporter one for statusd
-    # Both should be added to the install/fedora/samba-exporter.from_go-vendor.spec as seperate sources
-    # exmpale to create the file 'go_vendor_archive create ./src/tobi.backfrak.de/cmd/samba_exporter/ --output ./samba_exporter.vendor.tar.bz2'
+    if [ "$runWithVendorTools" == "true" ]; then
+        echo "Creat files required by go-vendor-tools"
+        echo "# ###################################################################"
+        mkdir -pv ~/WS/samba-exporter
+        echo "Unzip the sources to '~/WS/samba-exporter'"
+        tar -C ~/WS/samba-exporter/ -zxvf ~/rpmbuild/SOURCES/${tag}.tar.gz samba_exporter-${tag}/src/ 
+        if [ ! -d ~/WS/samba-exporter/samba_exporter-$tag/src ]; then
+            echo "Error during unzip of '~/rpmbuild/SOURCES/${tag}.tar.gz'"
+            exit 1
+        fi 
+
+        echo "Create '~/rpmbuild/SOURCES/samba_exporter.vendor.tar.bz2'"
+        go_vendor_archive create ~/WS/samba-exporter/samba_exporter-${tag}/src/tobi.backfrak.de/cmd/samba_exporter/ --output ~/rpmbuild/SOURCES/samba_exporter.vendor.tar.bz2
+        if [ ! -f ~/rpmbuild/SOURCES/samba_exporter.vendor.tar.bz2 ]; then
+            echo "Error during packing the '~/rpmbuild/SOURCES/samba_exporter.vendor.tar.bz2'"
+            exit 1
+        fi
+
+        echo "Create '~/rpmbuild/SOURCES/samba_statusd.vendor.tar.bz2'"
+        go_vendor_archive create ~/WS/samba-exporter/samba_exporter-${tag}/src/tobi.backfrak.de/cmd/samba_statusd/ --output ~/rpmbuild/SOURCES/samba_statusd.vendor.tar.bz2
+        if [ ! -f ~/rpmbuild/SOURCES/samba_statusd.vendor.tar.bz2 ]; then
+            echo "Error during packing the '~/rpmbuild/SOURCES/samba_statusd.vendor.tar.bz2'"
+            exit 1
+        fi
+        # TODO: The go-vendor-tools.toml needs to be created here!
+        
+        echo "# ###################################################################"
+    fi 
 
     echo "Build the source package"
     echo "# ###################################################################"
