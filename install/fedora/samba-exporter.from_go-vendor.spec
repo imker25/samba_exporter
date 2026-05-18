@@ -35,10 +35,16 @@ BuildRequires:  go2rpm+vendor
 %gopkg
 
 %prep
-%goprep -p1
+%goprep
 mkdir -p "%{gobuilddir}/src"
 cp -rpv "%{gobuilddir}/src/tobi.backfrak.de/cmd/samba_exporter/samba_exporter-%{tag}/"* "%{gobuilddir}/src/"
 echo "%{tag}-fedora" > "%{gobuilddir}/src/VersionMaster.txt"
+tar -xf %{S:1}
+tar -xf %{S:2}
+rm -rfv "%{gobuilddir}/../vendor/tobi.backfrak.de/" 
+rm -rv %{gobuilddir}/../vendor/golang.org/x/sys/unix/*_unsigned.go
+rm -rv %{gobuilddir}/../vendor/golang.org/x/sys/unix/mremap.go
+cp -rpv "%{gobuilddir}/../vendor/"* "%{gobuilddir}/src/"
 
 %generate_buildrequires
 # Install license scanner dependencies.
@@ -46,13 +52,13 @@ echo "%{tag}-fedora" > "%{gobuilddir}/src/VersionMaster.txt"
 
 
 %build
-%global gomodulesmode GO111MODULE=on
+%global gomodulesmode GO111MODULE=off
 GOPATH="$GOPATH:%{gobuilddir}/src/"
 export BUILDTAGS="netgo osusergo static_build"
 LDFLAGS="-X main.version=%{tag}" \
-%gobuild -o %{gobuilddir}/bin/samba_exporter %{gobuilddir}/src/tobi.backfrak.de/cmd/samba_exporter
-LDFLAGS="-X main.version=%{tag}" \
-%gobuild -o %{gobuilddir}/bin/samba_statusd %{gobuilddir}/src/tobi.backfrak.de/cmd/samba_statusd
+%gobuild -o %{gobuilddir}/bin/samba_exporter src/tobi.backfrak.de/cmd/samba_exporter
+LDFLAGS="-X main.version=%{tag}-fedora" \
+%gobuild -o %{gobuilddir}/bin/samba_statusd src/tobi.backfrak.de/cmd/samba_statusd
 "%{gobuilddir}/src/build/CreateManPage.sh"
 
 
@@ -66,7 +72,7 @@ install -m 664  "%{gobuilddir}/src/src/man/start_samba_statusd.1.gz" "%{buildroo
 
 
 %check
-export GOPATH="$GOPATH:%{gobuilddir}/src/:/usr/share/gocode/"
+export GOPATH="$GOPATH:%{gobuilddir}/src/:%{gobuilddir}:/usr/share/gocode/"
 %gotest tobi.backfrak.de/cmd/samba_exporter     
 %gotest tobi.backfrak.de/cmd/samba_statusd
 %gotest tobi.backfrak.de/internal/smbexporterbl/pipecomunication
