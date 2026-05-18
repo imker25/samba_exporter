@@ -53,9 +53,9 @@
 | Fedora 39   | 2023-10-24 | no |
 | Fedora 40   | 2024-04-23 | no |
 | Fedora 41   | 2024-10-29 | no |
-| Fedora 42   | 2025-04-22 | yes |
+| Fedora 42   | 2025-04-22 | no |
 | Fedora 43   | 2025-10-28 | yes |
-| Fedora 44   | XXX | planed |
+| Fedora 44   | 2026-04-28 | yes |
 | Fedora 45   | XXX | planed |
 
 ---
