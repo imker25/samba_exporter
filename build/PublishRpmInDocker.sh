@@ -171,47 +171,47 @@ cp -v "$BRANCH_ROOT/install/fedora/samba-exporter.from_go-vendor.spec" "$WORK_DI
 cp -v "$BRANCH_ROOT/install/fedora/go-vendor-tools.toml" "$WORK_DIR/go-vendor-tools.toml"
 
 dockerError="false"
-# if [ "$dockerError" == "false" ];then 
-#     echo "Publish tag $tag on corp within a docker container for fedora 28"
-#     echo "# ###################################################################"
-#     buildAndRunDocker "fedora28"
-#     if [ "$?" != "0" ]; then
-#         dockerError="true"
-#          echo "Error while publish for fedora 28"
-#     fi
-# fi
-# echo "# ###################################################################"
-# echo "Delete the container image when done" 
-# docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
-# docker builder prune --all --force
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on corp within a docker container for fedora 28"
+    echo "# ###################################################################"
+    buildAndRunDocker "fedora28"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+         echo "Error while publish for fedora 28"
+    fi
+fi
+echo "# ###################################################################"
+echo "Delete the container image when done" 
+docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+docker builder prune --all --force
 
-# if [ "$dockerError" == "false" ];then 
-#     echo "Publish tag $tag on corp within a docker container for fedora 35"
-#     echo "# ###################################################################"
-#     buildAndRunDocker "fedora35"
-#     if [ "$?" != "0" ]; then
-#         dockerError="true"
-#          echo "Error while publish for fedora 35"
-#     fi
-# fi
-# echo "# ###################################################################"
-# echo "Delete the container image when done" 
-# docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
-# docker builder prune --all --force
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on corp within a docker container for fedora 35"
+    echo "# ###################################################################"
+    buildAndRunDocker "fedora35"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+         echo "Error while publish for fedora 35"
+    fi
+fi
+echo "# ###################################################################"
+echo "Delete the container image when done" 
+docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+docker builder prune --all --force
 
-# if [ "$dockerError" == "false" ];then 
-#     echo "Publish tag $tag on corp within a docker container for fedora 43"
-#     echo "# ###################################################################"
-#     buildAndRunDocker "fedora43"
-#     if [ "$?" != "0" ]; then
-#         dockerError="true"
-#          echo "Error while publish for fedora 43"
-#     fi
-# fi
-# echo "# ###################################################################"
-# echo "Delete the container image when done" 
-# docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
-# docker builder prune --all --force
+if [ "$dockerError" == "false" ];then 
+    echo "Publish tag $tag on corp within a docker container for fedora 43"
+    echo "# ###################################################################"
+    buildAndRunDocker "fedora43"
+    if [ "$?" != "0" ]; then
+        dockerError="true"
+         echo "Error while publish for fedora 43"
+    fi
+fi
+echo "# ###################################################################"
+echo "Delete the container image when done" 
+docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+docker builder prune --all --force
 
 if [ "$dockerError" == "false" ];then 
     echo "Publish tag $tag on corp within a docker cotainer for fedora 44"
@@ -222,10 +222,10 @@ if [ "$dockerError" == "false" ];then
          echo "Error while publish for fedora 44"
     fi
 fi
-# echo "# ###################################################################"
-# echo "Delete the container image when done" 
-# docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
-# docker builder prune --all --force
+echo "# ###################################################################"
+echo "Delete the container image when done" 
+docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q) 
+docker builder prune --all --force
 
 # Whenever adding a new fedora version, ensure to enable this 
 # fedora version on copr before the first release
@@ -233,15 +233,15 @@ fi
 
 popd
 
-# echo "# ###################################################################"
-# echo "Delete the container image when done"    
-# docker rmi -f $(docker images --filter=reference="rpm-publish*" -q) 
-# docker builder prune --all --force
+echo "# ###################################################################"
+echo "Delete the container image when done"    
+docker rmi -f $(docker images --filter=reference="rpm-publish*" -q) 
+docker builder prune --all --force
 
-# if [ "$dockerError" == "true" ];then 
-#     echo "Error detected"
-#     exit 1
-# fi
+if [ "$dockerError" == "true" ];then 
+    echo "Error detected"
+    exit 1
+fi
 
 exit 0
 
