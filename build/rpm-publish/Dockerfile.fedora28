@@ -49,6 +49,8 @@ ARG GID
 
 # Add publish script
 COPY RpmPublish.sh /RpmPublish.sh
+COPY samba-exporter.from_source.spec /samba-exporter.from_source.spec
+
 RUN chmod 777 /RpmPublish.sh
 
 # Add the user that will run the build
