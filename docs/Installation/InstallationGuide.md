@@ -17,8 +17,8 @@ sudo apt-get install samba-exporter
 The **samba exporter** package for Debian is published on the projects GitHub Page. To install execute the commands shown below as root:
 
 ```bash
-wget -qO - https://imker25.github.io/samba_exporter/repos/debian/archive.key | sudo apt-key add -
-echo "deb https://imker25.github.io/samba_exporter/repos/debian trixie main" > /etc/apt/sources.list.d/samba-exporter.list
+wget -qO - https://imker25.github.io/samba_exporter/repos/debian/archive.key > /usr/share/keyrings/imker25.gpg
+echo "deb [signed-by=/usr/share/keyrings/imker25.gpg] https://imker25.github.io/samba_exporter/repos/debian trixie main" > /etc/apt/sources.list.d/samba-exporter.list
 apt-get update
 apt-get install samba-exporter
 ```
