@@ -351,6 +351,20 @@ else
     echo "Not running on lunar 26.04 (resolute)"
 fi
 
+if [ "$distVersionNumber" == "26.10" ] && [ "$distribution" == "Ubuntu" ]; then
+    # Remember: The the we always need to replace the version of the oldest supported LTS
+    sed -i "s/focal;/stonking;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu20.04/ubuntu26.10/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/jammy;/stonking;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu22.04/ubuntu26.10/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/noble;/stonking;/g" $WORK_DIR/install/debian/changelog
+    sed -i "s/ubuntu24.04/ubuntu26.10/g" $WORK_DIR/install/debian/changelog       
+    sed -i "s/golang-1.16,/golang-1.26,/g" $WORK_DIR/install/debian/control 
+    find . -name "*.go" -exec sed -i "s/github.com\\/shirou\\/gopsutil\\/v3\\/process/github.com\\/shirou\\/gopsutil\\/process/g" {} \;
+else 
+    echo "Not running on lunar 26.10 (stonking)"
+fi
+
 if [ "$distVersionNumber" == "13" ] && [ "$distribution" == "Debian" ]; then
     # Remember: The the we always need to replace the version of the oldest supported LTS
     sed -i "s/focal;/trixie;/g" $WORK_DIR/install/debian/changelog

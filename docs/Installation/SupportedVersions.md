@@ -16,9 +16,10 @@
 | Ubnutu 24.04  | Noble Numbat | yes |
 | Ubnuntu 24.10 | Oracular Oriole | no |
 | Ubnuntu 25.04 | Plucky Puffin | no |
-| Ubnuntu 25.10 | Questing Quokka | yes |
+| Ubnuntu 25.10 | Questing Quokka | no |
 | Ubnuntu 26.04 | Resolute Raccoon | yes |
-| Ubnuntu 26.10 | - | planed |
+| Ubnuntu 26.10 | Stonking Stingray | yes |
+| Ubnuntu 27.04 | - | planed |
 
 ---
 
