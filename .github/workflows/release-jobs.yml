@@ -220,14 +220,14 @@ jobs:
         asset_path: bin/rpm-packages/Fedora-44/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc44.x86_64.rpm 
         asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc44.x86_64.rpm 
         asset_content_type: application/zip  
-    - name: Upload Release Asset for Fedora 43
+    - name: Upload Release Asset for Fedora 45
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ env.SAMBA_EXPORTER_UPLOAD_URL }}
-        asset_path: bin/rpm-packages/Fedora-43/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc43.x86_64.rpm 
-        asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc43.x86_64.rpm 
+        asset_path: bin/rpm-packages/Fedora-45/samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc45.x86_64.rpm 
+        asset_name: samba-exporter-${{ env.SAMBA_EXPORTER_RELEASE_TAG }}-1.fc45.x86_64.rpm 
         asset_content_type: application/zip   
 
   publish-pages:
