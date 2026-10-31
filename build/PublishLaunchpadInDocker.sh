@@ -206,12 +206,12 @@ docker rmi -f $(docker images --filter=reference="launchapd-publish*" -q)
 docker builder prune --all --force
 
 if [ "$dockerError" == "false" ];then 
-    echo "Publish tag $tag on launchpad within a docker cotainer for questing"
+    echo "Publish tag $tag on launchpad within a docker cotainer for resolute"
     echo "# ###################################################################"
-    buildAndRunDocker "questing"
+    buildAndRunDocker "resolute"
     if [ "$?" != "0" ]; then
         dockerError="true"
-        echo "Error while publish package for questing"
+        echo "Error while publish package for resolute"
     fi
 fi
 echo "# ###################################################################"
