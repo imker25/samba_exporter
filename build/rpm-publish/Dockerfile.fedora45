@@ -11,7 +11,7 @@ FROM fedora:45
 
 RUN dnf -y update && \
     dnf install -y 'dnf-command(builddep)' \
-        epel-release \
+        lsb_release \
         rubygem-ronn-ng \
         rpmdevtools \
         rpmlint \
@@ -28,7 +28,6 @@ RUN dnf -y update && \
         copr-cli \
         procps-ng \
         gnupg && \
-    dnf install -y lsb-release && \
     dnf clean all
 
     
