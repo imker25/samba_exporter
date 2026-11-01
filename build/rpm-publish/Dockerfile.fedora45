@@ -11,7 +11,7 @@ FROM fedora:45
 
 RUN dnf -y update && \
     dnf install -y 'dnf-command(builddep)' \
-        redhat-lsb \
+        epel-release \
         rubygem-ronn-ng \
         rpmdevtools \
         rpmlint \
@@ -28,8 +28,10 @@ RUN dnf -y update && \
         copr-cli \
         procps-ng \
         gnupg && \
+    dnf install -y lsb-release && \
     dnf clean all
 
+    
 COPY samba-exporter.from_go-vendor.spec /samba-exporter.from_go-vendor.spec
 
 RUN dnf builddep /samba-exporter.from_go-vendor.spec -y && \
