@@ -1,8 +1,8 @@
-FROM fedora:41
+FROM fedora:45
 
 RUN yum -y update && \
     yum clean all
-RUN yum -y install redhat-lsb \
+RUN yum -y install lsb_release \
                 rubygem-ronn-ng \
                 rpmdevtools \
                 rpmlint \
