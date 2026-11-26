@@ -156,7 +156,7 @@ jobs:
         run: docker build --file test/integrationTest/docker/Dockerfile.ubuntu --tag integration-test-container .
       - name: Run integration tests
         run: docker run -i integration-test-container /bin/bash -c "/RunIntegrationTests.sh container"
-  integration-test-bookworm:
+  integration-test-trixie:
     needs: build-unit_test
     strategy:
       matrix:
@@ -178,7 +178,7 @@ jobs:
       - name: Check artifacts
         run: ls -l bin/
       - name: Build test environment container
-        run: docker build --file test/integrationTest/docker/Dockerfile.bookworm --tag integration-test-container .
+        run: docker build --file test/integrationTest/docker/Dockerfile.trixie --tag integration-test-container .
       - name: Run integration tests
         run: docker run -i integration-test-container /bin/bash -c "/RunIntegrationTests.sh container"                  
   # installation-test:
