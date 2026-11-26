@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         go-version: [1.23.x]
-        os: [ubuntu-24.04]
+        os: [ubuntu-26.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -83,7 +83,7 @@ jobs:
         retention-days: 1 
   build-pages:   
     name: Create docs for GitHub Pages
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout 
         uses: actions/checkout@v3
@@ -101,7 +101,7 @@ jobs:
           retention-days: 1   
   build-rpm-package:   
     name: Create rpm package
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout 
         uses: actions/checkout@v3   
@@ -135,7 +135,7 @@ jobs:
     needs: build-unit_test
     strategy:
       matrix:
-        os: [ubuntu-24.04]
+        os: [ubuntu-26.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -160,7 +160,7 @@ jobs:
     needs: build-unit_test
     strategy:
       matrix:
-        os: [ubuntu-24.04]
+        os: [ubuntu-26.04]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 10
     steps:
@@ -185,7 +185,7 @@ jobs:
   #   needs: build-unit_test
   #   strategy:
   #     matrix:
-  #       os: [ubuntu-24.04]
+  #       os: [ubuntu-26.04]
   #   runs-on: ${{ matrix.os }}
   #   timeout-minutes: 10
   #   steps: 
@@ -208,7 +208,7 @@ jobs:
   #     run: test/installationTest/RunInstallationTest.sh
   release-to-github:
     needs: [ integration-test-ubuntu, integration-test-trixie, build-pages, build-rpm-package ]
-    runs-on: "ubuntu-24.04"
+    runs-on: "ubuntu-26.04"
     if: ((github.ref == 'refs/heads/main') || contains(github.ref, 'release'))
     timeout-minutes: 10
     steps: 
@@ -216,23 +216,23 @@ jobs:
     - name: Download samba_exporter package artifact
       uses: actions/download-artifact@v4
       with:
-        name: samba_exporter-ubuntu-24.04.deb  
+        name: samba_exporter-ubuntu-26.04.deb  
         path: . 
     - name: Download PackageName.txt artifact
       uses: actions/download-artifact@v4
       with:
-        name: PackageName-ubuntu-24.04.txt   
-        path: logs/ubuntu-24.04/         
+        name: PackageName-ubuntu-26.04.txt   
+        path: logs/ubuntu-26.04/         
     - name: Download ShortVersion.txt artifact
       uses: actions/download-artifact@v4
       with:
-        name: ShortVersion-ubuntu-24.04.txt   
+        name: ShortVersion-ubuntu-26.04.txt   
         path: logs/  
     - name: 'Get needed environment from artifacts'
       run: |
-            packageubuntu2404Name=$(cat logs/ubuntu-24.04/PackageName.txt)
-            echo "SAMBA_EXPORTER_UBUNTU_2004_PACKAGE_NAME=$packageubuntu2404Name"
-            echo "SAMBA_EXPORTER_UBUNTU_2004_PACKAGE_NAME=$packageubuntu2404Name" >> $GITHUB_ENV       
+            packageubuntu2604Name=$(cat logs/ubuntu-26.04/PackageName.txt)
+            echo "SAMBA_EXPORTER_UBUNTU_2004_PACKAGE_NAME=$packageubuntu2604Name"
+            echo "SAMBA_EXPORTER_UBUNTU_2004_PACKAGE_NAME=$packageubuntu2604Name" >> $GITHUB_ENV       
             shortVersion=$(cat logs/ShortVersion.txt)
             if [ "$GITHUB_REF" == 'refs/heads/main' ]; then
                   echo "SAMBA_EXPORTER_PRE_RELEASE=true"
